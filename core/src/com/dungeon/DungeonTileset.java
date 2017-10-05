@@ -105,24 +105,24 @@ public class DungeonTileset extends Tileset {
 	public final TextureRegion PIT_SMALL_LADDER = getTile(14, 8, 2, 2);
 	public final TextureRegion PIT_SMALL = getTile(16, 8, 2, 2);
 
-	public final Animation<TextureRegion> TOTEM_A_BLUE_ANIMATION = new Animation<TextureRegion>(0.1f, TOTEM_A_DARK, TOTEM_A_MID_BLUE, TOTEM_A_LIGHT_BLUE, TOTEM_A_MID_BLUE);
-	public final Animation<TextureRegion> TOTEM_A_ORANGE_ANIMATION = new Animation<TextureRegion>(0.1f, TOTEM_A_DARK, TOTEM_A_MID_ORANGE, TOTEM_A_LIGHT_ORANGE, TOTEM_A_MID_ORANGE);
-	public final Animation<TextureRegion> TOTEM_A_GREEN_ANIMATION = new Animation<TextureRegion>(0.1f, TOTEM_A_DARK, TOTEM_A_MID_GREEN, TOTEM_A_LIGHT_GREEN, TOTEM_A_MID_GREEN);
+	public final Animation<TextureRegion> TOTEM_A_BLUE_ANIMATION = new Animation<>(0.1f, TOTEM_A_DARK, TOTEM_A_MID_BLUE, TOTEM_A_LIGHT_BLUE, TOTEM_A_MID_BLUE);
+	public final Animation<TextureRegion> TOTEM_A_ORANGE_ANIMATION = new Animation<>(0.1f, TOTEM_A_DARK, TOTEM_A_MID_ORANGE, TOTEM_A_LIGHT_ORANGE, TOTEM_A_MID_ORANGE);
+	public final Animation<TextureRegion> TOTEM_A_GREEN_ANIMATION = new Animation<>(0.1f, TOTEM_A_DARK, TOTEM_A_MID_GREEN, TOTEM_A_LIGHT_GREEN, TOTEM_A_MID_GREEN);
 
-	public final Animation<TextureRegion> TOTEM_B_BLUE_ANIMATION = new Animation<TextureRegion>(0.1f, TOTEM_B_DARK, TOTEM_B_MID_BLUE, TOTEM_B_LIGHT_BLUE, TOTEM_B_MID_BLUE);
-	public final Animation<TextureRegion> TOTEM_B_ORANGE_ANIMATION = new Animation<TextureRegion>(0.1f, TOTEM_B_DARK, TOTEM_B_MID_ORANGE, TOTEM_B_LIGHT_ORANGE, TOTEM_B_MID_ORANGE);
-	public final Animation<TextureRegion> TOTEM_B_GREEN_ANIMATION = new Animation<TextureRegion>(0.1f, TOTEM_B_DARK, TOTEM_B_MID_GREEN, TOTEM_B_LIGHT_GREEN, TOTEM_B_MID_GREEN);
+	public final Animation<TextureRegion> TOTEM_B_BLUE_ANIMATION = new Animation<>(0.1f, TOTEM_B_DARK, TOTEM_B_MID_BLUE, TOTEM_B_LIGHT_BLUE, TOTEM_B_MID_BLUE);
+	public final Animation<TextureRegion> TOTEM_B_ORANGE_ANIMATION = new Animation<>(0.1f, TOTEM_B_DARK, TOTEM_B_MID_ORANGE, TOTEM_B_LIGHT_ORANGE, TOTEM_B_MID_ORANGE);
+	public final Animation<TextureRegion> TOTEM_B_GREEN_ANIMATION = new Animation<>(0.1f, TOTEM_B_DARK, TOTEM_B_MID_GREEN, TOTEM_B_LIGHT_GREEN, TOTEM_B_MID_GREEN);
 
-	public final Animation<TextureRegion> SWITCH_ANIMATION = new Animation<TextureRegion>(0.1f, SWITCH_1, SWITCH_2, SWITCH_3, SWITCH_4, SWITCH_5, SWITCH_6, SWITCH_7);
-	public final Animation<TextureRegion> SWITCH_REVERSE_ANIMATION = new Animation<TextureRegion>(0.1f, SWITCH_7, SWITCH_6, SWITCH_5, SWITCH_4, SWITCH_3, SWITCH_2, SWITCH_1);
-	public final Animation<TextureRegion> GATE_OPEN_ANIMATION = new Animation<TextureRegion>(0.1f, GATE_5, GATE_4, GATE_3, GATE_2, GATE_1);
-	public final Animation<TextureRegion> GATE_CLOSE_ANIMATION = new Animation<TextureRegion>(0.1f, GATE_1, GATE_2, GATE_3, GATE_4, GATE_5);
-	public final Animation<TextureRegion> DOOR_OPEN_ANIMATION = new Animation<TextureRegion>(0.1f, DOOR_1, DOOR_2, DOOR_3, DOOR_4);
-	public final Animation<TextureRegion> DOOR_CLOSE_ANIMATION = new Animation<TextureRegion>(0.1f, DOOR_4, DOOR_3, DOOR_2, DOOR_1);
-	public final Animation<TextureRegion> CHEST_OPEN_ANIMATION = new Animation<TextureRegion>(0.1f, CHEST_1, CHEST_2, CHEST_3, CHEST_4, CHEST_5, CHEST_6);
-	public final Animation<TextureRegion> CHEST_CLOSE_ANIMATION = new Animation<TextureRegion>(0.1f, CHEST_6, CHEST_5, CHEST_4, CHEST_3, CHEST_2, CHEST_1);
-	public final Animation<TextureRegion> DOUBLE_DOOR_OPEN_ANIMATION = new Animation<TextureRegion>(0.1f, DOUBLE_DOOR_1, DOUBLE_DOOR_2, DOUBLE_DOOR_3, DOUBLE_DOOR_4, DOUBLE_DOOR_5);
-	public final Animation<TextureRegion> DOUBLE_DOOR_CLOSE_ANIMATION = new Animation<TextureRegion>(0.1f, DOUBLE_DOOR_5, DOUBLE_DOOR_4, DOUBLE_DOOR_3, DOUBLE_DOOR_2, DOUBLE_DOOR_1);
+	public final Animation<TextureRegion> SWITCH_ANIMATION = new Animation<>(0.1f, SWITCH_1, SWITCH_2, SWITCH_3, SWITCH_4, SWITCH_5, SWITCH_6, SWITCH_7);
+	public final Animation<TextureRegion> SWITCH_REVERSE_ANIMATION = new Animation<>(0.1f, SWITCH_7, SWITCH_6, SWITCH_5, SWITCH_4, SWITCH_3, SWITCH_2, SWITCH_1);
+	public final Animation<TextureRegion> GATE_OPEN_ANIMATION = new Animation<>(0.1f, GATE_5, GATE_4, GATE_3, GATE_2, GATE_1);
+	public final Animation<TextureRegion> GATE_CLOSE_ANIMATION = new Animation<>(0.1f, GATE_1, GATE_2, GATE_3, GATE_4, GATE_5);
+	public final Animation<TextureRegion> DOOR_OPEN_ANIMATION = new Animation<>(0.1f, DOOR_1, DOOR_2, DOOR_3, DOOR_4);
+	public final Animation<TextureRegion> DOOR_CLOSE_ANIMATION = new Animation<>(0.1f, DOOR_4, DOOR_3, DOOR_2, DOOR_1);
+	public final Animation<TextureRegion> CHEST_OPEN_ANIMATION = new Animation<>(0.1f, CHEST_1, CHEST_2, CHEST_3, CHEST_4, CHEST_5, CHEST_6);
+	public final Animation<TextureRegion> CHEST_CLOSE_ANIMATION = new Animation<>(0.1f, CHEST_6, CHEST_5, CHEST_4, CHEST_3, CHEST_2, CHEST_1);
+	public final Animation<TextureRegion> DOUBLE_DOOR_OPEN_ANIMATION = new Animation<>(0.1f, DOUBLE_DOOR_1, DOUBLE_DOOR_2, DOUBLE_DOOR_3, DOUBLE_DOOR_4, DOUBLE_DOOR_5);
+	public final Animation<TextureRegion> DOUBLE_DOOR_CLOSE_ANIMATION = new Animation<>(0.1f, DOUBLE_DOOR_5, DOUBLE_DOOR_4, DOUBLE_DOOR_3, DOUBLE_DOOR_2, DOUBLE_DOOR_1);
 
 	public final Tile PIT_UPPER_LEFT_TILE = new Tile(PIT_UPPER_LEFT);
 	public final Tile PIT_UPPER_CENTER_TILE = new Tile(PIT_UPPER_CENTER);
