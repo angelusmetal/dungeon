@@ -83,7 +83,7 @@ public class ProceduralLevelGenerator {
 		this.walkableTiles = new boolean[width][height];
 	}
 
-	public Tile[][] generateLevel(DungeonTileset tileset) {
+	public Tile[][] generateLevel(DungeonTilesetDark tileset) {
 		// Pick a random position to start (excluding border rows/columns)
 		int startX = (int) (Math.random() * (width - 2)) + 1;
 		int startY = (int) (Math.random() * (height - 2)) + 1;
@@ -103,26 +103,60 @@ public class ProceduralLevelGenerator {
 		Tile[][] map = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				if (walkableTiles[x][y]) {
-					map[x][y] = tileset.FLOOR_TILE;
-				} else {
-					map[x][y] = tileset.PIT_UPPER_CENTER_TILE;
-				}
+				map[x][y] = getTile(x, y, tileset);
 			}
 		}
-//		// Mark connection points with a different tile
-//		for (Room room : rooms) {
-//			for (ConnectionPoint point : room.connectionPoints) {
-//				if (point.active) {
-//					Tile tile =
-//							point.direction == Direction.UP ? tileset.PIT_UPPER_CENTER_TILE :
-//							point.direction == Direction.DOWN ? tileset.PIT_LOWER_CENTER_TILE :
-//							point.direction == Direction.LEFT ? tileset.PIT_LEFT_TILE : tileset.PIT_RIGHT_TILE;
-//					map[point.coords.x][point.coords.y] = tile;
-//				}
-//			}
-//		}
 		return map;
+	}
+
+	private Tile getTile(int x, int y, DungeonTilesetDark tileset) {
+
+		if (walkableTiles[x][y]) {
+			// Return a random floor tile
+			return tileset.FLOOR_TILES[(int) (Math.random() * tileset.FLOOR_TILES.length)];
+		}
+
+		boolean freeUp = y > 0 && walkableTiles[x][y-1];
+		boolean freeDown = y < height - 1 && walkableTiles[x][y+1];
+		boolean freeLeft = x > 0 && walkableTiles[x-1][y];
+		boolean freeRight = x < width - 1 && walkableTiles[x+1][y];
+		boolean freeUpLeft = y > 0 && x > 0 && walkableTiles[x-1][y-1];
+		boolean freeUpRight = y > 0 && x < width - 1 && walkableTiles[x+1][y-1];
+		boolean freeDownLeft = y < height - 1 && x > 0 && walkableTiles[x-1][y+1];
+		boolean freeDownRight = y < height - 1 && x < width - 1 && walkableTiles[x+1][y+1];
+
+		if (freeUp) {
+			if (freeLeft) {
+				return tileset.CONVEX_UPPER_RIGHT_TILE;
+			} else if (freeRight) {
+				return tileset.CONVEX_UPPER_LEFT_TILE;
+			} else {
+				return tileset.CONCAVE_UPPER_TILE;
+			}
+		} else if (freeLeft) {
+			if (freeDown) {
+				return tileset.CONVEX_LOWER_RIGHT_TILE;
+			} else {
+				return tileset.CONCAVE_RIGHT_TILE;
+			}
+		} else if (freeDown) {
+			if (freeRight) {
+				return tileset.CONVEX_LOWER_LEFT_TILE;
+			} else {
+				return tileset.CONCAVE_LOWER_TILE;
+			}
+		} else if (freeRight) {
+			return tileset.CONCAVE_LEFT_TILE;
+		} else if (freeUpLeft) {
+			return tileset.CONCAVE_UPPER_RIGHT_TILE;
+		} else if (freeUpRight) {
+			return tileset.CONCAVE_UPPER_LEFT_TILE;
+		} else if (freeDownLeft) {
+			return tileset.CONCAVE_LOWER_RIGHT_TILE;
+		} else if (freeDownRight) {
+			return tileset.CONCAVE_LOWER_LEFT_TILE;
+		}
+		return tileset.VOID_TILE;
 	}
 
 	private Room generateRoom(int x, int y, Direction direction, Type type) {
@@ -156,7 +190,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private Room attemptRoom(int x, int y, Direction direction, int roomWidth, int roomHeight) {
-		if (x < 1 || x >= width -1 || y < 1 || y >= height) {
+		if (x < 2 || x >= width - 2 || y < 2 || y >= height - 2) {
 			return null;
 		}
 		for (int rWidth = roomWidth; rWidth >= minRoomSize; --rWidth) {
@@ -201,9 +235,9 @@ public class ProceduralLevelGenerator {
 
 	private boolean canPlaceRoom(Room room) {
 		boolean canPlace = true;
-		for (int x = room.topLeft.x-1; x <= room.bottomRight.x+1; ++x) {
-			for (int y = room.bottomRight.y-1; y <= room.topLeft.y+1; ++y) {
-				if (x >= width-1 || x < 1 || y >= height-1 || y < 1 || walkableTiles[x][y]) {
+		for (int x = room.topLeft.x-2; x <= room.bottomRight.x+2; ++x) {
+			for (int y = room.bottomRight.y-2; y <= room.topLeft.y+2; ++y) {
+				if (x >= width-2 || x < 2 || y >= height-2 || y < 2 || walkableTiles[x][y]) {
 					canPlace = false;
 				}
 			}

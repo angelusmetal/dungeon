@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class DungeonTileset extends Tileset {
+public class DungeonTileset16 extends Tileset {
 
 	public final TextureRegion PIT_UPPER_LEFT = getTile(0, 0);
 	public final TextureRegion PIT_UPPER_CENTER = getTile(1, 0);
@@ -136,7 +136,7 @@ public class DungeonTileset extends Tileset {
 	public final Tile CHEST_TILE = new Tile(CHEST_OPEN_ANIMATION);
 	public final Tile FLOOR_TILE = new Tile(FLOOR);
 
-	public DungeonTileset() {
+	public DungeonTileset16() {
 		super(new Texture("dungeon_sheet.png"), 16);
 	}
 

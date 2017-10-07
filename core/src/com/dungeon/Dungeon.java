@@ -17,7 +17,7 @@ import java.util.List;
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
 	private SpriteBatch batch;
-	private DungeonTileset tileset;
+	private DungeonTilesetDark tileset;
 	private GhostTileset ghostTileset;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
@@ -34,7 +34,7 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		tileset = new DungeonTileset();
+		tileset = new DungeonTilesetDark();
 		ghostTileset = new GhostTileset();
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH, MAP_HEIGHT);
 		map = generator.generateLevel(tileset);
@@ -63,7 +63,8 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(145f/255f, 176f/255f, 154f/255f, 1);
+		//Gdx.gl.glClearColor(145f/255f, 176f/255f, 154f/255f, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stateTime += Gdx.graphics.getDeltaTime();
 		batch.begin();
