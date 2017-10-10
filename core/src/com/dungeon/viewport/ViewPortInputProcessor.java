@@ -1,4 +1,4 @@
-package com.dungeon;
+package com.dungeon.viewport;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
@@ -111,13 +111,15 @@ public class ViewPortInputProcessor implements GestureDetector.GestureListener, 
 
 	@Override
 	public boolean scrolled(int amount) {
-		// Change scale based on mouse wheel
-		if (amount > 0 && viewPort.scale > MIN_SCALE) {
-			viewPort.scale -= amount;
+		if (zoomEnabled) {
+			// Change scale based on mouse wheel
+			if (amount > 0 && viewPort.scale > MIN_SCALE) {
+				viewPort.scale -= amount;
+			}
+			else if (amount < 0 && viewPort.scale < MAX_SCALE) {
+				viewPort.scale -= amount;
+			}
 		}
-		else if (amount < 0 && viewPort.scale < MAX_SCALE) {
-			viewPort.scale -= amount;
-		}
-		return true;
+		return zoomEnabled;
 	}
 }

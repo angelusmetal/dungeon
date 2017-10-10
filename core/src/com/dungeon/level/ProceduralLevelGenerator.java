@@ -1,4 +1,7 @@
-package com.dungeon;
+package com.dungeon.level;
+
+import com.dungeon.tileset.DungeonTilesetDark;
+import com.dungeon.tileset.Tile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,8 +40,8 @@ public class ProceduralLevelGenerator {
 		private final int y;
 	}
 
-	private class Coords {
-		int x, y;
+	public static class Coords {
+		public int x, y;
 		public Coords(int x, int y) {
 			this.x = x;
 			this.y = y;
@@ -50,7 +53,7 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	private class ConnectionPoint {
+	public static class ConnectionPoint {
 		Coords coords;
 		Direction direction;
 		boolean visited = false;
@@ -66,24 +69,13 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	private class Room {
-		Coords topLeft = new Coords(0,0);
-		Coords bottomRight = new Coords(0,0);
-		List<ConnectionPoint> connectionPoints;
-
-		@Override
-		public String toString() {
-			return "topLeft: " + topLeft + ", bottomRight: " + bottomRight + ", connectionPoints: [" + connectionPoints + "]";
-		}
-	}
-
 	public ProceduralLevelGenerator(int width, int height) {
 		this.width = width;
 		this.height = height;
 		this.walkableTiles = new boolean[width][height];
 	}
 
-	public Tile[][] generateLevel(DungeonTilesetDark tileset) {
+	public Level generateLevel(DungeonTilesetDark tileset) {
 		// Pick a random position to start (excluding border rows/columns)
 		int startX = (int) (Math.random() * (width - 2)) + 1;
 		int startY = (int) (Math.random() * (height - 2)) + 1;
@@ -106,7 +98,11 @@ public class ProceduralLevelGenerator {
 				map[x][y] = getTile(x, y, tileset);
 			}
 		}
-		return map;
+
+		Level level = new Level();
+		level.map = map;
+		level.rooms = rooms;
+		return level;
 	}
 
 	private Tile getTile(int x, int y, DungeonTilesetDark tileset) {

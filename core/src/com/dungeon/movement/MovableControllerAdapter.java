@@ -16,6 +16,8 @@ public class MovableControllerAdapter implements ControllerListener {
 	private final EnumMap<PovDirection, Vector2> povVectorMapper = new EnumMap<>(PovDirection.class);
 	private final Map<Integer, Consumer<Float>> axisControllers = new HashMap<>();
 	private final Map<Integer, Consumer<PovDirection>> povControllers = new HashMap<>();
+	private final Map<Integer, Consumer<Integer>> buttonControllers = new HashMap<>();
+	private static final float MIN_AXIS_THRESHOLD = 0.2f;
 
 	public MovableControllerAdapter() {
 		povVectorMapper.put(PovDirection.north, new Vector2(0, 1));
@@ -30,8 +32,8 @@ public class MovableControllerAdapter implements ControllerListener {
 	}
 
 	public void addAxisController(int xAxisCode, int yAxisCode, Movable movable) {
-		axisControllers.put(xAxisCode, movable::setSelfXMovement);
-		axisControllers.put(yAxisCode, value -> movable.setSelfYMovement(-value));
+		axisControllers.put(xAxisCode, value -> movable.setSelfXMovement(Math.abs(value) > MIN_AXIS_THRESHOLD ? value : 0));
+		axisControllers.put(yAxisCode, value -> movable.setSelfYMovement(Math.abs(value) > MIN_AXIS_THRESHOLD ? -value : 0));
 	}
 
 	public void addPovController(int povCode, Movable movable) {
@@ -40,6 +42,10 @@ public class MovableControllerAdapter implements ControllerListener {
 			movable.setSelfXMovement(vector.x);
 			movable.setSelfYMovement(vector.y);
 		});
+	}
+
+	public void addButtonController(int buttonCode, Consumer<Integer> action) {
+		this.buttonControllers.put(buttonCode, action);
 	}
 
 	@Override
@@ -54,6 +60,7 @@ public class MovableControllerAdapter implements ControllerListener {
 
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
+		buttonControllers.getOrDefault(buttonCode, (v) -> {}).accept(buttonCode);
 		return false;
 	}
 
@@ -64,13 +71,13 @@ public class MovableControllerAdapter implements ControllerListener {
 
 	@Override
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
-		axisControllers.get(axisCode).accept(value);
+		axisControllers.getOrDefault(axisCode, (v) -> {}).accept(value);
 		return true;
 	}
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		povControllers.get(povCode).accept(value);
+		povControllers.getOrDefault(povCode, (v) -> {}).accept(value);
 		return true;
 	}
 

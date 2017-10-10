@@ -1,4 +1,4 @@
-package com.dungeon;
+package com.dungeon.character;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,6 +31,14 @@ public class Character implements Movable {
 	@Override
 	public void setSelfYMovement(float y) {
 		selfMovement.y = y;
+	}
+
+	public void setSelfMovement(Vector2 vector) {
+		selfMovement.set(vector);
+	}
+
+	public Vector2 getSelfMovement() {
+		return selfMovement;
 	}
 
 	public Vector2 getMovementSpeed() {

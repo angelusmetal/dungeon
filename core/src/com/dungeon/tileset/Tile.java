@@ -1,4 +1,4 @@
-package com.dungeon;
+package com.dungeon.tileset;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

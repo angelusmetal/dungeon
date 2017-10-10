@@ -1,8 +1,9 @@
-package com.dungeon;
+package com.dungeon.character;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.tileset.Tileset;
 
 public class GhostTileset extends Tileset {
 

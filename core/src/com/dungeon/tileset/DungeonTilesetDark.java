@@ -1,15 +1,14 @@
-package com.dungeon;
+package com.dungeon.tileset;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class DungeonTilesetDark extends Tileset {
 
 	public final TextureRegion FLOOR_1 = getTile(1, 3);
-	public final TextureRegion FLOOR_2 = getTile(0, 5);
-	public final TextureRegion FLOOR_3 = getTile(1, 5);
-	public final TextureRegion FLOOR_4 = getTile(2, 5);
+	public final TextureRegion FLOOR_2 = getTile(1, 5);
+	public final TextureRegion FLOOR_3 = getTile(2, 5);
+	public final TextureRegion FLOOR_4 = getTile(0, 5);
 
 	public final TextureRegion CONVEX_LOWER_RIGHT = getTile(1, 0);
 	public final TextureRegion CONVEX_LOWER_LEFT = getTile(2, 0);
@@ -34,7 +33,7 @@ public class DungeonTilesetDark extends Tileset {
 	public final Tile FLOOR_2_TILE = new Tile(FLOOR_2);
 	public final Tile FLOOR_3_TILE = new Tile(FLOOR_3);
 	public final Tile FLOOR_4_TILE = new Tile(FLOOR_4);
-	public final Tile[] FLOOR_TILES = {FLOOR_1_TILE, FLOOR_2_TILE, FLOOR_3_TILE, FLOOR_4_TILE};
+	public final Tile[] FLOOR_TILES = {FLOOR_1_TILE, FLOOR_2_TILE, FLOOR_3_TILE};
 
 	public final Tile CONVEX_LOWER_RIGHT_TILE = new Tile(CONVEX_LOWER_RIGHT);
 	public final Tile CONVEX_LOWER_LEFT_TILE = new Tile(CONVEX_LOWER_LEFT);
