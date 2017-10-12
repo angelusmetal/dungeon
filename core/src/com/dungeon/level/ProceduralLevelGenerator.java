@@ -102,6 +102,7 @@ public class ProceduralLevelGenerator {
 		Level level = new Level();
 		level.map = map;
 		level.rooms = rooms;
+		level.walkableTiles = walkableTiles;
 		return level;
 	}
 

@@ -1,8 +1,6 @@
 package com.dungeon;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
@@ -17,6 +15,7 @@ import com.dungeon.character.ProjectileTileset;
 import com.dungeon.level.Level;
 import com.dungeon.level.ProceduralLevelGenerator;
 import com.dungeon.movement.MovableControllerAdapter;
+import com.dungeon.movement.MovableInputProcessor;
 import com.dungeon.tileset.DungeonTilesetDark;
 import com.dungeon.tileset.Tile;
 import com.dungeon.viewport.CharacterViewPortTracker;
@@ -36,6 +35,7 @@ public class Dungeon extends ApplicationAdapter {
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
+	private MovableInputProcessor movableInputProcessor = new MovableInputProcessor();
 	private CharacterViewPortTracker characterViewPortTracker;
 	private List<Character> characters = new ArrayList<>();
 	private List<Projectile> projectiles = new ArrayList<>();
@@ -60,11 +60,30 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(viewPortInputProcessor);
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
+		inputMultiplexer.addProcessor(movableInputProcessor);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		int startX = level.rooms.get(0).topLeft.x + 1;
 		int startY = level.rooms.get(0).topLeft.y - 1;
 
+		// Add keyboard controller
+		{
+			Character character = new Character(ghostTileset.HOVER_ANIMATION);
+			character.setPos(new Vector2(startX * tileset.tile_width, startY * tileset.tile_height));
+			characters.add(character);
+			movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
+			movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> {
+				Projectile projectile = new Projectile(projectileTileset.PROJECTILE_ANIMATION, 10, stateTime);
+				projectile.setPos(character.getPos());
+				projectile.setSelfMovement(character.getSelfMovement());
+				float len = projectile.getSelfMovement().len();
+				projectile.getSelfMovement().scl(5 / len);
+				projectiles.add(projectile);
+				System.out.println("FIRE!");
+			});
+		}
+
+		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println(controller.getName());
 			Character character = new Character(ghostTileset.HOVER_ANIMATION);
@@ -78,7 +97,6 @@ public class Dungeon extends ApplicationAdapter {
 			movableControllerAdapter.addButtonController(0, code -> {
 				Projectile projectile = new Projectile(projectileTileset.PROJECTILE_ANIMATION, 10, stateTime);
 				projectile.setPos(character.getPos());
-				projectile.getPos().add(character.getFrame(stateTime).getRegionWidth() / 2, character.getFrame(stateTime).getRegionHeight() / 2);
 				projectile.setSelfMovement(character.getSelfMovement());
 				float len = projectile.getSelfMovement().len();
 				projectile.getSelfMovement().scl(5 / len);
@@ -103,15 +121,13 @@ public class Dungeon extends ApplicationAdapter {
 		batch.begin();
 		drawMap();
 		for (Character character : characters) {
-			TextureRegion characterFrame = character.getFrame(stateTime);
-			batch.draw(characterFrame, (character.getPos().x - viewPort.xOffset) * viewPort.scale, (character.getPos().y - viewPort.yOffset) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale, characterFrame.getRegionHeight() * viewPort.scale);
-			character.move();
+			character.draw(batch, viewPort, stateTime);
+			character.move(level, tileset);
 		}
 		for (Iterator<Projectile> p = projectiles.iterator(); p.hasNext();) {
 			Projectile projectile = p.next();
-			TextureRegion projectileFrame = projectile.getFrame(stateTime);
-			batch.draw(projectileFrame, (projectile.getPos().x - viewPort.xOffset) * viewPort.scale, (projectile.getPos().y - viewPort.yOffset) * viewPort.scale, projectileFrame.getRegionWidth() * viewPort.scale, projectileFrame.getRegionHeight() * viewPort.scale);
-			projectile.move();
+			projectile.draw(batch, viewPort, stateTime);
+			projectile.move(level, tileset);
 			if (projectile.isDone(stateTime)) {
 				p.remove();
 			}

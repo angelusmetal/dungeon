@@ -61,7 +61,7 @@ public class MovableControllerAdapter implements ControllerListener {
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		buttonControllers.getOrDefault(buttonCode, (v) -> {}).accept(buttonCode);
-		return false;
+		return true;
 	}
 
 	@Override
