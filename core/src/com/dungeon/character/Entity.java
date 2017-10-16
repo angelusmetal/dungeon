@@ -48,6 +48,10 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		return pos;
 	}
 
+	protected Vector2 getMovement() {
+		return movement;
+	}
+
 	@Override
 	public Vector2 getDrawOffset() {
 		return currentAnimation.getDrawOffset();
@@ -102,6 +106,12 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 		// Decrease speed
 		movement.scl(0.9f);
+		if (Math.abs(movement.x) < 0.1f) {
+			movement.x = 0;
+		}
+		if (Math.abs(movement.y) < 0.1f) {
+			movement.y = 0;
+		}
 	}
 
 	@Override
