@@ -8,13 +8,15 @@ import com.dungeon.viewport.ViewPort;
 public interface Drawable {
 
 	TextureRegion getFrame(float stateTime);
+	boolean invertX();
 
 	Vector2 getPos();
 	Vector2 getDrawOffset();
 
 	default void draw(SpriteBatch batch, ViewPort viewPort, float stateTime) {
 		TextureRegion characterFrame = getFrame(stateTime);
-		batch.draw(characterFrame, (getPos().x - viewPort.xOffset - getDrawOffset().x) * viewPort.scale, (getPos().y - viewPort.yOffset - getDrawOffset().y) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale, characterFrame.getRegionHeight() * viewPort.scale);
+		float invertX = invertX() ? -1 : 1;
+		batch.draw(characterFrame, (getPos().x - viewPort.xOffset - getDrawOffset().x * invertX) * viewPort.scale, (getPos().y - viewPort.yOffset - getDrawOffset().y) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale * invertX, characterFrame.getRegionHeight() * viewPort.scale);
 	}
 
 }

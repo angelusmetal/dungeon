@@ -1,6 +1,9 @@
 package com.dungeon;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,15 +12,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.character.Character;
-import com.dungeon.character.GhostTileset;
-import com.dungeon.character.Projectile;
-import com.dungeon.character.ProjectileTileset;
+import com.dungeon.character.*;
 import com.dungeon.level.Level;
 import com.dungeon.level.ProceduralLevelGenerator;
 import com.dungeon.movement.MovableControllerAdapter;
 import com.dungeon.movement.MovableInputProcessor;
 import com.dungeon.tileset.DungeonTilesetDark;
-import com.dungeon.tileset.Tile;
 import com.dungeon.viewport.CharacterViewPortTracker;
 import com.dungeon.viewport.ViewPort;
 import com.dungeon.viewport.ViewPortInputProcessor;
@@ -31,17 +31,18 @@ public class Dungeon extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private DungeonTilesetDark tileset;
 	private GhostTileset ghostTileset;
-	private ProjectileTileset projectileTileset;
+	private CharactersTileset32 charactersTileset;
+	public ProjectileTileset projectileTileset;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
 	private MovableInputProcessor movableInputProcessor = new MovableInputProcessor();
 	private CharacterViewPortTracker characterViewPortTracker;
 	private List<Character> characters = new ArrayList<>();
-	private List<Projectile> projectiles = new ArrayList<>();
+	public List<Projectile> projectiles = new ArrayList<>();
 
 	long frame = 0;
-	float stateTime = 0f;
+	public float stateTime = 0f;
 
 	public final int MAP_WIDTH = 100;
 	public final int MAP_HEIGHT = 100;
@@ -52,6 +53,7 @@ public class Dungeon extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		tileset = new DungeonTilesetDark();
 		ghostTileset = new GhostTileset();
+		charactersTileset = new CharactersTileset32();
 		projectileTileset = new ProjectileTileset();
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH, MAP_HEIGHT);
 		level = generator.generateLevel(tileset);
@@ -66,27 +68,22 @@ public class Dungeon extends ApplicationAdapter {
 		int startX = level.rooms.get(0).topLeft.x + 1;
 		int startY = level.rooms.get(0).topLeft.y - 1;
 
+
 		// Add keyboard controller
 		{
-			Character character = new Character(ghostTileset.HOVER_ANIMATION);
+			Character character = new King(charactersTileset, this);
 			character.setPos(new Vector2(startX * tileset.tile_width, startY * tileset.tile_height));
 			characters.add(character);
 			movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
 			movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> {
-				Projectile projectile = new Projectile(projectileTileset.PROJECTILE_ANIMATION, 10, stateTime);
-				projectile.setPos(character.getPos());
-				projectile.setSelfMovement(character.getSelfMovement());
-				float len = projectile.getSelfMovement().len();
-				projectile.getSelfMovement().scl(5 / len);
-				projectiles.add(projectile);
-				System.out.println("FIRE!");
+				character.fire(this);
 			});
 		}
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println(controller.getName());
-			Character character = new Character(ghostTileset.HOVER_ANIMATION);
+			Character character = new King(charactersTileset, this);
 			character.setPos(new Vector2(startX * tileset.tile_width, startY * tileset.tile_height));
 			characters.add(character);
 			// Add all 3 input methods to the character

@@ -1,6 +1,7 @@
 package com.dungeon.tileset;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.lang.reflect.Field;
@@ -30,6 +31,12 @@ public abstract class Tileset {
 
 	public TextureRegion getTile(int x, int y, int x_tiles, int y_tiles) {
 		return new TextureRegion(texture, tile_width * x, tile_height * y, tile_width * x_tiles, tile_height * y_tiles);
+	}
+
+	public Animation<TextureRegion> loop(float frameDuration, TextureRegion... frames) {
+		Animation<TextureRegion> animation = new Animation<>(frameDuration, frames);
+		animation.setPlayMode(Animation.PlayMode.LOOP);
+		return animation;
 	}
 
 	public List<Tile> getAllTiles() throws IllegalAccessException {
