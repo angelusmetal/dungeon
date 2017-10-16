@@ -2,7 +2,8 @@ package com.dungeon.character;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.Dungeon;
-import com.dungeon.GameAnimation;
+import com.dungeon.animation.GameAnimation;
+import com.dungeon.tileset.CharactersTileset32;
 
 public class King extends Character {
 

@@ -1,7 +1,7 @@
 package com.dungeon.character;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.GameAnimation;
+import com.dungeon.animation.GameAnimation;
 
 public interface CharacterAnimationProvider {
 

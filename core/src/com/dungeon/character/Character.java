@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
 import com.dungeon.Dungeon;
-import com.dungeon.GameAnimation;
+import com.dungeon.animation.GameAnimation;
 import com.dungeon.level.Level;
 import com.dungeon.movement.Movable;
 import com.dungeon.tileset.Tileset;
@@ -116,7 +116,7 @@ public class Character implements Movable, Drawable {
 	}
 
 	public void fire(Dungeon dungeon) {
-		Projectile projectile = new Projectile(dungeon.projectileTileset.PROJECTILE_ANIMATION, 10, dungeon.stateTime);
+		Projectile projectile = new Projectile(dungeon.tilesetManager.getProjectileTileset().PROJECTILE_ANIMATION, 10, dungeon.stateTime);
 		projectile.setPos(pos);
 		projectile.setSelfMovement(selfMovement);
 		float len = projectile.getSelfMovement().len();

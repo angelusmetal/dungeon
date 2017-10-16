@@ -18,6 +18,7 @@ import com.dungeon.level.ProceduralLevelGenerator;
 import com.dungeon.movement.MovableControllerAdapter;
 import com.dungeon.movement.MovableInputProcessor;
 import com.dungeon.tileset.DungeonTilesetDark;
+import com.dungeon.tileset.TilesetManager;
 import com.dungeon.viewport.CharacterViewPortTracker;
 import com.dungeon.viewport.ViewPort;
 import com.dungeon.viewport.ViewPortInputProcessor;
@@ -29,10 +30,7 @@ import java.util.List;
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
 	private SpriteBatch batch;
-	private DungeonTilesetDark tileset;
-	private GhostTileset ghostTileset;
-	private CharactersTileset32 charactersTileset;
-	public ProjectileTileset projectileTileset;
+	public TilesetManager tilesetManager;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
@@ -51,12 +49,9 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		tileset = new DungeonTilesetDark();
-		ghostTileset = new GhostTileset();
-		charactersTileset = new CharactersTileset32();
-		projectileTileset = new ProjectileTileset();
+		tilesetManager = new TilesetManager();
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH, MAP_HEIGHT);
-		level = generator.generateLevel(tileset);
+		level = generator.generateLevel(tilesetManager.getDungeonTilesetDark());
 		viewPort = new ViewPort(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, INITIAL_SCALE);
 		viewPortInputProcessor = new ViewPortInputProcessor(viewPort);
 		inputMultiplexer = new InputMultiplexer();
@@ -71,8 +66,8 @@ public class Dungeon extends ApplicationAdapter {
 
 		// Add keyboard controller
 		{
-			Character character = new King(charactersTileset, this);
-			character.setPos(new Vector2(startX * tileset.tile_width, startY * tileset.tile_height));
+			Character character = new King(tilesetManager.getCharactersTileset(), this);
+			character.setPos(new Vector2(startX * tilesetManager.getDungeonTilesetDark().tile_width, startY * tilesetManager.getDungeonTilesetDark().tile_height));
 			characters.add(character);
 			movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
 			movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> {
@@ -83,8 +78,8 @@ public class Dungeon extends ApplicationAdapter {
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println(controller.getName());
-			Character character = new King(charactersTileset, this);
-			character.setPos(new Vector2(startX * tileset.tile_width, startY * tileset.tile_height));
+			Character character = new King(tilesetManager.getCharactersTileset(), this);
+			character.setPos(new Vector2(startX * tilesetManager.getDungeonTilesetDark().tile_width, startY * tilesetManager.getDungeonTilesetDark().tile_height));
 			characters.add(character);
 			// Add all 3 input methods to the character
 			MovableControllerAdapter movableControllerAdapter = new MovableControllerAdapter();
@@ -92,7 +87,7 @@ public class Dungeon extends ApplicationAdapter {
 			movableControllerAdapter.addAxisController(3, 2, character);
 			movableControllerAdapter.addPovController(0, character);
 			movableControllerAdapter.addButtonController(0, code -> {
-				Projectile projectile = new Projectile(projectileTileset.PROJECTILE_ANIMATION, 10, stateTime);
+				Projectile projectile = new Projectile(tilesetManager.getProjectileTileset().PROJECTILE_ANIMATION, 10, stateTime);
 				projectile.setPos(character.getPos());
 				projectile.setSelfMovement(character.getSelfMovement());
 				float len = projectile.getSelfMovement().len();
@@ -119,12 +114,12 @@ public class Dungeon extends ApplicationAdapter {
 		drawMap();
 		for (Character character : characters) {
 			character.draw(batch, viewPort, stateTime);
-			character.move(level, tileset);
+			character.move(level, tilesetManager.getDungeonTilesetDark());
 		}
 		for (Iterator<Projectile> p = projectiles.iterator(); p.hasNext();) {
 			Projectile projectile = p.next();
 			projectile.draw(batch, viewPort, stateTime);
-			projectile.move(level, tileset);
+			projectile.move(level, tilesetManager.getDungeonTilesetDark());
 			if (projectile.isDone(stateTime)) {
 				p.remove();
 			}
@@ -137,7 +132,7 @@ public class Dungeon extends ApplicationAdapter {
 		for (int x = 0; x < MAP_WIDTH; x++) {
 			for (int y = 0; y < MAP_WIDTH; y++) {
 				TextureRegion textureRegion = level.map[x][y].animation.getKeyFrame(stateTime, true);
-				batch.draw(textureRegion, (x * tileset.tile_width - viewPort.xOffset) * viewPort.scale, (y * tileset.tile_height - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
+				batch.draw(textureRegion, (x * tilesetManager.getDungeonTilesetDark().tile_width - viewPort.xOffset) * viewPort.scale, (y * tilesetManager.getDungeonTilesetDark().tile_height - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
 			}
 		}
 	}
@@ -145,6 +140,6 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		tileset.dispose();
+		tilesetManager.dispose();
 	}
 }
