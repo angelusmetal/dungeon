@@ -17,6 +17,7 @@ public class King extends Character {
 		provider.register(AnimationType.CLIMB, state.getTilesetManager().getCharactersTileset().KING_CLIMB_ANIMATION);
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
+		setHitBox(13, 20);
 	}
 
 }

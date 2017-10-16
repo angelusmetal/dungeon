@@ -14,6 +14,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	private final Vector2 pos = new Vector2();
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
+	private final Vector2 hitBox = new Vector2();
 	private float maxSpeed = 3;
 	private boolean invertX = false;
 
@@ -108,5 +109,18 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		this.pos.set(pos);
 	}
 
+	public boolean collides(Vector2 pos) {
+		return  pos.x >= (getPos().x - hitBox.x / 2) &&
+				pos.x <= (getPos().x + hitBox.x / 2) &&
+				pos.y >= (getPos().y - hitBox.y / 2) &&
+				pos.y <= (getPos().y + hitBox.y / 2);
+	}
+
 	abstract public boolean isExpired(float time);
+	abstract public boolean isSolid();
+
+	protected void setHitBox(float x, float y) {
+		this.hitBox.x = x;
+		this.hitBox.y = y;
+	}
 }

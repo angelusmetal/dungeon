@@ -1,5 +1,6 @@
 package com.dungeon.character;
 
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
 import com.dungeon.GameState;
 import com.dungeon.animation.AnimationProvider;
@@ -38,9 +39,17 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 		return false;
 	}
 
+	@Override
+	public boolean isSolid() {
+		return true;
+	}
+
 	public void fire(GameState state) {
 		Projectile projectile = new Projectile(state, 10, state.getStateTime());
 		projectile.moveTo(getPos());
+		// Extra offset to make projectiles appear in the character's hands
+		//projectile.getPos().y -= 8;
+		projectile.getPos().mulAdd(getSelfMovement(), 11);
 		projectile.setSelfMovement(getSelfMovement());
 		float len = projectile.getSelfMovement().len();
 		projectile.getSelfMovement().scl(5 / len);
