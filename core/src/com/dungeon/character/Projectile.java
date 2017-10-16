@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
+import com.dungeon.GameState;
 import com.dungeon.level.Level;
 import com.dungeon.movement.Movable;
 import com.dungeon.tileset.Tileset;
@@ -32,15 +33,25 @@ public class Projectile implements Movable, Drawable {
 		return animation.getKeyFrame(stateTime);
 	}
 
-	public void move(Level level, Tileset tileset) {
+	@Override
+	public void move(GameState state) {
+		// TODO Maybe the level should tell us what its tileset is?
+		Tileset tileset = state.getTilesetManager().getDungeonTilesetDark();
+
 		pos.add(selfMovement);
 		// Collision detection!
 		int xTile = (int)pos.x / tileset.tile_width;
 		int yTile = (int)pos.y / tileset.tile_height;
-		if (!level.walkableTiles[xTile][yTile]) {
+		if (!state.getLevel().walkableTiles[xTile][yTile]) {
 			pos.sub(selfMovement);
 		}
 	}
+
+	@Override
+	public void moveTo(Vector2 pos) {
+		this.pos.set(pos);
+	}
+
 	@Override
 	public boolean invertX() {
 		return getSelfMovement().x < 0;
@@ -76,7 +87,4 @@ public class Projectile implements Movable, Drawable {
 		return selfMovement;
 	}
 
-	public void setPos(Vector2 pos) {
-		this.pos.set(pos);
-	}
 }
