@@ -1,27 +1,16 @@
 package com.dungeon.character;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
-import com.dungeon.Dungeon;
 import com.dungeon.GameState;
-import com.dungeon.animation.GameAnimation;
-import com.dungeon.level.Level;
+import com.dungeon.animation.AnimationProvider;
 import com.dungeon.movement.Movable;
-import com.dungeon.tileset.Tileset;
 
-public class Character extends Entity implements Movable, Drawable {
-	private CharacterAnimationProvider animationProvider;
+public class Character extends Entity<CharacterAnimationType> implements Movable, Drawable {
 
-	public Character(CharacterAnimationProvider animationProvider) {
-		super(animationProvider.getIdle());
+	private AnimationProvider<CharacterAnimationType> animationProvider;
+
+	public void setAnimationProvider(AnimationProvider<CharacterAnimationType> animationProvider) {
 		this.animationProvider = animationProvider;
-	}
-
-	public Character(CharacterAnimationProvider animationProvider, Vector2 drawOffset) {
-		super(animationProvider.getIdle());
-		this.animationProvider = animationProvider;
-		this.drawOffset.set(drawOffset);
 	}
 
 	@Override
@@ -30,12 +19,12 @@ public class Character extends Entity implements Movable, Drawable {
 			setInvertX(getSelfMovement().x < 0);
 		}
 		if (getSelfMovement().x == 0 && getSelfMovement().y == 0) {
-			if (!"idle".equals(getCurrentAnimation().getId())) {
-				setCurrentAnimation(animationProvider.getIdle());
+			if (CharacterAnimationType.IDLE != getCurrentAnimation().getId()) {
+				setCurrentAnimation(animationProvider.get(CharacterAnimationType.IDLE));
 			}
 		} else {
-			if (!"walk".equals(getCurrentAnimation().getId())) {
-				setCurrentAnimation(animationProvider.getWalk());
+			if (CharacterAnimationType.WALK != getCurrentAnimation().getId()) {
+				setCurrentAnimation(animationProvider.get(CharacterAnimationType.WALK));
 			}
 		}
 	}
@@ -47,6 +36,6 @@ public class Character extends Entity implements Movable, Drawable {
 		float len = projectile.getSelfMovement().len();
 		projectile.getSelfMovement().scl(5 / len);
 		state.addProjectile(projectile);
-		setCurrentAnimation(animationProvider.getHit(this::onSelfMovementUpdate));
+		setCurrentAnimation(animationProvider.get(CharacterAnimationType.HIT));
 	}
 }

@@ -34,6 +34,10 @@ public class GameState {
 		return stateTime;
 	}
 
+	public void updateStateTime(float deltaTime) {
+		stateTime += deltaTime;
+	}
+
 	public Level getLevel() {
 		return level;
 	}
@@ -71,4 +75,5 @@ public class GameState {
 	public List<Projectile> getProjectiles() {
 		return projectiles;
 	}
+
 }

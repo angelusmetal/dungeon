@@ -33,7 +33,7 @@ public class Dungeon extends ApplicationAdapter {
 	private CharacterViewPortTracker characterViewPortTracker;
 
 	long frame = 0;
-	public float stateTime = 0f;
+	//public float stateTime = 0f;
 
 	@Override
 	public void create () {
@@ -54,7 +54,7 @@ public class Dungeon extends ApplicationAdapter {
 
 		// Add keyboard controller
 		{
-			Character character = new King(state.getTilesetManager().getCharactersTileset(), this);
+			Character character = new King(state);
 			character.moveTo(new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height));
 			state.addCharacter(character);
 			movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
@@ -64,7 +64,7 @@ public class Dungeon extends ApplicationAdapter {
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println(controller.getName());
-			Character character = new King(state.getTilesetManager().getCharactersTileset(), this);
+			Character character = new King(state);
 			character.moveTo(new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height));
 			state.addCharacter(character);
 			// Add all 3 input methods to the character
@@ -86,19 +86,19 @@ public class Dungeon extends ApplicationAdapter {
 		//Gdx.gl.glClearColor(145f/255f, 176f/255f, 154f/255f, 1);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stateTime += Gdx.graphics.getDeltaTime();
+		state.updateStateTime(Gdx.graphics.getDeltaTime());
 		characterViewPortTracker.refresh(viewPort);
 		batch.begin();
 		drawMap();
 		for (Character character : state.getCharacters()) {
-			character.draw(batch, viewPort, stateTime);
+			character.draw(batch, viewPort, state.getStateTime());
 			character.move(state);
 		}
 		for (Iterator<Projectile> p = state.getProjectiles().iterator(); p.hasNext();) {
 			Projectile projectile = p.next();
-			projectile.draw(batch, viewPort, stateTime);
+			projectile.draw(batch, viewPort, state.getStateTime());
 			projectile.move(state);
-			if (projectile.isDone(stateTime)) {
+			if (projectile.isDone(state.getStateTime())) {
 				p.remove();
 			}
 		}
@@ -109,7 +109,7 @@ public class Dungeon extends ApplicationAdapter {
 	private void drawMap() {
 		for (int x = 0; x < state.getLevel().map.length; x++) {
 			for (int y = 0; y < state.getLevel().map[0].length; y++) {
-				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(stateTime, true);
+				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);
 				batch.draw(textureRegion, (x * state.getLevelTileset().tile_width - viewPort.xOffset) * viewPort.scale, (y * state.getLevelTileset().tile_height - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
 			}
 		}

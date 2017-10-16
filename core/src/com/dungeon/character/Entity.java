@@ -1,28 +1,23 @@
 package com.dungeon.character;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
 import com.dungeon.GameState;
 import com.dungeon.animation.GameAnimation;
-import com.dungeon.level.Level;
 import com.dungeon.movement.Movable;
 import com.dungeon.tileset.Tileset;
 
-abstract public class Entity implements Drawable, Movable {
+abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
-	private GameAnimation<TextureRegion> currentAnimation;
+	private GameAnimation<A> currentAnimation;
 	private final Vector2 pos = new Vector2();
-	protected final Vector2 drawOffset = new Vector2();
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
 	private float maxSpeed = 3;
 	private boolean invertX = false;
 
-	public Entity(GameAnimation<TextureRegion> currentAnimation) {
-		this.currentAnimation = currentAnimation;
-		this.drawOffset.set(getFrame(0).getRegionWidth() / 2, getFrame(0).getRegionHeight() / 2);
+	public Entity() {
 	}
 
 	@Override
@@ -30,11 +25,11 @@ abstract public class Entity implements Drawable, Movable {
 		return currentAnimation.getKeyFrame(stateTime);
 	}
 
-	protected GameAnimation<TextureRegion> getCurrentAnimation() {
+	protected GameAnimation<A> getCurrentAnimation() {
 		return currentAnimation;
 	}
 
-	protected void setCurrentAnimation(GameAnimation<TextureRegion> currentAnimation) {
+	protected void setCurrentAnimation(GameAnimation<A> currentAnimation) {
 		this.currentAnimation = currentAnimation;
 	}
 
@@ -54,7 +49,7 @@ abstract public class Entity implements Drawable, Movable {
 
 	@Override
 	public Vector2 getDrawOffset() {
-		return drawOffset;
+		return currentAnimation.getDrawOffset();
 	}
 
 	@Override
@@ -111,5 +106,9 @@ abstract public class Entity implements Drawable, Movable {
 	@Override
 	public void moveTo(Vector2 pos) {
 		this.pos.set(pos);
+	}
+
+	public boolean isExpired() {
+		return false;
 	}
 }

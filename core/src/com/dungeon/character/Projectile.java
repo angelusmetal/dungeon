@@ -9,7 +9,7 @@ import com.dungeon.level.Level;
 import com.dungeon.movement.Movable;
 import com.dungeon.tileset.Tileset;
 
-public class Projectile implements Movable, Drawable {
+public class Projectile extends Entity implements Movable, Drawable {
 	private final Animation<TextureRegion> animation;
 	private float timeToLive;
 	private float startTime;
@@ -80,6 +80,11 @@ public class Projectile implements Movable, Drawable {
 	@Override
 	public void setSelfMovement(Vector2 vector) {
 		selfMovement.set(vector);
+	}
+
+	@Override
+	protected void onSelfMovementUpdate() {
+		// TODO Do we need this??
 	}
 
 	@Override
