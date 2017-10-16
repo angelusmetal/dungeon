@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.character.Character;
+import com.dungeon.character.Entity;
 import com.dungeon.character.King;
 import com.dungeon.character.Projectile;
 import com.dungeon.movement.MovableControllerAdapter;
@@ -21,6 +22,7 @@ import com.dungeon.viewport.ViewPort;
 import com.dungeon.viewport.ViewPortInputProcessor;
 
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
@@ -55,7 +57,7 @@ public class Dungeon extends ApplicationAdapter {
 		{
 			Character character = new King(state);
 			character.moveTo(new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height));
-			state.addCharacter(character);
+			state.addEntity(character);
 			movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
 			movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> character.fire(state));
 		}
@@ -65,7 +67,7 @@ public class Dungeon extends ApplicationAdapter {
 			System.out.println(controller.getName());
 			Character character = new King(state);
 			character.moveTo(new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height));
-			state.addCharacter(character);
+			state.addEntity(character);
 			// Add all 3 input methods to the character
 			MovableControllerAdapter movableControllerAdapter = new MovableControllerAdapter();
 			//movableControllerAdapter.addAxisController(1, 0, character);
@@ -76,7 +78,7 @@ public class Dungeon extends ApplicationAdapter {
 			//controller.addListener(new PrintingControllerListener());
 		}
 
-		characterViewPortTracker = new CharacterViewPortTracker(state.getCharacters());
+		characterViewPortTracker = new CharacterViewPortTracker(state.getEntities().stream().filter((e) -> e instanceof Character).map((e) -> (Character) e).collect(Collectors.toList()));
 
 	}
 
@@ -89,16 +91,12 @@ public class Dungeon extends ApplicationAdapter {
 		characterViewPortTracker.refresh(viewPort);
 		batch.begin();
 		drawMap();
-		for (Character character : state.getCharacters()) {
-			character.draw(batch, viewPort, state.getStateTime());
-			character.move(state);
-		}
-		for (Iterator<Projectile> p = state.getProjectiles().iterator(); p.hasNext();) {
-			Projectile projectile = p.next();
-			projectile.draw(batch, viewPort, state.getStateTime());
-			projectile.move(state);
-			if (projectile.isExpired(state.getStateTime())) {
-				p.remove();
+		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
+			Entity<?> entity = e.next();
+			entity.draw(batch, viewPort, state.getStateTime());
+			entity.move(state);
+			if (entity.isExpired(state.getStateTime())) {
+				e.remove();
 			}
 		}
 		batch.end();

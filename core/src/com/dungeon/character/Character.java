@@ -44,7 +44,7 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 		projectile.setSelfMovement(getSelfMovement());
 		float len = projectile.getSelfMovement().len();
 		projectile.getSelfMovement().scl(5 / len);
-		state.addProjectile(projectile);
+		state.addEntity(projectile);
 		setCurrentAnimation(animationProvider.get(AnimationType.HIT));
 	}
 

@@ -1,15 +1,13 @@
 package com.dungeon;
 
-import com.dungeon.character.Character;
-import com.dungeon.character.Projectile;
+import com.dungeon.character.Entity;
 import com.dungeon.level.Level;
 import com.dungeon.level.ProceduralLevelGenerator;
 import com.dungeon.tileset.DungeonTilesetDark;
-import com.dungeon.tileset.Tileset;
 import com.dungeon.tileset.TilesetManager;
 import com.dungeon.viewport.ViewPort;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GameState {
@@ -21,8 +19,7 @@ public class GameState {
 	private TilesetManager tilesetManager;
 	private ViewPort viewPort;
 
-	private List<Character> characters = new ArrayList<>();
-	public List<Projectile> projectiles = new ArrayList<>();
+	private List<Entity<?>> entities = new LinkedList<>();
 
 	public GameState(ViewPort viewPort) {
 		this.stateTime = 0;
@@ -59,21 +56,12 @@ public class GameState {
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH, MAP_HEIGHT);
 		level = generator.generateLevel(getLevelTileset());
 	}
-
-	public void addCharacter(Character character) {
-		characters.add(character);
+	public void addEntity(Entity<?> entity) {
+		entities.add(entity);
 	}
 
-	public void addProjectile(Projectile projectile) {
-		projectiles.add(projectile);
-	}
-
-	public List<Character> getCharacters() {
-		return characters;
-	}
-
-	public List<Projectile> getProjectiles() {
-		return projectiles;
+	public List<Entity<?>> getEntities() {
+		return entities;
 	}
 
 }
