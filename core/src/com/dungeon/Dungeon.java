@@ -33,7 +33,6 @@ public class Dungeon extends ApplicationAdapter {
 	private CharacterViewPortTracker characterViewPortTracker;
 
 	long frame = 0;
-	//public float stateTime = 0f;
 
 	@Override
 	public void create () {
@@ -98,7 +97,7 @@ public class Dungeon extends ApplicationAdapter {
 			Projectile projectile = p.next();
 			projectile.draw(batch, viewPort, state.getStateTime());
 			projectile.move(state);
-			if (projectile.isDone(state.getStateTime())) {
+			if (projectile.isExpired(state.getStateTime())) {
 				p.remove();
 			}
 		}

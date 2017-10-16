@@ -108,7 +108,5 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		this.pos.set(pos);
 	}
 
-	public boolean isExpired() {
-		return false;
-	}
+	abstract public boolean isExpired(float time);
 }

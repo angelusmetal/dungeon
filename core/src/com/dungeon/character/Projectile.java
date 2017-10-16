@@ -2,35 +2,37 @@ package com.dungeon.character;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
 import com.dungeon.GameState;
-import com.dungeon.level.Level;
+import com.dungeon.animation.AnimationProvider;
+import com.dungeon.animation.GameAnimation;
 import com.dungeon.movement.Movable;
 import com.dungeon.tileset.Tileset;
 
-public class Projectile extends Entity implements Movable, Drawable {
-	private final Animation<TextureRegion> animation;
+public class Projectile extends Entity<Projectile.AnimationType> implements Movable, Drawable {
+
+	public enum AnimationType {
+		BULLET, EXPLOSION
+	}
+
+	private AnimationProvider<AnimationType> animationProvider;
 	private float timeToLive;
 	private float startTime;
-	private final Vector2 pos = new Vector2();
-	private final Vector2 drawOffset = new Vector2();
-	private final Vector2 selfMovement = new Vector2();
-	private final Vector2 movementSpeed = new Vector2();
 
-	public Projectile(Animation<TextureRegion> animation, float timeToLive, float startTime) {
-		this.animation = animation;
+	public Projectile(GameState state, float timeToLive, float startTime) {
+		// TODO This should be moved to concrete subclasses...
+		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
+		provider.register(AnimationType.BULLET, state.getTilesetManager().getProjectileTileset().PROJECTILE_ANIMATION);
+		provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_ANIMATION);
+		animationProvider = provider;
+		setCurrentAnimation(provider.get(AnimationType.BULLET));
 		this.timeToLive = timeToLive;
 		this.startTime = startTime;
 	}
 
-	public boolean isDone(float time) {
-		return (startTime + timeToLive) < time;
-	}
-
 	@Override
-	public TextureRegion getFrame(float stateTime) {
-		return animation.getKeyFrame(stateTime);
+	public boolean isExpired(float time) {
+		return (startTime + timeToLive) < time;
 	}
 
 	@Override
@@ -38,18 +40,13 @@ public class Projectile extends Entity implements Movable, Drawable {
 		// TODO Maybe the level should tell us what its tileset is?
 		Tileset tileset = state.getTilesetManager().getDungeonTilesetDark();
 
-		pos.add(selfMovement);
+		getPos().add(getSelfMovement());
 		// Collision detection!
-		int xTile = (int)pos.x / tileset.tile_width;
-		int yTile = (int)pos.y / tileset.tile_height;
+		int xTile = (int)getPos().x / tileset.tile_width;
+		int yTile = (int)getPos().y / tileset.tile_height;
 		if (!state.getLevel().walkableTiles[xTile][yTile]) {
-			pos.sub(selfMovement);
+			getPos().sub(getSelfMovement());
 		}
-	}
-
-	@Override
-	public void moveTo(Vector2 pos) {
-		this.pos.set(pos);
 	}
 
 	@Override
@@ -58,38 +55,8 @@ public class Projectile extends Entity implements Movable, Drawable {
 	}
 
 	@Override
-	public Vector2 getPos() {
-		return pos;
-	}
-
-	@Override
-	public Vector2 getDrawOffset() {
-		return drawOffset;
-	}
-
-	@Override
-	public void setSelfXMovement(float x) {
-		selfMovement.x = x;
-	}
-
-	@Override
-	public void setSelfYMovement(float y) {
-		selfMovement.y = y;
-	}
-
-	@Override
-	public void setSelfMovement(Vector2 vector) {
-		selfMovement.set(vector);
-	}
-
-	@Override
 	protected void onSelfMovementUpdate() {
 		// TODO Do we need this??
-	}
-
-	@Override
-	public Vector2 getSelfMovement() {
-		return selfMovement;
 	}
 
 }
