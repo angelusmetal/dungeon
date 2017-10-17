@@ -30,6 +30,10 @@ public class MovableInputProcessor implements InputProcessor {
 		buttonControllers.put(buttonCode, new KeyMapping(action, (i) -> {}));
 	}
 
+	public void clear() {
+		buttonControllers.clear();
+	}
+
 	@Override
 	public boolean keyDown(int keycode) {
 		System.out.println("down " + keycode);

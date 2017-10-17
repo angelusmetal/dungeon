@@ -54,32 +54,75 @@ public class Dungeon extends ApplicationAdapter {
 		int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
 
 		// Add keyboard controller
-		{
-			Character character = new King(state);
-			character.moveTo(new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height));
-			state.addEntity(character);
-			movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
-			movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> character.fire(state));
-		}
+		CharacterControllerMapper keyboardMapper = new CharacterControllerMapper() {
+			@Override
+			void bind() {
+				if (character == null) {
+					Vector2 startingPosition = getStartingPosition();
+					character = new King(state);
+					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
+					state.addCharacter(character);
+					movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
+					movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> character.fire(state));
+				}
+			}
+
+			@Override
+			void unbind() {
+				if (character != null) {
+					character.setExpired(true);
+					character = null;
+					movableInputProcessor.clear();
+				}
+			}
+		};
+		movableInputProcessor.addButtonController(Input.Keys.ENTER, code -> keyboardMapper.bind());
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			System.out.println(controller.getName());
-			Character character = new King(state);
-			character.moveTo(new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height));
-			state.addEntity(character);
-			// Add all 3 input methods to the character
 			MovableControllerAdapter movableControllerAdapter = new MovableControllerAdapter();
-			//movableControllerAdapter.addAxisController(1, 0, character);
-			movableControllerAdapter.addAxisController(3, 2, character);
-			movableControllerAdapter.addPovController(0, character);
-			movableControllerAdapter.addButtonController(0, code -> character.fire(state));
+			CharacterControllerMapper controllerMapper = new CharacterControllerMapper() {
+				@Override
+				void bind() {
+					if (character == null) {
+						Vector2 startingPosition = getStartingPosition();
+						character = new King(state);
+						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
+						state.addCharacter(character);
+						// Add all 3 input methods to the character
+						movableControllerAdapter.addAxisController(3, 2, character);
+						movableControllerAdapter.addPovController(0, character);
+						movableControllerAdapter.addButtonController(0, code -> character.fire(state));
+					}
+				}
+
+				@Override
+				void unbind() {
+					if (character != null) {
+						character = null;
+						//controller.removeListener(movableControllerAdapter);
+					}
+				}
+			};
 			controller.addListener(movableControllerAdapter);
-			//controller.addListener(new PrintingControllerListener());
+			controller.addListener(new PrintingControllerListener());
+			movableControllerAdapter.addButtonController(9, code -> controllerMapper.bind());
 		}
 
-		characterViewPortTracker = new CharacterViewPortTracker(state.getEntities().stream().filter((e) -> e instanceof Character).map((e) -> (Character) e).collect(Collectors.toList()));
+		characterViewPortTracker = new CharacterViewPortTracker(state.getCharacters());
 
+	}
+
+	private Vector2 getStartingPosition() {
+		if (state.getCharacters().isEmpty()) {
+			int startX = state.getLevel().rooms.get(0).topLeft.x + 1;
+			int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
+			System.out.println("first spawn: " + new Vector2(startX, startY));
+			return new Vector2(startX, startY);
+		} else {
+			Vector2 refPos = state.getCharacters().get(0).getPos();
+			return new Vector2(refPos.x / state.getLevelTileset().tile_width, refPos.y / state.getLevelTileset().tile_height);
+		}
 	}
 
 	@Override

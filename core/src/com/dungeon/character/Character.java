@@ -13,6 +13,7 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 	}
 
 	private AnimationProvider<AnimationType> animationProvider;
+	private boolean expired;
 
 	public void setAnimationProvider(AnimationProvider<AnimationType> animationProvider) {
 		this.animationProvider = animationProvider;
@@ -36,7 +37,11 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 
 	@Override
 	public boolean isExpired(float time) {
-		return false;
+		return expired;
+	}
+
+	public void setExpired(boolean expired) {
+		this.expired = expired;
 	}
 
 	@Override

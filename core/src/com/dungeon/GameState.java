@@ -1,5 +1,6 @@
 package com.dungeon;
 
+import com.dungeon.character.Character;
 import com.dungeon.character.Entity;
 import com.dungeon.level.Level;
 import com.dungeon.level.ProceduralLevelGenerator;
@@ -19,6 +20,7 @@ public class GameState {
 	private TilesetManager tilesetManager;
 	private ViewPort viewPort;
 
+	private List<Character> characters = new LinkedList<>();
 	private List<Entity<?>> entities = new LinkedList<>();
 
 	public GameState(ViewPort viewPort) {
@@ -60,8 +62,16 @@ public class GameState {
 		entities.add(entity);
 	}
 
+	public void addCharacter(Character character) {
+		characters.add(character);
+		entities.add(character);
+	}
+
 	public List<Entity<?>> getEntities() {
 		return entities;
 	}
 
+	public List<Character> getCharacters() {
+		return characters;
+	}
 }
