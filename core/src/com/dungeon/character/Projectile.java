@@ -57,6 +57,7 @@ public class Projectile extends Entity<Projectile.AnimationType> implements Mova
 				for (Entity<?> entity : state.getEntities()) {
 					if (entity != this && entity.isSolid() && entity.collides(getPos())) {
 						explode(state);
+						entity.hurt(10);
 					}
 				}
 

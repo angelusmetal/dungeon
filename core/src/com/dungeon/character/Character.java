@@ -13,7 +13,7 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 	}
 
 	private AnimationProvider<AnimationType> animationProvider;
-	private boolean expired;
+	private Vector2 aim = new Vector2();
 
 	public void setAnimationProvider(AnimationProvider<AnimationType> animationProvider) {
 		this.animationProvider = animationProvider;
@@ -32,6 +32,9 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 			if (AnimationType.WALK != getCurrentAnimation().getId()) {
 				setCurrentAnimation(animationProvider.get(AnimationType.WALK));
 			}
+		}
+		if (getSelfMovement().len() > 0.5) {
+			aim.set(getSelfMovement());
 		}
 	}
 
@@ -71,10 +74,9 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 		projectile.moveTo(getPos());
 		// Extra offset to make projectiles appear in the character's hands
 		//projectile.getPos().y -= 8;
-		projectile.getPos().mulAdd(getSelfMovement(), 11);
-		projectile.setSelfMovement(getSelfMovement());
-		float len = projectile.getSelfMovement().len();
-		projectile.getSelfMovement().scl(5 / len);
+		aim.clamp(5,5);
+		projectile.getPos().mulAdd(aim, 2);
+		projectile.setSelfMovement(aim);
 		state.addEntity(projectile);
 		setCurrentAnimation(animationProvider.get(AnimationType.HIT));
 	}

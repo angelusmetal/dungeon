@@ -57,7 +57,7 @@ public class Dungeon extends ApplicationAdapter {
 		CharacterControllerMapper keyboardMapper = new CharacterControllerMapper() {
 			@Override
 			void bind() {
-				if (character == null) {
+				if (character == null || character.isExpired(state.getStateTime())) {
 					Vector2 startingPosition = getStartingPosition();
 					character = new King(state);
 					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
@@ -84,7 +84,7 @@ public class Dungeon extends ApplicationAdapter {
 			CharacterControllerMapper controllerMapper = new CharacterControllerMapper() {
 				@Override
 				void bind() {
-					if (character == null) {
+					if (character == null|| character.isExpired(state.getStateTime())) {
 						Vector2 startingPosition = getStartingPosition();
 						character = new King(state);
 						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
@@ -140,6 +140,7 @@ public class Dungeon extends ApplicationAdapter {
 			entity.move(state);
 			if (entity.isExpired(state.getStateTime())) {
 				e.remove();
+				state.getCharacters().remove(entity);
 			}
 		}
 		batch.end();

@@ -18,6 +18,10 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	private float maxSpeed = 3;
 	private boolean invertX = false;
 
+	protected boolean expired;
+	protected int health = 100;
+	protected int maxHealth = 100;
+
 	public Entity() {
 	}
 
@@ -99,6 +103,8 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		int yTile = (int)pos.y / tileset.tile_height;
 		if (prevXTile != xTile && !state.getLevel().walkableTiles[xTile][prevYTile]) {
 			pos.x -= movement.x;
+		} else {
+			prevXTile = xTile; // This is to prevent a collision bug
 		}
 		if (prevYTile != yTile && !state.getLevel().walkableTiles[prevXTile][yTile]) {
 			pos.y -= movement.y;
@@ -106,6 +112,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 		// Decrease speed
 		movement.scl(0.9f);
+		// Zero out very small values
 		if (Math.abs(movement.x) < 0.1f) {
 			movement.x = 0;
 		}
@@ -124,6 +131,13 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 				pos.x <= (getPos().x + hitBox.x / 2) &&
 				pos.y >= (getPos().y - hitBox.y / 2) &&
 				pos.y <= (getPos().y + hitBox.y / 2);
+	}
+
+	public void hurt(int dmg) {
+		health -= dmg;
+		if (health < 0) {
+			expired = true;
+		}
 	}
 
 	abstract public boolean isExpired(float time);
