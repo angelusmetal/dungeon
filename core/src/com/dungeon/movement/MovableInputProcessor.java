@@ -20,10 +20,10 @@ public class MovableInputProcessor implements InputProcessor {
 	private final Map<Integer, KeyMapping> buttonControllers = new HashMap<>();
 
 	public void addPovController(int up, int down, int left, int right, Movable movable) {
-		buttonControllers.put(up, new KeyMapping((i) -> movable.setSelfYMovement(1), (i) -> movable.setSelfYMovement(0)));
-		buttonControllers.put(down, new KeyMapping((i) -> movable.setSelfYMovement(-1), (i) -> movable.setSelfYMovement(0)));
-		buttonControllers.put(left, new KeyMapping((i) -> movable.setSelfXMovement(-1), (i) -> movable.setSelfXMovement(0)));
-		buttonControllers.put(right, new KeyMapping((i) -> movable.setSelfXMovement(1), (i) -> movable.setSelfXMovement(0)));
+		buttonControllers.put(up, new KeyMapping((i) -> movable.setSelfYMovement(movable.getSelfMovement().y + 1), (i) -> movable.setSelfYMovement(movable.getSelfMovement().y - 1)));
+		buttonControllers.put(down, new KeyMapping((i) -> movable.setSelfYMovement(movable.getSelfMovement().y - 1), (i) -> movable.setSelfYMovement(movable.getSelfMovement().y + 1)));
+		buttonControllers.put(left, new KeyMapping((i) -> movable.setSelfXMovement(movable.getSelfMovement().x - 1), (i) -> movable.setSelfXMovement(movable.getSelfMovement().x + 1)));
+		buttonControllers.put(right, new KeyMapping((i) -> movable.setSelfXMovement(movable.getSelfMovement().x + 1), (i) -> movable.setSelfXMovement(movable.getSelfMovement().x - 1)));
 	}
 
 	public void addButtonController(int buttonCode, Consumer<Integer> action) {
