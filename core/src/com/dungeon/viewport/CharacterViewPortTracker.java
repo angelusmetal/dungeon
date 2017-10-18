@@ -1,14 +1,15 @@
 package com.dungeon.viewport;
 
 import com.dungeon.character.Character;
+import com.dungeon.character.PlayerCharacter;
 
 import java.util.List;
 
 public class CharacterViewPortTracker {
 
-	private final List<Character> characters;
+	private final List<PlayerCharacter> characters;
 
-	public CharacterViewPortTracker(List<Character> characters) {
+	public CharacterViewPortTracker(List<PlayerCharacter> characters) {
 		this.characters = characters;
 	}
 

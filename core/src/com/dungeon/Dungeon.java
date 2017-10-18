@@ -11,10 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.character.Character;
-import com.dungeon.character.Entity;
-import com.dungeon.character.King;
-import com.dungeon.character.Projectile;
+import com.dungeon.character.*;
+import com.dungeon.level.Room;
 import com.dungeon.movement.MovableControllerAdapter;
 import com.dungeon.movement.MovableInputProcessor;
 import com.dungeon.viewport.CharacterViewPortTracker;
@@ -22,7 +20,6 @@ import com.dungeon.viewport.ViewPort;
 import com.dungeon.viewport.ViewPortInputProcessor;
 
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
@@ -50,9 +47,6 @@ public class Dungeon extends ApplicationAdapter {
 		state = new GameState(viewPort);
 		state.generateNewLevel();
 
-		int startX = state.getLevel().rooms.get(0).topLeft.x + 1;
-		int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
-
 		// Add keyboard controller
 		CharacterControllerMapper keyboardMapper = new CharacterControllerMapper() {
 			@Override
@@ -61,7 +55,7 @@ public class Dungeon extends ApplicationAdapter {
 					Vector2 startingPosition = getStartingPosition();
 					character = new King(state);
 					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
-					state.addCharacter(character);
+					state.addPlayerCharacter(character);
 					movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
 					movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> character.fire(state));
 				}
@@ -88,7 +82,7 @@ public class Dungeon extends ApplicationAdapter {
 						Vector2 startingPosition = getStartingPosition();
 						character = new King(state);
 						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
-						state.addCharacter(character);
+						state.addPlayerCharacter(character);
 						// Add all 3 input methods to the character
 						movableControllerAdapter.addAxisController(3, 2, character);
 						movableControllerAdapter.addPovController(0, character);
@@ -109,18 +103,29 @@ public class Dungeon extends ApplicationAdapter {
 			movableControllerAdapter.addButtonController(9, code -> controllerMapper.bind());
 		}
 
-		characterViewPortTracker = new CharacterViewPortTracker(state.getCharacters());
+		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
+
+		// Create a ghost in each room, to begin with
+		for (Room room : state.getLevel().rooms) {
+			int startX = room.topLeft.x + 1;
+			int startY = room.topLeft.y - 1;
+			Vector2 position = new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height);
+			Ghost ghost = new Ghost(state);
+			ghost.moveTo(position);
+			state.addEntity(ghost);
+		}
+
 
 	}
 
 	private Vector2 getStartingPosition() {
-		if (state.getCharacters().isEmpty()) {
+		if (state.getPlayerCharacters().isEmpty()) {
 			int startX = state.getLevel().rooms.get(0).topLeft.x + 1;
 			int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
 			System.out.println("first spawn: " + new Vector2(startX, startY));
 			return new Vector2(startX, startY);
 		} else {
-			Vector2 refPos = state.getCharacters().get(0).getPos();
+			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
 			return new Vector2(refPos.x / state.getLevelTileset().tile_width, refPos.y / state.getLevelTileset().tile_height);
 		}
 	}
@@ -138,9 +143,10 @@ public class Dungeon extends ApplicationAdapter {
 			Entity<?> entity = e.next();
 			entity.draw(state, batch, viewPort);
 			entity.move(state);
+			entity.think(state);
 			if (entity.isExpired(state.getStateTime())) {
 				e.remove();
-				state.getCharacters().remove(entity);
+				state.getPlayerCharacters().remove(entity);
 			}
 		}
 		batch.end();

@@ -1,9 +1,9 @@
 package com.dungeon;
 
-import com.dungeon.character.Character;
+import com.dungeon.character.PlayerCharacter;
 
 public abstract class CharacterControllerMapper {
-	protected Character character;
+	protected PlayerCharacter character;
 	abstract void bind();
 	abstract void unbind();
 }

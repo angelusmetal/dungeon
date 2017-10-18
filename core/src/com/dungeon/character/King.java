@@ -3,7 +3,7 @@ package com.dungeon.character;
 import com.dungeon.GameState;
 import com.dungeon.animation.AnimationProvider;
 
-public class King extends Character {
+public class King extends PlayerCharacter {
 
 	public King(GameState state) {
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);

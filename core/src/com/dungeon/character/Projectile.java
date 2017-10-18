@@ -53,7 +53,7 @@ public class Projectile extends Entity<Projectile.AnimationType> implements Mova
 			if (!state.getLevel().walkableTiles[xTile][yTile]) {
 				explode(state);
 			} else {
-				// Detect collision against
+				// Detect collision against entities
 				for (Entity<?> entity : state.getEntities()) {
 					if (entity != this && entity.isSolid() && entity.collides(getPos())) {
 						explode(state);

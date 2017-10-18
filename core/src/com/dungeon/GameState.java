@@ -2,6 +2,7 @@ package com.dungeon;
 
 import com.dungeon.character.Character;
 import com.dungeon.character.Entity;
+import com.dungeon.character.PlayerCharacter;
 import com.dungeon.level.Level;
 import com.dungeon.level.ProceduralLevelGenerator;
 import com.dungeon.tileset.DungeonTilesetDark;
@@ -20,7 +21,7 @@ public class GameState {
 	private TilesetManager tilesetManager;
 	private ViewPort viewPort;
 
-	private List<Character> characters = new LinkedList<>();
+	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
 	private List<Entity<?>> entities = new LinkedList<>();
 
 	public GameState(ViewPort viewPort) {
@@ -62,8 +63,8 @@ public class GameState {
 		entities.add(entity);
 	}
 
-	public void addCharacter(Character character) {
-		characters.add(character);
+	public void addPlayerCharacter(PlayerCharacter character) {
+		playerCharacters.add(character);
 		entities.add(character);
 	}
 
@@ -71,7 +72,7 @@ public class GameState {
 		return entities;
 	}
 
-	public List<Character> getCharacters() {
-		return characters;
+	public List<PlayerCharacter> getPlayerCharacters() {
+		return playerCharacters;
 	}
 }

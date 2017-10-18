@@ -17,7 +17,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
 	private final Vector2 hitBox = new Vector2();
-	private float maxSpeed = 3;
+	protected float maxSpeed = 3;
 	private boolean invertX = false;
 
 	protected boolean expired;
@@ -94,8 +94,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		movement.add(selfMovement);
 		movement.clamp(0, maxSpeed);
 
-		// TODO Maybe the level should tell us what its tileset is?
-		Tileset tileset = state.getTilesetManager().getDungeonTilesetDark();
+		Tileset tileset = state.getLevelTileset();
 
 		// Apply movement and detect collision
 		int prevXTile = (int)pos.x / tileset.tile_width;
@@ -153,6 +152,8 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	protected Vector2 getHitBox() {
 		return hitBox;
 	}
+
+	public void think(GameState state) {}
 
 	@Override
 	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
