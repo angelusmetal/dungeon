@@ -65,18 +65,14 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	public void setSelfXMovement(float x) {
 		selfMovement.x = x;
 		onSelfMovementUpdate();
+		System.out.println("selfmovement: " + getSelfMovement());
 	}
 
 	@Override
 	public void setSelfYMovement(float y) {
 		selfMovement.y = y;
 		onSelfMovementUpdate();
-	}
-
-	@Override
-	public void setSelfMovement(Vector2 vector) {
-		selfMovement.set(vector);
-		onSelfMovementUpdate();
+		System.out.println("selfmovement: " + getSelfMovement());
 	}
 
 	abstract protected void onSelfMovementUpdate();

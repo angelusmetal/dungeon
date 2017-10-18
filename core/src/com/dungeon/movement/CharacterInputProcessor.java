@@ -1,12 +1,13 @@
 package com.dungeon.movement;
 
 import com.badlogic.gdx.InputProcessor;
+import com.dungeon.character.Character;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class MovableInputProcessor implements InputProcessor {
+public class CharacterInputProcessor implements InputProcessor {
 
 	private static class KeyMapping {
 		Consumer<Integer> onKeyDown;
@@ -19,11 +20,18 @@ public class MovableInputProcessor implements InputProcessor {
 
 	private final Map<Integer, KeyMapping> buttonControllers = new HashMap<>();
 
-	public void addPovController(int up, int down, int left, int right, Movable movable) {
-		buttonControllers.put(up, new KeyMapping((i) -> movable.setSelfYMovement(movable.getSelfMovement().y + 1), (i) -> movable.setSelfYMovement(movable.getSelfMovement().y - 1)));
-		buttonControllers.put(down, new KeyMapping((i) -> movable.setSelfYMovement(movable.getSelfMovement().y - 1), (i) -> movable.setSelfYMovement(movable.getSelfMovement().y + 1)));
-		buttonControllers.put(left, new KeyMapping((i) -> movable.setSelfXMovement(movable.getSelfMovement().x - 1), (i) -> movable.setSelfXMovement(movable.getSelfMovement().x + 1)));
-		buttonControllers.put(right, new KeyMapping((i) -> movable.setSelfXMovement(movable.getSelfMovement().x + 1), (i) -> movable.setSelfXMovement(movable.getSelfMovement().x - 1)));
+	public void addPovMovementController(int up, int down, int left, int right, Character character) {
+		buttonControllers.put(up, new KeyMapping(i -> character.setSelfYMovement(character.getSelfMovement().y + 1), i -> character.setSelfYMovement(character.getSelfMovement().y - 1)));
+		buttonControllers.put(down, new KeyMapping(i -> character.setSelfYMovement(character.getSelfMovement().y - 1), i -> character.setSelfYMovement(character.getSelfMovement().y + 1)));
+		buttonControllers.put(left, new KeyMapping(i -> character.setSelfXMovement(character.getSelfMovement().x - 1), i -> character.setSelfXMovement(character.getSelfMovement().x + 1)));
+		buttonControllers.put(right, new KeyMapping(i -> character.setSelfXMovement(character.getSelfMovement().x + 1), i -> character.setSelfXMovement(character.getSelfMovement().x - 1)));
+	}
+
+	public void addPovAimController(int up, int down, int left, int right, Character character) {
+		buttonControllers.put(up, new KeyMapping(i -> character.setAimY(character.getAim().y + 1), i -> character.setAimY(character.getAim().y - 1)));
+		buttonControllers.put(down, new KeyMapping(i -> character.setAimY(character.getAim().y - 1), i -> character.setAimY(character.getAim().y + 1)));
+		buttonControllers.put(left, new KeyMapping(i -> character.setAimX(character.getAim().x - 1), i -> character.setAimX(character.getAim().x + 1)));
+		buttonControllers.put(right, new KeyMapping(i -> character.setAimX(character.getAim().x + 1), i -> character.setAimX(character.getAim().x - 1)));
 	}
 
 	public void addButtonController(int buttonCode, Consumer<Integer> action) {

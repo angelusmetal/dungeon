@@ -11,18 +11,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.character.Character;
 import com.dungeon.character.Entity;
 import com.dungeon.character.King;
-import com.dungeon.character.Projectile;
-import com.dungeon.movement.MovableControllerAdapter;
-import com.dungeon.movement.MovableInputProcessor;
+import com.dungeon.movement.CharacterControllerAdapter;
+import com.dungeon.movement.CharacterInputProcessor;
 import com.dungeon.viewport.CharacterViewPortTracker;
 import com.dungeon.viewport.ViewPort;
 import com.dungeon.viewport.ViewPortInputProcessor;
 
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
@@ -31,7 +28,7 @@ public class Dungeon extends ApplicationAdapter {
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
-	private MovableInputProcessor movableInputProcessor = new MovableInputProcessor();
+	private CharacterInputProcessor movableInputProcessor = new CharacterInputProcessor();
 	private CharacterViewPortTracker characterViewPortTracker;
 
 	long frame = 0;
@@ -62,7 +59,8 @@ public class Dungeon extends ApplicationAdapter {
 					character = new King(state);
 					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
 					state.addCharacter(character);
-					movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
+					movableInputProcessor.addPovMovementController(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, character);
+					movableInputProcessor.addPovAimController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
 					movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> character.fire(state));
 				}
 			}
@@ -80,7 +78,7 @@ public class Dungeon extends ApplicationAdapter {
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			MovableControllerAdapter movableControllerAdapter = new MovableControllerAdapter();
+			CharacterControllerAdapter movableControllerAdapter = new CharacterControllerAdapter();
 			CharacterControllerMapper controllerMapper = new CharacterControllerMapper() {
 				@Override
 				void bind() {
@@ -90,9 +88,10 @@ public class Dungeon extends ApplicationAdapter {
 						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
 						state.addCharacter(character);
 						// Add all 3 input methods to the character
-						movableControllerAdapter.addAxisController(3, 2, character);
-						movableControllerAdapter.addPovController(0, character);
-						movableControllerAdapter.addButtonController(0, code -> character.fire(state));
+						movableControllerAdapter.addAxisAimController(1, 0, character);
+						movableControllerAdapter.addAxisMovementController(3, 2, character);
+						movableControllerAdapter.addPovMovementController(0, character);
+						movableControllerAdapter.addButtonController(5, code -> character.fire(state));
 					}
 				}
 

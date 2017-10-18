@@ -5,13 +5,14 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.dungeon.character.Character;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class MovableControllerAdapter implements ControllerListener {
+public class CharacterControllerAdapter implements ControllerListener {
 
 	private final EnumMap<PovDirection, Vector2> povVectorMapper = new EnumMap<>(PovDirection.class);
 	private final Map<Integer, Consumer<Float>> axisControllers = new HashMap<>();
@@ -19,7 +20,7 @@ public class MovableControllerAdapter implements ControllerListener {
 	private final Map<Integer, Consumer<Integer>> buttonControllers = new HashMap<>();
 	private static final float MIN_AXIS_THRESHOLD = 0.2f;
 
-	public MovableControllerAdapter() {
+	public CharacterControllerAdapter() {
 		povVectorMapper.put(PovDirection.north, new Vector2(0, 1));
 		povVectorMapper.put(PovDirection.northEast, new Vector2(1, 1));
 		povVectorMapper.put(PovDirection.east, new Vector2(1, 0));
@@ -31,16 +32,21 @@ public class MovableControllerAdapter implements ControllerListener {
 		povVectorMapper.put(PovDirection.center, new Vector2(0, 0));
 	}
 
-	public void addAxisController(int xAxisCode, int yAxisCode, Movable movable) {
-		axisControllers.put(xAxisCode, value -> movable.setSelfXMovement(Math.abs(value) > MIN_AXIS_THRESHOLD ? value : 0));
-		axisControllers.put(yAxisCode, value -> movable.setSelfYMovement(Math.abs(value) > MIN_AXIS_THRESHOLD ? -value : 0));
+	public void addAxisMovementController(int xAxisCode, int yAxisCode, Character character) {
+		axisControllers.put(xAxisCode, value -> character.setSelfXMovement(Math.abs(value) > MIN_AXIS_THRESHOLD ? value : 0));
+		axisControllers.put(yAxisCode, value -> character.setSelfYMovement(Math.abs(value) > MIN_AXIS_THRESHOLD ? -value : 0));
 	}
 
-	public void addPovController(int povCode, Movable movable) {
+	public void addAxisAimController(int xAxisCode, int yAxisCode, Character character) {
+		axisControllers.put(xAxisCode, value -> character.setAimX(Math.abs(value) > MIN_AXIS_THRESHOLD ? value : 0));
+		axisControllers.put(yAxisCode, value -> character.setAimY(Math.abs(value) > MIN_AXIS_THRESHOLD ? -value : 0));
+	}
+
+	public void addPovMovementController(int povCode, Character character) {
 		povControllers.put(povCode, value -> {
 			Vector2 vector = povVectorMapper.get(value);
-			movable.setSelfXMovement(vector.x);
-			movable.setSelfYMovement(vector.y);
+			character.setSelfXMovement(vector.x);
+			character.setSelfYMovement(vector.y);
 		});
 	}
 

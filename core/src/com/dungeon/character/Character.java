@@ -33,9 +33,6 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 				setCurrentAnimation(animationProvider.get(AnimationType.WALK));
 			}
 		}
-		if (getSelfMovement().len() > 0.5) {
-			aim.set(getSelfMovement());
-		}
 	}
 
 	@Override
@@ -69,14 +66,27 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 		}
 	}
 
+	public void setAimX(float x) {
+		aim.x = x;
+	}
+
+	public void setAimY(float y) {
+		aim.y = y;
+	}
+
+	public Vector2 getAim() {
+		return aim;
+	}
+
 	public void fire(GameState state) {
 		Projectile projectile = new Projectile(state, 10, state.getStateTime());
 		projectile.moveTo(getPos());
 		// Extra offset to make projectiles appear in the character's hands
 		//projectile.getPos().y -= 8;
-		aim.clamp(5,5);
-		projectile.getPos().mulAdd(aim, 2);
-		projectile.setSelfMovement(aim);
+		Vector2 direction = aim.cpy().clamp(5,5);
+		projectile.getPos().mulAdd(direction, 2);
+		projectile.setSelfXMovement(direction.x);
+		projectile.setSelfYMovement(direction.y);
 		state.addEntity(projectile);
 		setCurrentAnimation(animationProvider.get(AnimationType.HIT));
 	}
