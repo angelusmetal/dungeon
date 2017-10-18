@@ -1,10 +1,13 @@
 package com.dungeon.character;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
 import com.dungeon.GameState;
 import com.dungeon.animation.AnimationProvider;
 import com.dungeon.movement.Movable;
+import com.dungeon.viewport.ViewPort;
 
 public class Character extends Entity<Character.AnimationType> implements Movable, Drawable {
 
@@ -13,7 +16,7 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 	}
 
 	private AnimationProvider<AnimationType> animationProvider;
-	private Vector2 aim = new Vector2();
+	private Vector2 aim = new Vector2(1, 0);
 
 	public void setAnimationProvider(AnimationProvider<AnimationType> animationProvider) {
 		this.animationProvider = animationProvider;
@@ -70,15 +73,25 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 	}
 
 	public void fire(GameState state) {
-		Projectile projectile = new Projectile(state, 10, state.getStateTime());
-		projectile.moveTo(getPos());
-		// Extra offset to make projectiles appear in the character's hands
-		//projectile.getPos().y -= 8;
-		aim.clamp(5,5);
-		projectile.getPos().mulAdd(aim, 2);
-		projectile.setSelfMovement(aim);
-		state.addEntity(projectile);
-		setCurrentAnimation(animationProvider.get(AnimationType.HIT));
+		if (!expired) {
+			Projectile projectile = new Projectile(state, 10, state.getStateTime());
+			projectile.moveTo(getPos());
+			// Extra offset to make projectiles appear in the character's hands
+			//projectile.getPos().y -= 8;
+			aim.clamp(5,5);
+			projectile.getPos().mulAdd(aim, 2);
+			projectile.setSelfMovement(aim);
+			state.addEntity(projectile);
+			setCurrentAnimation(animationProvider.get(AnimationType.HIT));
+		}
+	}
+
+	@Override
+	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
+		super.draw(state, batch, viewPort);
+		// Draw health bar
+		TextureRegion frame = getFrame(state.getStateTime());
+		batch.draw(state.getTilesetManager().getHudTileset().HEALTH_BAR, (getPos().x - viewPort.xOffset - getHitBox().x / 2) * viewPort.scale, (getPos().y - viewPort.yOffset + getHitBox().y / 2) * viewPort.scale, getHitBox().x * viewPort.scale * health/maxHealth, 2 * viewPort.scale);
 	}
 
 }

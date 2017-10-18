@@ -136,7 +136,7 @@ public class Dungeon extends ApplicationAdapter {
 		drawMap();
 		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
 			Entity<?> entity = e.next();
-			entity.draw(batch, viewPort, state.getStateTime());
+			entity.draw(state, batch, viewPort);
 			entity.move(state);
 			if (entity.isExpired(state.getStateTime())) {
 				e.remove();

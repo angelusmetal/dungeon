@@ -6,6 +6,7 @@ public class TilesetManager {
 	private final GhostTileset ghostTileset;
 	private final CharactersTileset32 charactersTileset;
 	private final ProjectileTileset projectileTileset;
+	private final HudTileset hudTileset;
 
 	// TODO Can we do this on the constructor or for some engine reason we must defer this to "creation" time?
 	public TilesetManager() {
@@ -13,6 +14,7 @@ public class TilesetManager {
 		ghostTileset = new GhostTileset();
 		charactersTileset = new CharactersTileset32();
 		projectileTileset = new ProjectileTileset();
+		hudTileset = new HudTileset();
 	}
 
 	public DungeonTilesetDark getDungeonTilesetDark() {
@@ -31,10 +33,15 @@ public class TilesetManager {
 		return projectileTileset;
 	}
 
+	public HudTileset getHudTileset() {
+		return hudTileset;
+	}
+
 	public void dispose() {
 		dungeonTilesetDark.dispose();
 		ghostTileset.dispose();
 		charactersTileset.dispose();
 		projectileTileset.dispose();
+		hudTileset.dispose();
 	}
 }

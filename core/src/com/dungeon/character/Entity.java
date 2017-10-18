@@ -1,5 +1,6 @@
 package com.dungeon.character;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.Drawable;
@@ -7,6 +8,7 @@ import com.dungeon.GameState;
 import com.dungeon.animation.GameAnimation;
 import com.dungeon.movement.Movable;
 import com.dungeon.tileset.Tileset;
+import com.dungeon.viewport.ViewPort;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
@@ -147,4 +149,16 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		this.hitBox.x = x;
 		this.hitBox.y = y;
 	}
+
+	protected Vector2 getHitBox() {
+		return hitBox;
+	}
+
+	@Override
+	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
+		TextureRegion characterFrame = getFrame(state.getStateTime());
+		float invertX = invertX() ? -1 : 1;
+		batch.draw(characterFrame, (getPos().x - viewPort.xOffset - getDrawOffset().x * invertX) * viewPort.scale, (getPos().y - viewPort.yOffset - getDrawOffset().y) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale * invertX, characterFrame.getRegionHeight() * viewPort.scale);
+	}
+
 }
