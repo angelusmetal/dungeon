@@ -77,8 +77,8 @@ public class ProceduralLevelGenerator {
 
 	public Level generateLevel(DungeonTilesetDark tileset) {
 		// Pick a random position to start (excluding border rows/columns)
-		int startX = (int) (Math.random() * (width - 2)) + 1;
-		int startY = (int) (Math.random() * (height - 2)) + 1;
+		int startX = (int) (Math.random() * (width - 10)) + 5;
+		int startY = (int) (Math.random() * (height - 10)) + 5;
 
 		// Depending on the closest edge (bottom, left, right, up) pick the opposite edge as search direction to grow the room
 		Direction direction;

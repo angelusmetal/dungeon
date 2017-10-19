@@ -53,7 +53,7 @@ public class Dungeon extends ApplicationAdapter {
 			void bind() {
 				if (character == null || character.isExpired(state.getStateTime())) {
 					Vector2 startingPosition = getStartingPosition();
-					character = new King(state);
+					character = getNewPlayer();
 					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
 					state.addPlayerCharacter(character);
 					movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
@@ -64,7 +64,7 @@ public class Dungeon extends ApplicationAdapter {
 			@Override
 			void unbind() {
 				if (character != null) {
-					character.setExpired(true);
+					character.setExpired(state, true);
 					character = null;
 					movableInputProcessor.clear();
 				}
@@ -80,7 +80,7 @@ public class Dungeon extends ApplicationAdapter {
 				void bind() {
 					if (character == null|| character.isExpired(state.getStateTime())) {
 						Vector2 startingPosition = getStartingPosition();
-						character = new King(state);
+						character = getNewPlayer();
 						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
 						state.addPlayerCharacter(character);
 						// Add all 3 input methods to the character
@@ -106,15 +106,37 @@ public class Dungeon extends ApplicationAdapter {
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
 
 		// Create a ghost in each room, to begin with
-		for (Room room : state.getLevel().rooms) {
-			int startX = room.topLeft.x + 1;
-			int startY = room.topLeft.y - 1;
-			Vector2 position = new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height);
-			Ghost ghost = new Ghost(state);
-			ghost.moveTo(position);
-			state.addEntity(ghost);
+		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
+			Room room = state.getLevel().rooms.get(r);
+			for (int i = 0; i < 3; ++i) {
+				int startX = room.topLeft.x + 1 + i;
+				int startY = room.topLeft.y - 1 - i;
+				Vector2 position = new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height);
+				Ghost ghost = new Ghost(state);
+				ghost.moveTo(position);
+				state.addEntity(ghost);
+			}
 		}
+	}
 
+	private PlayerCharacter getNewPlayer() {
+		boolean hasKing = false, hasThief = false, hasMonk = false;
+		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
+			if (playerCharacter instanceof King) {
+				hasKing = true;
+			} else if (playerCharacter instanceof Thief) {
+				hasThief = true;
+			} else if (playerCharacter instanceof Monk) {
+				hasMonk = true;
+			}
+		}
+		if (!hasKing) {
+			return new King(state);
+		} else if (!hasThief) {
+			return new Thief(state);
+		} else {
+			return new Monk(state);
+		}
 
 	}
 
@@ -122,7 +144,6 @@ public class Dungeon extends ApplicationAdapter {
 		if (state.getPlayerCharacters().isEmpty()) {
 			int startX = state.getLevel().rooms.get(0).topLeft.x + 1;
 			int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
-			System.out.println("first spawn: " + new Vector2(startX, startY));
 			return new Vector2(startX, startY);
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
@@ -150,6 +171,7 @@ public class Dungeon extends ApplicationAdapter {
 			}
 		}
 		batch.end();
+		state.refresh();
 		this.frame += 1;
 	}
 

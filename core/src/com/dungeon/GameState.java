@@ -24,6 +24,9 @@ public class GameState {
 	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
 	private List<Entity<?>> entities = new LinkedList<>();
 
+	private List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
+	private List<Entity<?>> newEntities = new LinkedList<>();
+
 	public GameState(ViewPort viewPort) {
 		this.stateTime = 0;
 		this.tilesetManager = new TilesetManager();
@@ -60,12 +63,12 @@ public class GameState {
 		level = generator.generateLevel(getLevelTileset());
 	}
 	public void addEntity(Entity<?> entity) {
-		entities.add(entity);
+		newEntities.add(entity);
 	}
 
 	public void addPlayerCharacter(PlayerCharacter character) {
-		playerCharacters.add(character);
-		entities.add(character);
+		newPlayerCharacters.add(character);
+		newEntities.add(character);
 	}
 
 	public List<Entity<?>> getEntities() {
@@ -74,5 +77,12 @@ public class GameState {
 
 	public List<PlayerCharacter> getPlayerCharacters() {
 		return playerCharacters;
+	}
+
+	public void refresh() {
+		playerCharacters.addAll(newPlayerCharacters);
+		newPlayerCharacters.clear();
+		entities.addAll(newEntities);
+		newEntities.clear();
 	}
 }

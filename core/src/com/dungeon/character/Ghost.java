@@ -6,7 +6,7 @@ import com.dungeon.animation.AnimationProvider;
 
 public class Ghost extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = 100 * 100;
+	private static final float MIN_TARGET_DISTANCE = 500 * 500;
 
 	public Ghost(GameState state) {
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
@@ -34,6 +34,13 @@ public class Ghost extends Character {
 				closestPlayer = v;
 			}
 			setSelfMovement(closestPlayer);
+		}
+	}
+
+	@Override
+	protected void onEntityCollision(GameState state, Entity<?> entity) {
+		if (entity instanceof PlayerCharacter) {
+			entity.hit(state, 1);
 		}
 	}
 }

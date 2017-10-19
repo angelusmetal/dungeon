@@ -7,6 +7,7 @@ import com.dungeon.Drawable;
 import com.dungeon.GameState;
 import com.dungeon.animation.AnimationProvider;
 import com.dungeon.movement.Movable;
+import com.dungeon.projectile.BaseProjectile;
 import com.dungeon.viewport.ViewPort;
 
 public class Character extends Entity<Character.AnimationType> implements Movable, Drawable {
@@ -15,8 +16,9 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 		IDLE, WALK, JUMP, HIT, SLASH, PUNCH, RUN, CLIMB;
 	}
 
-	private AnimationProvider<AnimationType> animationProvider;
+	protected AnimationProvider<AnimationType> animationProvider;
 	private Vector2 aim = new Vector2(1, 0);
+	protected int dmg = 10;
 
 	public void setAnimationProvider(AnimationProvider<AnimationType> animationProvider) {
 		this.animationProvider = animationProvider;
@@ -46,10 +48,6 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 		return expired;
 	}
 
-	public void setExpired(boolean expired) {
-		this.expired = expired;
-	}
-
 	@Override
 	public boolean isSolid() {
 		return true;
@@ -74,7 +72,7 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 
 	public void fire(GameState state) {
 		if (!expired) {
-			Projectile projectile = new Projectile(state, 10, state.getStateTime());
+			BaseProjectile projectile = createProjectile(state);
 			projectile.moveTo(getPos());
 			// Extra offset to make projectiles appear in the character's hands
 			//projectile.getPos().y -= 8;
@@ -84,6 +82,10 @@ public class Character extends Entity<Character.AnimationType> implements Movabl
 			state.addEntity(projectile);
 			setCurrentAnimation(animationProvider.get(AnimationType.HIT));
 		}
+	}
+
+	protected BaseProjectile createProjectile(GameState state) {
+		return new King.Projectile(state, 10, state.getStateTime(), dmg);
 	}
 
 	@Override
