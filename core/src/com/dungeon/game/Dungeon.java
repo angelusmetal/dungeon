@@ -21,6 +21,7 @@ import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class Dungeon extends ApplicationAdapter {
@@ -34,6 +35,11 @@ public class Dungeon extends ApplicationAdapter {
 	private CharacterViewPortTracker characterViewPortTracker;
 
 	long frame = 0;
+	private Comparator<? super Entity<?>> comp = (e1, e2) ->
+		e1.getPos().y > e2.getPos().y ? -1 :
+		e1.getPos().y < e2.getPos().y ? 1 :
+		e1.getPos().x < e2.getPos().x ? -1 :
+		e1.getPos().x > e2.getPos().x ? 1 : 0;
 
 	@Override
 	public void create () {
@@ -162,9 +168,11 @@ public class Dungeon extends ApplicationAdapter {
 		characterViewPortTracker.refresh(viewPort);
 		batch.begin();
 		drawMap();
+		// Iterate entities in render order and draw them
+		state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
+
 		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
 			Entity<?> entity = e.next();
-			entity.draw(state, batch, viewPort);
 			entity.move(state);
 			entity.think(state);
 			if (entity.isExpired(state.getStateTime())) {
@@ -178,10 +186,17 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	private void drawMap() {
-		for (int x = 0; x < state.getLevel().map.length; x++) {
-			for (int y = 0; y < state.getLevel().map[0].length; y++) {
+		// Only render the visible portion of the map
+		int tWidth = state.getLevelTileset().tile_width;
+		int tHeight = state.getLevelTileset().tile_height;
+		int minX = Math.max(0, viewPort.xOffset / tWidth);
+		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.xOffset + viewPort.width) / tWidth);
+		int minY = Math.max(0, viewPort.yOffset / tHeight - 1);
+		int maxY = Math.min(state.getLevel().map[0].length - 1, (viewPort.yOffset + viewPort.height) / tHeight);
+		for (int x = minX; x < maxX; x++) {
+			for (int y = maxY; y > minY; y--) {
 				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);
-				batch.draw(textureRegion, (x * state.getLevelTileset().tile_width - viewPort.xOffset) * viewPort.scale, (y * state.getLevelTileset().tile_height - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
+				batch.draw(textureRegion, (x * tWidth - viewPort.xOffset) * viewPort.scale, (y * tHeight - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
 			}
 		}
 	}
