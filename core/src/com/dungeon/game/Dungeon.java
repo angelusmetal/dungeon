@@ -128,22 +128,22 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	private PlayerCharacter getNewPlayer() {
-		boolean hasKing = false, hasThief = false, hasMonk = false;
+		boolean hasAssasin = false, hasThief = false, hasWitch = false;
 		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
-			if (playerCharacter instanceof King) {
-				hasKing = true;
+			if (playerCharacter instanceof Assasin) {
+				hasAssasin = true;
 			} else if (playerCharacter instanceof Thief) {
 				hasThief = true;
-			} else if (playerCharacter instanceof Monk) {
-				hasMonk = true;
+			} else if (playerCharacter instanceof Witch) {
+				hasWitch = true;
 			}
 		}
-		if (!hasKing) {
-			return new King(state);
+		if (!hasWitch) {
+			return new Witch(state);
 		} else if (!hasThief) {
 			return new Thief(state);
 		} else {
-			return new Monk(state);
+			return new Assasin(state);
 		}
 
 	}
@@ -190,7 +190,7 @@ public class Dungeon extends ApplicationAdapter {
 		int tWidth = state.getLevelTileset().tile_width;
 		int tHeight = state.getLevelTileset().tile_height;
 		int minX = Math.max(0, viewPort.xOffset / tWidth);
-		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.xOffset + viewPort.width) / tWidth);
+		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.xOffset + viewPort.width) / tWidth) + 1;
 		int minY = Math.max(0, viewPort.yOffset / tHeight - 1);
 		int maxY = Math.min(state.getLevel().map[0].length - 1, (viewPort.yOffset + viewPort.height) / tHeight);
 		for (int x = minX; x < maxX; x++) {
