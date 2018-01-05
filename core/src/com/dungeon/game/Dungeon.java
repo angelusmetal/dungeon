@@ -6,11 +6,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.controller.*;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.character.*;
@@ -51,6 +53,22 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		inputMultiplexer.addProcessor(movableInputProcessor);
 		Gdx.input.setInputProcessor(inputMultiplexer);
+
+		// Testing stuff; remove
+		DirectionalListener dListener = (pov, vector) -> {
+			System.out.println("POV: " + pov + "; Vector: " + vector);
+		};
+		KeyboardDirectionalControl keyboardControl = new KeyboardDirectionalControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
+		inputMultiplexer.addProcessor(keyboardControl);
+		keyboardControl.addListener(dListener);
+		for (Controller controller : Controllers.getControllers()) {
+			PovDirectionalControl povControl = new PovDirectionalControl(0);
+			AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
+			controller.addListener(povControl);
+			controller.addListener(analogControl);
+			povControl.addListener(dListener);
+			analogControl.addListener(dListener);
+		}
 
 		state = new GameState(viewPort);
 		state.generateNewLevel();
@@ -107,7 +125,7 @@ public class Dungeon extends ApplicationAdapter {
 				}
 			};
 			controller.addListener(movableControllerAdapter);
-			controller.addListener(new PrintingControllerListener());
+			//controller.addListener(new PrintingControllerListener());
 			movableControllerAdapter.addButtonController(9, code -> controllerMapper.bind());
 		}
 
