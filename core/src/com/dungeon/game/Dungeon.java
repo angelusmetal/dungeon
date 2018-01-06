@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.controller.character.CharacterControl;
+import com.dungeon.engine.controller.character.ControllerCharacterControl;
+import com.dungeon.engine.controller.character.KeyboardCharacterControl;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.directional.DirectionalListener;
 import com.dungeon.engine.controller.directional.KeyboardDirectionalControl;
@@ -78,74 +81,12 @@ public class Dungeon extends ApplicationAdapter {
 		state = new GameState(viewPort);
 		state.generateNewLevel();
 
-		// These should be moved into their own class with multiple implementations (keyboard, controller, etc)
 		// Add keyboard controller
-		CharacterControllerMapper keyboardMapper = new CharacterControllerMapper() {
-			@Override
-			void bind() {
-				if (character == null || character.isExpired(state.getStateTime())) {
-					Vector2 startingPosition = getStartingPosition();
-					character = getNewPlayer();
-					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
-					state.addPlayerCharacter(character);
-					KeyboardDirectionalControl keyboardControl = new KeyboardDirectionalControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
-					addInputProcessor(keyboardControl);
-					keyboardControl.addListener((pov, vec) -> character.setSelfMovement(vec));
-					KeyboardTriggerControl keyboardTrigger = new KeyboardTriggerControl(Input.Keys.SPACE);
-					addInputProcessor(keyboardTrigger);
-					keyboardTrigger.addListener((bool) -> { if (bool) character.fire(state);});
-				}
-			}
-
-			@Override
-			void unbind() {
-				if (character != null) {
-					character.setExpired(state, true);
-					character = null;
-				}
-			}
-		};
-		KeyboardTriggerControl keyboardStartTrigger = new KeyboardTriggerControl(Input.Keys.ENTER);
-		keyboardStartTrigger.addListener((bool) -> keyboardMapper.bind());
-		addInputProcessor(keyboardStartTrigger);
+		CharacterControl keyboardControl = new KeyboardCharacterControl(state, inputMultiplexer, this::getStartingPosition, this::getNewPlayer);
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			CharacterControllerMapper controllerMapper = new CharacterControllerMapper() {
-				@Override
-				void bind() {
-					if (character == null|| character.isExpired(state.getStateTime())) {
-						Vector2 startingPosition = getStartingPosition();
-						character = getNewPlayer();
-						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
-						state.addPlayerCharacter(character);
-						// Add all 3 input methods to the character
-						PovDirectionalControl povControl = new PovDirectionalControl(0);
-						AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
-						ControllerTriggerControl shootControl = new ControllerTriggerControl(0);
-						// Registered should be handled by the controls themselves via double dispatch
-						controller.addListener(povControl);
-						controller.addListener(analogControl);
-						controller.addListener(shootControl);
-						DirectionalListener mover = (pov, vec) -> character.setSelfMovement(vec);
-						Consumer<Boolean> shooter = (bool) -> { if (bool) character.fire(state);};
-						povControl.addListener(mover);
-						analogControl.addListener(mover);
-						shootControl.addListener(shooter);
-					}
-				}
-
-				@Override
-				void unbind() {
-					if (character != null) {
-						character = null;
-						//controller.removeListener(movableControllerAdapter);
-					}
-				}
-			};
-			ControllerTriggerControl startControl = new ControllerTriggerControl(9);
-			startControl.addListener((bool) -> controllerMapper.bind());
-			controller.addListener(startControl);
+			CharacterControl controllerControl = new ControllerCharacterControl(state, controller, this::getStartingPosition, this::getNewPlayer);
 		}
 
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
