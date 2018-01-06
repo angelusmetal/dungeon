@@ -1,30 +1,30 @@
 package com.dungeon.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.controller.*;
+import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
+import com.dungeon.engine.controller.directional.DirectionalListener;
+import com.dungeon.engine.controller.directional.KeyboardDirectionalControl;
+import com.dungeon.engine.controller.directional.PovDirectionalControl;
+import com.dungeon.engine.controller.trigger.ControllerTriggerControl;
+import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.character.*;
 import com.dungeon.game.level.Room;
-import com.dungeon.engine.movement.MovableControllerAdapter;
-import com.dungeon.engine.movement.MovableInputProcessor;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
@@ -33,7 +33,6 @@ public class Dungeon extends ApplicationAdapter {
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
-	private MovableInputProcessor movableInputProcessor = new MovableInputProcessor();
 	private CharacterViewPortTracker characterViewPortTracker;
 
 	long frame = 0;
@@ -43,6 +42,15 @@ public class Dungeon extends ApplicationAdapter {
 		e1.getPos().x < e2.getPos().x ? -1 :
 		e1.getPos().x > e2.getPos().x ? 1 : 0;
 
+	// TODO Maybe move the multiplexer and these methods to an input-dedicated class
+	public void addInputProcessor(InputProcessor processor) {
+		inputMultiplexer.addProcessor(processor);
+	}
+
+	public void removeInputProcessor(InputProcessor processor) {
+		inputMultiplexer.removeProcessor(processor);
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -51,16 +59,13 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(viewPortInputProcessor);
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
-		inputMultiplexer.addProcessor(movableInputProcessor);
+		//inputMultiplexer.addProcessor(movableInputProcessor);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		// Testing stuff; remove
 		DirectionalListener dListener = (pov, vector) -> {
 			System.out.println("POV: " + pov + "; Vector: " + vector);
 		};
-		KeyboardDirectionalControl keyboardControl = new KeyboardDirectionalControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
-		inputMultiplexer.addProcessor(keyboardControl);
-		keyboardControl.addListener(dListener);
 		for (Controller controller : Controllers.getControllers()) {
 			PovDirectionalControl povControl = new PovDirectionalControl(0);
 			AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
@@ -73,6 +78,7 @@ public class Dungeon extends ApplicationAdapter {
 		state = new GameState(viewPort);
 		state.generateNewLevel();
 
+		// These should be moved into their own class with multiple implementations (keyboard, controller, etc)
 		// Add keyboard controller
 		CharacterControllerMapper keyboardMapper = new CharacterControllerMapper() {
 			@Override
@@ -82,8 +88,12 @@ public class Dungeon extends ApplicationAdapter {
 					character = getNewPlayer();
 					character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
 					state.addPlayerCharacter(character);
-					movableInputProcessor.addPovController(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, character);
-					movableInputProcessor.addButtonController(Input.Keys.SPACE, code -> character.fire(state));
+					KeyboardDirectionalControl keyboardControl = new KeyboardDirectionalControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
+					addInputProcessor(keyboardControl);
+					keyboardControl.addListener((pov, vec) -> character.setSelfMovement(vec));
+					KeyboardTriggerControl keyboardTrigger = new KeyboardTriggerControl(Input.Keys.SPACE);
+					addInputProcessor(keyboardTrigger);
+					keyboardTrigger.addListener((bool) -> { if (bool) character.fire(state);});
 				}
 			}
 
@@ -92,15 +102,15 @@ public class Dungeon extends ApplicationAdapter {
 				if (character != null) {
 					character.setExpired(state, true);
 					character = null;
-					movableInputProcessor.clear();
 				}
 			}
 		};
-		movableInputProcessor.addButtonController(Input.Keys.ENTER, code -> keyboardMapper.bind());
+		KeyboardTriggerControl keyboardStartTrigger = new KeyboardTriggerControl(Input.Keys.ENTER);
+		keyboardStartTrigger.addListener((bool) -> keyboardMapper.bind());
+		addInputProcessor(keyboardStartTrigger);
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			MovableControllerAdapter movableControllerAdapter = new MovableControllerAdapter();
 			CharacterControllerMapper controllerMapper = new CharacterControllerMapper() {
 				@Override
 				void bind() {
@@ -110,9 +120,18 @@ public class Dungeon extends ApplicationAdapter {
 						character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
 						state.addPlayerCharacter(character);
 						// Add all 3 input methods to the character
-						movableControllerAdapter.addAxisController(3, 2, character);
-						movableControllerAdapter.addPovController(0, character);
-						movableControllerAdapter.addButtonController(0, code -> character.fire(state));
+						PovDirectionalControl povControl = new PovDirectionalControl(0);
+						AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
+						ControllerTriggerControl shootControl = new ControllerTriggerControl(0);
+						// Registered should be handled by the controls themselves via double dispatch
+						controller.addListener(povControl);
+						controller.addListener(analogControl);
+						controller.addListener(shootControl);
+						DirectionalListener mover = (pov, vec) -> character.setSelfMovement(vec);
+						Consumer<Boolean> shooter = (bool) -> { if (bool) character.fire(state);};
+						povControl.addListener(mover);
+						analogControl.addListener(mover);
+						shootControl.addListener(shooter);
 					}
 				}
 
@@ -124,9 +143,9 @@ public class Dungeon extends ApplicationAdapter {
 					}
 				}
 			};
-			controller.addListener(movableControllerAdapter);
-			//controller.addListener(new PrintingControllerListener());
-			movableControllerAdapter.addButtonController(9, code -> controllerMapper.bind());
+			ControllerTriggerControl startControl = new ControllerTriggerControl(9);
+			startControl.addListener((bool) -> controllerMapper.bind());
+			controller.addListener(startControl);
 		}
 
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());

@@ -1,4 +1,4 @@
-package com.dungeon.engine.controller;
+package com.dungeon.engine.controller.directional;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.PovDirection;
