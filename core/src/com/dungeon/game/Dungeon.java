@@ -1,6 +1,9 @@
 package com.dungeon.game;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,21 +16,20 @@ import com.dungeon.engine.controller.character.ControllerCharacterControl;
 import com.dungeon.engine.controller.character.KeyboardCharacterControl;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.directional.DirectionalListener;
-import com.dungeon.engine.controller.directional.KeyboardDirectionalControl;
 import com.dungeon.engine.controller.directional.PovDirectionalControl;
-import com.dungeon.engine.controller.trigger.ControllerTriggerControl;
-import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
-import com.dungeon.game.character.*;
-import com.dungeon.game.level.Room;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
+import com.dungeon.game.character.Assasin;
+import com.dungeon.game.character.Ghost;
+import com.dungeon.game.character.Thief;
+import com.dungeon.game.character.Witch;
+import com.dungeon.game.level.Room;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
@@ -44,15 +46,6 @@ public class Dungeon extends ApplicationAdapter {
 		e1.getPos().y < e2.getPos().y ? 1 :
 		e1.getPos().x < e2.getPos().x ? -1 :
 		e1.getPos().x > e2.getPos().x ? 1 : 0;
-
-	// TODO Maybe move the multiplexer and these methods to an input-dedicated class
-	public void addInputProcessor(InputProcessor processor) {
-		inputMultiplexer.addProcessor(processor);
-	}
-
-	public void removeInputProcessor(InputProcessor processor) {
-		inputMultiplexer.removeProcessor(processor);
-	}
 
 	@Override
 	public void create () {

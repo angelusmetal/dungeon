@@ -9,50 +9,47 @@ import com.dungeon.game.GameState;
 
 import java.util.function.Supplier;
 
+/**
+ * A CharacterControl implementation that uses a controller for controlling the character
+ */
 public class ControllerCharacterControl extends CharacterControl {
 
-	private final GameState state;
-	private final Controller controller;
 	private final Supplier<Vector2> positionProvider;
 	private final Supplier<PlayerCharacter> characterSupplier;
-	private final AnalogDirectionalControl directionalControl;
-	private final ControllerTriggerControl fireControl;
-	private final ControllerTriggerControl startTrigger;
 
 	public ControllerCharacterControl(GameState state, Controller controller, Supplier<Vector2> positionProvider, Supplier<PlayerCharacter> characterSupplier) {
-		this.state = state;
-		this.controller = controller;
+		super(state);
 		this.positionProvider = positionProvider;
 		this.characterSupplier = characterSupplier;
-		this.directionalControl = new AnalogDirectionalControl(3, -2);
-		this.fireControl = new ControllerTriggerControl(0);
-		this.startTrigger = new ControllerTriggerControl(9);
 
-		directionalControl.addListener((pov, vec) -> character.setSelfMovement(vec));
-		fireControl.addListener((bool) -> {if (bool) character.fire(state);});
-		startTrigger.addListener((bool) -> bind());
+		// Create controls for directional movement, fire and start
+		AnalogDirectionalControl directionalControl = new AnalogDirectionalControl(3, -2);
+		ControllerTriggerControl fireControl = new ControllerTriggerControl(0);
+		ControllerTriggerControl startTrigger = new ControllerTriggerControl(9);
+
+		// Wire controls to the character
+		directionalControl.addListener(this::updateDirection);
+		fireControl.addListener(this::fire);
+		startTrigger.addListener(this::start);
+
+		// Wire controls to the keyboard
 		controller.addListener(startTrigger);
+		controller.addListener(directionalControl);
+		controller.addListener(fireControl);
+
+		// Debug stuff
+		directionalControl.addListener((pov, vec) -> System.out.println("[" + controller.getName() + "] POV: " + pov + "; Vector: " + vec));
+		fireControl.addListener((bool) -> System.out.println("[" + controller.getName() + "] Fire " + (bool ? "(pressed)" : "(unpressed)")));
+		startTrigger.addListener((bool) -> System.out.println("[" + controller.getName() + "] Start " + (bool ? "(pressed)" : "(unpressed)")));
 	}
 
 	@Override
-	public void bind() {
-		if (character == null|| character.isExpired(state.getStateTime())) {
-			Vector2 startingPosition = positionProvider.get();
-			character = characterSupplier.get();
-			character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
-			state.addPlayerCharacter(character);
-			controller.addListener(directionalControl);
-			controller.addListener(fireControl);
-		}
+	Vector2 getStartingPosition() {
+		return positionProvider.get();
 	}
 
 	@Override
-	public void unbind() {
-		if (character != null) {
-			character = null;
-			// TODO We need to unregister previous control listeners or leak references to the old character
-			controller.removeListener(directionalControl);
-			controller.removeListener(fireControl);
-		}
+	PlayerCharacter getCharacter() {
+		return characterSupplier.get();
 	}
 }
