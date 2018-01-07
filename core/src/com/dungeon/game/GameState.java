@@ -4,7 +4,7 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
-import com.dungeon.game.tileset.DungeonTilesetDark;
+import com.dungeon.game.tileset.DungeonVioletTileset;
 import com.dungeon.game.tileset.TilesetManager;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -52,9 +52,9 @@ public class GameState {
 		return viewPort;
 	}
 
-	public DungeonTilesetDark getLevelTileset() {
-		// TODO Should DungeonTilesetDark implement a generic level Tileset class/interface?
-		return tilesetManager.getDungeonTilesetDark();
+	public DungeonVioletTileset getLevelTileset() {
+		// TODO Should DungeonVioletTileset implement a generic level Tileset class/interface?
+		return tilesetManager.getDungeonVioletTileset();
 	}
 
 	public void generateNewLevel() {

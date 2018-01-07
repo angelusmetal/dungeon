@@ -1,7 +1,7 @@
 package com.dungeon.game.level;
 
-import com.dungeon.game.tileset.DungeonTilesetDark;
 import com.dungeon.engine.render.Tile;
+import com.dungeon.game.tileset.DungeonVioletTileset;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +75,7 @@ public class ProceduralLevelGenerator {
 		this.walkableTiles = new boolean[width][height];
 	}
 
-	public Level generateLevel(DungeonTilesetDark tileset) {
+	public Level generateLevel(DungeonVioletTileset tileset) {
 		// Pick a random position to start (excluding border rows/columns)
 		int startX = (int) (Math.random() * (width - 10)) + 5;
 		int startY = (int) (Math.random() * (height - 10)) + 5;
@@ -106,7 +106,7 @@ public class ProceduralLevelGenerator {
 		return level;
 	}
 
-	private Tile getTile(int x, int y, DungeonTilesetDark tileset) {
+	private Tile getTile(int x, int y, DungeonVioletTileset tileset) {
 
 		if (walkableTiles[x][y]) {
 			// Return a random floor tile

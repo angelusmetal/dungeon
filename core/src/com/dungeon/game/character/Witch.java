@@ -34,12 +34,13 @@ public class Witch extends PlayerCharacter {
 			super(timeToLive, startTime);
 			this.dmg = dmg;
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
-			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_FLY_ANIMATION);
-			provider.register(AnimationType.FLY_SOUTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_FLY_ANIMATION);
-			provider.register(AnimationType.FLY_SIDE, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_FLY_ANIMATION);
+			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_UP);
+			provider.register(AnimationType.FLY_SOUTH, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_DOWN);
+			provider.register(AnimationType.FLY_SIDE, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_RIGHT);
 			provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_EXPLODE_ANIMATION);
 			animationProvider = provider;
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
+			// TODO Make the animation loop for flying projectile
 		}
 		@Override
 		protected void onEntityCollision(GameState state, Entity<?> entity) {
