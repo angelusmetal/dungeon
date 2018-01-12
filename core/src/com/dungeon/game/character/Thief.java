@@ -1,5 +1,6 @@
 package com.dungeon.game.character;
 
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.GameState;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.Entity;
@@ -8,7 +9,8 @@ import com.dungeon.engine.entity.Projectile;
 
 public class Thief extends PlayerCharacter {
 
-	public Thief(GameState state) {
+	public Thief(GameState state, Vector2 pos) {
+		super(pos);
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 		provider.register(AnimationType.IDLE, state.getTilesetManager().getCharactersTileset().THIEF_IDLE_ANIMATION);
 		provider.register(AnimationType.WALK, state.getTilesetManager().getCharactersTileset().THIEF_WALK_ANIMATION);
@@ -30,8 +32,8 @@ public class Thief extends PlayerCharacter {
 
 		private int dmg;
 
-		public Bullet(GameState state, float timeToLive, float startTime, int dmg) {
-			super(timeToLive, startTime);
+		public Bullet(GameState state, Vector2 pos, Vector2 linearVelocity, float timeToLive, float startTime, int dmg) {
+			super(pos, linearVelocity, timeToLive, startTime);
 			this.dmg = dmg;
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_THIEF_FLY_ANIMATION);
@@ -42,18 +44,20 @@ public class Thief extends PlayerCharacter {
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
 		}
 		@Override
-		protected void onEntityCollision(GameState state, Entity<?> entity) {
+		public void beginContact(GameState state, Entity<?> entity) {
 			// Don't hurt other players!
 			if (!(entity instanceof PlayerCharacter)) {
-				explode(state);
-				entity.hit(state, dmg);
+				if (!exploding) {
+					entity.hit(state, dmg);
+					explode(state);
+				}
 			}
 		}
 	}
 
 	@Override
-	protected Projectile createProjectile(GameState state) {
-		return new Bullet(state, 10, state.getStateTime(), dmg);
+	protected Projectile createProjectile(GameState state, Vector2 pos, Vector2 linearVelocity) {
+		return new Bullet(state, pos, linearVelocity, 10, state.getStateTime(), dmg);
 	}
 
 }

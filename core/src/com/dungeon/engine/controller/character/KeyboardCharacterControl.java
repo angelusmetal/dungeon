@@ -9,6 +9,7 @@ import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.GameState;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -17,9 +18,9 @@ import java.util.function.Supplier;
 public class KeyboardCharacterControl extends CharacterControl {
 
 	private final Supplier<Vector2> positionProvider;
-	private final Supplier<PlayerCharacter> characterSupplier;
+	private final Function<Vector2, PlayerCharacter> characterSupplier;
 
-	public KeyboardCharacterControl(GameState state, InputMultiplexer inputMultiplexer, Supplier<Vector2> positionProvider, Supplier<PlayerCharacter> characterSupplier) {
+	public KeyboardCharacterControl(GameState state, InputMultiplexer inputMultiplexer, Supplier<Vector2> positionProvider, Function<Vector2, PlayerCharacter> characterSupplier) {
 		super(state);
 		this.positionProvider = positionProvider;
 		this.characterSupplier = characterSupplier;
@@ -40,9 +41,9 @@ public class KeyboardCharacterControl extends CharacterControl {
 		inputMultiplexer.addProcessor(fireControl);
 
 		// Debug stuff
-		directionalControl.addListener((pov, vec) -> System.out.println("[Keyboard] POV: " + pov + "; Vector: " + vec));
-		fireControl.addListener((bool) -> System.out.println("[Keyboard] Fire " + (bool ? "(pressed)" : "(unpressed)")));
-		startTrigger.addListener((bool) -> System.out.println("[Keyboard] Start " + (bool ? "(pressed)" : "(unpressed)")));
+//		directionalControl.addListener((pov, vec) -> System.out.println("[Keyboard] POV: " + pov + "; Vector: " + vec));
+//		fireControl.addListener((bool) -> System.out.println("[Keyboard] Fire " + (bool ? "(pressed)" : "(unpressed)")));
+//		startTrigger.addListener((bool) -> System.out.println("[Keyboard] Start " + (bool ? "(pressed)" : "(unpressed)")));
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class KeyboardCharacterControl extends CharacterControl {
 	}
 
 	@Override
-	PlayerCharacter getCharacter() {
-		return characterSupplier.get();
+	PlayerCharacter getCharacter(Vector2 pos) {
+		return characterSupplier.apply(pos);
 	}
 }

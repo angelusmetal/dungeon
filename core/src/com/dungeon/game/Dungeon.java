@@ -3,7 +3,6 @@ package com.dungeon.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
@@ -91,14 +90,15 @@ public class Dungeon extends ApplicationAdapter {
 				int startX = room.topLeft.x + 1 + i;
 				int startY = room.topLeft.y - 1 - i;
 				Vector2 position = new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height);
-				Ghost ghost = new Ghost(state);
-				ghost.moveTo(position);
+				Ghost ghost = new Ghost(state, position);
 				state.addEntity(ghost);
 			}
 		}
+
+		state.refresh();
 	}
 
-	private PlayerCharacter getNewPlayer() {
+	private PlayerCharacter getNewPlayer(Vector2 pos) {
 		boolean hasAssasin = false, hasThief = false, hasWitch = false;
 		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
 			if (playerCharacter instanceof Assasin) {
@@ -110,23 +110,25 @@ public class Dungeon extends ApplicationAdapter {
 			}
 		}
 		if (!hasWitch) {
-			return new Witch(state);
+			return new Witch(state, pos);
 		} else if (!hasThief) {
-			return new Thief(state);
+			return new Thief(state, pos);
 		} else {
-			return new Assasin(state);
+			return new Assasin(state, pos);
 		}
 
 	}
 
 	private Vector2 getStartingPosition() {
 		if (state.getPlayerCharacters().isEmpty()) {
+			// Get coordinates in tiles
 			int startX = state.getLevel().rooms.get(0).topLeft.x + 1;
 			int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
-			return new Vector2(startX, startY);
+			// Convert coordinates to actual position
+			return new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height);
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
-			return new Vector2(refPos.x / state.getLevelTileset().tile_width, refPos.y / state.getLevelTileset().tile_height);
+			return refPos.cpy();
 		}
 	}
 
@@ -135,23 +137,15 @@ public class Dungeon extends ApplicationAdapter {
 		//Gdx.gl.glClearColor(145f/255f, 176f/255f, 154f/255f, 1);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		state.updateStateTime(Gdx.graphics.getDeltaTime());
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		state.updateStateTime(deltaTime);
 		characterViewPortTracker.refresh(viewPort);
 		batch.begin();
 		drawMap();
 		// Iterate entities in render order and draw them
 		state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
-
-		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
-			Entity<?> entity = e.next();
-			entity.move(state);
-			entity.think(state);
-			if (entity.isExpired(state.getStateTime())) {
-				e.remove();
-				state.getPlayerCharacters().remove(entity);
-			}
-		}
 		batch.end();
+		state.doPhysicsStep(deltaTime);
 		state.refresh();
 		this.frame += 1;
 	}

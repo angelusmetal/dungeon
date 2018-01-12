@@ -1,6 +1,10 @@
 package com.dungeon.game.character;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.dungeon.game.GameState;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.Character;
@@ -11,7 +15,8 @@ public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 500 * 500;
 
-	public Ghost(GameState state) {
+	public Ghost(GameState state, Vector2 pos) {
+		super(pos);
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 		provider.register(AnimationType.IDLE, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
 		provider.register(AnimationType.WALK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
@@ -34,14 +39,14 @@ public class Ghost extends Character {
 			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
 			float len = v.len2();
 			if (len < MIN_TARGET_DISTANCE && (closestPlayer.len2() == 0 || len < closestPlayer.len2())) {
-				closestPlayer = v;
+				closestPlayer = v.clamp(maxSpeed, maxSpeed);
 			}
-			setSelfMovement(closestPlayer);
+			setLinearVelocity(closestPlayer);
 		}
 	}
 
 	@Override
-	protected void onEntityCollision(GameState state, Entity<?> entity) {
+	public void beginContact(GameState state, Entity<?> entity) {
 		if (entity instanceof PlayerCharacter) {
 			entity.hit(state, 1);
 		}

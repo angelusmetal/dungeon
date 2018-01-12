@@ -7,6 +7,7 @@ import com.dungeon.engine.controller.trigger.ControllerTriggerControl;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.GameState;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -15,9 +16,9 @@ import java.util.function.Supplier;
 public class ControllerCharacterControl extends CharacterControl {
 
 	private final Supplier<Vector2> positionProvider;
-	private final Supplier<PlayerCharacter> characterSupplier;
+	private final Function<Vector2, PlayerCharacter> characterSupplier;
 
-	public ControllerCharacterControl(GameState state, Controller controller, Supplier<Vector2> positionProvider, Supplier<PlayerCharacter> characterSupplier) {
+	public ControllerCharacterControl(GameState state, Controller controller, Supplier<Vector2> positionProvider, Function<Vector2, PlayerCharacter> characterSupplier) {
 		super(state);
 		this.positionProvider = positionProvider;
 		this.characterSupplier = characterSupplier;
@@ -38,9 +39,9 @@ public class ControllerCharacterControl extends CharacterControl {
 		controller.addListener(fireControl);
 
 		// Debug stuff
-		directionalControl.addListener((pov, vec) -> System.out.println("[" + controller.getName() + "] POV: " + pov + "; Vector: " + vec));
-		fireControl.addListener((bool) -> System.out.println("[" + controller.getName() + "] Fire " + (bool ? "(pressed)" : "(unpressed)")));
-		startTrigger.addListener((bool) -> System.out.println("[" + controller.getName() + "] Start " + (bool ? "(pressed)" : "(unpressed)")));
+//		directionalControl.addListener((pov, vec) -> System.out.println("[" + controller.getName() + "] POV: " + pov + "; Vector: " + vec));
+//		fireControl.addListener((bool) -> System.out.println("[" + controller.getName() + "] Fire " + (bool ? "(pressed)" : "(unpressed)")));
+//		startTrigger.addListener((bool) -> System.out.println("[" + controller.getName() + "] Start " + (bool ? "(pressed)" : "(unpressed)")));
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class ControllerCharacterControl extends CharacterControl {
 	}
 
 	@Override
-	PlayerCharacter getCharacter() {
-		return characterSupplier.get();
+	PlayerCharacter getCharacter(Vector2 pos) {
+		return characterSupplier.apply(pos);
 	}
 }
