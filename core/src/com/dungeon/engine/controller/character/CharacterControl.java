@@ -20,20 +20,18 @@ public abstract class CharacterControl {
 	}
 
 	abstract Vector2 getStartingPosition();
-	abstract PlayerCharacter getCharacter();
+	abstract PlayerCharacter getCharacter(Vector2 pos);
 
 	void start(boolean pressed) {
 		if (character == null || character.isExpired(state.getStateTime()) && pressed) {
-			Vector2 startingPosition = getStartingPosition();
-			character = getCharacter();
-			character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
+			character = getCharacter(getStartingPosition());
 			state.addPlayerCharacter(character);
 		}
 	}
 
 	void updateDirection(PovDirection pov, Vector2 vector) {
 		if (character != null) {
-			character.setSelfMovement(vector);
+			character.setControlDirection(vector);
 		}
 	}
 
