@@ -14,6 +14,7 @@ import java.util.List;
 public class GameState {
 	public final int MAP_WIDTH = 100;
 	public final int MAP_HEIGHT = 100;
+	private final TilesetHelper tilesetHelper;
 
 	private float stateTime;
 	private Level level;
@@ -30,6 +31,7 @@ public class GameState {
 		this.stateTime = 0;
 		this.tilesetManager = new TilesetManager();
 		this.viewPort = viewPort;
+		this.tilesetHelper = new TilesetHelper(getLevelTileset());
 	}
 
 	public float getStateTime() {
@@ -55,6 +57,10 @@ public class GameState {
 	public DungeonVioletTileset getLevelTileset() {
 		// TODO Should DungeonVioletTileset implement a generic level Tileset class/interface?
 		return tilesetManager.getDungeonVioletTileset();
+	}
+
+	public TilesetHelper getTilesetHelper() {
+		return tilesetHelper;
 	}
 
 	public void generateNewLevel() {

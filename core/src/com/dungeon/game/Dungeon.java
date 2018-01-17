@@ -90,7 +90,7 @@ public class Dungeon extends ApplicationAdapter {
 			for (int i = 0; i < 3; ++i) {
 				int startX = room.topLeft.x + 1 + i;
 				int startY = room.topLeft.y - 1 - i;
-				Vector2 position = new Vector2(startX * state.getLevelTileset().tile_width, startY * state.getLevelTileset().tile_height);
+				Vector2 position = new Vector2(startX * state.getLevelTileset().tile_size, startY * state.getLevelTileset().tile_size);
 				Ghost ghost = new Ghost(state);
 				ghost.moveTo(position);
 				state.addEntity(ghost);
@@ -126,7 +126,7 @@ public class Dungeon extends ApplicationAdapter {
 			return new Vector2(startX, startY);
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
-			return new Vector2(refPos.x / state.getLevelTileset().tile_width, refPos.y / state.getLevelTileset().tile_height);
+			return new Vector2(refPos.x / state.getLevelTileset().tile_size, refPos.y / state.getLevelTileset().tile_size);
 		}
 	}
 
@@ -158,8 +158,8 @@ public class Dungeon extends ApplicationAdapter {
 
 	private void drawMap() {
 		// Only render the visible portion of the map
-		int tWidth = state.getLevelTileset().tile_width;
-		int tHeight = state.getLevelTileset().tile_height;
+		int tWidth = state.getLevelTileset().tile_size;
+		int tHeight = state.getLevelTileset().tile_size;
 		int minX = Math.max(0, viewPort.xOffset / tWidth);
 		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.xOffset + viewPort.width) / tWidth) + 1;
 		int minY = Math.max(0, viewPort.yOffset / tHeight - 1);

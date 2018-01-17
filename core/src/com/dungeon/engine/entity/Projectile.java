@@ -47,8 +47,8 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 
 			// Detect collision against walls
 			Tileset tileset = state.getLevelTileset();
-			int xTile = (int)getPos().x / tileset.tile_width;
-			int yTile = (int)getPos().y / tileset.tile_height;
+			int xTile = (int)getPos().x / tileset.tile_size;
+			int yTile = (int)getPos().y / tileset.tile_size;
 			if (!state.getLevel().walkableTiles[xTile][yTile]) {
 				explode(state);
 			} else {

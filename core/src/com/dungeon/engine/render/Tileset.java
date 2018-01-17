@@ -10,27 +10,19 @@ import java.util.List;
 
 public abstract class Tileset {
 	public final Texture texture;
-	public final int tile_width;
-	public final int tile_height;
+	public final int tile_size;
 
 	public Tileset(Texture texture, int tile_size) {
 		this.texture = texture;
-		this.tile_height = tile_size;
-		this.tile_width = tile_size;
-	}
-
-	public Tileset(Texture texture, int tile_width, int tile_height) {
-		this.texture = texture;
-		this.tile_width = tile_width;
-		this.tile_height = tile_height;
+		this.tile_size = tile_size;
 	}
 
 	public TextureRegion getTile(int x, int y) {
-		return new TextureRegion(texture, tile_width * x, tile_height * y, tile_width, tile_height);
+		return new TextureRegion(texture, tile_size * x, tile_size * y, tile_size, tile_size);
 	}
 
 	public TextureRegion getTile(int x, int y, int x_tiles, int y_tiles) {
-		return new TextureRegion(texture, tile_width * x, tile_height * y, tile_width * x_tiles, tile_height * y_tiles);
+		return new TextureRegion(texture, tile_size * x, tile_size * y, tile_size * x_tiles, tile_size * y_tiles);
 	}
 
 	public Animation<TextureRegion> loop(float frameDuration, TextureRegion... frames) {

@@ -26,7 +26,7 @@ public abstract class CharacterControl {
 		if (character == null || character.isExpired(state.getStateTime()) && pressed) {
 			Vector2 startingPosition = getStartingPosition();
 			character = getCharacter();
-			character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_width, startingPosition.y * state.getLevelTileset().tile_height));
+			character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_size, startingPosition.y * state.getLevelTileset().tile_size));
 			state.addPlayerCharacter(character);
 		}
 	}

@@ -9,6 +9,7 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Tileset;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.TilesetHelper;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
@@ -109,29 +110,151 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	}
 
 	private void detectTileCollision(GameState state) {
-		Tileset tileset = state.getLevelTileset();
+		TilesetHelper tilesetHelper = state.getTilesetHelper();
+		int tile_size = state.getLevelTileset().tile_size;
 
-		// Apply movement and detect collision
-		int prevXTile = (int)pos.x / tileset.tile_width;
-		int prevYTile = (int)pos.y / tileset.tile_height;
+		// Apply movement
 		pos.add(movement);
-		int xTile = (int)pos.x / tileset.tile_width;
-		int yTile = (int)pos.y / tileset.tile_height;
+
+		// Find current hitbox corners
+		Vector2 bottomLeft = pos.cpy();
+		bottomLeft.x -= hitBox.x / 2;
+		bottomLeft.y -= hitBox.y / 2;
+
+		Vector2 topRight = bottomLeft.cpy();
+		topRight.add(hitBox);
+
 		boolean collided = false;
-		if (prevXTile != xTile && !state.getLevel().walkableTiles[xTile][prevYTile]) {
-			pos.x -= movement.x;
-			collided = true;
-		} else {
-			prevXTile = xTile; // This is to prevent a collision bug
+		if (movement.x > 0) {
+			int x = (int) topRight.x / tile_size;
+			int topY = (int) topRight.y / tile_size;
+			int bottomY = (int) bottomLeft.y / tile_size;
+			boolean sideCollision = false;
+			for (int y = bottomY; y <= topY; ++y) {
+				sideCollision |= !state.getLevel().walkableTiles[x][y];
+			}
+			if (sideCollision) {
+				pos.x -= topRight.x % tile_size - 1;
+				collided = true;
+			}
+		} else if (movement.x < 0) {
+			int x = (int) bottomLeft.x / tile_size;
+			int topY = (int) topRight.y / tile_size;
+			int bottomY = (int) bottomLeft.y / tile_size;
+			boolean sideCollision = false;
+			for (int y = bottomY; y <= topY; ++y) {
+				sideCollision |= !state.getLevel().walkableTiles[x][y];
+			}
+			if (sideCollision) {
+				pos.x += tile_size - bottomLeft.x % tile_size;
+				collided = true;
+			}
 		}
-		if (prevYTile != yTile && !state.getLevel().walkableTiles[prevXTile][yTile]) {
-			pos.y -= movement.y;
-			collided = true;
+		bottomLeft = pos.cpy();
+		bottomLeft.x -= hitBox.x / 2;
+		bottomLeft.y -= hitBox.y / 2;
+
+		topRight = bottomLeft.cpy();
+		topRight.add(hitBox);
+
+		if (movement.y > 0) {
+			int y = (int) topRight.y / tile_size;
+			int leftX = (int) bottomLeft.x / tile_size;
+			int rightX = (int) topRight.x / tile_size;
+			boolean verticalCollision = false;
+			for (int x = leftX; x <= rightX; ++x) {
+				verticalCollision |= !state.getLevel().walkableTiles[x][y];
+			}
+			if (verticalCollision) {
+				pos.y -= topRight.y % tile_size - 1;
+				collided = true;
+			}
+		} else if (movement.y < 0) {
+			int y = (int) bottomLeft.y / tile_size;
+			int leftX = (int) bottomLeft.x / tile_size;
+			int rightX = (int) topRight.x / tile_size;
+			boolean verticalCollision = false;
+			for (int x = leftX; x <= rightX; ++x) {
+				verticalCollision |= !state.getLevel().walkableTiles[x][y];
+			}
+			if (verticalCollision) {
+				pos.y += tile_size - bottomLeft.y % tile_size;
+				collided = true;
+			}
 		}
+
+//
+//
+//		Vector2 prev = pos.cpy();
+//		pos.add(movement);
+//		Vector2 prevTile = tilesetHelper.tileOnPosition(prev);
+//		Vector2 tile = tilesetHelper.tileOnPosition(pos);
+//
+//		boolean collided = false;
+//		if (prevTile.x != tile.x && !state.getLevel().walkableTiles[(int)tile.x][(int)prevTile.y]) {
+//			pos.x = tilesetHelper.roundToTile(pos.x, pos.x > prev.x);
+//			collided = true;
+//		} else {
+//			prevTile.x = tile.x; // This is to prevent a collision bug
+//		}
+//		if (prevTile.y != tile.y && !state.getLevel().walkableTiles[(int)prevTile.x][(int)tile.y]) {
+//			pos.y = tilesetHelper.roundToTile(pos.y, pos.y > prev.y);
+//			collided = true;
+//		}
 		if (collided) {
 			onTileCollision();
 		}
 	}
+
+//	private void detectTileCollision(GameState state) {
+//		TilesetHelper tilesetHelper = state.getTilesetHelper();
+//
+//		// Apply movement and detect collision
+//		Vector2 prev = pos.cpy();
+//		pos.add(movement);
+//		Vector2 prevTile = tilesetHelper.tileOnPosition(prev);
+//		Vector2 tile = tilesetHelper.tileOnPosition(pos);
+//
+//		boolean collided = false;
+//		if (prevTile.x != tile.x && !state.getLevel().walkableTiles[(int)tile.x][(int)prevTile.y]) {
+//			pos.x = tilesetHelper.roundToTile(pos.x, pos.x > prev.x);
+//			collided = true;
+//		} else {
+//			prevTile.x = tile.x; // This is to prevent a collision bug
+//		}
+//		if (prevTile.y != tile.y && !state.getLevel().walkableTiles[(int)prevTile.x][(int)tile.y]) {
+//			pos.y = tilesetHelper.roundToTile(pos.y, pos.y > prev.y);
+//			collided = true;
+//		}
+//		if (collided) {
+//			onTileCollision();
+//		}
+//	}
+
+//	private void detectVertexTileCollision(TilesetHelper tilesetHelper, Vector2 vertex) {
+//		TilesetHelper tilesetHelper = state.getTilesetHelper();
+//
+//		// Apply movement and detect collision
+//		Vector2 prev = pos.cpy();
+//		pos.add(movement);
+//		Vector2 prevTile = tilesetHelper.tileOnPosition(prev);
+//		Vector2 tile = tilesetHelper.tileOnPosition(pos);
+//
+//		boolean collided = false;
+//		if (prevTile.x != tile.x && !state.getLevel().walkableTiles[(int)tile.x][(int)prevTile.y]) {
+//			pos.x = tilesetHelper.roundToTile(pos.x, pos.x > prev.x);
+//			collided = true;
+//		} else {
+//			prevTile.x = tile.x; // This is to prevent a collision bug
+//		}
+//		if (prevTile.y != tile.y && !state.getLevel().walkableTiles[(int)prevTile.x][(int)tile.y]) {
+//			pos.y = tilesetHelper.roundToTile(pos.y, pos.y > prev.y);
+//			collided = true;
+//		}
+//		if (collided) {
+//			onTileCollision();
+//		}
+//	}
 
 	private void detectEntityCollision(GameState state) {
 		for (Entity<?> entity : state.getEntities()) {
