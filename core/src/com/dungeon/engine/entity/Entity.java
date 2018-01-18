@@ -3,27 +3,29 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.Drawable;
-import com.dungeon.game.GameState;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.TilesetHelper;
+import com.dungeon.game.GameState;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	private GameAnimation<A> currentAnimation;
-	private final Vector2 pos = new Vector2();
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
-	private final Vector2 hitBox = new Vector2();
+	private final Body body;
 	protected float maxSpeed = 3;
 	private boolean invertX = false;
 
 	protected boolean expired;
 	protected int health = 100;
 	protected int maxHealth = 100;
+
+	protected Entity(Body body) {
+		this.body = body;
+	}
 
 	@Override
 	public TextureRegion getFrame(float stateTime) {
@@ -49,12 +51,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	@Override
 	public Vector2 getPos() {
-		return pos;
-	}
-
-	@Override
-	public void moveTo(Vector2 pos) {
-		this.pos.set(pos);
+		return body.getOrigin();
 	}
 
 	protected Vector2 getMovement() {
@@ -95,8 +92,58 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		movement.add(selfMovement);
 		movement.clamp(0, maxSpeed);
 
-		detectTileCollision(state);
-		detectEntityCollision(state);
+		float distance = movement.len();
+		// Split into 1 px steps, and decompose in axes
+		Vector2 stepX = movement.cpy().clamp(1,1);
+		Vector2 stepY = stepX.cpy();
+		stepX.y = 0;
+		stepY.x = 0;
+
+		boolean collidedX = false;
+		boolean collidedY = false;
+		while (distance > 1 && !(collidedX && collidedY)) {
+			// do step
+			if (!collidedX) {
+				body.move(stepX);
+				collidedX = detectTileCollision(state, stepX);
+			}
+			if (!collidedX) {
+				collidedX = detectEntityCollision(state, stepX);
+			}
+			if (collidedX) {
+				movement.x = 0;
+			}
+			if (!collidedY) {
+				body.move(stepY);
+				collidedY = detectTileCollision(state, stepY);
+			}
+			if (!collidedY) {
+				collidedY = detectEntityCollision(state, stepY);
+			}
+			if (collidedY) {
+				movement.y = 0;
+			}
+			distance -= 1;
+		}
+		if (distance > 0) {
+			stepX.y *= distance;
+			stepY.x *= distance;
+			// do remainder
+			if (!collidedX) {
+				body.move(stepX);
+				collidedX = detectTileCollision(state, stepX);
+			}
+			if (!collidedX) {
+				detectEntityCollision(state, stepX);
+			}
+			if (!collidedY) {
+				body.move(stepY);
+				collidedY = detectTileCollision(state, stepY);
+			}
+			if (!collidedY) {
+				detectEntityCollision(state, stepY);
+			}
+		}
 
 		// Decrease speed
 		movement.scl(0.9f);
@@ -109,174 +156,48 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		}
 	}
 
-	private void detectTileCollision(GameState state) {
-		TilesetHelper tilesetHelper = state.getTilesetHelper();
+	private boolean detectTileCollision(GameState state, Vector2 step) {
 		int tile_size = state.getLevelTileset().tile_size;
-
-		// Apply movement
-		pos.add(movement);
-
-		// Find current hitbox corners
-		Vector2 bottomLeft = pos.cpy();
-		bottomLeft.x -= hitBox.x / 2;
-		bottomLeft.y -= hitBox.y / 2;
-
-		Vector2 topRight = bottomLeft.cpy();
-		topRight.add(hitBox);
-
-		boolean collided = false;
-		if (movement.x > 0) {
-			int x = (int) topRight.x / tile_size;
-			int topY = (int) topRight.y / tile_size;
-			int bottomY = (int) bottomLeft.y / tile_size;
-			boolean sideCollision = false;
-			for (int y = bottomY; y <= topY; ++y) {
-				sideCollision |= !state.getLevel().walkableTiles[x][y];
-			}
-			if (sideCollision) {
-				pos.x -= topRight.x % tile_size - 1;
-				collided = true;
-			}
-		} else if (movement.x < 0) {
-			int x = (int) bottomLeft.x / tile_size;
-			int topY = (int) topRight.y / tile_size;
-			int bottomY = (int) bottomLeft.y / tile_size;
-			boolean sideCollision = false;
-			for (int y = bottomY; y <= topY; ++y) {
-				sideCollision |= !state.getLevel().walkableTiles[x][y];
-			}
-			if (sideCollision) {
-				pos.x += tile_size - bottomLeft.x % tile_size;
-				collided = true;
+		int left = body.getLeftTile(tile_size);
+		int right = body.getRightTile(tile_size);
+		int bottom = body.getBottomTile(tile_size);
+		int top = body.getTopTile(tile_size);
+		for (int x = left; x <= right; ++x) {
+			for (int y = bottom; y <= top; ++y) {
+				if (!state.getLevel().walkableTiles[x][y] && body.intersectsTile(x, y, tile_size)) {
+					body.move(step.scl(-1));
+					onTileCollision();
+					return true;
+				}
 			}
 		}
-		bottomLeft = pos.cpy();
-		bottomLeft.x -= hitBox.x / 2;
-		bottomLeft.y -= hitBox.y / 2;
-
-		topRight = bottomLeft.cpy();
-		topRight.add(hitBox);
-
-		if (movement.y > 0) {
-			int y = (int) topRight.y / tile_size;
-			int leftX = (int) bottomLeft.x / tile_size;
-			int rightX = (int) topRight.x / tile_size;
-			boolean verticalCollision = false;
-			for (int x = leftX; x <= rightX; ++x) {
-				verticalCollision |= !state.getLevel().walkableTiles[x][y];
-			}
-			if (verticalCollision) {
-				pos.y -= topRight.y % tile_size - 1;
-				collided = true;
-			}
-		} else if (movement.y < 0) {
-			int y = (int) bottomLeft.y / tile_size;
-			int leftX = (int) bottomLeft.x / tile_size;
-			int rightX = (int) topRight.x / tile_size;
-			boolean verticalCollision = false;
-			for (int x = leftX; x <= rightX; ++x) {
-				verticalCollision |= !state.getLevel().walkableTiles[x][y];
-			}
-			if (verticalCollision) {
-				pos.y += tile_size - bottomLeft.y % tile_size;
-				collided = true;
-			}
-		}
-
-//
-//
-//		Vector2 prev = pos.cpy();
-//		pos.add(movement);
-//		Vector2 prevTile = tilesetHelper.tileOnPosition(prev);
-//		Vector2 tile = tilesetHelper.tileOnPosition(pos);
-//
-//		boolean collided = false;
-//		if (prevTile.x != tile.x && !state.getLevel().walkableTiles[(int)tile.x][(int)prevTile.y]) {
-//			pos.x = tilesetHelper.roundToTile(pos.x, pos.x > prev.x);
-//			collided = true;
-//		} else {
-//			prevTile.x = tile.x; // This is to prevent a collision bug
-//		}
-//		if (prevTile.y != tile.y && !state.getLevel().walkableTiles[(int)prevTile.x][(int)tile.y]) {
-//			pos.y = tilesetHelper.roundToTile(pos.y, pos.y > prev.y);
-//			collided = true;
-//		}
-		if (collided) {
-			onTileCollision();
-		}
+		return false;
 	}
 
-//	private void detectTileCollision(GameState state) {
-//		TilesetHelper tilesetHelper = state.getTilesetHelper();
-//
-//		// Apply movement and detect collision
-//		Vector2 prev = pos.cpy();
-//		pos.add(movement);
-//		Vector2 prevTile = tilesetHelper.tileOnPosition(prev);
-//		Vector2 tile = tilesetHelper.tileOnPosition(pos);
-//
-//		boolean collided = false;
-//		if (prevTile.x != tile.x && !state.getLevel().walkableTiles[(int)tile.x][(int)prevTile.y]) {
-//			pos.x = tilesetHelper.roundToTile(pos.x, pos.x > prev.x);
-//			collided = true;
-//		} else {
-//			prevTile.x = tile.x; // This is to prevent a collision bug
-//		}
-//		if (prevTile.y != tile.y && !state.getLevel().walkableTiles[(int)prevTile.x][(int)tile.y]) {
-//			pos.y = tilesetHelper.roundToTile(pos.y, pos.y > prev.y);
-//			collided = true;
-//		}
-//		if (collided) {
-//			onTileCollision();
-//		}
-//	}
-
-//	private void detectVertexTileCollision(TilesetHelper tilesetHelper, Vector2 vertex) {
-//		TilesetHelper tilesetHelper = state.getTilesetHelper();
-//
-//		// Apply movement and detect collision
-//		Vector2 prev = pos.cpy();
-//		pos.add(movement);
-//		Vector2 prevTile = tilesetHelper.tileOnPosition(prev);
-//		Vector2 tile = tilesetHelper.tileOnPosition(pos);
-//
-//		boolean collided = false;
-//		if (prevTile.x != tile.x && !state.getLevel().walkableTiles[(int)tile.x][(int)prevTile.y]) {
-//			pos.x = tilesetHelper.roundToTile(pos.x, pos.x > prev.x);
-//			collided = true;
-//		} else {
-//			prevTile.x = tile.x; // This is to prevent a collision bug
-//		}
-//		if (prevTile.y != tile.y && !state.getLevel().walkableTiles[(int)prevTile.x][(int)tile.y]) {
-//			pos.y = tilesetHelper.roundToTile(pos.y, pos.y > prev.y);
-//			collided = true;
-//		}
-//		if (collided) {
-//			onTileCollision();
-//		}
-//	}
-
-	private void detectEntityCollision(GameState state) {
+	private boolean detectEntityCollision(GameState state, Vector2 step) {
+		boolean pushedBack = false;
 		for (Entity<?> entity : state.getEntities()) {
-			if (collides(entity.getPos(), entity.getHitBox())) {
+			if (entity != this && collides(entity.body)) {
+				if (this instanceof PlayerCharacter) {
+					System.out.println("Collided with another entity: " + entity.toString() + " - this: " + body.getOrigin() + " other: " + entity.body.getOrigin());
+				}
 				onEntityCollision(state, entity);
+				// If collides with a solid entity, push back
+				if (!pushedBack && entity.isSolid()) {
+					body.move(step.scl(-1));
+					pushedBack = true;
+				}
 			}
 		}
-
+		return pushedBack;
 	}
 
 	public boolean collides(Vector2 pos) {
-		return  pos.x >= (this.pos.x - this.hitBox.x / 2) &&
-				pos.x <= (this.pos.x + this.hitBox.x / 2) &&
-				pos.y >= (this.pos.y - this.hitBox.y / 2) &&
-				pos.y <= (this.pos.y + this.hitBox.y / 2);
+		return body.intersects(pos);
 	}
 
-	public boolean collides(Vector2 pos, Vector2 hitBox) {
-		return  pos.x - hitBox.x / 2 >= (this.pos.x - this.hitBox.x / 2) &&
-				pos.x + hitBox.x / 2 <= (this.pos.x + this.hitBox.x / 2) &&
-				pos.y - hitBox.y / 2 >= (this.pos.y - this.hitBox.y / 2) &&
-				pos.y + hitBox.x / 2 <= (this.pos.y + this.hitBox.y / 2);
+	public boolean collides(Body body) {
+		return this.body.intersects(body);
 	}
 
 	public void hit(GameState state, int dmg) {
@@ -286,13 +207,8 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		}
 	}
 
-	protected void setHitBox(float x, float y) {
-		this.hitBox.x = x;
-		this.hitBox.y = y;
-	}
-
-	protected Vector2 getHitBox() {
-		return hitBox;
+	protected Vector2 getBoundingBox() {
+		return body.getBoundingBox();
 	}
 
 

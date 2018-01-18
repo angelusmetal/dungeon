@@ -1,10 +1,11 @@
 package com.dungeon.engine.entity;
 
-import com.dungeon.engine.render.Drawable;
-import com.dungeon.game.GameState;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.movement.Movable;
+import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Tileset;
+import com.dungeon.game.GameState;
 
 /**
  * Base class for all projectiles
@@ -23,7 +24,8 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 	protected float startTime;
 	protected boolean exploding = false;
 
-	public Projectile(float timeToLive, float startTime) {
+	public Projectile(float timeToLive, float startTime, Body body) {
+		super(body);
 		this.timeToLive = timeToLive;
 		this.startTime = startTime;
 	}

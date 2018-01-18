@@ -2,11 +2,11 @@ package com.dungeon.game;
 
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.tileset.DungeonVioletTileset;
 import com.dungeon.game.tileset.TilesetManager;
-import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.LinkedList;
 import java.util.List;

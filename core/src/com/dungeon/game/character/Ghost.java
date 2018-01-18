@@ -1,17 +1,19 @@
 package com.dungeon.game.character;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.game.GameState;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.physics.Body;
+import com.dungeon.game.GameState;
 
 public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 500 * 500;
 
-	public Ghost(GameState state) {
+	public Ghost(GameState state, Vector2 pos) {
+		super(new Body(pos, new Vector2(16, 30)));
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 		provider.register(AnimationType.IDLE, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
 		provider.register(AnimationType.WALK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
@@ -23,7 +25,6 @@ public class Ghost extends Character {
 		provider.register(AnimationType.CLIMB, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
-		setHitBox(16, 30);
 		maxSpeed = 1f;
 	}
 

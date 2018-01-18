@@ -3,12 +3,12 @@ package com.dungeon.engine.controller.character;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.controller.directional.DirectionalListener;
 import com.dungeon.engine.controller.directional.KeyboardDirectionalControl;
 import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.GameState;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -17,9 +17,9 @@ import java.util.function.Supplier;
 public class KeyboardCharacterControl extends CharacterControl {
 
 	private final Supplier<Vector2> positionProvider;
-	private final Supplier<PlayerCharacter> characterSupplier;
+	private final Function<Vector2, PlayerCharacter> characterSupplier;
 
-	public KeyboardCharacterControl(GameState state, InputMultiplexer inputMultiplexer, Supplier<Vector2> positionProvider, Supplier<PlayerCharacter> characterSupplier) {
+	public KeyboardCharacterControl(GameState state, InputMultiplexer inputMultiplexer, Supplier<Vector2> positionProvider, Function<Vector2, PlayerCharacter> characterSupplier) {
 		super(state);
 		this.positionProvider = positionProvider;
 		this.characterSupplier = characterSupplier;
@@ -51,7 +51,7 @@ public class KeyboardCharacterControl extends CharacterControl {
 	}
 
 	@Override
-	PlayerCharacter getCharacter() {
-		return characterSupplier.get();
+	PlayerCharacter getCharacter(Vector2 origin) {
+		return characterSupplier.apply(origin);
 	}
 }

@@ -7,6 +7,7 @@ import com.dungeon.engine.controller.trigger.ControllerTriggerControl;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.GameState;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -15,9 +16,9 @@ import java.util.function.Supplier;
 public class ControllerCharacterControl extends CharacterControl {
 
 	private final Supplier<Vector2> positionProvider;
-	private final Supplier<PlayerCharacter> characterSupplier;
+	private final Function<Vector2, PlayerCharacter> characterSupplier;
 
-	public ControllerCharacterControl(GameState state, Controller controller, Supplier<Vector2> positionProvider, Supplier<PlayerCharacter> characterSupplier) {
+	public ControllerCharacterControl(GameState state, Controller controller, Supplier<Vector2> positionProvider, Function<Vector2, PlayerCharacter> characterSupplier) {
 		super(state);
 		this.positionProvider = positionProvider;
 		this.characterSupplier = characterSupplier;
@@ -49,7 +50,7 @@ public class ControllerCharacterControl extends CharacterControl {
 	}
 
 	@Override
-	PlayerCharacter getCharacter() {
-		return characterSupplier.get();
+	PlayerCharacter getCharacter(Vector2 origin) {
+		return characterSupplier.apply(origin);
 	}
 }

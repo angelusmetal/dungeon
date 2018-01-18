@@ -20,13 +20,12 @@ public abstract class CharacterControl {
 	}
 
 	abstract Vector2 getStartingPosition();
-	abstract PlayerCharacter getCharacter();
+	abstract PlayerCharacter getCharacter(Vector2 origin);
 
 	void start(boolean pressed) {
 		if (character == null || character.isExpired(state.getStateTime()) && pressed) {
 			Vector2 startingPosition = getStartingPosition();
-			character = getCharacter();
-			character.moveTo(new Vector2(startingPosition.x * state.getLevelTileset().tile_size, startingPosition.y * state.getLevelTileset().tile_size));
+			character = getCharacter(new Vector2(startingPosition.x * state.getLevelTileset().tile_size, startingPosition.y * state.getLevelTileset().tile_size));
 			state.addPlayerCharacter(character);
 		}
 	}

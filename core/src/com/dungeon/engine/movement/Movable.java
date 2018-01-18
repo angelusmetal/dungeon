@@ -10,5 +10,4 @@ public interface Movable {
 	void setSelfMovement(Vector2 vector);
 	Vector2 getSelfMovement();
 	void move(GameState gameState);
-	void moveTo(Vector2 pos);
 }

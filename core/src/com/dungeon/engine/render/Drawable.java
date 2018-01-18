@@ -3,8 +3,8 @@ package com.dungeon.engine.render;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.game.GameState;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.GameState;
 
 public interface Drawable {
 

@@ -3,7 +3,6 @@ package com.dungeon.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
@@ -91,14 +90,13 @@ public class Dungeon extends ApplicationAdapter {
 				int startX = room.topLeft.x + 1 + i;
 				int startY = room.topLeft.y - 1 - i;
 				Vector2 position = new Vector2(startX * state.getLevelTileset().tile_size, startY * state.getLevelTileset().tile_size);
-				Ghost ghost = new Ghost(state);
-				ghost.moveTo(position);
+				Ghost ghost = new Ghost(state, position);
 				state.addEntity(ghost);
 			}
 		}
 	}
 
-	private PlayerCharacter getNewPlayer() {
+	private PlayerCharacter getNewPlayer(Vector2 origin) {
 		boolean hasAssasin = false, hasThief = false, hasWitch = false;
 		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
 			if (playerCharacter instanceof Assasin) {
@@ -110,11 +108,11 @@ public class Dungeon extends ApplicationAdapter {
 			}
 		}
 		if (!hasWitch) {
-			return new Witch(state);
+			return new Witch(state, origin);
 		} else if (!hasThief) {
-			return new Thief(state);
+			return new Thief(state, origin);
 		} else {
-			return new Assasin(state);
+			return new Assasin(state, origin);
 		}
 
 	}
@@ -126,7 +124,7 @@ public class Dungeon extends ApplicationAdapter {
 			return new Vector2(startX, startY);
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
-			return new Vector2(refPos.x / state.getLevelTileset().tile_size, refPos.y / state.getLevelTileset().tile_size);
+			return new Vector2(refPos.x / state.getLevelTileset().tile_size + 1, refPos.y / state.getLevelTileset().tile_size);
 		}
 	}
 
