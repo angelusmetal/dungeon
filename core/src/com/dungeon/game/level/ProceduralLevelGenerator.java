@@ -2,6 +2,7 @@ package com.dungeon.game.level;
 
 import com.dungeon.engine.render.Tile;
 import com.dungeon.game.tileset.DungeonVioletTileset;
+import com.dungeon.game.tileset.LevelTileset;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +76,7 @@ public class ProceduralLevelGenerator {
 		this.walkableTiles = new boolean[width][height];
 	}
 
-	public Level generateLevel(DungeonVioletTileset tileset) {
+	public Level generateLevel(LevelTileset tileset) {
 		// Pick a random position to start (excluding border rows/columns)
 		int startX = (int) (Math.random() * (width - 10)) + 5;
 		int startY = (int) (Math.random() * (height - 10)) + 5;
@@ -106,11 +107,11 @@ public class ProceduralLevelGenerator {
 		return level;
 	}
 
-	private Tile getTile(int x, int y, DungeonVioletTileset tileset) {
+	private Tile getTile(int x, int y, LevelTileset tileset) {
 
 		if (walkableTiles[x][y]) {
 			// Return a random floor tile
-			return tileset.FLOOR_TILES[(int) (Math.random() * tileset.FLOOR_TILES.length)];
+			return tileset.floor();
 		}
 
 		boolean freeUp = y > 0 && walkableTiles[x][y-1];
@@ -124,36 +125,36 @@ public class ProceduralLevelGenerator {
 
 		if (freeUp) {
 			if (freeLeft) {
-				return tileset.CONVEX_UPPER_RIGHT_TILE;
+				return tileset.convexUpperRight();
 			} else if (freeRight) {
-				return tileset.CONVEX_UPPER_LEFT_TILE;
+				return tileset.convexUpperLeft();
 			} else {
-				return tileset.CONCAVE_UPPER_TILE;
+				return tileset.concaveUpper();
 			}
 		} else if (freeLeft) {
 			if (freeDown) {
-				return tileset.CONVEX_LOWER_RIGHT_TILE;
+				return tileset.convexLowerRight();
 			} else {
-				return tileset.CONCAVE_RIGHT_TILE;
+				return tileset.concaveRight();
 			}
 		} else if (freeDown) {
 			if (freeRight) {
-				return tileset.CONVEX_LOWER_LEFT_TILE;
+				return tileset.convexLowerLeft();
 			} else {
-				return tileset.CONCAVE_LOWER_TILE;
+				return tileset.concaveLower();
 			}
 		} else if (freeRight) {
-			return tileset.CONCAVE_LEFT_TILE;
+			return tileset.concaveLeft();
 		} else if (freeUpLeft) {
-			return tileset.CONCAVE_UPPER_RIGHT_TILE;
+			return tileset.concaveUpperRight();
 		} else if (freeUpRight) {
-			return tileset.CONCAVE_UPPER_LEFT_TILE;
+			return tileset.concaveUpperLeft();
 		} else if (freeDownLeft) {
-			return tileset.CONCAVE_LOWER_RIGHT_TILE;
+			return tileset.concaveLowerRight();
 		} else if (freeDownRight) {
-			return tileset.CONCAVE_LOWER_LEFT_TILE;
+			return tileset.concaveLowerLeft();
 		}
-		return tileset.VOID_TILE;
+		return tileset.out();
 	}
 
 	private Room generateRoom(int x, int y, Direction direction, Type type) {

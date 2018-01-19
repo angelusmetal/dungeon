@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.render.Tileset;
 
-public class DungeonVioletTileset extends Tileset {
+public class DungeonVioletTileset extends LevelTileset {
 
 	public final TextureRegion FLOOR_1 = getTile(6, 2);
 	public final TextureRegion FLOOR_2 = getTile(6, 3);
@@ -62,4 +62,73 @@ public class DungeonVioletTileset extends Tileset {
 		super(new Texture("dungeon_violet.png"), 48);
 	}
 
+	@Override
+	public Tile out() {
+		return VOID_TILE;
+	}
+
+	@Override
+	public Tile floor() {
+		return getRandomTile(FLOOR_TILES);
+	}
+
+	@Override
+	public Tile convexLowerLeft() {
+		return CONVEX_LOWER_LEFT_TILE;
+	}
+
+	@Override
+	public Tile convexLowerRight() {
+		return CONVEX_LOWER_RIGHT_TILE;
+	}
+
+	@Override
+	public Tile convexUpperLeft() {
+		return CONVEX_UPPER_LEFT_TILE;
+	}
+
+	@Override
+	public Tile convexUpperRight() {
+		return CONVEX_UPPER_RIGHT_TILE;
+	}
+
+	@Override
+	public Tile concaveLowerLeft() {
+		return CONCAVE_LOWER_LEFT_TILE;
+	}
+
+	@Override
+	public Tile concaveLowerRight() {
+		return CONCAVE_LOWER_RIGHT_TILE;
+	}
+
+	@Override
+	public Tile concaveUpperLeft() {
+		return CONCAVE_UPPER_LEFT_TILE;
+	}
+
+	@Override
+	public Tile concaveUpperRight() {
+		return CONCAVE_UPPER_RIGHT_TILE;
+	}
+
+	@Override
+	public Tile concaveLower() {
+		return CONCAVE_LOWER_TILE;
+	}
+
+	@Override
+	public Tile concaveUpper() {
+		return CONCAVE_UPPER_TILE;
+	}
+
+	@Override
+	public Tile concaveLeft() {
+		return CONCAVE_LEFT_TILE;
+	}
+
+	@Override
+	public Tile concaveRight() {
+		return CONCAVE_RIGHT_TILE;
+	}
 }

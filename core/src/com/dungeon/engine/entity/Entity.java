@@ -178,9 +178,6 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		boolean pushedBack = false;
 		for (Entity<?> entity : state.getEntities()) {
 			if (entity != this && collides(entity.body)) {
-				if (this instanceof PlayerCharacter) {
-					System.out.println("Collided with another entity: " + entity.toString() + " - this: " + body.getOrigin() + " other: " + entity.body.getOrigin());
-				}
 				onEntityCollision(state, entity);
 				// If collides with a solid entity, push back
 				if (!pushedBack && entity.isSolid()) {
