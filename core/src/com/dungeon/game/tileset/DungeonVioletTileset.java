@@ -7,56 +7,62 @@ import com.dungeon.engine.render.Tileset;
 
 public class DungeonVioletTileset extends LevelTileset {
 
-	public final TextureRegion FLOOR_1 = getTile(6, 2);
-	public final TextureRegion FLOOR_2 = getTile(6, 3);
-	public final TextureRegion FLOOR_3 = getTile(7, 2);
-	public final TextureRegion FLOOR_4 = getTile(7, 3);
+	private final TextureRegion FLOOR_1 = getTile(6, 2);
+	private final TextureRegion FLOOR_2 = getTile(6, 3);
+	private final TextureRegion FLOOR_3 = getTile(7, 2);
+	private final TextureRegion FLOOR_4 = getTile(7, 3);
 
-	public final TextureRegion CONVEX_LOWER_RIGHT = getTile(1, 2);
-	public final TextureRegion CONVEX_LOWER_LEFT = getTile(0, 2);
-	public final TextureRegion CONVEX_UPPER_RIGHT = getTile(1, 3);
-	public final TextureRegion CONVEX_UPPER_LEFT = getTile(0, 3);
+	private final TextureRegion CONVEX_LOWER_RIGHT = getTile(1, 2);
+	private final TextureRegion CONVEX_LOWER_LEFT = getTile(0, 2);
+	private final TextureRegion CONVEX_UPPER_RIGHT = getTile(1, 3);
+	private final TextureRegion CONVEX_UPPER_LEFT = getTile(0, 3);
 
-	public final TextureRegion CONCAVE_UPPER_LEFT = getTile(0, 0);
-	public final TextureRegion CONCAVE_UPPER = getTile(2, 0);
-	public final TextureRegion CONCAVE_UPPER_RIGHT = getTile(1, 0);
-	public final TextureRegion CONCAVE_LEFT = getTile(2, 2);
-	public final TextureRegion CONCAVE_RIGHT = getTile(2, 3);
-	public final TextureRegion CONCAVE_LOWER_LEFT = getTile(0, 1);
-	public final TextureRegion CONCAVE_LOWER = getTile(2, 1);
-	public final TextureRegion CONCAVE_LOWER_RIGHT = getTile(1, 1);
-
-	// TODO map variants for UPPER, LEFT, RIGHT, LOWER
+	private final TextureRegion CONCAVE_UPPER_LEFT = getTile(0, 0);
+	private final TextureRegion CONCAVE_UPPER_1 = getTile(2, 0);
+	private final TextureRegion CONCAVE_UPPER_2 = getTile(3, 0);
+	private final TextureRegion CONCAVE_UPPER_3 = getTile(4, 0);
+	private final TextureRegion CONCAVE_UPPER_4 = getTile(5, 0);
+	private final TextureRegion CONCAVE_UPPER_RIGHT = getTile(1, 0);
+	private final TextureRegion CONCAVE_LEFT_1 = getTile(2, 2);
+	private final TextureRegion CONCAVE_LEFT_2 = getTile(3, 2);
+	private final TextureRegion CONCAVE_LEFT_3 = getTile(4, 2);
+	private final TextureRegion CONCAVE_LEFT_4 = getTile(5, 2);
+	private final TextureRegion CONCAVE_RIGHT_1 = getTile(2, 3);
+	private final TextureRegion CONCAVE_RIGHT_2 = getTile(3, 3);
+	private final TextureRegion CONCAVE_RIGHT_3 = getTile(4, 3);
+	private final TextureRegion CONCAVE_RIGHT_4 = getTile(5, 3);
+	private final TextureRegion CONCAVE_LOWER_LEFT = getTile(0, 1);
+	private final TextureRegion CONCAVE_LOWER_1 = getTile(2, 1);
+	private final TextureRegion CONCAVE_LOWER_2 = getTile(3, 1);
+	private final TextureRegion CONCAVE_LOWER_3 = getTile(4, 1);
+	private final TextureRegion CONCAVE_LOWER_4 = getTile(5, 1);
+	private final TextureRegion CONCAVE_LOWER_RIGHT = getTile(1, 1);
 
 //	public final TextureRegion OVERLAY_1 = getTile(0, 0);
 //	public final TextureRegion OVERLAY_2 = getTile(0, 1);
 
-	public final TextureRegion VOID = getTile(0, 4);
+	private final TextureRegion VOID = getTile(0, 4);
 
-	public final Tile FLOOR_1_TILE = new Tile(FLOOR_1);
-	public final Tile FLOOR_2_TILE = new Tile(FLOOR_2);
-	public final Tile FLOOR_3_TILE = new Tile(FLOOR_3);
-	public final Tile FLOOR_4_TILE = new Tile(FLOOR_4);
-	public final Tile[] FLOOR_TILES = {FLOOR_1_TILE, FLOOR_2_TILE, FLOOR_3_TILE, FLOOR_4_TILE};
+	private final Tile[] FLOOR_TILES = createTiles(FLOOR_1, FLOOR_2, FLOOR_3, FLOOR_4);
 
-	public final Tile CONVEX_LOWER_RIGHT_TILE = new Tile(CONVEX_LOWER_RIGHT);
-	public final Tile CONVEX_LOWER_LEFT_TILE = new Tile(CONVEX_LOWER_LEFT);
-	public final Tile CONVEX_UPPER_RIGHT_TILE = new Tile(CONVEX_UPPER_RIGHT);
-	public final Tile CONVEX_UPPER_LEFT_TILE = new Tile(CONVEX_UPPER_LEFT);
+	private final Tile CONVEX_LOWER_RIGHT_TILE = new Tile(CONVEX_LOWER_RIGHT);
+	private final Tile CONVEX_LOWER_LEFT_TILE = new Tile(CONVEX_LOWER_LEFT);
+	private final Tile CONVEX_UPPER_RIGHT_TILE = new Tile(CONVEX_UPPER_RIGHT);
+	private final Tile CONVEX_UPPER_LEFT_TILE = new Tile(CONVEX_UPPER_LEFT);
 
-	public final Tile CONCAVE_UPPER_LEFT_TILE = new Tile(CONCAVE_UPPER_LEFT);
-	public final Tile CONCAVE_UPPER_TILE = new Tile(CONCAVE_UPPER);
-	public final Tile CONCAVE_UPPER_RIGHT_TILE = new Tile(CONCAVE_UPPER_RIGHT);
-	public final Tile CONCAVE_LEFT_TILE = new Tile(CONCAVE_LEFT);
-	public final Tile CONCAVE_RIGHT_TILE = new Tile(CONCAVE_RIGHT);
-	public final Tile CONCAVE_LOWER_LEFT_TILE = new Tile(CONCAVE_LOWER_LEFT);
-	public final Tile CONCAVE_LOWER_TILE = new Tile(CONCAVE_LOWER);
-	public final Tile CONCAVE_LOWER_RIGHT_TILE = new Tile(CONCAVE_LOWER_RIGHT);
+	private final Tile CONCAVE_UPPER_LEFT_TILE = new Tile(CONCAVE_UPPER_LEFT);
+	private final Tile[] CONCAVE_UPPER_TILES = createTiles(CONCAVE_UPPER_1, CONCAVE_UPPER_2, CONCAVE_UPPER_3, CONCAVE_UPPER_4);
+	private final Tile CONCAVE_UPPER_RIGHT_TILE = new Tile(CONCAVE_UPPER_RIGHT);
+	private final Tile[] CONCAVE_LEFT_TILES = createTiles(CONCAVE_LEFT_1, CONCAVE_LEFT_2, CONCAVE_LEFT_3, CONCAVE_LEFT_4);
+	private final Tile[] CONCAVE_RIGHT_TILES = createTiles(CONCAVE_RIGHT_1, CONCAVE_RIGHT_2, CONCAVE_RIGHT_3, CONCAVE_RIGHT_4);
+	private final Tile CONCAVE_LOWER_LEFT_TILE = new Tile(CONCAVE_LOWER_LEFT);
+	private final Tile[] CONCAVE_LOWER_TILES = createTiles(CONCAVE_LOWER_1, CONCAVE_LOWER_2, CONCAVE_LOWER_3, CONCAVE_LOWER_4);
+	private final Tile CONCAVE_LOWER_RIGHT_TILE = new Tile(CONCAVE_LOWER_RIGHT);
 
-//	public final Tile OVERLAY_1_TILE = new Tile(OVERLAY_1);
-//	public final Tile OVERLAY_2_TILE = new Tile(OVERLAY_2);
+//	private final Tile OVERLAY_1_TILE = new Tile(OVERLAY_1);
+//	private final Tile OVERLAY_2_TILE = new Tile(OVERLAY_2);
 
-	public final Tile VOID_TILE = new Tile(VOID);
+	private final Tile VOID_TILE = new Tile(VOID);
 
 	public DungeonVioletTileset() {
 		super(new Texture("dungeon_violet.png"), 48);
@@ -114,21 +120,21 @@ public class DungeonVioletTileset extends LevelTileset {
 
 	@Override
 	public Tile concaveLower() {
-		return CONCAVE_LOWER_TILE;
+		return getRandomTile(CONCAVE_LOWER_TILES);
 	}
 
 	@Override
 	public Tile concaveUpper() {
-		return CONCAVE_UPPER_TILE;
+		return getRandomTile(CONCAVE_UPPER_TILES);
 	}
 
 	@Override
 	public Tile concaveLeft() {
-		return CONCAVE_LEFT_TILE;
+		return getRandomTile(CONCAVE_LEFT_TILES);
 	}
 
 	@Override
 	public Tile concaveRight() {
-		return CONCAVE_RIGHT_TILE;
+		return getRandomTile(CONCAVE_RIGHT_TILES);
 	}
 }

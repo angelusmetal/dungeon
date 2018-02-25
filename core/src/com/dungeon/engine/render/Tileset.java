@@ -27,6 +27,14 @@ public abstract class Tileset {
 		return new TextureRegion(texture, tile_size * x, tile_size * y, tile_size * x_tiles, tile_size * y_tiles);
 	}
 
+	protected Tile[] createTiles(TextureRegion ... regions) {
+		Tile[] tiles = new Tile[regions.length];
+		for (int i = 0; i < regions.length; ++i) {
+			tiles[i] = new Tile(regions[i]);
+		}
+		return tiles;
+	}
+
 	protected Tile getRandomTile(Tile[] tiles) {
 		return tiles[random.nextInt(tiles.length)];
 	}
