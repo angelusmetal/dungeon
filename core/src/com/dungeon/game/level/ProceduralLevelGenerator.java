@@ -1,27 +1,29 @@
 package com.dungeon.game.level;
 
 import com.dungeon.engine.render.Tile;
-import com.dungeon.game.tileset.DungeonVioletTileset;
+import com.dungeon.game.level.room.RectangleRoomGenerator;
+import com.dungeon.game.level.room.RoomGenerator;
 import com.dungeon.game.tileset.LevelTileset;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ProceduralLevelGenerator {
 
 	// TODO streamline random methods to reduce boilerplate code and make them based on seeds
+	private static final Random random = new Random();
+	// TODO replace Math.random() with the above
 
 	private int width;
 	private int height;
-	// Bit map of walkable tiles
-	private boolean[][] walkableTiles;
+	private TileType[][] tiles;
 	private int maxRoomSize = 12;
 	private int minRoomSize = 3;
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
 	private List<Coords> doors = new ArrayList<>();
+
+	private List<RoomGenerator> roomGenerators;
 
 	public enum Type {
 		HEART,
@@ -73,7 +75,13 @@ public class ProceduralLevelGenerator {
 	public ProceduralLevelGenerator(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.walkableTiles = new boolean[width][height];
+		this.tiles = new TileType[width][height];
+		for (int x = 0; x < width; ++x) {
+			for (int y = 0; y < height; ++y) {
+				tiles[x][y] = TileType.VOID;
+			}
+		}
+		this.roomGenerators = Arrays.asList(new RectangleRoomGenerator());
 	}
 
 	public Level generateLevel(LevelTileset tileset) {
@@ -103,25 +111,25 @@ public class ProceduralLevelGenerator {
 		Level level = new Level();
 		level.map = map;
 		level.rooms = rooms;
-		level.walkableTiles = walkableTiles;
+		level.walkableTiles = tiles;
 		return level;
 	}
 
 	private Tile getTile(int x, int y, LevelTileset tileset) {
 
-		if (walkableTiles[x][y]) {
+		if (tiles[x][y] == TileType.FLOOR) {
 			// Return a random floor tile
 			return tileset.floor();
 		}
 
-		boolean freeUp = y > 0 && walkableTiles[x][y-1];
-		boolean freeDown = y < height - 1 && walkableTiles[x][y+1];
-		boolean freeLeft = x > 0 && walkableTiles[x-1][y];
-		boolean freeRight = x < width - 1 && walkableTiles[x+1][y];
-		boolean freeUpLeft = y > 0 && x > 0 && walkableTiles[x-1][y-1];
-		boolean freeUpRight = y > 0 && x < width - 1 && walkableTiles[x+1][y-1];
-		boolean freeDownLeft = y < height - 1 && x > 0 && walkableTiles[x-1][y+1];
-		boolean freeDownRight = y < height - 1 && x < width - 1 && walkableTiles[x+1][y+1];
+		boolean freeUp = y > 0 && tiles[x][y-1] != TileType.VOID;
+		boolean freeDown = y < height - 1 && tiles[x][y+1] != TileType.VOID;
+		boolean freeLeft = x > 0 && tiles[x-1][y] != TileType.VOID;
+		boolean freeRight = x < width - 1 && tiles[x+1][y] != TileType.VOID;
+		boolean freeUpLeft = y > 0 && x > 0 && tiles[x-1][y-1] != TileType.VOID;
+		boolean freeUpRight = y > 0 && x < width - 1 && tiles[x+1][y-1] != TileType.VOID;
+		boolean freeDownLeft = y < height - 1 && x > 0 && tiles[x-1][y+1] != TileType.VOID;
+		boolean freeDownRight = y < height - 1 && x < width - 1 && tiles[x+1][y+1] != TileType.VOID;
 
 		if (freeUp) {
 			if (freeLeft) {
@@ -157,34 +165,58 @@ public class ProceduralLevelGenerator {
 		return tileset.out();
 	}
 
-	private Room generateRoom(int x, int y, Direction direction, Type type) {
-		System.out.println("Generating " + type + " room...");
-		// Pick the room size
-		int roomWidth = (int) (Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
-		int roomHeight = (int) (Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
-		// Check the available size, depending on the direction
-		Room room = attemptRoom(x, y, direction, roomWidth, roomHeight);
-		if (room != null) {
-			System.out.println("   -> x: " + x + ", y: " + y + ", width: " + roomWidth + ", height: " + roomHeight);
-			// Pick each connection point and attempt to place a room
-			room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
-				System.out.println("   -> Visiting connection point " + point + "...");
-				// Attempt to generate a room in that direction (at a random separation)
-				int roomSeparation = (int) (Math.random() * (maxRoomSeparation - minRoomSize) + minRoomSeparation);
-				Room generated = generateRoom(point.coords.x + point.direction.x * roomSeparation, point.coords.y + point.direction.y * roomSeparation, point.direction, Type.NORMAL);
-				if (generated != null) {
-					point.active = true;
-					// Make the connecting tile walkable
-					for (int i = 1; i < roomSeparation; ++i) {
-						walkableTiles[point.coords.x + point.direction.x * i][point.coords.y + point.direction.y * i] = true;
-						// TODO Hmm not entirely right... I need to fix this
-						doors.add(new Coords(point.coords.x + point.direction.x,point.coords.y + point.direction.y));
-					}
-				}
-				point.visited = true;
-			});
+	private static class Frame {
+		final int x;
+		final int y;
+		final Direction direction;
+		final Type type;
+		final ConnectionPoint originPoint;
+		final int roomSeparation;
+		public Frame(int x, int y, Direction direction, Type type, ConnectionPoint originPoint, int roomSeparation) {
+			this.x = x;
+			this.y = y;
+			this.direction = direction;
+			this.type = type;
+			this.originPoint = originPoint;
+			this.roomSeparation = roomSeparation;
+
 		}
-		return room;
+	}
+
+	private void generateRoom(int x, int y, Direction direction, Type type) {
+		Stack<Frame> stack = new Stack<>();
+		stack.push(new Frame(x, y, direction, type, null, 0));
+		while (!stack.isEmpty()) {
+			Frame frame = stack.pop();
+			System.out.println("Generating " + frame.type + " room...");
+			// Pick the room size
+			int roomWidth = (int) (Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
+			int roomHeight = (int) (Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
+			// Check the available size, depending on the direction
+			Room room = attemptRoom(frame.x, frame.y, frame.direction, roomWidth, roomHeight);
+			if (room != null) {
+				System.out.println("   -> x: " + frame.x + ", y: " + frame.y + ", width: " + roomWidth + ", height: " + roomHeight);
+				// Pick each connection point and attempt to place a room
+				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
+					System.out.println("   -> Visiting connection point " + point + "...");
+					// Attempt to generate a room in that direction (at a random separation)
+					int roomSeparation = (int) (Math.random() * (maxRoomSeparation - minRoomSize) + minRoomSeparation);
+					stack.push(new Frame(point.coords.x + point.direction.x * roomSeparation, point.coords.y + point.direction.y * roomSeparation, point.direction, Type.NORMAL, point, roomSeparation));
+				});
+				if (frame.originPoint != null) {
+					frame.originPoint.active = true;
+					// Make the connecting tile walkable
+					for (int i = 0; i < frame.roomSeparation; ++i) {
+						tiles[frame.originPoint.coords.x + frame.originPoint.direction.x * i][frame.originPoint.coords.y + frame.originPoint.direction.y * i] = TileType.FLOOR;
+						// TODO Hmm not entirely right... I need to fix this
+						doors.add(new Coords(frame.originPoint.coords.x + frame.originPoint.direction.x,frame.originPoint.coords.y + frame.originPoint.direction.y));
+					}
+					frame.originPoint.visited = true;
+				}
+			} else {
+				System.out.println("... but could not place it");
+			}
+		}
 	}
 
 	private Room attemptRoom(int x, int y, Direction direction, int roomWidth, int roomHeight) {
@@ -193,7 +225,7 @@ public class ProceduralLevelGenerator {
 		}
 		for (int rWidth = roomWidth; rWidth >= minRoomSize; --rWidth) {
 			for (int rHeight = roomHeight; rHeight >= minRoomSize; --rHeight) {
-				Room room = makeRoomCoords(x, y, roomWidth, roomHeight, direction);
+				Room room = generateRoom(x, y, roomWidth, roomHeight, direction);
 				if (canPlaceRoom(room)) {
 					placeRoom(room);
 					addConnectionPoints(room, direction);
@@ -205,49 +237,47 @@ public class ProceduralLevelGenerator {
 		return null;
 	}
 
-	private Room makeRoomCoords(int x, int y, int width, int height, Direction direction) {
-		Room room = new Room();
+	private Room generateRoom(int x, int y, int width, int height, Direction direction) {
+		int left, bottom;
 		if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-			room.bottomRight.y = y - height / 2;
-			room.topLeft.y = room.bottomRight.y + height - 1;
+			bottom = y - height / 2;
 			if (direction == Direction.LEFT) {
-				room.bottomRight.x = x;
-				room.topLeft.x = room.bottomRight.x - width + 1;
+				left = x - width + 1;
 			} else {
-				room.topLeft.x = x;
-				room.bottomRight.x = room.topLeft.x + width - 1;
+				left = x;
 			}
 		} else {
-			room.topLeft.x = x - width / 2;
-			room.bottomRight.x = room.topLeft.x + width - 1;
+			left = x - width / 2;
 			if (direction == Direction.UP) {
-				room.bottomRight.y = y;
-				room.topLeft.y = room.bottomRight.y + height - 1;
+				bottom = y;
 			} else {
-				room.topLeft.y = y;
-				room.bottomRight.y = room.topLeft.y - height + 1;
+				bottom = y - height + 1;
 			}
 		}
-		return room;
+
+		return roomGenerators.get(random.nextInt(roomGenerators.size())).generate(left, bottom, width, height);
 	}
 
 	private boolean canPlaceRoom(Room room) {
-		boolean canPlace = true;
-		for (int x = room.topLeft.x-2; x <= room.bottomRight.x+2; ++x) {
-			for (int y = room.bottomRight.y-2; y <= room.topLeft.y+2; ++y) {
-				if (x >= width-2 || x < 2 || y >= height-2 || y < 2 || walkableTiles[x][y]) {
-					canPlace = false;
+		if (room.left < 2 || room.bottom < 2 || room.left + room.width >= width - 2 || room.bottom + room.height >= height - 2) {
+			return false;
+		}
+
+		for (int x = room.left - 2; x <= room.left + room.width + 2; ++x) {
+			for (int y = room.bottom - 2; y <= room.bottom + room.height + 2; ++y) {
+				if (tiles[x][y] != TileType.VOID) {
+					return false;
 				}
 			}
 		}
-		return canPlace;
+		return true;
 	}
 
 	private void placeRoom(Room room) {
 		rooms.add(room);
-		for (int x = room.topLeft.x; x <= room.bottomRight.x; ++x) {
-			for (int y = room.bottomRight.y; y <= room.topLeft.y; ++y) {
-				walkableTiles[x][y] = true;
+		for (int x = 0; x < room.width; ++x) {
+			for (int y = 0; y < room.height; ++y) {
+				tiles[x + room.left][y + room.bottom] = room.tiles[x][y];
 			}
 		}
 	}

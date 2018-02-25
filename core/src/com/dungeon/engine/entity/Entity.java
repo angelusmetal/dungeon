@@ -9,6 +9,7 @@ import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.GameState;
+import com.dungeon.game.level.TileType;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
@@ -164,7 +165,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		int top = body.getTopTile(tile_size);
 		for (int x = left; x <= right; ++x) {
 			for (int y = bottom; y <= top; ++y) {
-				if (!state.getLevel().walkableTiles[x][y] && body.intersectsTile(x, y, tile_size)) {
+				if (state.getLevel().walkableTiles[x][y] == TileType.VOID && body.intersectsTile(x, y, tile_size)) {
 					body.move(step.scl(-1));
 					onTileCollision();
 					return true;

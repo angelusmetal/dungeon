@@ -5,7 +5,7 @@ import com.dungeon.engine.render.Tile;
 import java.util.List;
 
 public class Level {
-	public boolean[][] walkableTiles;
+	public TileType[][] walkableTiles;
 	public Tile[][] map;
 	public List<Room> rooms;
 }

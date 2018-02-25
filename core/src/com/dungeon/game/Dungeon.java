@@ -119,8 +119,9 @@ public class Dungeon extends ApplicationAdapter {
 
 	private Vector2 getStartingPosition() {
 		if (state.getPlayerCharacters().isEmpty()) {
-			int startX = state.getLevel().rooms.get(0).topLeft.x + 1;
-			int startY = state.getLevel().rooms.get(0).topLeft.y - 1;
+			int startX = state.getLevel().rooms.get(0).left + 1;
+			int startY = state.getLevel().rooms.get(0).bottom + 1;
+			System.out.println("Spawning player at " + startX + "," + startY);
 			return new Vector2(startX, startY);
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();

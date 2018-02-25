@@ -7,6 +7,7 @@ import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Tileset;
 import com.dungeon.game.GameState;
+import com.dungeon.game.level.TileType;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -136,7 +137,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 			Tileset tileset = state.getLevelTileset();
 			int xTile = (int)getPos().x / tileset.tile_size;
 			int yTile = (int)getPos().y / tileset.tile_size;
-			if (!state.getLevel().walkableTiles[xTile][yTile]) {
+			if (state.getLevel().walkableTiles[xTile][yTile] == TileType.VOID) {
 				explode(state);
 			} else {
 				// Detect collision against entities
