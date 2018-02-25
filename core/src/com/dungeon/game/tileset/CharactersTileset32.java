@@ -102,7 +102,7 @@ public class CharactersTileset32 extends Tileset {
 
 	public final Animation<TextureRegion> WITCH_WALK_ANIMATION = loop(0.05f, WITCH_WALK_1, WITCH_WALK_2, WITCH_WALK_3, WITCH_WALK_4, WITCH_WALK_5, WITCH_WALK_6, WITCH_WALK_7, WITCH_WALK_8, WITCH_WALK_9);
 	public final Animation<TextureRegion> WITCH_JUMP_ANIMATION = new Animation<>(0.1f, WITCH_IDLE_1, WITCH_IDLE_2);
-	public final Animation<TextureRegion> WITCH_HIT_ANIMATION = new Animation<>(0.02f, WITCH_HIT_1, WITCH_HIT_2, WITCH_HIT_3, WITCH_HIT_4, WITCH_HIT_5, WITCH_HIT_6, WITCH_HIT_7, WITCH_HIT_8, WITCH_HIT_9, WITCH_HIT_10);
+	public final Animation<TextureRegion> WITCH_HIT_ANIMATION = new Animation<>(0.08f, WITCH_HIT_1, WITCH_HIT_2, WITCH_HIT_3, WITCH_HIT_4, WITCH_HIT_5, WITCH_HIT_6, WITCH_HIT_7, WITCH_HIT_8, WITCH_HIT_9, WITCH_HIT_10);
 	public final Animation<TextureRegion> WITCH_SLASH_ANIMATION = new Animation<>(0.1f, WITCH_SLASH_1, WITCH_SLASH_2, WITCH_SLASH_1, WITCH_SLASH_3);
 	public final Animation<TextureRegion> WITCH_PUNCH_ANIMATION = new Animation<>(0.1f, WITCH_PUNCH_1, WITCH_SLASH_1);
 	public final Animation<TextureRegion> WITCH_RUN_ANIMATION = new Animation<>(0.1f, WITCH_RUN_1, WITCH_RUN_2, WITCH_RUN_3, WITCH_RUN_4);

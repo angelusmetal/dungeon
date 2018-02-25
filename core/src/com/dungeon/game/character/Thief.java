@@ -10,6 +10,8 @@ import com.dungeon.game.GameState;
 
 public class Thief extends PlayerCharacter {
 
+	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(6).timeToLive(10);
+
 	public Thief(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(13, 20)));
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
@@ -32,8 +34,8 @@ public class Thief extends PlayerCharacter {
 
 		private int dmg;
 
-		public Bullet(GameState state, Vector2 origin, float timeToLive, float startTime, int dmg) {
-			super(timeToLive, startTime, new Body(origin, new Vector2(6, 6)));
+		public Bullet(GameState state, Vector2 origin, float startTime, int dmg) {
+			super(new Body(origin, new Vector2(6, 6)), startTime, BULLET_PROTOTYPE);
 			this.dmg = dmg;
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_THIEF_FLY_ANIMATION);
@@ -55,7 +57,7 @@ public class Thief extends PlayerCharacter {
 
 	@Override
 	protected Projectile createProjectile(GameState state, Vector2 origin) {
-		return new Bullet(state, origin, 10, state.getStateTime(), dmg);
+		return new Bullet(state, origin, state.getStateTime(), dmg);
 	}
 
 }

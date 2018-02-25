@@ -199,7 +199,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	public void hit(GameState state, int dmg) {
 		health -= dmg;
-		if (health < 0) {
+		if (health <= 0) {
 			setExpired(state, true);
 		}
 	}

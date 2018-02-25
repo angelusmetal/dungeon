@@ -2,6 +2,7 @@ package com.dungeon.game.character;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
+import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
@@ -9,6 +10,8 @@ import com.dungeon.engine.physics.Body;
 import com.dungeon.game.GameState;
 
 public class Witch extends PlayerCharacter {
+
+	public static Projectile.Builder CAT_PROTOTYPE = new Projectile.Builder().speed(5).timeToLive(10).autoseek(0.1f).targetRadius(100).targetPredicate(PlayerCharacter.IS_NON_PLAYER);
 
 	public Witch(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(14, 28)));
@@ -25,16 +28,14 @@ public class Witch extends PlayerCharacter {
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
 		health = 90;
 		maxSpeed = 3;
-		dmg = 20;
+		dmg = 50;
 	}
 
-	public static class Bullet extends Projectile {
+	public class Cat extends Projectile {
 
-		private int dmg;
-
-		public Bullet(GameState state, Vector2 origin, float timeToLive, float startTime, int dmg) {
-			super(timeToLive, startTime, new Body(origin, new Vector2(6, 6)));
-			this.dmg = dmg;
+		public Cat(GameState state, Vector2 origin, float startTime) {
+			super(new Body(origin, new Vector2(6, 6)), startTime, CAT_PROTOTYPE);
+			// TODO We shouldn't do this every time a projectile is built
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_UP);
 			provider.register(AnimationType.FLY_SOUTH, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_DOWN);
@@ -42,7 +43,6 @@ public class Witch extends PlayerCharacter {
 			provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_EXPLODE_ANIMATION);
 			animationProvider = provider;
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
-			// TODO Make the animation loop for flying projectile
 		}
 		@Override
 		protected void onEntityCollision(GameState state, Entity<?> entity) {
@@ -56,7 +56,7 @@ public class Witch extends PlayerCharacter {
 
 	@Override
 	protected Projectile createProjectile(GameState state, Vector2 origin) {
-		return new Bullet(state, origin, 10, state.getStateTime(), dmg);
+		return new Cat(state, origin, state.getStateTime());
 	}
 
 }

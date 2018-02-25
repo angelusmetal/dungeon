@@ -16,15 +16,18 @@ public class AnimationProvider<T extends Enum<T>> {
 		this.state = state;
 	}
 
-	public void register(T type, Animation<TextureRegion> animation) {
+	public AnimationProvider register(T type, Animation<TextureRegion> animation) {
 		factory.put(type, () -> new com.dungeon.engine.animation.GameAnimation<>(type, animation, state.getStateTime()));
+		return this;
 	}
 
-	public void register(T type, Animation<TextureRegion> animation, Runnable runnable) {
+	public AnimationProvider register(T type, Animation<TextureRegion> animation, Runnable runnable) {
 		factory.put(type, () -> new com.dungeon.engine.animation.GameAnimation<>(type, animation, state.getStateTime(), runnable));
+		return this;
 	}
 
 	public com.dungeon.engine.animation.GameAnimation<T> get(T type) {
 		return factory.get(type).get();
 	}
+
 }

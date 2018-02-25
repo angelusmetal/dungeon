@@ -19,6 +19,8 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 	private Vector2 aim = new Vector2(1, 0);
 	protected int dmg = 10;
 
+	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.5f); // Default is fire every 0.5 seconds
+
 	public Character(Body body) {
 		super(body);
 	}
@@ -76,15 +78,18 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 
 	public void fire(GameState state) {
 		if (!expired) {
-			aim.clamp(5,5);
-			Projectile projectile = createProjectile(state, getPos().cpy().mulAdd(aim, 2));
-			if (projectile != null) {
-				projectile.setSelfMovement(aim);
-				// Extra offset to make projectiles appear in the character's hands
-				//projectile.getPos().y -= 8;
-				state.addEntity(projectile);
-				setCurrentAnimation(animationProvider.get(AnimationType.HIT));
-			}
+			fireCooldown.attempt(state.getStateTime(), () -> {
+				aim.clamp(5,5);
+				Projectile projectile = createProjectile(state, getPos().cpy().mulAdd(aim, 2));
+				if (projectile != null) {
+					aim.clamp(projectile.getSpeed(), projectile.getSpeed());
+					projectile.setSelfMovement(aim);
+					// Extra offset to make projectiles appear in the character's hands
+					//projectile.getPos().y -= 8;
+					state.addEntity(projectile);
+					setCurrentAnimation(animationProvider.get(AnimationType.HIT));
+				}
+			});
 		}
 	}
 

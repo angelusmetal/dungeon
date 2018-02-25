@@ -25,6 +25,9 @@ public class CatProjectileTileset extends Tileset {
 
 	CatProjectileTileset() {
 		super(new Texture("cat_projectile.png"), 24);
+		PROJECTILE_FLY_ANIMATION_RIGHT.setPlayMode(Animation.PlayMode.LOOP);
+		PROJECTILE_FLY_ANIMATION_UP.setPlayMode(Animation.PlayMode.LOOP);
+		PROJECTILE_FLY_ANIMATION_DOWN.setPlayMode(Animation.PlayMode.LOOP);
 	}
 
 }
