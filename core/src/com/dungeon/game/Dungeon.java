@@ -83,16 +83,21 @@ public class Dungeon extends ApplicationAdapter {
 
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
 
-		// Create a ghost in each room, to begin with
+		// Create ghosts in each room, to begin with
 		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
 			Room room = state.getLevel().rooms.get(r);
-			for (int i = 0; i < 3; ++i) {
-				int startX = room.topLeft.x + 1 + i;
-				int startY = room.topLeft.y - 1 - i;
-				Vector2 position = new Vector2(startX * state.getLevelTileset().tile_size, startY * state.getLevelTileset().tile_size);
-				Ghost ghost = new Ghost(state, position);
-				state.addEntity(ghost);
-			}
+			// Ghost 1
+			Vector2 position = new Vector2((room.left + 2) * state.getLevelTileset().tile_size, (room.bottom + 2) * state.getLevelTileset().tile_size);
+			Ghost ghost = new Ghost(state, position);
+			state.addEntity(ghost);
+			// Ghost 2
+			position = new Vector2((room.left + 3) * state.getLevelTileset().tile_size, (room.bottom + 2) * state.getLevelTileset().tile_size);
+			ghost = new Ghost(state, position);
+			state.addEntity(ghost);
+			// Ghost 3
+			position = new Vector2((room.left + 2) * state.getLevelTileset().tile_size, (room.bottom + 3) * state.getLevelTileset().tile_size);
+			ghost = new Ghost(state, position);
+			state.addEntity(ghost);
 		}
 	}
 
@@ -119,10 +124,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	private Vector2 getStartingPosition() {
 		if (state.getPlayerCharacters().isEmpty()) {
-			int startX = state.getLevel().rooms.get(0).left + 1;
-			int startY = state.getLevel().rooms.get(0).bottom + 1;
-			System.out.println("Spawning player at " + startX + "," + startY);
-			return new Vector2(startX, startY);
+			return new Vector2(state.getLevel().rooms.get(0).startX, state.getLevel().rooms.get(0).startY);
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
 			return new Vector2(refPos.x / state.getLevelTileset().tile_size + 1, refPos.y / state.getLevelTileset().tile_size);

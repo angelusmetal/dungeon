@@ -1,8 +1,7 @@
 package com.dungeon.game.level;
 
 import com.dungeon.engine.render.Tile;
-import com.dungeon.game.level.room.RectangleRoomGenerator;
-import com.dungeon.game.level.room.RoomGenerator;
+import com.dungeon.game.level.room.*;
 import com.dungeon.game.tileset.LevelTileset;
 
 import java.util.*;
@@ -81,7 +80,11 @@ public class ProceduralLevelGenerator {
 				tiles[x][y] = TileType.VOID;
 			}
 		}
-		this.roomGenerators = Arrays.asList(new RectangleRoomGenerator());
+		this.roomGenerators = Arrays.asList(
+				new RectangleRoomGenerator(),
+				new CornersRoomGenerator(),
+				new ColumnsRoomGenerator(),
+				new DiamondRoomGenerator());
 	}
 
 	public Level generateLevel(LevelTileset tileset) {
@@ -284,32 +287,32 @@ public class ProceduralLevelGenerator {
 
 	public void addConnectionPoints(Room room, final Direction enterDirection) {
 		System.out.println("Adding connection points to room " + room + "...");
-		int middleX = (room.topLeft.x + room.bottomRight.x) / 2;
-		int middleY = (room.bottomRight.y + room.topLeft.y) / 2;
+		int middleX = room.left + room.width / 2;
+		int middleY = room.bottom + room.height / 2;
 		room.connectionPoints = new ArrayList<>(4);
 		// Top connection point
-		ConnectionPoint point = new ConnectionPoint(middleX, room.topLeft.y, Direction.UP);
+		ConnectionPoint point = new ConnectionPoint(middleX, room.bottom + room.height - 1, Direction.UP);
 		if (enterDirection == Direction.DOWN) {
 			point.visited = true;
 		}
 		System.out.println("  -> " + point);
 		room.connectionPoints.add(point);
 		// Bottom connection point
-		point = new ConnectionPoint(middleX, room.bottomRight.y, Direction.DOWN);
+		point = new ConnectionPoint(middleX, room.bottom, Direction.DOWN);
 		if (enterDirection == Direction.UP) {
 			point.visited = true;
 		}
 		System.out.println("  -> " + point);
 		room.connectionPoints.add(point);
 		// Left connection point
-		point = new ConnectionPoint(room.topLeft.x, middleY, Direction.LEFT);
+		point = new ConnectionPoint(room.left, middleY, Direction.LEFT);
 		if (enterDirection == Direction.RIGHT) {
 			point.visited = true;
 		}
 		System.out.println("  -> " + point);
 		room.connectionPoints.add(point);
 		// Right connection point
-		point = new ConnectionPoint(room.bottomRight.x, middleY, Direction.RIGHT);
+		point = new ConnectionPoint(room.left + room.width - 1, middleY, Direction.RIGHT);
 		if (enterDirection == Direction.LEFT) {
 			point.visited = true;
 		}
