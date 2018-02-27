@@ -15,7 +15,6 @@ public class ProceduralLevelGenerator {
 	private int width;
 	private int height;
 	private TileType[][] tiles;
-	private int maxRoomSize = 12;
 	private int minRoomSize = 3;
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
@@ -84,7 +83,9 @@ public class ProceduralLevelGenerator {
 				new RectangleRoomGenerator(),
 				new CornersRoomGenerator(),
 				new ColumnsRoomGenerator(),
-				new DiamondRoomGenerator());
+				new DiamondRoomGenerator(),
+				new ORoomGenerator()
+		);
 	}
 
 	public Level generateLevel(LevelTileset tileset) {
@@ -192,13 +193,10 @@ public class ProceduralLevelGenerator {
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();
 			System.out.println("Generating " + frame.type + " room...");
-			// Pick the room size
-			int roomWidth = (int) (Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
-			int roomHeight = (int) (Math.random() * (maxRoomSize - minRoomSize) + minRoomSize);
 			// Check the available size, depending on the direction
-			Room room = attemptRoom(frame.x, frame.y, frame.direction, roomWidth, roomHeight);
+			Room room = attemptRoom(frame.x, frame.y, frame.direction);
 			if (room != null) {
-				System.out.println("   -> x: " + frame.x + ", y: " + frame.y + ", width: " + roomWidth + ", height: " + roomHeight);
+//				System.out.println("   -> x: " + frame.x + ", y: " + frame.y + ", width: " + roomWidth + ", height: " + roomHeight);
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					System.out.println("   -> Visiting connection point " + point + "...");
@@ -222,13 +220,18 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	private Room attemptRoom(int x, int y, Direction direction, int roomWidth, int roomHeight) {
+	private Room attemptRoom(int x, int y, Direction direction) {
 		if (x < 2 || x >= width - 2 || y < 2 || y >= height - 2) {
 			return null;
 		}
-		for (int rWidth = roomWidth; rWidth >= minRoomSize; --rWidth) {
-			for (int rHeight = roomHeight; rHeight >= minRoomSize; --rHeight) {
-				Room room = generateRoom(x, y, roomWidth, roomHeight, direction);
+
+		Collections.shuffle(roomGenerators);
+		RoomGenerator generator = roomGenerators.get(0);
+		int roomWidth = random.nextInt((generator.maxWidth() - generator.minWidth()) / 2) * 2 + generator.minWidth();
+		int roomHeight = random.nextInt((generator.maxHeight() - generator.minHeight()) / 2) * 2 + generator.minHeight();
+		for (int rWidth = roomWidth; rWidth >= generator.minWidth(); rWidth-=2) {
+			for (int rHeight = roomHeight; rHeight >= generator.minHeight(); rHeight-=2) {
+				Room room = generateRoom(generator, x, y, roomWidth, roomHeight, direction);
 				if (canPlaceRoom(room)) {
 					placeRoom(room);
 					addConnectionPoints(room, direction);
@@ -240,7 +243,7 @@ public class ProceduralLevelGenerator {
 		return null;
 	}
 
-	private Room generateRoom(int x, int y, int width, int height, Direction direction) {
+	private Room generateRoom(RoomGenerator generator, int x, int y, int width, int height, Direction direction) {
 		int left, bottom;
 		if (direction == Direction.LEFT || direction == Direction.RIGHT) {
 			bottom = y - height / 2;
@@ -258,7 +261,7 @@ public class ProceduralLevelGenerator {
 			}
 		}
 
-		return roomGenerators.get(random.nextInt(roomGenerators.size())).generate(left, bottom, width, height);
+		return generator.generate(left, bottom, width, height);
 	}
 
 	private boolean canPlaceRoom(Room room) {

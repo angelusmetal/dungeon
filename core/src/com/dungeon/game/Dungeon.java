@@ -86,18 +86,12 @@ public class Dungeon extends ApplicationAdapter {
 		// Create ghosts in each room, to begin with
 		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
 			Room room = state.getLevel().rooms.get(r);
-			// Ghost 1
-			Vector2 position = new Vector2((room.left + 2) * state.getLevelTileset().tile_size, (room.bottom + 2) * state.getLevelTileset().tile_size);
-			Ghost ghost = new Ghost(state, position);
-			state.addEntity(ghost);
-			// Ghost 2
-			position = new Vector2((room.left + 3) * state.getLevelTileset().tile_size, (room.bottom + 2) * state.getLevelTileset().tile_size);
-			ghost = new Ghost(state, position);
-			state.addEntity(ghost);
-			// Ghost 3
-			position = new Vector2((room.left + 2) * state.getLevelTileset().tile_size, (room.bottom + 3) * state.getLevelTileset().tile_size);
-			ghost = new Ghost(state, position);
-			state.addEntity(ghost);
+			// Skip a random amount of ghosts
+			final int skip = (int) (Math.random() * room.spawnPoints.size());
+			room.spawnPoints.stream().skip(skip).forEach(v -> {
+				Ghost ghost = new Ghost(state, v.cpy().scl(state.getLevelTileset().tile_size));
+				state.addEntity(ghost);
+			});
 		}
 	}
 
@@ -124,7 +118,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	private Vector2 getStartingPosition() {
 		if (state.getPlayerCharacters().isEmpty()) {
-			return new Vector2(state.getLevel().rooms.get(0).startX, state.getLevel().rooms.get(0).startY);
+			return state.getLevel().rooms.get(0).spawnPoints.get(0).cpy();
 		} else {
 			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
 			return new Vector2(refPos.x / state.getLevelTileset().tile_size + 1, refPos.y / state.getLevelTileset().tile_size);

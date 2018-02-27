@@ -1,5 +1,8 @@
 package com.dungeon.game.level;
 
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
@@ -8,19 +11,16 @@ public class Room {
 	public final int bottom;
 	public final int width;
 	public final int height;
-	public final int startX;
-	public final int startY;
+	public final List<Vector2> spawnPoints = new ArrayList<>();
 
 	public final TileType[][] tiles;
 
-	public Room(int left, int bottom, int width, int height, int startX, int startY) {
+	public Room(int left, int bottom, int width, int height) {
 		tiles = new TileType[width][height];
 		this.left = left;
 		this.bottom = bottom;
 		this.width = width;
 		this.height = height;
-		this.startX = startX;
-		this.startY = startY;
 	}
 
 	@Override

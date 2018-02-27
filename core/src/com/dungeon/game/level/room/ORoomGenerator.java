@@ -4,25 +4,25 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.TileType;
 
-public class DiamondRoomGenerator implements RoomGenerator {
+public class ORoomGenerator implements RoomGenerator {
 	@Override
 	public int minWidth() {
-		return 7;
+		return 9;
 	}
 
 	@Override
 	public int maxWidth() {
-		return 9;
+		return 11;
 	}
 
 	@Override
 	public int minHeight() {
-		return 7;
+		return 9;
 	}
 
 	@Override
 	public int maxHeight() {
-		return 9;
+		return 11;
 	}
 
 	@Override
@@ -47,12 +47,21 @@ public class DiamondRoomGenerator implements RoomGenerator {
 			}
 		}
 
-		// Add spawn points
-		room.spawnPoints.add(new Vector2(left + width / 2 - 1, bottom + height / 2));
-		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 - 1));
-		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2));
-		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 + 1));
-		room.spawnPoints.add(new Vector2(left + width / 2 + 1, bottom + height / 2));
+		// Carve the middle
+		room.tiles[width / 2 - 1][height / 2 - 1] = TileType.VOID;
+		room.tiles[width / 2 - 1][height / 2] = TileType.VOID;
+		room.tiles[width / 2 - 1][height / 2 + 1] = TileType.VOID;
+		room.tiles[width / 2][height / 2 - 1] = TileType.VOID;
+		room.tiles[width / 2][height / 2] = TileType.VOID;
+		room.tiles[width / 2][height / 2 + 1] = TileType.VOID;
+		room.tiles[width / 2 + 1][height / 2 - 1] = TileType.VOID;
+		room.tiles[width / 2 + 1][height / 2] = TileType.VOID;
+		room.tiles[width / 2 + 1][height / 2 + 1] = TileType.VOID;
+
+		room.spawnPoints.add(new Vector2(left + 2, bottom + height / 2));
+		room.spawnPoints.add(new Vector2(left + width - 2, bottom + height / 2));
+		room.spawnPoints.add(new Vector2(left + width / 2, bottom + 2));
+		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height - 2));
 
 		return room;
 	}
