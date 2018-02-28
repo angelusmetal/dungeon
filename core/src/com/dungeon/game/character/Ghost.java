@@ -42,9 +42,12 @@ public class Ghost extends Character {
 	}
 
 	@Override
-	protected void onEntityCollision(GameState state, Entity<?> entity) {
+	protected boolean onEntityCollision(GameState state, Entity<?> entity) {
 		if (entity instanceof PlayerCharacter) {
 			entity.hit(state, 1);
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

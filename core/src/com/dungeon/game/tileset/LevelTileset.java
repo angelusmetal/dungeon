@@ -12,6 +12,7 @@ public abstract class LevelTileset extends Tileset {
 
 	public abstract Tile out();
 	public abstract Tile floor();
+	public abstract Tile exit();
 	public abstract Tile convexLowerLeft();
 	public abstract Tile convexLowerRight();
 	public abstract Tile convexUpperLeft();

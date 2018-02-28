@@ -12,6 +12,8 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final TextureRegion FLOOR_3 = getTile(7, 2);
 	private final TextureRegion FLOOR_4 = getTile(7, 3);
 
+	private final TextureRegion EXIT = getTile(6, 0);
+
 	private final TextureRegion CONVEX_LOWER_RIGHT = getTile(1, 2);
 	private final TextureRegion CONVEX_LOWER_LEFT = getTile(0, 2);
 	private final TextureRegion CONVEX_UPPER_RIGHT = getTile(1, 3);
@@ -45,6 +47,8 @@ public class DungeonVioletTileset extends LevelTileset {
 
 	private final Tile[] FLOOR_TILES = createTiles(FLOOR_1, FLOOR_2, FLOOR_3, FLOOR_4);
 
+	private final Tile EXIT_TILE = new Tile(EXIT);
+
 	private final Tile CONVEX_LOWER_RIGHT_TILE = new Tile(CONVEX_LOWER_RIGHT);
 	private final Tile CONVEX_LOWER_LEFT_TILE = new Tile(CONVEX_LOWER_LEFT);
 	private final Tile CONVEX_UPPER_RIGHT_TILE = new Tile(CONVEX_UPPER_RIGHT);
@@ -76,6 +80,11 @@ public class DungeonVioletTileset extends LevelTileset {
 	@Override
 	public Tile floor() {
 		return getRandomTile(FLOOR_TILES);
+	}
+
+	@Override
+	public Tile exit() {
+		return EXIT_TILE;
 	}
 
 	@Override

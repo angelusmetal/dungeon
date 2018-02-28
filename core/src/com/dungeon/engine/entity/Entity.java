@@ -9,6 +9,8 @@ import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.GameState;
+import com.dungeon.game.character.Thief;
+import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.TileType;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
@@ -60,7 +62,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	}
 
 	@Override
-	public Vector2 getDrawOffset() {
+ 	public Vector2 getDrawOffset() {
 		return currentAnimation.getDrawOffset();
 	}
 
@@ -91,9 +93,10 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	public void move(GameState state) {
 		// Update movementSpeed
 		movement.add(selfMovement);
-		movement.clamp(0, maxSpeed);
+		movement.clamp(0, maxSpeed * state.getFrameTime());
 
 		float distance = movement.len();
+
 		// Split into 1 px steps, and decompose in axes
 		Vector2 stepX = movement.cpy().clamp(1,1);
 		Vector2 stepY = stepX.cpy();
@@ -179,7 +182,10 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		boolean pushedBack = false;
 		for (Entity<?> entity : state.getEntities()) {
 			if (entity != this && collides(entity.body)) {
-				onEntityCollision(state, entity);
+				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
+				if (!onEntityCollision(state, entity)) {
+					entity.onEntityCollision(state, this);
+				}
 				// If collides with a solid entity, push back
 				if (!pushedBack && entity.isSolid()) {
 					body.move(step.scl(-1));
@@ -224,7 +230,8 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	abstract public boolean isExpired(float time);
 	abstract public boolean isSolid();
-	protected void onEntityCollision(GameState state, Entity<?> entity) {}
+	/** Handle entity collision; true if handled; false otherwise */
+	protected boolean onEntityCollision(GameState state, Entity<?> entity) {return false;}
 	protected void onExpire(GameState state) {}
 	protected void onSelfMovementUpdate() {}
 	protected void onTileCollision() {}

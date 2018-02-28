@@ -58,24 +58,6 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 		return true;
 	}
 
-	@Override
-	public void move(GameState state) {
-		Vector2 oldPos = new Vector2(getPos());
-		super.move(state);
-		// TODO Fix this!
-//		// Also, add collision against the viewport boundaries
-//		if (getMovement().x < 0 && getPos().x < state.getViewPort().xOffset) {
-//			moveTo(oldPos);
-//		} else if (getMovement().x > 0 && getPos().x > state.getViewPort().xOffset + (state.getViewPort().width / state.getViewPort().scale)) {
-//			moveTo(oldPos);
-//		}
-//		if (getMovement().y < 0 && getPos().y < state.getViewPort().yOffset) {
-//			moveTo(oldPos);
-//		} else if (getMovement().y > 0 && getPos().y > state.getViewPort().yOffset + (state.getViewPort().height / state.getViewPort().scale)) {
-//			moveTo(oldPos);
-//		}
-	}
-
 	public void fire(GameState state) {
 		if (!expired) {
 			fireCooldown.attempt(state.getStateTime(), () -> {

@@ -21,4 +21,11 @@ public abstract class PlayerCharacter extends Character {
 		Tombstone tombstone = new Tombstone(state, getPos());
 		state.addEntity(tombstone);
 	}
+
+	public void heal(int amount) {
+		health += amount;
+		if (health > maxHealth) {
+			health = maxHealth;
+		}
+	}
 }

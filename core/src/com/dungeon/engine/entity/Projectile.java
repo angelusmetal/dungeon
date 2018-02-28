@@ -131,7 +131,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 		// Only if not already exploding
 		if (!exploding) {
 			// Move projectile in the current direction
-			getPos().add(getSelfMovement());
+			getPos().add(getSelfMovement().cpy().scl(state.getFrameTime()));
 
 			// Detect collision against walls
 			Tileset tileset = state.getLevelTileset();

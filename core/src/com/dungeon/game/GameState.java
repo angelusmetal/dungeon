@@ -17,6 +17,7 @@ public class GameState {
 	private final TilesetHelper tilesetHelper;
 
 	private float stateTime;
+	private float frameTime;
 	private Level level;
 	private TilesetManager tilesetManager;
 	private ViewPort viewPort;
@@ -38,8 +39,13 @@ public class GameState {
 		return stateTime;
 	}
 
-	public void updateStateTime(float deltaTime) {
-		stateTime += deltaTime;
+	public float getFrameTime() {
+		return frameTime;
+	}
+
+	public void updateStateTime(float frameTime) {
+		this.stateTime += frameTime;
+		this.frameTime = frameTime;
 	}
 
 	public Level getLevel() {

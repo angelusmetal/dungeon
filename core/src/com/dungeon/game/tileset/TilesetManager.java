@@ -9,6 +9,7 @@ public class TilesetManager {
 	private final ProjectileTileset projectileTileset;
 	private final CatProjectileTileset catProjectileTileset;
 	private final HudTileset hudTileset;
+	private final PowerupsTileset powerupsTileset;
 
 	public TilesetManager() {
 		dungeonVioletTileset = new DungeonVioletTileset();
@@ -18,6 +19,7 @@ public class TilesetManager {
 		projectileTileset = new ProjectileTileset();
 		catProjectileTileset = new CatProjectileTileset();
 		hudTileset = new HudTileset();
+		powerupsTileset = new PowerupsTileset();
 	}
 
 	public DungeonVioletTileset getDungeonVioletTileset() {
@@ -41,6 +43,9 @@ public class TilesetManager {
 	public HudTileset getHudTileset() {
 		return hudTileset;
 	}
+	public PowerupsTileset getPowerupsTileset() {
+		return powerupsTileset;
+	}
 
 	public void dispose() {
 		dungeonVioletTileset.dispose();
@@ -49,5 +54,6 @@ public class TilesetManager {
 		projectileTileset.dispose();
 		catProjectileTileset.dispose();
 		hudTileset.dispose();
+		powerupsTileset.dispose();
 	}
 }

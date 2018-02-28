@@ -2,6 +2,7 @@ package com.dungeon.game.character;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
+import com.dungeon.engine.entity.CooldownTrigger;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
@@ -10,7 +11,7 @@ import com.dungeon.game.GameState;
 
 public class Thief extends PlayerCharacter {
 
-	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(6).timeToLive(10);
+	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(400).timeToLive(10);
 
 	public Thief(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(13, 20)));
@@ -25,9 +26,10 @@ public class Thief extends PlayerCharacter {
 		provider.register(AnimationType.CLIMB, state.getTilesetManager().getCharactersTileset().THIEF_CLIMB_ANIMATION);
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
-		health = 80;
-		maxSpeed = 2.5f;
-		dmg = 5;
+		health = 60;
+		maxSpeed = 96;
+		dmg = 30;
+		fireCooldown = new CooldownTrigger(0.2f);
 	}
 
 	public static class Bullet extends Projectile {
@@ -46,11 +48,14 @@ public class Thief extends PlayerCharacter {
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
 		}
 		@Override
-		protected void onEntityCollision(GameState state, Entity<?> entity) {
+		protected boolean onEntityCollision(GameState state, Entity<?> entity) {
 			// Don't hurt other players!
 			if (!(entity instanceof PlayerCharacter)) {
 				explode(state);
 				entity.hit(state, dmg);
+				return true;
+			} else {
+				return false;
 			}
 		}
 	}

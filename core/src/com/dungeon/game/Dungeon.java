@@ -26,6 +26,7 @@ import com.dungeon.game.character.Ghost;
 import com.dungeon.game.character.Thief;
 import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.Room;
+import com.dungeon.game.object.HealthPowerup;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -92,6 +93,17 @@ public class Dungeon extends ApplicationAdapter {
 				Ghost ghost = new Ghost(state, v.cpy().scl(state.getLevelTileset().tile_size));
 				state.addEntity(ghost);
 			});
+		}
+
+		// Create a few powerups
+		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
+			Room room = state.getLevel().rooms.get(r);
+			// A 40% chance of spawning one powerup
+			if (Math.random() < 0.4d) {
+				Vector2 spawnPosition = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
+				HealthPowerup powerup = new HealthPowerup(state, spawnPosition.cpy().scl(state.getLevelTileset().tile_size));
+				state.addEntity(powerup);
+			}
 		}
 	}
 

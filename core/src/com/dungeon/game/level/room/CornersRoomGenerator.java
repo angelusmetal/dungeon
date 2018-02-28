@@ -43,15 +43,11 @@ public class CornersRoomGenerator implements RoomGenerator {
 		room.tiles[width - 1][height - 1] = TileType.VOID;
 
 		// Add spawn points
-		room.spawnPoints.add(new Vector2(left + width / 2 - 1, bottom + height / 2 - 1));
 		room.spawnPoints.add(new Vector2(left + width / 2 - 1, bottom + height / 2));
-		room.spawnPoints.add(new Vector2(left + width / 2 - 1, bottom + height / 2 + 1));
 		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 - 1));
 		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2));
 		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 + 1));
-		room.spawnPoints.add(new Vector2(left + width / 2 + 1, bottom + height / 2 - 1));
 		room.spawnPoints.add(new Vector2(left + width / 2 + 1, bottom + height / 2));
-		room.spawnPoints.add(new Vector2(left + width / 2 + 1, bottom + height / 2 + 1));
 
 		return room;
 	}

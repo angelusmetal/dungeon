@@ -1,5 +1,6 @@
 package com.dungeon.game.level;
 
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.game.level.room.*;
 import com.dungeon.game.tileset.LevelTileset;
@@ -105,6 +106,11 @@ public class ProceduralLevelGenerator {
 		// Generate the root (heart) room, and the rest from there
 		generateRoom(startX, startY, direction, Type.HEART);
 
+		// Make the last generated room the exit room
+		Room lastRoom = rooms.get(rooms.size() - 1);
+		Vector2 exitPosition = lastRoom.spawnPoints.get(random.nextInt(lastRoom.spawnPoints.size()));
+		tiles[(int)exitPosition.x][(int)exitPosition.y] = TileType.EXIT;
+
 		Tile[][] map = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
@@ -122,8 +128,9 @@ public class ProceduralLevelGenerator {
 	private Tile getTile(int x, int y, LevelTileset tileset) {
 
 		if (tiles[x][y] == TileType.FLOOR) {
-			// Return a random floor tile
 			return tileset.floor();
+		} else if (tiles[x][y] == TileType.EXIT) {
+			return tileset.exit();
 		}
 
 		boolean freeUp = y > 0 && tiles[x][y-1] != TileType.VOID;

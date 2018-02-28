@@ -10,7 +10,7 @@ import com.dungeon.game.GameState;
 
 public class Assasin extends PlayerCharacter {
 
-	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(6).timeToLive(10);
+	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(80).timeToLive(10);
 
 	public Assasin(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(13, 20)));
@@ -26,8 +26,8 @@ public class Assasin extends PlayerCharacter {
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
 		health = 100;
-		maxSpeed = 2;
-		dmg = 8;
+		maxSpeed = 60;
+		dmg = 65;
 	}
 
 	public static class Bullet extends Projectile {
@@ -46,11 +46,14 @@ public class Assasin extends PlayerCharacter {
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
 		}
 		@Override
-		protected void onEntityCollision(GameState state, Entity<?> entity) {
+		protected boolean onEntityCollision(GameState state, Entity<?> entity) {
 			// Don't hurt other players!
 			if (!(entity instanceof PlayerCharacter)) {
 				explode(state);
 				entity.hit(state, dmg);
+				return true;
+			} else {
+				return false;
 			}
 		}
 

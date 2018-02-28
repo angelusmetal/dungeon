@@ -11,7 +11,7 @@ import com.dungeon.game.GameState;
 
 public class Witch extends PlayerCharacter {
 
-	public static Projectile.Builder CAT_PROTOTYPE = new Projectile.Builder().speed(5).timeToLive(10).autoseek(0.1f).targetRadius(100).targetPredicate(PlayerCharacter.IS_NON_PLAYER);
+	public static Projectile.Builder CAT_PROTOTYPE = new Projectile.Builder().speed(200).timeToLive(10).autoseek(0.1f).targetRadius(100).targetPredicate(PlayerCharacter.IS_NON_PLAYER);
 
 	public Witch(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(14, 28)));
@@ -27,7 +27,7 @@ public class Witch extends PlayerCharacter {
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
 		health = 90;
-		maxSpeed = 3;
+		maxSpeed = 60;
 		dmg = 50;
 	}
 
@@ -45,11 +45,14 @@ public class Witch extends PlayerCharacter {
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
 		}
 		@Override
-		protected void onEntityCollision(GameState state, Entity<?> entity) {
+		protected boolean onEntityCollision(GameState state, Entity<?> entity) {
 			// Don't hurt other players!
 			if (!(entity instanceof PlayerCharacter)) {
 				explode(state);
 				entity.hit(state, dmg);
+				return true;
+			} else {
+				return false;
 			}
 		}
 	}
