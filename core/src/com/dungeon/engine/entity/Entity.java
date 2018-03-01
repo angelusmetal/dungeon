@@ -1,7 +1,9 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
@@ -15,6 +17,8 @@ import com.dungeon.game.level.TileType;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
+	public static Quaternion WHITE_LIGHT = new Quaternion(1, 1, 1, 1);
+
 	private GameAnimation<A> currentAnimation;
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
@@ -25,6 +29,9 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	protected boolean expired;
 	protected int health = 100;
 	protected int maxHealth = 100;
+
+	protected float lightRadius = 0;
+	protected Quaternion lightColor = WHITE_LIGHT;
 
 	protected Entity(Body body) {
 		this.body = body;
@@ -221,6 +228,15 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		TextureRegion characterFrame = getFrame(state.getStateTime());
 		float invertX = invertX() ? -1 : 1;
 		batch.draw(characterFrame, (getPos().x - viewPort.xOffset - getDrawOffset().x * invertX) * viewPort.scale, (getPos().y - viewPort.yOffset - getDrawOffset().y) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale * invertX, characterFrame.getRegionHeight() * viewPort.scale);
+	}
+
+	public void drawLight(GameState state, SpriteBatch batch, ViewPort viewPort) {
+		if (lightRadius > 0) {
+			float radius = lightRadius * viewPort.scale;
+			batch.setColor(lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+			batch.draw(state.getLightTexture(), (getPos().x - viewPort.xOffset - radius / 2) * viewPort.scale, (getPos().y - viewPort.yOffset - radius / 2) * viewPort.scale, radius * viewPort.scale, radius * viewPort.scale);
+			batch.setColor(1, 1, 1, 1);
+		}
 	}
 
 	public void setExpired(GameState state, boolean expired) {

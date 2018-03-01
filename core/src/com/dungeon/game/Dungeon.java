@@ -6,8 +6,11 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.character.CharacterControl;
@@ -33,23 +36,17 @@ import java.util.Iterator;
 
 public class Dungeon extends ApplicationAdapter {
 	public static final float INITIAL_SCALE = 4;
-	private SpriteBatch batch;
 	private GameState state;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
 	private CharacterViewPortTracker characterViewPortTracker;
+	private IngameRenderer ingameRenderer;
 
 	long frame = 0;
-	private Comparator<? super Entity<?>> comp = (e1, e2) ->
-		e1.getPos().y > e2.getPos().y ? -1 :
-		e1.getPos().y < e2.getPos().y ? 1 :
-		e1.getPos().x < e2.getPos().x ? -1 :
-		e1.getPos().x > e2.getPos().x ? 1 : 0;
 
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
 		viewPort = new ViewPort(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, INITIAL_SCALE);
 		viewPortInputProcessor = new ViewPortInputProcessor(viewPort);
 		inputMultiplexer = new InputMultiplexer();
@@ -72,6 +69,9 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		state = new GameState(viewPort);
+		ingameRenderer = new IngameRenderer(state, viewPort);
+		ingameRenderer.initialize();
+
 		state.generateNewLevel();
 
 		// Add keyboard controller
@@ -139,16 +139,13 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		//Gdx.gl.glClearColor(145f/255f, 176f/255f, 154f/255f, 1);
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		state.updateStateTime(Gdx.graphics.getDeltaTime());
 		characterViewPortTracker.refresh(viewPort);
-		batch.begin();
-		drawMap();
-		// Iterate entities in render order and draw them
-		state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
 
+		// Render in-game
+		ingameRenderer.render();
+
+		// Game loop
 		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
 			Entity<?> entity = e.next();
 			entity.move(state);
@@ -158,30 +155,15 @@ public class Dungeon extends ApplicationAdapter {
 				state.getPlayerCharacters().remove(entity);
 			}
 		}
-		batch.end();
+
 		state.refresh();
 		this.frame += 1;
 	}
 
-	private void drawMap() {
-		// Only render the visible portion of the map
-		int tWidth = state.getLevelTileset().tile_size;
-		int tHeight = state.getLevelTileset().tile_size;
-		int minX = Math.max(0, viewPort.xOffset / tWidth);
-		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.xOffset + viewPort.width) / tWidth) + 1;
-		int minY = Math.max(0, viewPort.yOffset / tHeight - 1);
-		int maxY = Math.min(state.getLevel().map[0].length - 1, (viewPort.yOffset + viewPort.height) / tHeight);
-		for (int x = minX; x < maxX; x++) {
-			for (int y = maxY; y > minY; y--) {
-				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);
-				batch.draw(textureRegion, (x * tWidth - viewPort.xOffset) * viewPort.scale, (y * tHeight - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
-			}
-		}
-	}
-
 	@Override
 	public void dispose () {
-		batch.dispose();
+		ingameRenderer.dispose();
 		state.getTilesetManager().dispose();
+		state.getLightTexture().dispose();
 	}
 }

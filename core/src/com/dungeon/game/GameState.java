@@ -1,5 +1,6 @@
 package com.dungeon.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.viewport.ViewPort;
@@ -28,11 +29,15 @@ public class GameState {
 	private List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
 	private List<Entity<?>> newEntities = new LinkedList<>();
 
+	// TODO Move this somewhere else
+	private Texture light;
+
 	public GameState(ViewPort viewPort) {
 		this.stateTime = 0;
 		this.tilesetManager = new TilesetManager();
 		this.viewPort = viewPort;
 		this.tilesetHelper = new TilesetHelper(getLevelTileset());
+		this.light = new Texture("light.png");
 	}
 
 	public float getStateTime() {
@@ -88,6 +93,11 @@ public class GameState {
 
 	public List<PlayerCharacter> getPlayerCharacters() {
 		return playerCharacters;
+	}
+
+	// TODO Move this somewhere else
+	public Texture getLightTexture() {
+		return light;
 	}
 
 	public void refresh() {
