@@ -7,12 +7,13 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.Light;
 import com.dungeon.game.GameState;
 
 public class Assasin extends PlayerCharacter {
 
 	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(80).timeToLive(10);
-	public static Quaternion PROJECTILE_LIGHT = new Quaternion(0.8f, 0.3f, 0.2f, 0.5f);
+	static private Light PROJECTILE_LIGHT = new Light(15, new Quaternion(0.8f, 0.3f, 0.2f, 0.5f), () -> 1f);
 
 	public Assasin(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(13, 20)));
@@ -46,8 +47,7 @@ public class Assasin extends PlayerCharacter {
 			provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_EXPLODE_ANIMATION);
 			animationProvider = provider;
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
-			lightRadius = 15;
-			lightColor = PROJECTILE_LIGHT;
+			light = PROJECTILE_LIGHT;
 		}
 		@Override
 		protected boolean onEntityCollision(GameState state, Entity<?> entity) {

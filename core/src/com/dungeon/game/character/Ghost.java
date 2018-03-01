@@ -8,13 +8,14 @@ import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.GameState;
 
 public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 500 * 500;
-	public static Quaternion GHOST_LIGHT = new Quaternion(0.2f, 0.4f, 1, 0.5f);
+	static private Light GHOST_LIGHT = new Light(40, new Quaternion(0.2f, 0.4f, 1, 0.5f), () -> 1f);
 
 	public Ghost(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(16, 30)));
@@ -30,8 +31,7 @@ public class Ghost extends Character {
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
 		maxSpeed = 1f;
-		lightRadius = 40;
-		lightColor = GHOST_LIGHT;
+		light = GHOST_LIGHT;
 	}
 
 	@Override

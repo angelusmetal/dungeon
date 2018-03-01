@@ -8,12 +8,13 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.Light;
 import com.dungeon.game.GameState;
 
 public class Witch extends PlayerCharacter {
 
 	public static Projectile.Builder CAT_PROTOTYPE = new Projectile.Builder().speed(200).timeToLive(10).autoseek(0.1f).targetRadius(100).targetPredicate(PlayerCharacter.IS_NON_PLAYER);
-	public static Quaternion PROJECTILE_LIGHT = new Quaternion(0.8f, 0.2f, 0.8f, 0.5f);
+	static private Light PROJECTILE_LIGHT = new Light(15, new Quaternion(0.8f, 0.2f, 0.8f, 0.5f), () -> 1f);
 
 	public Witch(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(14, 28)));
@@ -45,8 +46,7 @@ public class Witch extends PlayerCharacter {
 			provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_EXPLODE_ANIMATION);
 			animationProvider = provider;
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
-			lightRadius = 15;
-			lightColor = PROJECTILE_LIGHT;
+			light = PROJECTILE_LIGHT;
 		}
 		@Override
 		protected boolean onEntityCollision(GameState state, Entity<?> entity) {

@@ -3,6 +3,7 @@ package com.dungeon.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
@@ -51,6 +52,7 @@ public class GameState {
 	public void updateStateTime(float frameTime) {
 		this.stateTime += frameTime;
 		this.frameTime = frameTime;
+		Light.updateDimmers(frameTime);
 	}
 
 	public Level getLevel() {
