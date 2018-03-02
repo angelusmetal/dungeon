@@ -64,6 +64,18 @@ public class ColumnsRoomGenerator implements RoomGenerator {
 		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 + 1));
 		room.spawnPoints.add(new Vector2(left + width / 2 + 1, bottom + height / 2));
 
+		// Add torches
+		room.torches.add(new Vector2(left + width / 2 - 0.5f, bottom + height + 0.5f));
+		room.torches.add(new Vector2(left + width / 2 + 1.5f, bottom + height + 0.5f));
+		room.torches.add(new Vector2(left, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left, bottom + height / 2 - 0.5f));
+		room.torches.add(new Vector2(left + width, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + width, bottom + height / 2 - 0.5f));
+
+		room.torches.add(new Vector2(left + 2f, bottom + height - 2.5f));
+		room.torches.add(new Vector2(left + width - 2f, bottom + height - 2.5f));
+		room.torches.add(new Vector2(left + 2f, bottom + 1.5f));
+		room.torches.add(new Vector2(left + width - 2f, bottom + 1.5f));
 		return room;
 	}
 }

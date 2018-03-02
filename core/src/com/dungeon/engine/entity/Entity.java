@@ -1,5 +1,6 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -227,9 +228,27 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	public void drawLight(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		if (light != null) {
 			float dim = light.dim.get();
-			float radius = light.radius * viewPort.scale * dim;
+			float diameter = light.diameter * dim;
 			batch.setColor(light.color.x, light.color.y, light.color.z, light.color.w * dim);
-			batch.draw(state.getLightTexture(), (getPos().x - viewPort.xOffset - radius / 2) * viewPort.scale, (getPos().y - viewPort.yOffset - radius / 2) * viewPort.scale, radius * viewPort.scale, radius * viewPort.scale);
+			batch.draw(light.texture, (getPos().x - viewPort.xOffset - diameter / 2) * viewPort.scale, (getPos().y - viewPort.yOffset - diameter / 2) * viewPort.scale, diameter * viewPort.scale, diameter * viewPort.scale);
+//			float rotation = state.getStateTime();
+//			batch.draw(
+//					light.texture,
+//					getPos().x - viewPort.xOffset * viewPort.scale,//(getPos().x - viewPort.xOffset - diameter / 2) * viewPort.scale,
+//					getPos().y - viewPort.yOffset * viewPort.scale,//(getPos().y - viewPort.yOffset - diameter / 2) * viewPort.scale,
+//					light.texture.getWidth() / 2,
+//					light.texture.getHeight() / 2,
+//					diameter,
+//					diameter,
+//					1,
+//					1,
+//					rotation,
+//					0,
+//					0,
+//					light.texture.getWidth(),
+//					light.texture.getHeight(),
+//					false,
+//					false);
 			batch.setColor(1, 1, 1, 1);
 		}
 	}

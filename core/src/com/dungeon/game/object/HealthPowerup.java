@@ -11,7 +11,7 @@ import com.dungeon.game.GameState;
 
 public class HealthPowerup extends Entity<HealthPowerup.AnimationType> {
 
-	static private Light HEALTH_LIGHT = new Light(48, new Quaternion(1, 0.1f, 0.2f, 1), Light::sine);
+	static private Light HEALTH_LIGHT = new Light(192, new Quaternion(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating);
 
 	public HealthPowerup(GameState state, Vector2 position) {
 		super(new Body(position, new Vector2(10, 10)));

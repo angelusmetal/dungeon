@@ -46,6 +46,14 @@ public class RectangleRoomGenerator implements RoomGenerator {
 		room.spawnPoints.add(new Vector2(left + width - 1, bottom + height / 2));
 		room.spawnPoints.add(new Vector2(left + width - 1, bottom + height - 1));
 
+		// Add torches
+		room.torches.add(new Vector2(left + width / 2 - 0.5f, bottom + height + 0.5f));
+		room.torches.add(new Vector2(left + width / 2 + 1.5f, bottom + height + 0.5f));
+		room.torches.add(new Vector2(left, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left, bottom + height / 2 - 0.5f));
+		room.torches.add(new Vector2(left + width, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + width, bottom + height / 2 - 0.5f));
+
 		return room;
 	}
 }

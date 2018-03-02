@@ -12,6 +12,7 @@ public class Room {
 	public final int width;
 	public final int height;
 	public final List<Vector2> spawnPoints = new ArrayList<>();
+	public final List<Vector2> torches = new ArrayList<>();
 
 	public final TileType[][] tiles;
 

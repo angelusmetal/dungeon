@@ -63,6 +63,13 @@ public class ORoomGenerator implements RoomGenerator {
 		room.spawnPoints.add(new Vector2(left + width / 2, bottom + 2));
 		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height - 2));
 
+		// Add torches
+		room.torches.add(new Vector2(left + width / 2 - 0.5f, bottom + height - 0.5f));
+		room.torches.add(new Vector2(left + width / 2 + 1.5f, bottom + height - 0.5f));
+		room.torches.add(new Vector2(left + 0.5f, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + width - 0.5f, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + width / 2 + 0.5f, bottom + height / 2 - 0.5f));
+
 		return room;
 	}
 }

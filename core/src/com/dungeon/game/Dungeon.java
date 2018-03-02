@@ -21,6 +21,7 @@ import com.dungeon.engine.controller.directional.DirectionalListener;
 import com.dungeon.engine.controller.directional.PovDirectionalControl;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
@@ -30,6 +31,7 @@ import com.dungeon.game.character.Thief;
 import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.object.HealthPowerup;
+import com.dungeon.game.object.Torch;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -69,6 +71,7 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		state = new GameState(viewPort);
+		Light.initialize();
 		ingameRenderer = new IngameRenderer(state, viewPort);
 		ingameRenderer.initialize();
 
@@ -87,17 +90,12 @@ public class Dungeon extends ApplicationAdapter {
 		// Create ghosts in each room, to begin with
 		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
 			Room room = state.getLevel().rooms.get(r);
-			// Skip a random amount of ghosts
+			// Create ghosts in each room
 			final int skip = (int) (Math.random() * room.spawnPoints.size());
 			room.spawnPoints.stream().skip(skip).forEach(v -> {
 				Ghost ghost = new Ghost(state, v.cpy().scl(state.getLevelTileset().tile_size));
 				state.addEntity(ghost);
 			});
-		}
-
-		// Create a few powerups
-		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
-			Room room = state.getLevel().rooms.get(r);
 			// A 40% chance of spawning one powerup
 			if (Math.random() < 0.4d) {
 				Vector2 spawnPosition = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
@@ -105,6 +103,13 @@ public class Dungeon extends ApplicationAdapter {
 				state.addEntity(powerup);
 			}
 		}
+		for (Room room : state.getLevel().rooms) {
+			room.torches.forEach(v -> {
+				Torch torch = new Torch(state, v.cpy().scl(state.getLevelTileset().tile_size));
+				state.addEntity(torch);
+			});
+		}
+
 	}
 
 	private PlayerCharacter getNewPlayer(Vector2 origin) {
@@ -138,7 +143,7 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		state.updateStateTime(Gdx.graphics.getDeltaTime());
 		characterViewPortTracker.refresh(viewPort);
 
@@ -164,6 +169,6 @@ public class Dungeon extends ApplicationAdapter {
 	public void dispose () {
 		ingameRenderer.dispose();
 		state.getTilesetManager().dispose();
-		state.getLightTexture().dispose();
+		Light.dispose();
 	}
 }
