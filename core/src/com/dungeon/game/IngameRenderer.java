@@ -27,7 +27,7 @@ public class IngameRenderer {
 			e1.getPos().x < e2.getPos().x ? -1 :
 			e1.getPos().x > e2.getPos().x ? 1 : 0;
 
-	private final Vector3 baseLightLevel = new Vector3(0.3f, 0.2f, 0.1f);
+	private final Vector3 baseLight = new Vector3(0.3f, 0.2f, 0.1f);
 
 	public IngameRenderer(GameState state, ViewPort viewPort) {
 		this.state = state;
@@ -39,6 +39,16 @@ public class IngameRenderer {
 		lightingBuffer = new FrameBuffer(Pixmap.Format.RGB565, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		lightingRegion = new TextureRegion(lightingBuffer.getColorBufferTexture());
 		lightingRegion.flip(false, true);
+		randomizeBaseLight();
+	}
+
+	public void randomizeBaseLight() {
+		float newX = (float) Math.random();
+		float newY = (float) Math.random();
+		float newZ = (float) Math.random();
+
+		float attenuation = (newX + newY + newZ) / 0.6f;
+		baseLight.set(newX / attenuation, newY / attenuation, newZ / attenuation);
 	}
 
 	public void render () {
@@ -73,7 +83,7 @@ public class IngameRenderer {
 		int dstFunc = batch.getBlendDstFunc();
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 
-		Gdx.gl.glClearColor(baseLightLevel.x, baseLightLevel.y, baseLightLevel.z, 1);
+		Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		state.getEntities().stream().sorted(comp).forEach(e -> e.drawLight(state, batch, viewPort));
 
