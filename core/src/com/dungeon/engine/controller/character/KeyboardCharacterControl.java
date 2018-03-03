@@ -40,9 +40,9 @@ public class KeyboardCharacterControl extends CharacterControl {
 		inputMultiplexer.addProcessor(fireControl);
 
 		// Debug stuff
-		directionalControl.addListener((pov, vec) -> System.out.println("[Keyboard] POV: " + pov + "; Vector: " + vec));
-		fireControl.addListener((bool) -> System.out.println("[Keyboard] Fire " + (bool ? "(pressed)" : "(unpressed)")));
-		startTrigger.addListener((bool) -> System.out.println("[Keyboard] Start " + (bool ? "(pressed)" : "(unpressed)")));
+//		directionalControl.addListener((pov, vec) -> System.out.println("[Keyboard] POV: " + pov + "; Vector: " + vec));
+//		fireControl.addListener((bool) -> System.out.println("[Keyboard] Fire " + (bool ? "(pressed)" : "(unpressed)")));
+//		startTrigger.addListener((bool) -> System.out.println("[Keyboard] Start " + (bool ? "(pressed)" : "(unpressed)")));
 	}
 
 	@Override

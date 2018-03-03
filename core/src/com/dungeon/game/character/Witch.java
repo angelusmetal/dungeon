@@ -14,7 +14,7 @@ import com.dungeon.game.GameState;
 public class Witch extends PlayerCharacter {
 
 	public static Projectile.Builder CAT_PROTOTYPE = new Projectile.Builder().speed(200).timeToLive(10).autoseek(0.1f).targetRadius(100).targetPredicate(PlayerCharacter.IS_NON_PLAYER);
-	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.8f, 0.2f, 0.8f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f);
+	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 
 	public Witch(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(14, 28)));
@@ -57,6 +57,7 @@ public class Witch extends PlayerCharacter {
 			if (!(entity instanceof PlayerCharacter)) {
 				explode(state);
 				entity.hit(state, dmg);
+				System.out.println("    by cat!");
 				return true;
 			} else {
 				return false;

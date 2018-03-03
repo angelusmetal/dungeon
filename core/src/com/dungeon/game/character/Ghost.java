@@ -15,7 +15,7 @@ import com.dungeon.game.GameState;
 public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 500 * 500;
-	static private Light GHOST_LIGHT = new Light(200, new Quaternion(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f);
+	static private Light GHOST_LIGHT = new Light(200, new Quaternion(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
 
 	public Ghost(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(16, 30)));

@@ -13,7 +13,7 @@ import com.dungeon.game.GameState;
 public class Assasin extends PlayerCharacter {
 
 	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(80).timeToLive(10);
-	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f);
+	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 	public Assasin(GameState state, Vector2 pos) {
 		super(new Body(pos, new Vector2(13, 20)));

@@ -10,7 +10,7 @@ import com.dungeon.game.GameState;
 
 public class Torch extends Entity<Torch.AnimationType> {
 
-	static private Light TORCH_LIGHT = new Light(80, new Quaternion(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight);
+	static private Light TORCH_LIGHT = new Light(80, new Quaternion(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 
 	public Torch(GameState state, Vector2 position) {
 		super(new Body(position, new Vector2(10, 10)));

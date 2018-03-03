@@ -39,9 +39,9 @@ public class ControllerCharacterControl extends CharacterControl {
 		controller.addListener(fireControl);
 
 		// Debug stuff
-		directionalControl.addListener((pov, vec) -> System.out.println("[" + controller.getName() + "] POV: " + pov + "; Vector: " + vec));
-		fireControl.addListener((bool) -> System.out.println("[" + controller.getName() + "] Fire " + (bool ? "(pressed)" : "(unpressed)")));
-		startTrigger.addListener((bool) -> System.out.println("[" + controller.getName() + "] Start " + (bool ? "(pressed)" : "(unpressed)")));
+//		directionalControl.addListener((pov, vec) -> System.out.println("[" + controller.getName() + "] POV: " + pov + "; Vector: " + vec));
+//		fireControl.addListener((bool) -> System.out.println("[" + controller.getName() + "] Fire " + (bool ? "(pressed)" : "(unpressed)")));
+//		startTrigger.addListener((bool) -> System.out.println("[" + controller.getName() + "] Start " + (bool ? "(pressed)" : "(unpressed)")));
 	}
 
 	@Override

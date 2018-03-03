@@ -30,9 +30,10 @@ public class Light {
 	private static float nextThink = 0;
 	private static float torchlight = 1;
 
-	private static double angle = 0;
+	private static float angle = 0;
 	private static float sine = 0;
 	private static float oscillating = 0;
+
 	public static void updateDimmers(float time) {
 		nextThink += time;
 		if (nextThink >= thinkInterval) {
@@ -57,6 +58,22 @@ public class Light {
 		return oscillating;
 	}
 
+	public static float noRotate() {
+		return 0;
+	}
+
+	public static float rotateSlow() {
+		return angle % 360 * 20;
+	}
+
+	public static float rotateMedium() {
+		return angle % 360 * 50;
+	}
+
+	public static float rotateFast() {
+		return angle % 260 * 80;
+	}
+
 	/** Describes the base light diameter, in units */
 	public final float diameter;
 	/** Describes the light color as a Quaternion (red, green, blue, alpha) */
@@ -64,15 +81,21 @@ public class Light {
 	/** Light texture to use */
 	public final Texture texture;
 	/**
-	 * Describes the dim supplier to make the light fluctuate.
+	 * Dimmer to make the light fluctuate.
 	 * The supplied value is a scale that is applied to both alpha and radius.
 	 */
-	public final Supplier<Float> dim;
+	public final Supplier<Float> dimmer;
+	/**
+	 * Rotator to make the light rotate.
+	 * The supplied value is the angle with which to rotate the light image.
+	 */
+	public final Supplier<Float> rotator;
 
-	public Light(float diameter, Quaternion color, Texture texture, Supplier<Float> dim) {
+	public Light(float diameter, Quaternion color, Texture texture, Supplier<Float> dimmer, Supplier<Float> rotator) {
 		this.diameter = diameter;
 		this.color = color;
 		this.texture = texture;
-		this.dim = dim;
+		this.dimmer = dimmer;
+		this.rotator = rotator;
 	}
 }

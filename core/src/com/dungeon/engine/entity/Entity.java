@@ -1,6 +1,5 @@
 package com.dungeon.engine.entity;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -172,7 +171,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 			for (int y = bottom; y <= top; ++y) {
 				if (state.getLevel().walkableTiles[x][y] == TileType.VOID && body.intersectsTile(x, y, tile_size)) {
 					body.move(step.scl(-1));
-					onTileCollision();
+					onTileCollision(state);
 					return true;
 				}
 			}
@@ -211,6 +210,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		if (health <= 0) {
 			setExpired(state, true);
 		}
+		System.out.println(this.getClass().getName() + " was hit!");
 	}
 
 	protected Vector2 getBoundingBox() {
@@ -227,28 +227,27 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	public void drawLight(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		if (light != null) {
-			float dim = light.dim.get();
-			float diameter = light.diameter * dim;
+			float dim = light.dimmer.get();
+			float diameter = light.diameter * dim * viewPort.scale;
+			float radius = diameter / 2;
 			batch.setColor(light.color.x, light.color.y, light.color.z, light.color.w * dim);
-			batch.draw(light.texture, (getPos().x - viewPort.xOffset - diameter / 2) * viewPort.scale, (getPos().y - viewPort.yOffset - diameter / 2) * viewPort.scale, diameter * viewPort.scale, diameter * viewPort.scale);
-//			float rotation = state.getStateTime();
-//			batch.draw(
-//					light.texture,
-//					getPos().x - viewPort.xOffset * viewPort.scale,//(getPos().x - viewPort.xOffset - diameter / 2) * viewPort.scale,
-//					getPos().y - viewPort.yOffset * viewPort.scale,//(getPos().y - viewPort.yOffset - diameter / 2) * viewPort.scale,
-//					light.texture.getWidth() / 2,
-//					light.texture.getHeight() / 2,
-//					diameter,
-//					diameter,
-//					1,
-//					1,
-//					rotation,
-//					0,
-//					0,
-//					light.texture.getWidth(),
-//					light.texture.getHeight(),
-//					false,
-//					false);
+			batch.draw(
+					light.texture,
+					(getPos().x - viewPort.xOffset) * viewPort.scale - radius,
+					(getPos().y - viewPort.yOffset) * viewPort.scale - radius,
+					radius,
+					radius,
+					diameter,
+					diameter,
+					1,
+					1,
+					light.rotator.get(),
+					0,
+					0,
+					light.texture.getWidth(),
+					light.texture.getHeight(),
+					false,
+					false);
 			batch.setColor(1, 1, 1, 1);
 		}
 	}
@@ -264,7 +263,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	protected boolean onEntityCollision(GameState state, Entity<?> entity) {return false;}
 	protected void onExpire(GameState state) {}
 	protected void onSelfMovementUpdate() {}
-	protected void onTileCollision() {}
+	protected void onTileCollision(GameState state) {}
 
 	public void think(GameState state) {}
 
