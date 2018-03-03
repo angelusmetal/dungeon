@@ -53,6 +53,9 @@ public class Thief extends PlayerCharacter {
 		}
 		@Override
 		protected boolean onEntityCollision(GameState state, Entity<?> entity) {
+			if (exploding) {
+				return false;
+			}
 			// Don't hurt other players!
 			if (!(entity instanceof PlayerCharacter)) {
 				explode(state);
