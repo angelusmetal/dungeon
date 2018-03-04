@@ -64,7 +64,7 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 				if (projectile != null) {
 					projectile.setSelfMovement(aim);
 					// Extra offset to make projectiles appear in the character's hands
-					projectile.getPos().y -= 8;
+					//projectile.getPos().y -= 8;
 					state.addEntity(projectile);
 					setCurrentAnimation(animationProvider.get(AnimationType.HIT));
 				}

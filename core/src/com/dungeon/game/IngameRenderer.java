@@ -21,6 +21,10 @@ public class IngameRenderer {
 	private FrameBuffer lightingBuffer;
 	private TextureRegion lightingRegion;
 
+	// Developer tools
+	private boolean renderScene = true;
+	private boolean renderLighting = true;
+
 	private final Comparator<? super Entity<?>> comp = (e1, e2) ->
 			e1.getPos().y > e2.getPos().y ? -1 :
 			e1.getPos().y < e2.getPos().y ? 1 :
@@ -53,25 +57,40 @@ public class IngameRenderer {
 
 	public void render () {
 		// Render light in a separate frame buffer
-		renderLight();
+		if (renderLighting) {
+			renderLight();
+		}
 
-		batch.begin();
-		// Draw map
-		drawMap();
-		// Iterate entities in render order and draw them
-		state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
-
-		// remember SpriteBatch's current functions
-		int srcFunc = batch.getBlendSrcFunc();
-		int dstFunc = batch.getBlendDstFunc();
-		batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ZERO);
+		// Render scene
+		if (renderScene) {
+			batch.begin();
+			// Draw map
+			drawMap();
+			// Iterate entities in render order and draw them
+			state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
+			batch.end();
+		} else {
+			batch.begin();
+			Gdx.gl.glClearColor(1, 1, 1, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			batch.end();
+		}
 
 		// Draw lighting on top of scene
-		batch.draw(lightingRegion, 0, 0, lightingBuffer.getWidth(), lightingBuffer.getHeight());
+		if (renderLighting) {
+			batch.begin();
+			// remember SpriteBatch's current functions
+			int srcFunc = batch.getBlendSrcFunc();
+			int dstFunc = batch.getBlendDstFunc();
+			batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 
-		// Restore blend function
-		batch.setBlendFunction(srcFunc, dstFunc);
-		batch.end();
+			batch.draw(lightingRegion, 0, 0, lightingBuffer.getWidth(), lightingBuffer.getHeight());
+
+			// Restore blend function
+			batch.setBlendFunction(srcFunc, dstFunc);
+			batch.end();
+		}
+
 	}
 
 	private void renderLight() {
@@ -108,6 +127,14 @@ public class IngameRenderer {
 				batch.draw(textureRegion, (x * tWidth - viewPort.xOffset) * viewPort.scale, (y * tHeight - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
 			}
 		}
+	}
+
+	public void toggleScene() {
+		renderScene = !renderScene;
+	}
+
+	public void toggleLighting() {
+		renderLighting = !renderLighting;
 	}
 
 	public void dispose() {

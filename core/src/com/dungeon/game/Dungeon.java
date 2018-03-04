@@ -2,6 +2,7 @@ package com.dungeon.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
@@ -19,6 +20,8 @@ import com.dungeon.engine.controller.character.KeyboardCharacterControl;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.directional.DirectionalListener;
 import com.dungeon.engine.controller.directional.PovDirectionalControl;
+import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
+import com.dungeon.engine.controller.trigger.TriggerControl;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
@@ -85,6 +88,9 @@ public class Dungeon extends ApplicationAdapter {
 			CharacterControl controllerControl = new ControllerCharacterControl(state, controller, this::getStartingPosition, this::getNewPlayer);
 		}
 
+		// Add developer hotkeys
+		addDeveloperHotkeys();
+
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
 
 		// Create ghosts in each room, to begin with
@@ -110,6 +116,24 @@ public class Dungeon extends ApplicationAdapter {
 			});
 		}
 
+	}
+
+	private void addDeveloperHotkeys() {
+		addDeveloperHotkey(Input.Keys.F1, ingameRenderer::toggleLighting);
+		addDeveloperHotkey(Input.Keys.F2, ingameRenderer::toggleScene);
+		addDeveloperHotkey(Input.Keys.F3, ingameRenderer::randomizeBaseLight);
+	}
+
+	private void addDeveloperHotkey(int keycode, Runnable runnable) {
+		System.out.println("Adding developer trigger for " + keycode);
+		KeyboardTriggerControl trigger = new KeyboardTriggerControl(keycode);
+		trigger.addListener(b -> {
+			System.out.println("WOW");
+			if (b) {
+				runnable.run();
+			}
+		});
+		inputMultiplexer.addProcessor(trigger);
 	}
 
 	private PlayerCharacter getNewPlayer(Vector2 origin) {
