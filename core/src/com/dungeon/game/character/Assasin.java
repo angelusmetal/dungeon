@@ -12,7 +12,7 @@ import com.dungeon.game.GameState;
 
 public class Assasin extends PlayerCharacter {
 
-	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(80).timeToLive(10);
+	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(80).timeToLive(10).damage(65);
 	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 	public Assasin(GameState state, Vector2 pos) {
@@ -29,17 +29,13 @@ public class Assasin extends PlayerCharacter {
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
 		health = 100;
-		maxSpeed = 60;
-		dmg = 65;
+		speed = 60;
 	}
 
 	public static class Bullet extends Projectile {
 
-		private int dmg;
-
-		public Bullet(GameState state, Vector2 origin, float startTime, int dmg) {
+		public Bullet(GameState state, Vector2 origin, float startTime) {
 			super(new Body(origin, new Vector2(6, 6)), startTime, BULLET_PROTOTYPE);
-			this.dmg = dmg;
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_FLY_ANIMATION);
 			provider.register(AnimationType.FLY_SOUTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_FLY_ANIMATION);
@@ -49,26 +45,12 @@ public class Assasin extends PlayerCharacter {
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH));
 			light = PROJECTILE_LIGHT;
 		}
-		@Override
-		protected boolean onEntityCollision(GameState state, Entity<?> entity) {
-			if (exploding) {
-				return false;
-			}
-			// Don't hurt other players!
-			if (!(entity instanceof PlayerCharacter)) {
-				explode(state);
-				entity.hit(state, dmg);
-				return true;
-			} else {
-				return false;
-			}
-		}
 
 	}
 
 	@Override
 	protected Projectile createProjectile(GameState state, Vector2 origin) {
-		return new Bullet(state, origin, state.getStateTime(), dmg);
+		return new Bullet(state, origin, state.getStateTime());
 	}
 
 }

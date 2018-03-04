@@ -29,7 +29,7 @@ public class Torch extends Entity<Torch.AnimationType> {
 
 	@Override
 	public boolean isSolid() {
-		return true;
+		return false;
 	}
 
 }

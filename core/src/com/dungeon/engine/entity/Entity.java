@@ -18,7 +18,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
 	private final Body body;
-	protected float maxSpeed = 3;
+	protected float speed = 3;
 	private boolean invertX = false;
 
 	protected boolean expired;
@@ -94,7 +94,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	public void move(GameState state) {
 		// Update movementSpeed
 		movement.add(selfMovement);
-		movement.clamp(0, maxSpeed * state.getFrameTime());
+		movement.clamp(0, speed * state.getFrameTime());
 
 		float distance = movement.len();
 
@@ -151,7 +151,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		}
 
 		// Decrease speed
-		movement.scl(0.9f);
+		movement.scl(0.7f);
 		// Round out very small values
 		if (Math.abs(movement.x) < 0.1f) {
 			movement.x = 0;
@@ -171,7 +171,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 			for (int y = bottom; y <= top; ++y) {
 				if (state.getLevel().walkableTiles[x][y] == TileType.VOID && body.intersectsTile(x, y, tile_size)) {
 					body.move(step.scl(-1));
-					onTileCollision(state);
+					onTileCollision(state, Math.abs(step.x) > Math.abs(step.y));
 					return true;
 				}
 			}
@@ -179,10 +179,10 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		return false;
 	}
 
-	private boolean detectEntityCollision(GameState state, Vector2 step) {
+	protected boolean detectEntityCollision(GameState state, Vector2 step) {
 		boolean pushedBack = false;
 		for (Entity<?> entity : state.getEntities()) {
-			if (entity != this && collides(entity.body)) {
+			if (entity != this && collides(entity)) {
 				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
 				if (!onEntityCollision(state, entity)) {
 					entity.onEntityCollision(state, this);
@@ -205,12 +205,15 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		return this.body.intersects(body);
 	}
 
+	public boolean collides(Entity entity) {
+		return this.body.intersects(entity.body);
+	}
+
 	public void hit(GameState state, int dmg) {
 		health -= dmg;
 		if (health <= 0) {
 			setExpired(state, true);
 		}
-		System.out.println(this.getClass().getName() + " was hit!");
 	}
 
 	protected Vector2 getBoundingBox() {
@@ -263,7 +266,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	protected boolean onEntityCollision(GameState state, Entity<?> entity) {return false;}
 	protected void onExpire(GameState state) {}
 	protected void onSelfMovementUpdate() {}
-	protected void onTileCollision(GameState state) {}
+	protected void onTileCollision(GameState state, boolean horizontal) {}
 
 	public void think(GameState state) {}
 

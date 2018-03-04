@@ -18,8 +18,8 @@ public abstract class PlayerCharacter extends Character {
 		light = TORCH_LIGHT;
 	}
 
-	public static final Function<Entity, Boolean> IS_PLAYER = (entity) -> entity instanceof PlayerCharacter;
-	public static final Function<Entity, Boolean> IS_NON_PLAYER = (entity) -> entity instanceof Character && !(entity instanceof PlayerCharacter);
+	public static final Function<Entity, Boolean> IS_PLAYER = entity -> entity instanceof PlayerCharacter;
+	public static final Function<Entity, Boolean> IS_NON_PLAYER = entity -> entity instanceof Character && !(entity instanceof PlayerCharacter);
 
 	@Override
 	protected void onExpire(GameState state) {

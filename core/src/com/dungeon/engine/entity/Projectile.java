@@ -5,19 +5,20 @@ import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
-import com.dungeon.engine.render.Tileset;
 import com.dungeon.game.GameState;
-import com.dungeon.game.level.TileType;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Base class for all projectiles
  */
 public abstract class Projectile extends Entity<Projectile.AnimationType> implements Movable, Drawable {
 
-	// TODO implement bounce and expiration action
+	// TODO implement expiration action
+	static private final Vector2 VERTICAL_BOUNCE = new Vector2(1, -1);
+	static private final Vector2 HORIZONTAL_BOUNCE = new Vector2(-1, 1);
+
+	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerCharacter) && entity.isSolid();
 
 	/**
 	 * Describes animation types for projectiles
@@ -27,12 +28,10 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 	}
 
 	protected AnimationProvider<AnimationType> animationProvider;
-	/** Projectile speed */
-	protected float speed;
 	/** Projectile acceleration (or deceleration) ratio */
 	protected final float acceleration;
 	/** Projectile bounciness; 0 means no bounce (explode), 1 means perfect elastic bounce, in-between is bounce with absorption) */
-	protected final float bounciness;
+	protected int bounciness;
 	/** Autoseek ratio; 0 means no autoseek; 1 means projectile will do a hard turn towards target when within range; in-between will turn slightly */
 	protected final float autoseek;
 	/** Radius, in units, for detecting targets */
@@ -45,18 +44,21 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 	protected float timeToLive; // TODO make final
 	/** Action to run when the projectile's timeToLive has expired (not when it impacted) */
 	protected final Runnable onExpire;
+	/** Damage to inflict upon hitting a target */
+	protected final int damage;
 	/** Whether this projectile is already exploding; a lot of stuff needs to be ignored if so */
 	protected boolean exploding = false;
 
 	public static class Builder {
 		private float speed = 1;
 		private float acceleration = 1;
-		private float bounciness = 0;
+		private int bounciness = 0;
 		private float autoseek = 0;
 		private float targetRadius = 0;
 		private Function<Entity, Boolean> targetPredicate = (entity) -> false;
 		private float timeToLive;
 		private Runnable onExpire;
+		private int damage;
 
 		public Builder speed(float speed) {
 			this.speed = speed;
@@ -68,7 +70,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 			return this;
 		}
 
-		public Builder bounciness(float bounciness) {
+		public Builder bounciness(int bounciness) {
 			this.bounciness = bounciness;
 			return this;
 		}
@@ -97,6 +99,11 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 			this.onExpire = onExpire;
 			return this;
 		}
+
+		public Builder damage(int damage) {
+			this.damage = damage;
+			return this;
+		}
 	}
 
 	public Projectile(Body body, float startTime, Builder builder) {
@@ -110,6 +117,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 		this.targetPredicate = builder.targetPredicate;
 		this.timeToLive = builder.timeToLive;
 		this.onExpire = builder.onExpire;
+		this.damage = builder.damage;
 	}
 
 	public float getSpeed() {
@@ -130,23 +138,31 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 	public void move(GameState state) {
 		// Only if not already exploding
 		if (!exploding) {
-			// Move projectile in the current direction
-			getPos().add(getSelfMovement().cpy().scl(state.getFrameTime()));
+			super.move(state);
+		}
+	}
 
-			// Detect collision against walls
-			Tileset tileset = state.getLevelTileset();
-			int xTile = (int)getPos().x / tileset.tile_size;
-			int yTile = (int)getPos().y / tileset.tile_size;
-			if (state.getLevel().walkableTiles[xTile][yTile] == TileType.VOID) {
-				explode(state);
-			} else {
-				// Detect collision against entities
-				for (Entity<?> entity : state.getEntities()) {
-					if (entity != this && entity.isSolid() && entity.collides(getPos())) {
-						onEntityCollision(state, entity);
-					}
+	@Override
+	protected boolean detectEntityCollision(GameState state, Vector2 step) {
+		for (Entity<?> entity : state.getEntities()) {
+			if (entity != this && collides(entity)) {
+				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
+				if (!onEntityCollision(state, entity)) {
+					entity.onEntityCollision(state, this);
 				}
+			}
+		}
+		return false; // Projectiles are never pushed back
+	}
 
+	@Override
+	protected void onTileCollision(GameState state, boolean horizontal) {
+		if (!exploding) {
+			if (bounciness > 0) {
+				bounciness--;
+				setSelfMovement(getSelfMovement().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE));
+			} else {
+				explode(state);
 			}
 		}
 	}
@@ -201,8 +217,22 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 				float seekClamp = autoseek * speed;
 				float speedClamp = speed - seekClamp;
 				seek.clamp(seekClamp, seekClamp);
-				setSelfMovement(getSelfMovement().cpy().clamp(speedClamp, speedClamp).add(seek));
+				setSelfMovement(getSelfMovement().setLength(speedClamp).add(seek));
 			}
+		} else {
+			setSelfMovement(getSelfMovement().setLength(speed));
 		}
 	}
+
+	@Override
+	protected boolean onEntityCollision(GameState state, Entity<?> entity) {
+		if (!exploding && NO_FRIENDLY_FIRE.apply(entity)) {
+			explode(state);
+			entity.hit(state, damage);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

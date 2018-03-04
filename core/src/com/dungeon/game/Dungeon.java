@@ -153,8 +153,8 @@ public class Dungeon extends ApplicationAdapter {
 		// Game loop
 		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
 			Entity<?> entity = e.next();
-			entity.move(state);
 			entity.think(state);
+			entity.move(state);
 			if (entity.isExpired(state.getStateTime())) {
 				e.remove();
 				state.getPlayerCharacters().remove(entity);
