@@ -25,5 +25,9 @@ public abstract class LevelTileset extends Tileset {
 	public abstract Tile concaveUpper();
 	public abstract Tile concaveLeft();
 	public abstract Tile concaveRight();
+	public abstract Tile wallDecoration1();
+	public abstract Tile wallDecoration2();
+	public abstract Tile wallDecoration3();
+	public abstract Tile wallDecoration4();
 
 }

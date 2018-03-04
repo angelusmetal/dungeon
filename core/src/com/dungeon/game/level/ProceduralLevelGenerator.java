@@ -131,6 +131,14 @@ public class ProceduralLevelGenerator {
 			return tileset.floor();
 		} else if (tiles[x][y] == TileType.EXIT) {
 			return tileset.exit();
+		} else if (tiles[x][y] == TileType.WALL_DECORATION_1) {
+			return tileset.exit();
+		} else if (tiles[x][y] == TileType.WALL_DECORATION_2) {
+			return tileset.exit();
+		} else if (tiles[x][y] == TileType.WALL_DECORATION_3) {
+			return tileset.exit();
+		} else if (tiles[x][y] == TileType.WALL_DECORATION_4) {
+			return tileset.exit();
 		}
 
 		boolean freeUp = y > 0 && tiles[x][y-1] != TileType.VOID;

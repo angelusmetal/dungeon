@@ -67,7 +67,7 @@ public class IngameRenderer {
 		batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 
 		// Draw lighting on top of scene
-		batch.draw(lightingRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.draw(lightingRegion, 0, 0, lightingBuffer.getWidth(), lightingBuffer.getHeight());
 
 		// Restore blend function
 		batch.setBlendFunction(srcFunc, dstFunc);

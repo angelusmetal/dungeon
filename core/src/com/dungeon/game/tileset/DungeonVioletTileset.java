@@ -39,6 +39,10 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final TextureRegion CONCAVE_LOWER_3 = getTile(4, 1);
 	private final TextureRegion CONCAVE_LOWER_4 = getTile(5, 1);
 	private final TextureRegion CONCAVE_LOWER_RIGHT = getTile(1, 1);
+	private final TextureRegion WALL_DECOR_1 = getTile(2, 4);
+	private final TextureRegion WALL_DECOR_2 = getTile(3, 4);
+	private final TextureRegion WALL_DECOR_3 = getTile(4, 4);
+	private final TextureRegion WALL_DECOR_4 = getTile(5, 4);
 
 //	public final TextureRegion OVERLAY_1 = getTile(0, 0);
 //	public final TextureRegion OVERLAY_2 = getTile(0, 1);
@@ -62,6 +66,11 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final Tile CONCAVE_LOWER_LEFT_TILE = new Tile(CONCAVE_LOWER_LEFT);
 	private final Tile[] CONCAVE_LOWER_TILES = createTiles(CONCAVE_LOWER_1, CONCAVE_LOWER_2, CONCAVE_LOWER_3, CONCAVE_LOWER_4);
 	private final Tile CONCAVE_LOWER_RIGHT_TILE = new Tile(CONCAVE_LOWER_RIGHT);
+
+	private final Tile WALL_DECOR_1_TILE = new Tile(WALL_DECOR_1);
+	private final Tile WALL_DECOR_2_TILE = new Tile(WALL_DECOR_2);
+	private final Tile WALL_DECOR_3_TILE = new Tile(WALL_DECOR_3);
+	private final Tile WALL_DECOR_4_TILE = new Tile(WALL_DECOR_4);
 
 //	private final Tile OVERLAY_1_TILE = new Tile(OVERLAY_1);
 //	private final Tile OVERLAY_2_TILE = new Tile(OVERLAY_2);
@@ -145,5 +154,25 @@ public class DungeonVioletTileset extends LevelTileset {
 	@Override
 	public Tile concaveRight() {
 		return getRandomTile(CONCAVE_RIGHT_TILES);
+	}
+
+	@Override
+	public Tile wallDecoration1() {
+		return WALL_DECOR_1_TILE;
+	}
+
+	@Override
+	public Tile wallDecoration2() {
+		return WALL_DECOR_2_TILE;
+	}
+
+	@Override
+	public Tile wallDecoration3() {
+		return WALL_DECOR_3_TILE;
+	}
+
+	@Override
+	public Tile wallDecoration4() {
+		return WALL_DECOR_4_TILE;
 	}
 }
