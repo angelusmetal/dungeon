@@ -132,23 +132,23 @@ public class ProceduralLevelGenerator {
 		} else if (tiles[x][y] == TileType.EXIT) {
 			return tileset.exit();
 		} else if (tiles[x][y] == TileType.WALL_DECORATION_1) {
-			return tileset.exit();
+			return tileset.wallDecoration1();
 		} else if (tiles[x][y] == TileType.WALL_DECORATION_2) {
-			return tileset.exit();
+			return tileset.wallDecoration2();
 		} else if (tiles[x][y] == TileType.WALL_DECORATION_3) {
-			return tileset.exit();
+			return tileset.wallDecoration3();
 		} else if (tiles[x][y] == TileType.WALL_DECORATION_4) {
-			return tileset.exit();
+			return tileset.wallDecoration4();
 		}
 
-		boolean freeUp = y > 0 && tiles[x][y-1] != TileType.VOID;
-		boolean freeDown = y < height - 1 && tiles[x][y+1] != TileType.VOID;
-		boolean freeLeft = x > 0 && tiles[x-1][y] != TileType.VOID;
-		boolean freeRight = x < width - 1 && tiles[x+1][y] != TileType.VOID;
-		boolean freeUpLeft = y > 0 && x > 0 && tiles[x-1][y-1] != TileType.VOID;
-		boolean freeUpRight = y > 0 && x < width - 1 && tiles[x+1][y-1] != TileType.VOID;
-		boolean freeDownLeft = y < height - 1 && x > 0 && tiles[x-1][y+1] != TileType.VOID;
-		boolean freeDownRight = y < height - 1 && x < width - 1 && tiles[x+1][y+1] != TileType.VOID;
+		boolean freeUp = y > 0 && tiles[x][y-1].isFloor();
+		boolean freeDown = y < height - 1 && tiles[x][y+1].isFloor();
+		boolean freeLeft = x > 0 && tiles[x-1][y].isFloor();
+		boolean freeRight = x < width - 1 && tiles[x+1][y].isFloor();
+		boolean freeUpLeft = y > 0 && x > 0 && tiles[x-1][y-1].isFloor();
+		boolean freeUpRight = y > 0 && x < width - 1 && tiles[x+1][y-1].isFloor();
+		boolean freeDownLeft = y < height - 1 && x > 0 && tiles[x-1][y+1].isFloor();
+		boolean freeDownRight = y < height - 1 && x < width - 1 && tiles[x+1][y+1].isFloor();
 
 		if (freeUp) {
 			if (freeLeft) {
@@ -222,7 +222,7 @@ public class ProceduralLevelGenerator {
 				if (frame.originPoint != null) {
 					frame.originPoint.active = true;
 					// Make the connecting tile walkable
-					for (int i = 0; i < frame.roomSeparation; ++i) {
+					for (int i = 0; i <= frame.roomSeparation; ++i) {
 						tiles[frame.originPoint.coords.x + frame.originPoint.direction.x * i][frame.originPoint.coords.y + frame.originPoint.direction.y * i] = TileType.FLOOR;
 						// TODO Hmm not entirely right... I need to fix this
 						doors.add(new Coords(frame.originPoint.coords.x + frame.originPoint.direction.x,frame.originPoint.coords.y + frame.originPoint.direction.y));

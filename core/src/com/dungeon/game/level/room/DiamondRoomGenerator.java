@@ -7,22 +7,22 @@ import com.dungeon.game.level.TileType;
 public class DiamondRoomGenerator implements RoomGenerator {
 	@Override
 	public int minWidth() {
-		return 7;
+		return 9;
 	}
 
 	@Override
 	public int maxWidth() {
-		return 9;
+		return 11;
 	}
 
 	@Override
 	public int minHeight() {
-		return 7;
+		return 9;
 	}
 
 	@Override
 	public int maxHeight() {
-		return 9;
+		return 11;
 	}
 
 	@Override
@@ -32,14 +32,19 @@ public class DiamondRoomGenerator implements RoomGenerator {
 		// Create a rectangle
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
+				room.tiles[x][y] = TileType.VOID;
+			}
+		}
+		for (int x = 1; x < width - 1; ++x) {
+			for (int y = 1; y < height - 1; ++y) {
 				room.tiles[x][y] = TileType.FLOOR;
 			}
 		}
 
 		// Cut corners in diamond shape
 		int maxCut = Math.min(width, height) / 2 - 1;
-		for (int i = maxCut; i >= 0; --i) {
-			for (int x = 0; x <= maxCut - i; ++x) {
+		for (int i = maxCut; i >= 1; --i) {
+			for (int x = 1; x <= maxCut - i; ++x) {
 				room.tiles[x][i] = TileType.VOID;
 				room.tiles[x][height - i - 1] = TileType.VOID;
 				room.tiles[width - x - 1][i] = TileType.VOID;
@@ -48,17 +53,19 @@ public class DiamondRoomGenerator implements RoomGenerator {
 		}
 
 		// Add spawn points
-		room.spawnPoints.add(new Vector2(left + width / 2 - 1, bottom + height / 2));
-		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 - 1));
-		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2));
-		room.spawnPoints.add(new Vector2(left + width / 2, bottom + height / 2 + 1));
-		room.spawnPoints.add(new Vector2(left + width / 2 + 1, bottom + height / 2));
+		room.spawnPoints.add(new Vector2(left + 2, bottom + height / 2f));
+		room.spawnPoints.add(new Vector2(left + width / 2f, bottom + 2));
+		room.spawnPoints.add(new Vector2(left + width / 2f, bottom + height / 2f));
+		room.spawnPoints.add(new Vector2(left + width / 2f, bottom + height - 2));
+		room.spawnPoints.add(new Vector2(left + width - 2, bottom + height / 2f));
 
 		// Add torches
 		room.torches.add(new Vector2(left + width / 2 - 0.5f, bottom + height - 0.5f));
 		room.torches.add(new Vector2(left + width / 2 + 1.5f, bottom + height - 0.5f));
-		room.torches.add(new Vector2(left + 0.5f, bottom + height / 2 + 1.5f));
-		room.torches.add(new Vector2(left + width - 0.5f, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + 1, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + 1, bottom + height / 2 - 0.5f));
+		room.torches.add(new Vector2(left + width - 1, bottom + height / 2 + 1.5f));
+		room.torches.add(new Vector2(left + width - 1, bottom + height / 2 - 0.5f));
 
 		return room;
 	}

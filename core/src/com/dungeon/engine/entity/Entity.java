@@ -169,7 +169,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		int top = body.getTopTile(tile_size);
 		for (int x = left; x <= right; ++x) {
 			for (int y = bottom; y <= top; ++y) {
-				if (state.getLevel().walkableTiles[x][y] == TileType.VOID && body.intersectsTile(x, y, tile_size)) {
+				if (!state.getLevel().walkableTiles[x][y].isFloor() && body.intersectsTile(x, y, tile_size)) {
 					body.move(step.scl(-1));
 					onTileCollision(state, Math.abs(step.x) > Math.abs(step.y));
 					return true;
