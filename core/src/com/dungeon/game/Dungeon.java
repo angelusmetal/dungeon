@@ -6,22 +6,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.character.CharacterControl;
-import com.dungeon.engine.controller.character.ControllerCharacterControl;
-import com.dungeon.engine.controller.character.KeyboardCharacterControl;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
-import com.dungeon.engine.controller.directional.DirectionalListener;
 import com.dungeon.engine.controller.directional.PovDirectionalControl;
+import com.dungeon.engine.controller.player.ControllerPlayerControl;
+import com.dungeon.engine.controller.player.KeyboardPlayerControl;
+import com.dungeon.engine.controller.player.PlayerControl;
 import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
-import com.dungeon.engine.controller.trigger.TriggerControl;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
@@ -36,7 +29,6 @@ import com.dungeon.game.level.Room;
 import com.dungeon.game.object.HealthPowerup;
 import com.dungeon.game.object.Torch;
 
-import java.util.Comparator;
 import java.util.Iterator;
 
 public class Dungeon extends ApplicationAdapter {
@@ -61,16 +53,16 @@ public class Dungeon extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		// Testing stuff; remove
-		DirectionalListener dListener = (pov, vector) -> {
-			System.out.println("POV: " + pov + "; Vector: " + vector);
-		};
+//		DirectionalListener dListener = (pov, vector) -> {
+//			System.out.println("POV: " + pov + "; Vector: " + vector);
+//		};
 		for (Controller controller : Controllers.getControllers()) {
 			PovDirectionalControl povControl = new PovDirectionalControl(0);
 			AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
 			controller.addListener(povControl);
 			controller.addListener(analogControl);
-			povControl.addListener(dListener);
-			analogControl.addListener(dListener);
+//			povControl.addListener(dListener);
+//			analogControl.addListener(dListener);
 		}
 
 		state = new GameState(viewPort);
@@ -81,11 +73,11 @@ public class Dungeon extends ApplicationAdapter {
 		state.generateNewLevel();
 
 		// Add keyboard controller
-		CharacterControl keyboardControl = new KeyboardCharacterControl(state, inputMultiplexer, this::getStartingPosition, this::getNewPlayer);
+		PlayerControl keyboardControl = new KeyboardPlayerControl(state, new CharacterControl(state, this::getStartingPosition, this::getNewPlayer), inputMultiplexer);
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			CharacterControl controllerControl = new ControllerCharacterControl(state, controller, this::getStartingPosition, this::getNewPlayer);
+			PlayerControl controllerControl = new ControllerPlayerControl(state, new CharacterControl(state, this::getStartingPosition, this::getNewPlayer), controller);
 		}
 
 		// Add developer hotkeys
@@ -125,14 +117,8 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {
-		System.out.println("Adding developer trigger for " + keycode);
 		KeyboardTriggerControl trigger = new KeyboardTriggerControl(keycode);
-		trigger.addListener(b -> {
-			System.out.println("WOW");
-			if (b) {
-				runnable.run();
-			}
-		});
+		trigger.addListener(runnable);
 		inputMultiplexer.addProcessor(trigger);
 	}
 

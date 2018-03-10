@@ -2,19 +2,18 @@ package com.dungeon.engine.controller.trigger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TriggerControl {
 
-	private List<Consumer<Boolean>> listeners = new ArrayList<>();
+	private List<Runnable> listeners = new ArrayList<>();
 
-	public void addListener(Consumer<Boolean> listener) {
+	public void addListener(Runnable listener) {
 		listeners.add(listener);
 	}
 
-	protected void updateListeners(boolean pressed) {
-		for (Consumer<Boolean> listener : listeners) {
-			listener.accept(pressed);
+	protected void updateListeners() {
+		for (Runnable listener : listeners) {
+			listener.run();
 		}
 	}
 

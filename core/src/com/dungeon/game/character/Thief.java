@@ -17,7 +17,7 @@ public class Thief extends PlayerCharacter {
 	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 	public Thief(GameState state, Vector2 pos) {
-		super(new Body(pos, new Vector2(13, 20)));
+		super(new Body(pos, new Vector2(14, 28)));
 		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
 		provider.register(AnimationType.IDLE, state.getTilesetManager().getCharactersTileset().THIEF_IDLE_ANIMATION);
 		provider.register(AnimationType.WALK, state.getTilesetManager().getCharactersTileset().THIEF_WALK_ANIMATION);

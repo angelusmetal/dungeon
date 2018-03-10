@@ -5,11 +5,11 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 
-public class ControllerTriggerControl extends TriggerControl implements ControllerListener {
+public class ControllerSwitchControl extends SwitchControl implements ControllerListener {
 
 	private final int buttonCode;
 
-	public ControllerTriggerControl(int buttonCode) {
+	public ControllerSwitchControl(int buttonCode) {
 		this.buttonCode = buttonCode;
 	}
 
@@ -26,7 +26,7 @@ public class ControllerTriggerControl extends TriggerControl implements Controll
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		if (buttonCode == this.buttonCode) {
-			updateListeners();
+			updateListeners(true);
 			return true;
 		} else {
 			return false;
@@ -35,7 +35,12 @@ public class ControllerTriggerControl extends TriggerControl implements Controll
 
 	@Override
 	public boolean buttonUp(Controller controller, int buttonCode) {
-		return false;
+		if (buttonCode == this.buttonCode) {
+			updateListeners(false);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

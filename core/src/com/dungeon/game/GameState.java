@@ -1,6 +1,7 @@
 package com.dungeon.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.dungeon.engine.controller.ControlScope;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
@@ -23,6 +24,7 @@ public class GameState {
 	private Level level;
 	private TilesetManager tilesetManager;
 	private ViewPort viewPort;
+	private ControlScope controlScope = ControlScope.INGAME;
 
 	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
 	private List<Entity<?>> entities = new LinkedList<>();
@@ -61,6 +63,10 @@ public class GameState {
 
 	public ViewPort getViewPort() {
 		return viewPort;
+	}
+
+	public ControlScope getControlScope() {
+		return controlScope;
 	}
 
 	public DungeonVioletTileset getLevelTileset() {

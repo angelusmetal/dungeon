@@ -2,18 +2,18 @@ package com.dungeon.engine.controller.trigger;
 
 import com.badlogic.gdx.InputProcessor;
 
-public class KeyboardTriggerControl extends TriggerControl implements InputProcessor {
+public class KeyboardSwitchControl extends SwitchControl implements InputProcessor {
 
 	private final int keycode;
 
-	public KeyboardTriggerControl(int keycode) {
+	public KeyboardSwitchControl(int keycode) {
 		this.keycode = keycode;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == this.keycode) {
-			updateListeners();
+			updateListeners(true);
 			return true;
 		} else {
 			return false;
@@ -22,7 +22,12 @@ public class KeyboardTriggerControl extends TriggerControl implements InputProce
 
 	@Override
 	public boolean keyUp(int keycode) {
-		return false;
+		if (keycode == this.keycode) {
+			updateListeners(false);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
