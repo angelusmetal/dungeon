@@ -2,7 +2,7 @@ package com.dungeon.engine.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 
 import java.util.EnumMap;
 import java.util.function.Supplier;

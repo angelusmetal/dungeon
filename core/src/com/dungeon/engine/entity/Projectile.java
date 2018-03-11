@@ -5,7 +5,7 @@ import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 

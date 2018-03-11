@@ -2,17 +2,13 @@ package com.dungeon.engine.controller.player;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.controllers.Controller;
-import com.dungeon.engine.controller.character.CharacterControl;
-import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.directional.KeyboardDirectionalControl;
-import com.dungeon.engine.controller.trigger.ControllerTriggerControl;
 import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 
 public class KeyboardPlayerControl extends PlayerControl {
-	public KeyboardPlayerControl(GameState state, CharacterControl characterControl, InputMultiplexer inputMultiplexer) {
-		super(state, characterControl);
+	public KeyboardPlayerControl(GameState state, InputMultiplexer inputMultiplexer) {
+		super(state);
 
 		// Create controls
 		KeyboardTriggerControl action1Trigger = new KeyboardTriggerControl(Input.Keys.SPACE);

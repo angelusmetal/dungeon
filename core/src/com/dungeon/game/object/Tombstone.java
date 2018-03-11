@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.physics.Body;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 
 public class Tombstone extends Entity<Tombstone.AnimationType> {
 

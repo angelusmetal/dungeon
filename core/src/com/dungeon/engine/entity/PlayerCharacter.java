@@ -3,11 +3,10 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 import com.dungeon.game.object.Tombstone;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public abstract class PlayerCharacter extends Character {
 

@@ -9,8 +9,7 @@ import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.GameState;
-import com.dungeon.game.level.TileType;
+import com.dungeon.game.state.GameState;
 
 abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 

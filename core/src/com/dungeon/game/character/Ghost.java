@@ -10,7 +10,7 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 

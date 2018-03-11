@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.state.GameState;
 
 import java.util.Comparator;
 

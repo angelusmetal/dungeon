@@ -1,20 +1,25 @@
-package com.dungeon.game;
+package com.dungeon.game.state;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.dungeon.engine.controller.ControlScope;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.TilesetHelper;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.tileset.DungeonVioletTileset;
+import com.dungeon.game.tileset.LevelTileset;
 import com.dungeon.game.tileset.TilesetManager;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class GameState {
+
+	public enum State {
+		MENU, INGAME, GAMEOVER
+	}
+
 	public final int MAP_WIDTH = 100;
 	public final int MAP_HEIGHT = 100;
 	private final TilesetHelper tilesetHelper;
@@ -24,7 +29,7 @@ public class GameState {
 	private Level level;
 	private TilesetManager tilesetManager;
 	private ViewPort viewPort;
-	private ControlScope controlScope = ControlScope.INGAME;
+	private State currentState = State.MENU;
 
 	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
 	private List<Entity<?>> entities = new LinkedList<>();
@@ -65,12 +70,14 @@ public class GameState {
 		return viewPort;
 	}
 
-	public ControlScope getControlScope() {
-		return controlScope;
+	public State getCurrentState() {
+		return currentState;
+	}
+	public void setCurrentState(GameState.State newState) {
+		currentState = newState;
 	}
 
-	public DungeonVioletTileset getLevelTileset() {
-		// TODO Should DungeonVioletTileset implement a generic level Tileset class/interface?
+	public LevelTileset getLevelTileset() {
 		return tilesetManager.getDungeonVioletTileset();
 	}
 

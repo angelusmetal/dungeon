@@ -8,7 +8,6 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.controller.character.CharacterControl;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.directional.PovDirectionalControl;
 import com.dungeon.engine.controller.player.ControllerPlayerControl;
@@ -28,6 +27,10 @@ import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.object.HealthPowerup;
 import com.dungeon.game.object.Torch;
+import com.dungeon.game.state.CharacterPlayerControlListener;
+import com.dungeon.game.state.CharacterSelection;
+import com.dungeon.game.state.GameState;
+import com.dungeon.game.state.SelectionPlayerControlListener;
 
 import java.util.Iterator;
 
@@ -72,12 +75,18 @@ public class Dungeon extends ApplicationAdapter {
 
 		state.generateNewLevel();
 
+		CharacterSelection characterSelection = new CharacterSelection(state);
+
 		// Add keyboard controller
-		PlayerControl keyboardControl = new KeyboardPlayerControl(state, new CharacterControl(state, this::getStartingPosition, this::getNewPlayer), inputMultiplexer);
+		PlayerControl keyboardControl = new KeyboardPlayerControl(state, inputMultiplexer);
+		keyboardControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(keyboardControl, state));
+		keyboardControl.addStateListener(GameState.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			PlayerControl controllerControl = new ControllerPlayerControl(state, new CharacterControl(state, this::getStartingPosition, this::getNewPlayer), controller);
+			PlayerControl controllerControl = new ControllerPlayerControl(state, controller);
+			controllerControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(controllerControl, state));
+			controllerControl.addStateListener(GameState.State.MENU, new SelectionPlayerControlListener(controllerControl, characterSelection));
 		}
 
 		// Add developer hotkeys
@@ -120,36 +129,6 @@ public class Dungeon extends ApplicationAdapter {
 		KeyboardTriggerControl trigger = new KeyboardTriggerControl(keycode);
 		trigger.addListener(runnable);
 		inputMultiplexer.addProcessor(trigger);
-	}
-
-	private PlayerCharacter getNewPlayer(Vector2 origin) {
-		boolean hasAssasin = false, hasThief = false, hasWitch = false;
-		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
-			if (playerCharacter instanceof Assasin) {
-				hasAssasin = true;
-			} else if (playerCharacter instanceof Thief) {
-				hasThief = true;
-			} else if (playerCharacter instanceof Witch) {
-				hasWitch = true;
-			}
-		}
-		if (!hasWitch) {
-			return new Witch(state, origin);
-		} else if (!hasThief) {
-			return new Thief(state, origin);
-		} else {
-			return new Assasin(state, origin);
-		}
-
-	}
-
-	private Vector2 getStartingPosition() {
-		if (state.getPlayerCharacters().isEmpty()) {
-			return state.getLevel().rooms.get(0).spawnPoints.get(0).cpy();
-		} else {
-			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
-			return new Vector2(refPos.x / state.getLevelTileset().tile_size + 1, refPos.y / state.getLevelTileset().tile_size);
-		}
 	}
 
 	@Override

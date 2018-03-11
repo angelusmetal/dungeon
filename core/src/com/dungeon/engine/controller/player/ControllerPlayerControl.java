@@ -1,14 +1,13 @@
 package com.dungeon.engine.controller.player;
 
 import com.badlogic.gdx.controllers.Controller;
-import com.dungeon.engine.controller.character.CharacterControl;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.trigger.ControllerTriggerControl;
-import com.dungeon.game.GameState;
+import com.dungeon.game.state.GameState;
 
 public class ControllerPlayerControl extends PlayerControl {
-	public ControllerPlayerControl(GameState state, CharacterControl characterControl, Controller controller) {
-		super(state, characterControl);
+	public ControllerPlayerControl(GameState state, Controller controller) {
+		super(state);
 
 		// Create controls
 		ControllerTriggerControl action1Trigger = new ControllerTriggerControl(0);
