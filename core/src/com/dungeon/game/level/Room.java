@@ -1,6 +1,7 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.game.level.entity.EntityPlaceholder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class Room {
 	public final int width;
 	public final int height;
 	public final List<Vector2> spawnPoints = new ArrayList<>();
-	public final List<Vector2> torches = new ArrayList<>();
+	public final List<EntityPlaceholder> placeholders = new ArrayList<>();
 
 	public final TileType[][] tiles;
 

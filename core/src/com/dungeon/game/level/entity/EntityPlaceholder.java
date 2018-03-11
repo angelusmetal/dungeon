@@ -15,6 +15,10 @@ public class EntityPlaceholder {
 		this.origin = origin;
 	}
 
+	public static EntityPlaceholder of(EntityType type, float x, float y) {
+		return new EntityPlaceholder(type, new Vector2(x, y));
+	}
+
 	public EntityType getType() {
 		return type;
 	}

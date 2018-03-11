@@ -83,8 +83,6 @@ public class Dungeon extends ApplicationAdapter {
 		characterSelection = new CharacterSelection(state);
 		characterSelection.initialize();
 
-		state.generateNewLevel();
-
 		// Add keyboard controller
 		PlayerControl keyboardControl = new KeyboardPlayerControl(state, inputMultiplexer);
 		keyboardControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(keyboardControl, state));
@@ -100,35 +98,14 @@ public class Dungeon extends ApplicationAdapter {
 		// Add developer hotkeys
 		addDeveloperHotkeys();
 
-		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
+		state.generateNewLevel();
 
 		for (EntityPlaceholder placeholder : state.getLevel().entityPlaceholders) {
 			state.addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(state.getLevelTileset().tile_size)));
 		}
 
-//		// Create ghosts in each room, to begin with
-//		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
-//			Room room = state.getLevel().rooms.get(r);
-//			// Create ghosts in each room
-//			final int skip = (int) (Math.random() * room.spawnPoints.size());
-//			room.spawnPoints.stream().skip(skip).forEach(v -> {
-//				Ghost ghost = new Ghost(state, v.cpy().scl(state.getLevelTileset().tile_size));
-//				state.addEntity(ghost);
-//			});
-//			// A 40% chance of spawning one powerup
-//			if (Math.random() < 0.4d) {
-//				Vector2 spawnPosition = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
-//				HealthPowerup powerup = new HealthPowerup(state, spawnPosition.cpy().scl(state.getLevelTileset().tile_size));
-//				state.addEntity(powerup);
-//			}
-//		}
-//		for (Room room : state.getLevel().rooms) {
-//			room.torches.forEach(v -> {
-//				Torch torch = new Torch(state, v.cpy().scl(state.getLevelTileset().tile_size));
-//				state.addEntity(torch);
-//			});
-//		}
-//
+		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
+
 	}
 
 	private void addDeveloperHotkeys() {

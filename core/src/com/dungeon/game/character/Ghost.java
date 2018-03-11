@@ -42,6 +42,7 @@ public class Ghost extends Character {
 			entity.setCurrentAnimation(provider.get(AnimationType.IDLE, state.getStateTime()));
 			entity.speed = 10f;
 			entity.light = GHOST_LIGHT;
+			// TODO scale health
 			return entity;
 		}
 	}

@@ -2,12 +2,9 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Tile;
-import com.dungeon.game.character.Ghost;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.level.room.*;
-import com.dungeon.game.object.HealthPowerup;
-import com.dungeon.game.object.Torch;
 import com.dungeon.game.tileset.LevelTileset;
 
 import java.util.*;
@@ -146,10 +143,9 @@ public class ProceduralLevelGenerator {
 				placeholders.add(new EntityPlaceholder(EntityType.HEALTH_POWERUP, pos));
 			}
 		}
-		// Add torches
-		// TODO remove specialized torches collection and use placeholders directly
+		// Add placeholders
 		for (Room room : rooms) {
-			room.torches.forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.TORCH, pos)));
+			placeholders.addAll(room.placeholders);
 		}
 		return placeholders;
 	}

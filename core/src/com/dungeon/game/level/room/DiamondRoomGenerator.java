@@ -3,6 +3,8 @@ package com.dungeon.game.level.room;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.TileType;
+import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.level.entity.EntityType;
 
 public class DiamondRoomGenerator implements RoomGenerator {
 	@Override
@@ -60,12 +62,12 @@ public class DiamondRoomGenerator implements RoomGenerator {
 		room.spawnPoints.add(new Vector2(left + width - 2, bottom + height / 2f));
 
 		// Add torches
-		room.torches.add(new Vector2(left + width / 2 - 0.5f, bottom + height - 0.5f));
-		room.torches.add(new Vector2(left + width / 2 + 1.5f, bottom + height - 0.5f));
-		room.torches.add(new Vector2(left + 1, bottom + height / 2 + 1.5f));
-		room.torches.add(new Vector2(left + 1, bottom + height / 2 - 0.5f));
-		room.torches.add(new Vector2(left + width - 1, bottom + height / 2 + 1.5f));
-		room.torches.add(new Vector2(left + width - 1, bottom + height / 2 - 0.5f));
+		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + width / 2 - 0.5f, bottom + height - 0.5f));
+		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + width / 2 + 1.5f, bottom + height - 0.5f));
+		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + 1, bottom + height / 2 + 1.5f));
+		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + 1, bottom + height / 2 - 0.5f));
+		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + width - 1, bottom + height / 2 + 1.5f));
+		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + width - 1, bottom + height / 2 - 0.5f));
 
 		return room;
 	}
