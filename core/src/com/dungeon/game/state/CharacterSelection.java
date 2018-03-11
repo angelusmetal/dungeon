@@ -101,11 +101,11 @@ public class CharacterSelection {
 
 	private PlayerCharacter createCharacter(int characterId, Vector2 origin) {
 		if (characterId == 0) {
-			return new Witch(state, origin);
+			return new Witch.Factory(state).build(origin);
 		} else if (characterId == 1) {
-			return new Thief(state, origin);
+			return new Thief.Factory(state).build(origin);
 		} else {
-			return new Assasin(state, origin);
+			return new Assasin.Factory(state).build(origin);
 		}
 	}
 

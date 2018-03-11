@@ -22,7 +22,7 @@ public abstract class PlayerCharacter extends Character {
 
 	@Override
 	protected void onExpire(GameState state) {
-		Tombstone tombstone = new Tombstone(state, getPos());
+		Tombstone tombstone = new Tombstone(getPos());
 		state.addEntity(tombstone);
 	}
 

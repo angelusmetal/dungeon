@@ -2,7 +2,12 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Tile;
+import com.dungeon.game.character.Ghost;
+import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.level.room.*;
+import com.dungeon.game.object.HealthPowerup;
+import com.dungeon.game.object.Torch;
 import com.dungeon.game.tileset.LevelTileset;
 
 import java.util.*;
@@ -122,7 +127,31 @@ public class ProceduralLevelGenerator {
 		level.map = map;
 		level.rooms = rooms;
 		level.walkableTiles = tiles;
+		level.entityPlaceholders = generateEntities();
 		return level;
+	}
+
+	private List<EntityPlaceholder> generateEntities() {
+		List<EntityPlaceholder> placeholders = new ArrayList<>();
+		// Create ghosts in each room, to begin with
+		for (int r = 1; r < rooms.size(); ++r) {
+			Room room = rooms.get(r);
+			// Create a random amount of ghosts in each room
+			final int skip = (int) (Math.random() * room.spawnPoints.size());
+			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.GHOST, pos)));
+
+			// A 40% chance of spawning one powerup
+			if (Math.random() < 0.4d) {
+				Vector2 pos = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
+				placeholders.add(new EntityPlaceholder(EntityType.HEALTH_POWERUP, pos));
+			}
+		}
+		// Add torches
+		// TODO remove specialized torches collection and use placeholders directly
+		for (Room room : rooms) {
+			room.torches.forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.TORCH, pos)));
+		}
+		return placeholders;
 	}
 
 	private Tile getTile(int x, int y, LevelTileset tileset) {

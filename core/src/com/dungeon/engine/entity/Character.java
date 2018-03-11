@@ -29,17 +29,17 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 	}
 
 	@Override
-	protected void onSelfMovementUpdate() {
+	public void think(GameState state) {
 		if (getSelfMovement().x != 0) {
 			setInvertX(getSelfMovement().x < 0);
 		}
 		if (getSelfMovement().x == 0 && getSelfMovement().y == 0) {
 			if (AnimationType.IDLE != getCurrentAnimation().getId()) {
-				setCurrentAnimation(animationProvider.get(AnimationType.IDLE));
+				setCurrentAnimation(animationProvider.get(AnimationType.IDLE, state.getStateTime()));
 			}
 		} else {
 			if (AnimationType.WALK != getCurrentAnimation().getId()) {
-				setCurrentAnimation(animationProvider.get(AnimationType.WALK));
+				setCurrentAnimation(animationProvider.get(AnimationType.WALK, state.getStateTime()));
 			}
 		}
 		if (getSelfMovement().len() > 0.5) {
@@ -66,7 +66,7 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 					// Extra offset to make projectiles appear in the character's hands
 					//projectile.getPos().y -= 8;
 					state.addEntity(projectile);
-					setCurrentAnimation(animationProvider.get(AnimationType.HIT));
+					setCurrentAnimation(animationProvider.get(AnimationType.HIT, state.getStateTime()));
 				}
 			});
 		}

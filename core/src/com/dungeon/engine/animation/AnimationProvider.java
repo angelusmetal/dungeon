@@ -2,32 +2,29 @@ package com.dungeon.engine.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.game.state.GameState;
 
 import java.util.EnumMap;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class AnimationProvider<T extends Enum<T>> {
-	private final EnumMap<T, Supplier<GameAnimation<T>>> factory;
-	private final GameState state;
+	private final EnumMap<T, Function<Float, GameAnimation<T>>> factory;
 
-	public AnimationProvider(Class<T> keyType, GameState state) {
+	public AnimationProvider(Class<T> keyType) {
 		this.factory = new EnumMap<>(keyType);
-		this.state = state;
 	}
 
 	public AnimationProvider register(T type, Animation<TextureRegion> animation) {
-		factory.put(type, () -> new com.dungeon.engine.animation.GameAnimation<>(type, animation, state.getStateTime()));
+		factory.put(type, (time) -> new com.dungeon.engine.animation.GameAnimation<>(type, animation, time));
 		return this;
 	}
 
 	public AnimationProvider register(T type, Animation<TextureRegion> animation, Runnable runnable) {
-		factory.put(type, () -> new com.dungeon.engine.animation.GameAnimation<>(type, animation, state.getStateTime(), runnable));
+		factory.put(type, (time) -> new com.dungeon.engine.animation.GameAnimation<>(type, animation, time, runnable));
 		return this;
 	}
 
-	public com.dungeon.engine.animation.GameAnimation<T> get(T type) {
-		return factory.get(type).get();
+	public com.dungeon.engine.animation.GameAnimation<T> get(T type, float time) {
+		return factory.get(type).apply(time);
 	}
 
 }

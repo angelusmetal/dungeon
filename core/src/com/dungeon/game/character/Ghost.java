@@ -10,6 +10,7 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
@@ -17,21 +18,36 @@ public class Ghost extends Character {
 	private static final float MIN_TARGET_DISTANCE = 500 * 500;
 	static private Light GHOST_LIGHT = new Light(200, new Quaternion(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
 
-	public Ghost(GameState state, Vector2 pos) {
+	public static class Factory implements EntityFactory.EntityTypeFactory {
+
+		private GameState state;
+		private AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class);
+
+		public Factory(GameState state) {
+			this.state = state;
+			provider.register(AnimationType.IDLE, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.WALK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.JUMP, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.HIT, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.SLASH, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.PUNCH, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.RUN, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.CLIMB, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+		}
+
+		@Override
+		public Entity<?> build(Vector2 origin) {
+			Ghost entity = new Ghost(origin);
+			entity.setAnimationProvider(provider);
+			entity.setCurrentAnimation(provider.get(AnimationType.IDLE, state.getStateTime()));
+			entity.speed = 10f;
+			entity.light = GHOST_LIGHT;
+			return entity;
+		}
+	}
+
+	private Ghost(Vector2 pos) {
 		super(new Body(pos, new Vector2(16, 30)));
-		AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class, state);
-		provider.register(AnimationType.IDLE, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-		provider.register(AnimationType.WALK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-		provider.register(AnimationType.JUMP, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-		provider.register(AnimationType.HIT, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION, this::onSelfMovementUpdate);
-		provider.register(AnimationType.SLASH, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION, this::onSelfMovementUpdate);
-		provider.register(AnimationType.PUNCH, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION, this::onSelfMovementUpdate);
-		provider.register(AnimationType.RUN, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-		provider.register(AnimationType.CLIMB, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-		setAnimationProvider(provider);
-		setCurrentAnimation(provider.get(AnimationType.IDLE));
-		speed = 10f;
-		light = GHOST_LIGHT;
 	}
 
 	@Override

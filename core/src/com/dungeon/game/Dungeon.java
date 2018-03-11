@@ -7,7 +7,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
 import com.dungeon.engine.controller.directional.PovDirectionalControl;
 import com.dungeon.engine.controller.player.ControllerPlayerControl;
@@ -19,8 +18,13 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
+import com.dungeon.game.character.Assasin;
 import com.dungeon.game.character.Ghost;
-import com.dungeon.game.level.Room;
+import com.dungeon.game.character.Thief;
+import com.dungeon.game.character.Witch;
+import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.HealthPowerup;
 import com.dungeon.game.object.Torch;
 import com.dungeon.game.state.CharacterPlayerControlListener;
@@ -39,6 +43,7 @@ public class Dungeon extends ApplicationAdapter {
 	private CharacterViewPortTracker characterViewPortTracker;
 	private IngameRenderer ingameRenderer;
 	private CharacterSelection characterSelection;
+	private EntityFactory entityFactory;
 
 	long frame = 0;
 
@@ -66,6 +71,12 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		state = new GameState(viewPort);
+
+		entityFactory = new EntityFactory(state);
+		entityFactory.registerFactory(EntityType.GHOST, new Ghost.Factory(state));
+		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));
+		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerup.Factory(state));
+
 		Light.initialize();
 		ingameRenderer = new IngameRenderer(state, viewPort);
 		ingameRenderer.initialize();
@@ -91,29 +102,33 @@ public class Dungeon extends ApplicationAdapter {
 
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
 
-		// Create ghosts in each room, to begin with
-		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
-			Room room = state.getLevel().rooms.get(r);
-			// Create ghosts in each room
-			final int skip = (int) (Math.random() * room.spawnPoints.size());
-			room.spawnPoints.stream().skip(skip).forEach(v -> {
-				Ghost ghost = new Ghost(state, v.cpy().scl(state.getLevelTileset().tile_size));
-				state.addEntity(ghost);
-			});
-			// A 40% chance of spawning one powerup
-			if (Math.random() < 0.4d) {
-				Vector2 spawnPosition = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
-				HealthPowerup powerup = new HealthPowerup(state, spawnPosition.cpy().scl(state.getLevelTileset().tile_size));
-				state.addEntity(powerup);
-			}
-		}
-		for (Room room : state.getLevel().rooms) {
-			room.torches.forEach(v -> {
-				Torch torch = new Torch(state, v.cpy().scl(state.getLevelTileset().tile_size));
-				state.addEntity(torch);
-			});
+		for (EntityPlaceholder placeholder : state.getLevel().entityPlaceholders) {
+			state.addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(state.getLevelTileset().tile_size)));
 		}
 
+//		// Create ghosts in each room, to begin with
+//		for (int r = 1; r < state.getLevel().rooms.size(); ++r) {
+//			Room room = state.getLevel().rooms.get(r);
+//			// Create ghosts in each room
+//			final int skip = (int) (Math.random() * room.spawnPoints.size());
+//			room.spawnPoints.stream().skip(skip).forEach(v -> {
+//				Ghost ghost = new Ghost(state, v.cpy().scl(state.getLevelTileset().tile_size));
+//				state.addEntity(ghost);
+//			});
+//			// A 40% chance of spawning one powerup
+//			if (Math.random() < 0.4d) {
+//				Vector2 spawnPosition = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
+//				HealthPowerup powerup = new HealthPowerup(state, spawnPosition.cpy().scl(state.getLevelTileset().tile_size));
+//				state.addEntity(powerup);
+//			}
+//		}
+//		for (Room room : state.getLevel().rooms) {
+//			room.torches.forEach(v -> {
+//				Torch torch = new Torch(state, v.cpy().scl(state.getLevelTileset().tile_size));
+//				state.addEntity(torch);
+//			});
+//		}
+//
 	}
 
 	private void addDeveloperHotkeys() {

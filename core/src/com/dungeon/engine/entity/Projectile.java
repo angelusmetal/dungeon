@@ -167,31 +167,13 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 		}
 	}
 
-	@Override
-	public void onSelfMovementUpdate() {
-		if (!exploding) {
-			// Updates current animation based on the direction vector
-			AnimationType animationType;
-			if (Math.abs(getSelfMovement().x) > Math.abs(getSelfMovement().y)) {
-				// Sideways animation; negative values invert X
-				animationType = AnimationType.FLY_SIDE;
-				setInvertX(getSelfMovement().x < 0);
-			} else {
-				// North / south animation
-				animationType = getSelfMovement().y < 0 ? AnimationType.FLY_SOUTH : AnimationType.FLY_NORTH;
-			}
-			setCurrentAnimation(animationProvider.get(animationType));
-		}
-
-	}
-
 	/**
 	 * Triggers the projectile explosion
 	 */
 	protected void explode(GameState state) {
 		// Set exploding status and animation (and TTL to expire right after explosion end)
 		exploding = true;
-		setCurrentAnimation(animationProvider.get(AnimationType.EXPLOSION));
+		setCurrentAnimation(animationProvider.get(AnimationType.EXPLOSION, state.getStateTime()));
 		// TODO should spawn an explosion object instead
 		startTime = state.getStateTime();
 		timeToLive = getCurrentAnimation().getDuration();
@@ -221,6 +203,20 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 			}
 		} else {
 			setSelfMovement(getSelfMovement().setLength(speed));
+		}
+		// Update animation
+		if (!exploding) {
+			// Updates current animation based on the direction vector
+			AnimationType animationType;
+			if (Math.abs(getSelfMovement().x) > Math.abs(getSelfMovement().y)) {
+				// Sideways animation; negative values invert X
+				animationType = AnimationType.FLY_SIDE;
+				setInvertX(getSelfMovement().x < 0);
+			} else {
+				// North / south animation
+				animationType = getSelfMovement().y < 0 ? AnimationType.FLY_SOUTH : AnimationType.FLY_NORTH;
+			}
+			setCurrentAnimation(animationProvider.get(animationType, state.getStateTime()));
 		}
 	}
 
