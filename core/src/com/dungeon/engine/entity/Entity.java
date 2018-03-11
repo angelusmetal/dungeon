@@ -98,7 +98,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		float distance = movement.len();
 
 		// Split into 1 px steps, and decompose in axes
-		Vector2 stepX = movement.cpy().clamp(1,1);
+		Vector2 stepX = movement.cpy().clamp(0,1);
 		Vector2 stepY = stepX.cpy();
 		stepX.y = 0;
 		stepY.x = 0;

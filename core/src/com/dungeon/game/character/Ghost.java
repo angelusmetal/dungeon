@@ -30,7 +30,7 @@ public class Ghost extends Character {
 		provider.register(AnimationType.CLIMB, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
 		setAnimationProvider(provider);
 		setCurrentAnimation(provider.get(AnimationType.IDLE));
-		speed = 1f;
+		speed = 10f;
 		light = GHOST_LIGHT;
 	}
 
