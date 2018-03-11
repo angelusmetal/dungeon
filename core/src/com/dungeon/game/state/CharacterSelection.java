@@ -1,5 +1,11 @@
 package com.dungeon.game.state;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.player.PlayerControl;
 import com.dungeon.engine.entity.PlayerCharacter;
@@ -29,8 +35,21 @@ public class CharacterSelection {
 		}
 	}
 
+	// Rendering stuff
+	private SpriteBatch batch;
+	private Texture playerCharacterScreen;
+
 	public CharacterSelection(GameState state) {
 		this.state = state;
+	}
+
+	public void initialize() {
+		batch = new SpriteBatch();
+		playerCharacterScreen = new Texture("character_selection.png");
+	}
+
+	public void dispose() {
+		playerCharacterScreen.dispose();
 	}
 
 	public boolean addControl(PlayerControl control) {
@@ -88,27 +107,30 @@ public class CharacterSelection {
 		} else {
 			return new Assasin(state, origin);
 		}
-
 	}
 
-	private Vector2 getStartingPosition() {
-		if (state.getPlayerCharacters().isEmpty()) {
-			return state.getLevel().rooms.get(0).spawnPoints.get(0).cpy();
+	private Animation<TextureRegion> getAnimation(int characterId) {
+		if (characterId == 0) {
+			return state.getTilesetManager().getCharactersTileset().WITCH_WALK_ANIMATION;
+		} else if (characterId == 1) {
+			return state.getTilesetManager().getCharactersTileset().THIEF_WALK_ANIMATION;
 		} else {
-			Vector2 refPos = state.getPlayerCharacters().get(0).getPos();
-			return new Vector2(refPos.x / state.getLevelTileset().tile_size + 1, refPos.y / state.getLevelTileset().tile_size);
+			return state.getTilesetManager().getCharactersTileset().ASSASIN_WALK_ANIMATION;
 		}
 	}
 
+	public void render() {
+		batch.begin();
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.draw(playerCharacterScreen, 0, 0, playerCharacterScreen.getWidth() * 4, playerCharacterScreen.getHeight() * 4);
+		int x = 50, y = 80;
+		for (Slot s : slots) {
+			TextureRegion keyFrame = getAnimation(s.characterId).getKeyFrame(state.getStateTime());
+			batch.draw(keyFrame, (x - keyFrame.getRegionWidth() / 2) * 4, (y - keyFrame.getRegionHeight() / 2) * 4, keyFrame.getRegionWidth() * 4, keyFrame.getRegionHeight() * 4);
+			x += 100;
+		}
+		batch.end();
+	}
 
-//	Any of the registered PlayerControls can add itself to one slot, if available
-//	The slot transitions EMPTY -> SELECTING
-//	When on the SELECTING state, directional controls select a character and it is displayed
-//	When on the SELECTING state, one button (action1?) transitions to SELECTED
-//	When on the SELECTED state, one button (action2?) transitions back to selecting
-//	When all the non-empty slots are in SELECTED
-//	The selection finishes and information is relayed
-//	Assigns a PlayerControl to each slot
-//	Assigns a PlayerCharacter to each slot
-//	The game state transitions to INGAME
 }

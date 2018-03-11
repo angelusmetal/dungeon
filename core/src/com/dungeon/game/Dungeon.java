@@ -15,15 +15,11 @@ import com.dungeon.engine.controller.player.KeyboardPlayerControl;
 import com.dungeon.engine.controller.player.PlayerControl;
 import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
-import com.dungeon.game.character.Assasin;
 import com.dungeon.game.character.Ghost;
-import com.dungeon.game.character.Thief;
-import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.object.HealthPowerup;
 import com.dungeon.game.object.Torch;
@@ -42,6 +38,7 @@ public class Dungeon extends ApplicationAdapter {
 	private ViewPortInputProcessor viewPortInputProcessor;
 	private CharacterViewPortTracker characterViewPortTracker;
 	private IngameRenderer ingameRenderer;
+	private CharacterSelection characterSelection;
 
 	long frame = 0;
 
@@ -72,10 +69,10 @@ public class Dungeon extends ApplicationAdapter {
 		Light.initialize();
 		ingameRenderer = new IngameRenderer(state, viewPort);
 		ingameRenderer.initialize();
+		characterSelection = new CharacterSelection(state);
+		characterSelection.initialize();
 
 		state.generateNewLevel();
-
-		CharacterSelection characterSelection = new CharacterSelection(state);
 
 		// Add keyboard controller
 		PlayerControl keyboardControl = new KeyboardPlayerControl(state, inputMultiplexer);
@@ -136,8 +133,12 @@ public class Dungeon extends ApplicationAdapter {
 		state.updateStateTime(Gdx.graphics.getDeltaTime());
 		characterViewPortTracker.refresh(viewPort);
 
-		// Render in-game
-		ingameRenderer.render();
+		// Render corresponding state
+		if (state.getCurrentState() == GameState.State.MENU) {
+			characterSelection.render();
+		} else if (state.getCurrentState() == GameState.State.INGAME) {
+			ingameRenderer.render();
+		}
 
 		// Game loop
 		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
@@ -157,6 +158,7 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		ingameRenderer.dispose();
+		characterSelection.dispose();
 		state.getTilesetManager().dispose();
 		Light.dispose();
 	}

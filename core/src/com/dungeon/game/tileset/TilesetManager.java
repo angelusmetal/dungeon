@@ -13,7 +13,6 @@ public class TilesetManager {
 	private final HudTileset hudTileset;
 	private final PowerupsTileset powerupsTileset;
 	private final TorchTileset torchTileset;
-	private final Texture playerCharacterScreen; // TODO Probably this should not go here
 
 	public TilesetManager() {
 		dungeonVioletTileset = new DungeonVioletTileset();
@@ -25,7 +24,6 @@ public class TilesetManager {
 		hudTileset = new HudTileset();
 		powerupsTileset = new PowerupsTileset();
 		torchTileset = new TorchTileset();
-		playerCharacterScreen = new Texture("character_selection.png");
 	}
 
 	public DungeonVioletTileset getDungeonVioletTileset() {
