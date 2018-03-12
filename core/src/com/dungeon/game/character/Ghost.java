@@ -40,9 +40,10 @@ public class Ghost extends Character {
 			Ghost entity = new Ghost(origin);
 			entity.setAnimationProvider(provider);
 			entity.setCurrentAnimation(provider.get(AnimationType.IDLE, state.getStateTime()));
-			entity.speed = 10f;
+			entity.speed = 20f;
 			entity.light = GHOST_LIGHT;
-			// TODO scale health
+			entity.maxHealth = 100 * (int) Math.pow(state.getPlayerCount(), state.getPlayerCount());
+			entity.health = entity.maxHealth;
 			return entity;
 		}
 	}

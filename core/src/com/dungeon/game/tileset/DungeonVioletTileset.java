@@ -3,7 +3,6 @@ package com.dungeon.game.tileset;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tile;
-import com.dungeon.engine.render.Tileset;
 
 public class DungeonVioletTileset extends LevelTileset {
 

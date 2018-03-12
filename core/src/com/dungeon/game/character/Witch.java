@@ -3,13 +3,10 @@ package com.dungeon.game.character;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
-import com.dungeon.engine.entity.CooldownTrigger;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
-import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
 public class Witch extends PlayerCharacter {

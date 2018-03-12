@@ -18,12 +18,8 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
-import com.dungeon.game.character.Assasin;
 import com.dungeon.game.character.Ghost;
-import com.dungeon.game.character.Thief;
-import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.HealthPowerup;
 import com.dungeon.game.object.Torch;
@@ -54,25 +50,18 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(viewPortInputProcessor);
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
-		//inputMultiplexer.addProcessor(movableInputProcessor);
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		// Testing stuff; remove
-//		DirectionalListener dListener = (pov, vector) -> {
-//			System.out.println("POV: " + pov + "; Vector: " + vector);
-//		};
 		for (Controller controller : Controllers.getControllers()) {
 			PovDirectionalControl povControl = new PovDirectionalControl(0);
 			AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
 			controller.addListener(povControl);
 			controller.addListener(analogControl);
-//			povControl.addListener(dListener);
-//			analogControl.addListener(dListener);
 		}
 
-		state = new GameState(viewPort);
+		entityFactory = new EntityFactory();
+		state = new GameState(viewPort, entityFactory);
 
-		entityFactory = new EntityFactory(state);
 		entityFactory.registerFactory(EntityType.GHOST, new Ghost.Factory(state));
 		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerup.Factory(state));
@@ -98,14 +87,7 @@ public class Dungeon extends ApplicationAdapter {
 		// Add developer hotkeys
 		addDeveloperHotkeys();
 
-		state.generateNewLevel();
-
-		for (EntityPlaceholder placeholder : state.getLevel().entityPlaceholders) {
-			state.addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(state.getLevelTileset().tile_size)));
-		}
-
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
-
 	}
 
 	private void addDeveloperHotkeys() {

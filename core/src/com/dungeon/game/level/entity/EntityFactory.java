@@ -16,12 +16,7 @@ public class EntityFactory {
 		Entity<?> build(Vector2 origin);
 	}
 
-	private final GameState state;
 	private final EnumMap<EntityType, EntityTypeFactory> factories = new EnumMap<>(EntityType.class);
-
-	public EntityFactory(GameState state) {
-		this.state = state;
-	}
 
 	public void registerFactory(EntityType type, EntityTypeFactory factory) {
 		factories.put(type, factory);

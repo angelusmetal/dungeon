@@ -14,8 +14,8 @@ import com.dungeon.game.character.Thief;
 import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.Room;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CharacterSelection {
@@ -25,10 +25,10 @@ public class CharacterSelection {
 	private final GameState state;
 	private List<Slot> slots = new ArrayList<>(4);
 
-	private static class Slot {
-		private PlayerControl control;
-		private int playerId;
-		private int characterId = 0;
+	public static class Slot {
+		public PlayerControl control;
+		public int playerId;
+		public int characterId = 0;
 		public Slot(PlayerControl control, int playerId) {
 			this.control = control;
 			this.playerId = playerId;
@@ -78,16 +78,7 @@ public class CharacterSelection {
 
 	public void confirmSelection(PlayerControl control) {
 		// TODO Only confirm when all active slots have confirmed
-
-		// Get starting room and spawn players there
-		Room startingRoom = state.getLevel().rooms.get(0);
-		int spawnPoint = 0;
-		for (Slot slot : slots) {
-			PlayerCharacter character = createCharacter(slot.characterId, startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(state.getLevelTileset().tile_size));
-			state.addPlayerCharacter(character);
-			slot.control.setCharacter(character);
-		}
-		state.setCurrentState(GameState.State.INGAME);
+		state.startNewLevel(slots);
 	}
 
 	private Optional<Slot> getSlot(PlayerControl control) {
@@ -97,16 +88,6 @@ public class CharacterSelection {
 			}
 		}
 		return Optional.empty();
-	}
-
-	private PlayerCharacter createCharacter(int characterId, Vector2 origin) {
-		if (characterId == 0) {
-			return new Witch.Factory(state).build(origin);
-		} else if (characterId == 1) {
-			return new Thief.Factory(state).build(origin);
-		} else {
-			return new Assasin.Factory(state).build(origin);
-		}
 	}
 
 	private Animation<TextureRegion> getAnimation(int characterId) {

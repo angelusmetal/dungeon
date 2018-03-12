@@ -2,14 +2,11 @@ package com.dungeon.game.object;
 
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.animation.GameAnimation;
-import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
-import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 

@@ -1,7 +1,5 @@
 package com.dungeon.game.tileset;
 
-import com.badlogic.gdx.graphics.Texture;
-
 public class TilesetManager {
 
 	private final DungeonVioletTileset dungeonVioletTileset;

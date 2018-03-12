@@ -3,8 +3,8 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.math.Quaternion;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
-import com.dungeon.game.state.GameState;
 import com.dungeon.game.object.Tombstone;
+import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 
@@ -22,7 +22,7 @@ public abstract class PlayerCharacter extends Character {
 
 	@Override
 	protected void onExpire(GameState state) {
-		Tombstone tombstone = new Tombstone(getPos());
+		Tombstone tombstone = new Tombstone(state, getPos());
 		state.addEntity(tombstone);
 	}
 
