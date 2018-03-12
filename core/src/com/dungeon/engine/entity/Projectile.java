@@ -222,7 +222,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 
 	@Override
 	protected boolean onEntityCollision(GameState state, Entity<?> entity) {
-		if (!exploding && NO_FRIENDLY_FIRE.apply(entity)) {
+		if (!exploding && NO_FRIENDLY_FIRE.apply(entity) && entity.canBeHit(state)) {
 			explode(state);
 			entity.hit(state, damage);
 			return true;

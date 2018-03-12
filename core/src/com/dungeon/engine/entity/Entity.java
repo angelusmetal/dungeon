@@ -261,6 +261,9 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	abstract public boolean isExpired(float time);
 	abstract public boolean isSolid();
+	public boolean canBeHit(GameState state) {
+		return isSolid();
+	}
 	/** Handle entity collision; true if handled; false otherwise */
 	protected boolean onEntityCollision(GameState state, Entity<?> entity) {return false;}
 	protected void onExpire(GameState state) {}

@@ -17,6 +17,7 @@ public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 500 * 500;
 	static private Light GHOST_LIGHT = new Light(200, new Quaternion(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
+	private float invulnerableUntil = 0;
 
 	public static class Factory implements EntityFactory.EntityTypeFactory {
 
@@ -76,9 +77,22 @@ public class Ghost extends Character {
 	}
 
 	@Override
+	public void hit(GameState state, int dmg) {
+		if (canBeHit(state)) {
+			super.hit(state, dmg);
+			invulnerableUntil = state.getStateTime() + 2f; // invulnerable for the next 2 seconds
+		}
+	}
+
+	@Override
+	public boolean canBeHit(GameState state) {
+		return state.getStateTime() > invulnerableUntil;
+	}
+
+	@Override
 	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		// TODO Parameterize this
-		batch.setColor(1, 1, 1, 0.5f);
+		batch.setColor(1, 1, 1, state.getStateTime() > invulnerableUntil ? 0.5f : 0.2f);
 		super.draw(state, batch, viewPort);
 		batch.setColor(1, 1, 1, 1);
 	}
