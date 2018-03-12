@@ -43,7 +43,7 @@ public class Ghost extends Character {
 			entity.setCurrentAnimation(provider.get(AnimationType.IDLE, state.getStateTime()));
 			entity.speed = 20f;
 			entity.light = GHOST_LIGHT;
-			entity.maxHealth = 100 * (int) Math.pow(state.getPlayerCount(), state.getPlayerCount());
+			entity.maxHealth = 100 * state.getPlayerCount();
 			entity.health = entity.maxHealth;
 			return entity;
 		}
