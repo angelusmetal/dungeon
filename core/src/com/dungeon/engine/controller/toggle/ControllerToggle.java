@@ -1,15 +1,15 @@
-package com.dungeon.engine.controller.trigger;
+package com.dungeon.engine.controller.toggle;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 
-public class ControllerSwitchControl extends SwitchControl implements ControllerListener {
+public class ControllerToggle extends Toggle implements ControllerListener {
 
 	private final int buttonCode;
 
-	public ControllerSwitchControl(int buttonCode) {
+	public ControllerToggle(int buttonCode) {
 		this.buttonCode = buttonCode;
 	}
 
@@ -26,7 +26,7 @@ public class ControllerSwitchControl extends SwitchControl implements Controller
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		if (buttonCode == this.buttonCode) {
-			updateListeners(true);
+			notifyListeners(true);
 			return true;
 		} else {
 			return false;
@@ -36,7 +36,7 @@ public class ControllerSwitchControl extends SwitchControl implements Controller
 	@Override
 	public boolean buttonUp(Controller controller, int buttonCode) {
 		if (buttonCode == this.buttonCode) {
-			updateListeners(false);
+			notifyListeners(false);
 			return true;
 		} else {
 			return false;

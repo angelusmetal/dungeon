@@ -1,19 +1,19 @@
-package com.dungeon.engine.controller.trigger;
+package com.dungeon.engine.controller.toggle;
 
 import com.badlogic.gdx.InputProcessor;
 
-public class KeyboardSwitchControl extends SwitchControl implements InputProcessor {
+public class KeyboardToggle extends Toggle implements InputProcessor {
 
 	private final int keycode;
 
-	public KeyboardSwitchControl(int keycode) {
+	public KeyboardToggle(int keycode) {
 		this.keycode = keycode;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == this.keycode) {
-			updateListeners(true);
+			notifyListeners(true);
 			return true;
 		} else {
 			return false;
@@ -23,7 +23,7 @@ public class KeyboardSwitchControl extends SwitchControl implements InputProcess
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == this.keycode) {
-			updateListeners(false);
+			notifyListeners(false);
 			return true;
 		} else {
 			return false;

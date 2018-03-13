@@ -1,4 +1,4 @@
-package com.dungeon.engine.controller.directional;
+package com.dungeon.engine.controller.analog;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -7,23 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * A directional control backed by a controller stick. It composes 2 separate axis into a Vector2 direction and
+ * A analog control backed by a controller stick. It composes 2 separate axis into a Vector2 direction and
  * determines the closes POV value.
  */
-public class AnalogDirectionalControl extends DirectionalControl implements ControllerListener {
+public class StickAnalogControl extends AnalogControl implements ControllerListener {
 
 	private static final float DEFAULT_MIN_AXIS_THRESHOLD = 0.2f;
-	private static final PovDirection[] POV_DIRECTIONS = {
-			PovDirection.southWest,
-			PovDirection.south,
-			PovDirection.southEast,
-			PovDirection.west,
-			PovDirection.center,
-			PovDirection.east,
-			PovDirection.northWest,
-			PovDirection.north,
-			PovDirection.northEast
-	};
 
 	private final int xAxis;
 	private final int yAxis;
@@ -32,29 +21,26 @@ public class AnalogDirectionalControl extends DirectionalControl implements Cont
 	private final Vector2 direction;
 	private final float minThreshold;
 
-	private int povXIndex = 1;
-	private int povYIndex = 1;
-
 	/**
-	 * Create an analog directional control backed by 2 analog controller axes, with a default minimum threshold of 0.2
+	 * Create an analog analog control backed by 2 analog controller axes, with a default minimum threshold of 0.2
 	 * as dead zone.
 	 *
 	 * @param xAxis index of the X axis of the controller. If negative, the axis will be inverted.
 	 * @param yAxis index of the Y axis of the controller. If negative, the axis will be inverted.
 	 */
-	public AnalogDirectionalControl(int xAxis, int yAxis) {
+	public StickAnalogControl(int xAxis, int yAxis) {
 		this(xAxis, yAxis, DEFAULT_MIN_AXIS_THRESHOLD);
 	}
 
 	/**
-	 * Create an analog directional control backed by 2 analog controller axes.
+	 * Create an analog analog control backed by 2 analog controller axes.
 	 *
 	 * @param xAxis        index of the X axis of the controller. If negative, the axis will be inverted.
 	 * @param yAxis        index of the Y axis of the controller. If negative, the axis will be inverted.
 	 * @param minThreshold indicates the minimum axis threshold; any value below that will be truncated to zero (center
 	 *                     dead zone)
 	 */
-	public AnalogDirectionalControl(int xAxis, int yAxis, float minThreshold) {
+	public StickAnalogControl(int xAxis, int yAxis, float minThreshold) {
 		this.xAxis = Math.abs(xAxis);
 		this.yAxis = Math.abs(yAxis);
 		this.xMultiplier = this.xAxis / xAxis;
@@ -89,32 +75,20 @@ public class AnalogDirectionalControl extends DirectionalControl implements Cont
 		if (axisCode == xAxis) {
 			// Process the X axis
 			float oldValue = direction.x;
-			if (Math.abs(value) > DEFAULT_MIN_AXIS_THRESHOLD) {
-				direction.x = value * xMultiplier;
-				povXIndex = 1 + xMultiplier * sign;
-			} else {
-				// Values below the minimum get truncated
-				direction.x = 0;
-				povXIndex = 1;
-			}
+			// Values below the minimum get truncated
+			direction.x = Math.abs(value) > minThreshold ? value * xMultiplier : 0;
 			if (direction.x != oldValue) {
 				// Listeners only get notified if the value (after truncation) changes
-				updateListeners(POV_DIRECTIONS[povYIndex * 3 + povXIndex], direction);
+				notifyListeners(direction);
 			}
 		} else if (axisCode == yAxis) {
 			// Process the Y axis
 			float oldValue = direction.y;
-			if (Math.abs(value) > DEFAULT_MIN_AXIS_THRESHOLD) {
-				direction.y = value * yMultiplier;
-				povYIndex = 1 + yMultiplier * sign;
-			} else {
-				// Values below the minimum get truncated
-				direction.y = 0;
-				povYIndex = 1;
-			}
+			// Values below the minimum get truncated
+			direction.y = Math.abs(value) > minThreshold ? value * yMultiplier : 0;
 			if (direction.y != oldValue) {
 				// Listeners only get notified if the value (after truncation) changes
-				updateListeners(POV_DIRECTIONS[povYIndex * 3 + povXIndex], direction);
+				notifyListeners(direction);
 			}
 		} else {
 			// Signal not processed

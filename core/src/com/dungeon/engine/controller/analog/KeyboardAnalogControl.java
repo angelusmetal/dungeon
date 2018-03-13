@@ -1,25 +1,12 @@
-package com.dungeon.engine.controller.directional;
+package com.dungeon.engine.controller.analog;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * A directional control backed by a keyboard
+ * A analog control backed by a keyboard
  */
-public class KeyboardDirectionalControl extends DirectionalControl implements InputProcessor {
-
-	private static final PovDirection[] POV_DIRECTIONS = {
-			PovDirection.southWest,
-			PovDirection.south,
-			PovDirection.southEast,
-			PovDirection.west,
-			PovDirection.center,
-			PovDirection.east,
-			PovDirection.northWest,
-			PovDirection.north,
-			PovDirection.northEast
-	};
+public class KeyboardAnalogControl extends AnalogControl implements InputProcessor {
 
 	private static final Vector2[] VECTOR_DIRECTIONS = {
 			new Vector2(-1,-1),
@@ -40,13 +27,13 @@ public class KeyboardDirectionalControl extends DirectionalControl implements In
 	private int povIndex = 4;
 
 	/**
-	 * Create a directional control governed by 4 directional keyboard keys
+	 * Create a analog control governed by 4 analog keyboard keys
 	 * @param up Key for moving up
 	 * @param down Key for moving down
 	 * @param left Key for moving left
 	 * @param right Key for moving right
 	 */
-	public KeyboardDirectionalControl(int up, int down, int left, int right) {
+	public KeyboardAnalogControl(int up, int down, int left, int right) {
 		this.up = up;
 		this.down = down;
 		this.left = left;
@@ -57,16 +44,16 @@ public class KeyboardDirectionalControl extends DirectionalControl implements In
 	public boolean keyDown(int keycode) {
 		if (keycode == up) {
 			povIndex += 3;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 		} else if (keycode == down) {
 			povIndex -= 3;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 		} else if (keycode == left) {
 			povIndex -= 1;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners( VECTOR_DIRECTIONS[povIndex]);
 		} else if (keycode == right) {
 			povIndex += 1;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 		} else {
 			return false;
 		}
@@ -77,16 +64,16 @@ public class KeyboardDirectionalControl extends DirectionalControl implements In
 	public boolean keyUp(int keycode) {
 		if (keycode == up) {
 			povIndex -= 3;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 		} else if (keycode == down) {
 			povIndex += 3;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 		} else if (keycode == left) {
 			povIndex += 1;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners( VECTOR_DIRECTIONS[povIndex]);
 		} else if (keycode == right) {
 			povIndex -= 1;
-			updateListeners(POV_DIRECTIONS[povIndex], VECTOR_DIRECTIONS[povIndex]);
+			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 		} else {
 			return false;
 		}

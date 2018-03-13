@@ -2,21 +2,21 @@ package com.dungeon.game.state;
 
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.controller.player.PlayerControl;
+import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.entity.PlayerCharacter;
 
-public class CharacterPlayerControlListener implements PlayerControl.PlayerControlListener {
+public class CharacterPlayerControlListener implements PlayerControlBundle.Listener {
 
-	private final PlayerControl control;
+	private final PlayerControlBundle control;
 	private final GameState state;
 
-	public CharacterPlayerControlListener(PlayerControl control, GameState state) {
+	public CharacterPlayerControlListener(PlayerControlBundle control, GameState state) {
 		this.control = control;
 		this.state = state;
 	}
 
 	@Override
-	public void updateDirection(PovDirection pov, Vector2 vector) {
+	public void updateDirection(Vector2 vector) {
 		PlayerCharacter character = control.getCharacter();
 		if (character != null) {
 			character.setSelfMovement(vector);
@@ -24,12 +24,28 @@ public class CharacterPlayerControlListener implements PlayerControl.PlayerContr
 	}
 
 	@Override
-	public void start() {
-//		if (character == null || character.isExpired(state.getStateTime())) {
-//			Vector2 startingPosition = positionProvider.get();
-//			character = characterSupplier.apply(new Vector2(startingPosition.x * state.getLevelTileset().tile_size, startingPosition.y * state.getLevelTileset().tile_size));
-//			state.addPlayerCharacter(character);
-//		}
+	public void povTrigger(PovDirection pov) {
+
+	}
+
+	@Override
+	public void toggle1(boolean on) {
+
+	}
+
+	@Override
+	public void toggle2(boolean on) {
+
+	}
+
+	@Override
+	public void toggle3(boolean on) {
+
+	}
+
+	@Override
+	public void toggle4(boolean on) {
+
 	}
 
 	@Override

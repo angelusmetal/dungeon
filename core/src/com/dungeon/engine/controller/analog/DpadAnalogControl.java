@@ -1,4 +1,4 @@
-package com.dungeon.engine.controller.directional;
+package com.dungeon.engine.controller.analog;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -9,9 +9,9 @@ import com.badlogic.gdx.math.Vector3;
 import java.util.EnumMap;
 
 /**
- * A directional control backed by a controller POV
+ * A analog control backed by a controller POV
  */
-public class PovDirectionalControl extends DirectionalControl implements ControllerListener {
+public class DpadAnalogControl extends AnalogControl implements ControllerListener {
 
 	private static final EnumMap<PovDirection, Vector2> POV_TO_VECTOR2 = new EnumMap<>(PovDirection.class);
 
@@ -30,10 +30,10 @@ public class PovDirectionalControl extends DirectionalControl implements Control
 	private final int povCode;
 
 	/**
-	 * Create a directional control governed by a controller POV
+	 * Create a analog control governed by a controller POV
 	 * @param povCode code for the POV control within the controller
 	 */
-	public PovDirectionalControl(int povCode) {
+	public DpadAnalogControl(int povCode) {
 		this.povCode = povCode;
 	}
 
@@ -65,7 +65,7 @@ public class PovDirectionalControl extends DirectionalControl implements Control
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection direction) {
 		if (povCode == this.povCode) {
-			updateListeners(direction, POV_TO_VECTOR2.get(direction));
+			notifyListeners(POV_TO_VECTOR2.get(direction));
 			return true;
 		}
 		return false;

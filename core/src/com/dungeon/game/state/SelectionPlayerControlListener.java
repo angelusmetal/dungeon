@@ -2,26 +2,50 @@ package com.dungeon.game.state;
 
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.controller.player.PlayerControl;
+import com.dungeon.engine.controller.player.PlayerControlBundle;
 
-public class SelectionPlayerControlListener implements PlayerControl.PlayerControlListener {
+public class SelectionPlayerControlListener implements PlayerControlBundle.Listener {
 
-	private final PlayerControl control;
+	private final PlayerControlBundle control;
 	private final CharacterSelection characterSelection;
 	private boolean added;
 
-	public SelectionPlayerControlListener(PlayerControl control, CharacterSelection characterSelection) {
+	public SelectionPlayerControlListener(PlayerControlBundle control, CharacterSelection characterSelection) {
 		this.control = control;
 		this.characterSelection = characterSelection;
 	}
 	
 	@Override
-	public void updateDirection(PovDirection pov, Vector2 vector) {
-		
+	public void updateDirection(Vector2 vector) {
+
 	}
 
 	@Override
-	public void start() {
+	public void povTrigger(PovDirection pov) {
+		if (pov == PovDirection.east) {
+			characterSelection.selectNextCharacter(control);
+		} else if (pov == PovDirection.west) {
+			characterSelection.selectPrevCharacter(control);
+		}
+	}
+
+	@Override
+	public void toggle1(boolean on) {
+
+	}
+
+	@Override
+	public void toggle2(boolean on) {
+
+	}
+
+	@Override
+	public void toggle3(boolean on) {
+
+	}
+
+	@Override
+	public void toggle4(boolean on) {
 
 	}
 
@@ -37,12 +61,12 @@ public class SelectionPlayerControlListener implements PlayerControl.PlayerContr
 
 	@Override
 	public void trigger2() {
-		characterSelection.selectNextCharacter(control);
+
 	}
 
 	@Override
 	public void trigger3() {
-		characterSelection.selectPrevCharacter(control);
+
 	}
 
 	@Override

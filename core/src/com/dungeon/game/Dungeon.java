@@ -7,12 +7,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector;
-import com.dungeon.engine.controller.directional.AnalogDirectionalControl;
-import com.dungeon.engine.controller.directional.PovDirectionalControl;
-import com.dungeon.engine.controller.player.ControllerPlayerControl;
-import com.dungeon.engine.controller.player.KeyboardPlayerControl;
-import com.dungeon.engine.controller.player.PlayerControl;
-import com.dungeon.engine.controller.trigger.KeyboardTriggerControl;
+import com.dungeon.engine.controller.analog.StickAnalogControl;
+import com.dungeon.engine.controller.analog.DpadAnalogControl;
+import com.dungeon.engine.controller.player.ControllerPlayerControlBundle;
+import com.dungeon.engine.controller.player.KeyboardPlayerControlBundle;
+import com.dungeon.engine.controller.player.PlayerControlBundle;
+import com.dungeon.engine.controller.toggle.KeyboardToggle;
+import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
@@ -53,8 +54,8 @@ public class Dungeon extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		for (Controller controller : Controllers.getControllers()) {
-			PovDirectionalControl povControl = new PovDirectionalControl(0);
-			AnalogDirectionalControl analogControl = new AnalogDirectionalControl(3, -2);
+			DpadAnalogControl povControl = new DpadAnalogControl(0);
+			StickAnalogControl analogControl = new StickAnalogControl(3, -2);
 			controller.addListener(povControl);
 			controller.addListener(analogControl);
 		}
@@ -73,13 +74,13 @@ public class Dungeon extends ApplicationAdapter {
 		characterSelection.initialize();
 
 		// Add keyboard controller
-		PlayerControl keyboardControl = new KeyboardPlayerControl(state, inputMultiplexer);
+		PlayerControlBundle keyboardControl = new KeyboardPlayerControlBundle(state, inputMultiplexer);
 		keyboardControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(keyboardControl, state));
 		keyboardControl.addStateListener(GameState.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			PlayerControl controllerControl = new ControllerPlayerControl(state, controller);
+			PlayerControlBundle controllerControl = new ControllerPlayerControlBundle(state, controller);
 			controllerControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(controllerControl, state));
 			controllerControl.addStateListener(GameState.State.MENU, new SelectionPlayerControlListener(controllerControl, characterSelection));
 		}
@@ -97,9 +98,10 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {
-		KeyboardTriggerControl trigger = new KeyboardTriggerControl(keycode);
+		KeyboardToggle keyboardToggle = new KeyboardToggle(keycode);
+		inputMultiplexer.addProcessor(keyboardToggle);
+		Trigger trigger = new Trigger(keyboardToggle);
 		trigger.addListener(runnable);
-		inputMultiplexer.addProcessor(trigger);
 	}
 
 	@Override

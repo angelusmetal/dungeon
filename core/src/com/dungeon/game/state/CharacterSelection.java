@@ -6,13 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.controller.player.PlayerControl;
-import com.dungeon.engine.entity.PlayerCharacter;
-import com.dungeon.game.character.Assasin;
-import com.dungeon.game.character.Thief;
-import com.dungeon.game.character.Witch;
-import com.dungeon.game.level.Room;
+import com.dungeon.engine.controller.player.PlayerControlBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +20,10 @@ public class CharacterSelection {
 	private List<Slot> slots = new ArrayList<>(4);
 
 	public static class Slot {
-		public PlayerControl control;
+		public PlayerControlBundle control;
 		public int playerId;
 		public int characterId = 0;
-		public Slot(PlayerControl control, int playerId) {
+		public Slot(PlayerControlBundle control, int playerId) {
 			this.control = control;
 			this.playerId = playerId;
 		}
@@ -52,7 +46,7 @@ public class CharacterSelection {
 		playerCharacterScreen.dispose();
 	}
 
-	public boolean addControl(PlayerControl control) {
+	public boolean addControl(PlayerControlBundle control) {
 		if (slots.size() < 4) {
 			slots.add(new Slot(control, ++currentPlayer));
 			System.out.println("Added player!");
@@ -62,26 +56,26 @@ public class CharacterSelection {
 		}
 	}
 
-	public void selectNextCharacter(PlayerControl control) {
+	public void selectNextCharacter(PlayerControlBundle control) {
 		getSlot(control).ifPresent(s -> {
 			s.characterId = (s.characterId + 1) % CHARACTER_COUNT;
 			System.out.println("Player " + s.playerId + " switched to character " + s.characterId);
 		});
 	}
 
-	public void selectPrevCharacter(PlayerControl control) {
+	public void selectPrevCharacter(PlayerControlBundle control) {
 		getSlot(control).ifPresent(s -> {
 			s.characterId = (s.characterId - 1 + CHARACTER_COUNT) % CHARACTER_COUNT;
 			System.out.println("Player " + s.playerId + " switched to character " + s.characterId);
 		});
 	}
 
-	public void confirmSelection(PlayerControl control) {
+	public void confirmSelection(PlayerControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
 		state.startNewLevel(slots);
 	}
 
-	private Optional<Slot> getSlot(PlayerControl control) {
+	private Optional<Slot> getSlot(PlayerControlBundle control) {
 		for (Slot s : slots) {
 			if (s.control == control) {
 				return Optional.of(s);

@@ -1,10 +1,10 @@
-package com.dungeon.engine.controller.trigger;
+package com.dungeon.engine.controller.toggle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SwitchControl {
+public class Toggle {
 
 	private List<Consumer<Boolean>> listeners = new ArrayList<>();
 
@@ -12,7 +12,7 @@ public class SwitchControl {
 		listeners.add(listener);
 	}
 
-	protected void updateListeners(boolean pressed) {
+	protected void notifyListeners(boolean pressed) {
 		for (Consumer<Boolean> listener : listeners) {
 			listener.accept(pressed);
 		}
