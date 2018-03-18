@@ -80,7 +80,7 @@ public class Ghost extends Character {
 	public void hit(GameState state, int dmg) {
 		if (canBeHit(state)) {
 			super.hit(state, dmg);
-			invulnerableUntil = state.getStateTime() + 2f; // invulnerable for the next 2 seconds
+			invulnerableUntil = state.getStateTime() + 0.5f; // invulnerable for the next 0.5 seconds
 		}
 	}
 

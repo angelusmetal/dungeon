@@ -45,11 +45,11 @@ public class ControllerPlayerControlBundle extends PlayerControlBundle {
 		action3Trigger.addListener(this::trigger3);
 		action4Trigger.addListener(this::trigger4);
 
-		// Debug logging
-		directionalControl.addListener((vec) -> System.out.println("[" + controller.getName() + "] Vector: " + vec));
-		action1Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 1"));
-		action2Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 2"));
-		action3Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 3"));
-		action4Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 4"));
+//		// Debug logging
+//		directionalControl.addListener((vec) -> System.out.println("[" + controller.getName() + "] Vector: " + vec));
+//		action1Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 1"));
+//		action2Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 2"));
+//		action3Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 3"));
+//		action4Trigger.addListener(() -> System.out.println("[" + controller.getName() + "] Action 4"));
 	}
 }

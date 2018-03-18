@@ -46,12 +46,12 @@ public class KeyboardPlayerControlBundle extends PlayerControlBundle {
 		action3Trigger.addListener(this::trigger3);
 		action4Trigger.addListener(this::trigger4);
 
-		// Debug logging
-		directionalControl.addListener((vec) -> System.out.println("[Keyboard] Vector: " + vec));
-		action1Trigger.addListener(() -> System.out.println("[Keyboard] Action 1"));
-		action2Trigger.addListener(() -> System.out.println("[Keyboard] Action 2"));
-		action3Trigger.addListener(() -> System.out.println("[Keyboard] Action 3"));
-		action4Trigger.addListener(() -> System.out.println("[Keyboard] Action 4"));
+//		// Debug logging
+//		directionalControl.addListener((vec) -> System.out.println("[Keyboard] Vector: " + vec));
+//		action1Trigger.addListener(() -> System.out.println("[Keyboard] Action 1"));
+//		action2Trigger.addListener(() -> System.out.println("[Keyboard] Action 2"));
+//		action3Trigger.addListener(() -> System.out.println("[Keyboard] Action 3"));
+//		action4Trigger.addListener(() -> System.out.println("[Keyboard] Action 4"));
 
 	}
 }

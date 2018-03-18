@@ -27,7 +27,6 @@ public class PovTrigger implements PovToggleListener {
 	@Override
 	public void onUpdate(PovDirection direction) {
 		if (direction != this.direction) {
-			System.out.println("PovTrigger " + direction);
 			this.direction = direction;
 			notifyListeners(direction);
 		}
