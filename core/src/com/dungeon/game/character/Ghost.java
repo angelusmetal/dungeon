@@ -15,7 +15,7 @@ import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = 500 * 500;
+	private static final float MIN_TARGET_DISTANCE = 300 * 300;
 	static private Light GHOST_LIGHT = new Light(200, new Quaternion(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
 	private float invulnerableUntil = 0;
 
@@ -28,12 +28,7 @@ public class Ghost extends Character {
 			this.state = state;
 			provider.register(AnimationType.IDLE, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
 			provider.register(AnimationType.WALK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.JUMP, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.HIT, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.SLASH, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.PUNCH, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.RUN, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.CLIMB, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.ATTACK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
 		}
 
 		@Override
@@ -55,6 +50,7 @@ public class Ghost extends Character {
 
 	@Override
 	public void think(GameState state) {
+		super.think(state);
 		Vector2 closestPlayer = new Vector2();
 		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
 			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
@@ -80,7 +76,7 @@ public class Ghost extends Character {
 	public void hit(GameState state, int dmg) {
 		if (canBeHit(state)) {
 			super.hit(state, dmg);
-			invulnerableUntil = state.getStateTime() + 0.5f; // invulnerable for the next 0.5 seconds
+			invulnerableUntil = state.getStateTime() + 1f; // invulnerable for the next 1 seconds
 		}
 	}
 

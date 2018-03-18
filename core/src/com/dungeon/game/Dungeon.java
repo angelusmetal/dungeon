@@ -20,6 +20,7 @@ import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
 import com.dungeon.game.character.Ghost;
+import com.dungeon.game.character.SlimeAcid;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.HealthPowerup;
@@ -64,6 +65,7 @@ public class Dungeon extends ApplicationAdapter {
 		state = new GameState(viewPort, entityFactory);
 
 		entityFactory.registerFactory(EntityType.GHOST, new Ghost.Factory(state));
+		entityFactory.registerFactory(EntityType.SLIME_ACID, new SlimeAcid.Factory(state));
 		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerup.Factory(state));
 

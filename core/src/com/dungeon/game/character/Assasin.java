@@ -23,12 +23,7 @@ public class Assasin extends PlayerCharacter {
 			this.state = state;
 			provider.register(AnimationType.IDLE, state.getTilesetManager().getCharactersTileset().ASSASIN_IDLE_ANIMATION);
 			provider.register(AnimationType.WALK, state.getTilesetManager().getCharactersTileset().ASSASIN_WALK_ANIMATION);
-			provider.register(AnimationType.JUMP, state.getTilesetManager().getCharactersTileset().ASSASIN_JUMP_ANIMATION);
-			provider.register(AnimationType.HIT, state.getTilesetManager().getCharactersTileset().ASSASIN_HIT_ANIMATION);
-			provider.register(AnimationType.SLASH, state.getTilesetManager().getCharactersTileset().ASSASIN_SLASH_ANIMATION);
-			provider.register(AnimationType.PUNCH, state.getTilesetManager().getCharactersTileset().ASSASIN_PUNCH_ANIMATION);
-			provider.register(AnimationType.RUN, state.getTilesetManager().getCharactersTileset().ASSASIN_RUN_ANIMATION);
-			provider.register(AnimationType.CLIMB, state.getTilesetManager().getCharactersTileset().ASSASIN_CLIMB_ANIMATION);
+			provider.register(AnimationType.ATTACK, state.getTilesetManager().getCharactersTileset().ASSASIN_ATTACK_ANIMATION);
 		}
 
 		public Assasin build(Vector2 origin) {

@@ -129,13 +129,14 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
+		List<EntityType> monsterTypes = Arrays.asList(EntityType.GHOST, EntityType.SLIME_ACID);
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
-		// Create ghosts in each room, to begin with
+		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
 			Room room = rooms.get(r);
 			// Create a random amount of ghosts in each room
 			final int skip = (int) (Math.random() * room.spawnPoints.size());
-			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.GHOST, pos)));
+			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(monsterTypes.get(random.nextInt(monsterTypes.size())), pos)));
 
 			// A 40% chance of spawning one powerup
 			if (Math.random() < 0.4d) {

@@ -1,5 +1,7 @@
 package com.dungeon.game.tileset;
 
+import com.dungeon.game.character.SlimeAcid;
+
 public class TilesetManager {
 
 	private final DungeonVioletTileset dungeonVioletTileset;
@@ -11,6 +13,7 @@ public class TilesetManager {
 	private final HudTileset hudTileset;
 	private final PowerupsTileset powerupsTileset;
 	private final TorchTileset torchTileset;
+	private final SlimeAcidTileset slimeAcidTileset;
 
 	public TilesetManager() {
 		dungeonVioletTileset = new DungeonVioletTileset();
@@ -22,6 +25,7 @@ public class TilesetManager {
 		hudTileset = new HudTileset();
 		powerupsTileset = new PowerupsTileset();
 		torchTileset = new TorchTileset();
+		slimeAcidTileset = new SlimeAcidTileset();
 	}
 
 	public DungeonVioletTileset getDungeonVioletTileset() {
@@ -51,6 +55,9 @@ public class TilesetManager {
 	public TorchTileset getTorchTileset() {
 		return torchTileset;
 	}
+	public SlimeAcidTileset getSlimeAcidTileset() {
+		return slimeAcidTileset;
+	}
 
 	public void dispose() {
 		dungeonVioletTileset.dispose();
@@ -61,5 +68,6 @@ public class TilesetManager {
 		hudTileset.dispose();
 		powerupsTileset.dispose();
 		torchTileset.dispose();
+		slimeAcidTileset.dispose();
 	}
 }

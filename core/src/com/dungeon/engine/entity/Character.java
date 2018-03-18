@@ -12,7 +12,7 @@ import com.dungeon.game.state.GameState;
 public abstract class Character extends Entity<Character.AnimationType> implements Movable, Drawable {
 
 	public enum AnimationType {
-		IDLE, WALK, JUMP, HIT, SLASH, PUNCH, RUN, CLIMB;
+		IDLE, WALK, ATTACK, DIE;
 	}
 
 	protected AnimationProvider<AnimationType> animationProvider;
@@ -66,7 +66,7 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 					// Extra offset to make projectiles appear in the character's hands
 					//projectile.getPos().y -= 8;
 					state.addEntity(projectile);
-					setCurrentAnimation(animationProvider.get(AnimationType.HIT, state.getStateTime()));
+					setCurrentAnimation(animationProvider.get(AnimationType.ATTACK, state.getStateTime()));
 				}
 			});
 		}

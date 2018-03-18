@@ -23,12 +23,7 @@ public class Witch extends PlayerCharacter {
 			this.state = state;
 			provider.register(AnimationType.IDLE, state.getTilesetManager().getCharactersTileset().WITCH_IDLE_ANIMATION);
 			provider.register(AnimationType.WALK, state.getTilesetManager().getCharactersTileset().WITCH_WALK_ANIMATION);
-			provider.register(AnimationType.JUMP, state.getTilesetManager().getCharactersTileset().WITCH_JUMP_ANIMATION);
-			provider.register(AnimationType.HIT, state.getTilesetManager().getCharactersTileset().WITCH_HIT_ANIMATION);
-			provider.register(AnimationType.SLASH, state.getTilesetManager().getCharactersTileset().WITCH_SLASH_ANIMATION);
-			provider.register(AnimationType.PUNCH, state.getTilesetManager().getCharactersTileset().WITCH_PUNCH_ANIMATION);
-			provider.register(AnimationType.RUN, state.getTilesetManager().getCharactersTileset().WITCH_RUN_ANIMATION);
-			provider.register(AnimationType.CLIMB, state.getTilesetManager().getCharactersTileset().WITCH_CLIMB_ANIMATION);
+			provider.register(AnimationType.ATTACK, state.getTilesetManager().getCharactersTileset().WITCH_ATTACK_ANIMATION);
 		}
 
 		public Witch build(Vector2 origin) {
