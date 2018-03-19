@@ -1,6 +1,6 @@
 package com.dungeon.game.object;
 
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
@@ -12,7 +12,7 @@ import com.dungeon.game.state.GameState;
 
 public class HealthPowerup extends Entity<HealthPowerup.AnimationType> {
 
-	static private Light HEALTH_LIGHT = new Light(192, new Quaternion(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
+	static private Light HEALTH_LIGHT = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
 
 	public enum AnimationType {
 		IDLE;

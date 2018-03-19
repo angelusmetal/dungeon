@@ -1,6 +1,6 @@
 package com.dungeon.engine.entity;
 
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
 import com.dungeon.game.object.Tombstone;
@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public abstract class PlayerCharacter extends Character {
 
-	static private Light TORCH_LIGHT = new Light(160, new Quaternion(0.25f, 0.2f, 0.1f, 0.2f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+	static private Light TORCH_LIGHT = new Light(160, new Color(0.25f, 0.2f, 0.1f, 0.2f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 
 	protected PlayerCharacter(Body body) {
 		super(body);

@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.ColorContext;
+import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
@@ -25,6 +27,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	protected int maxHealth = 100;
 
 	protected Light light = null;
+	protected DrawContext drawContext = DrawContext.NONE;
 
 	protected Entity(Body body) {
 		this.body = body;
@@ -224,7 +227,9 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		TextureRegion characterFrame = getFrame(state.getStateTime());
 		float invertX = invertX() ? -1 : 1;
+		drawContext.set(batch);
 		batch.draw(characterFrame, (getPos().x - viewPort.xOffset - getDrawOffset().x * invertX) * viewPort.scale, (getPos().y - viewPort.yOffset - getDrawOffset().y) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale * invertX, characterFrame.getRegionHeight() * viewPort.scale);
+		drawContext.unset(batch);
 	}
 
 	public void drawLight(GameState state, SpriteBatch batch, ViewPort viewPort) {
@@ -232,7 +237,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 			float dim = light.dimmer.get();
 			float diameter = light.diameter * dim * viewPort.scale;
 			float radius = diameter / 2;
-			batch.setColor(light.color.x, light.color.y, light.color.z, light.color.w * dim);
+			batch.setColor(light.color.r, light.color.g, light.color.b, light.color.a * dim);
 			batch.draw(
 					light.texture,
 					(getPos().x - viewPort.xOffset) * viewPort.scale - radius,

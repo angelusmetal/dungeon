@@ -1,22 +1,21 @@
 package com.dungeon.game.character;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Light;
-import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
 public class SlimeAcid extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 200 * 200;
-	static private Light SLIME_ACID_LIGHT = new Light(100, new Quaternion(0, 1, 0, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
+	static private Light SLIME_ACID_LIGHT = new Light(100, new Color(0, 1, 0, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
 
 	public static class Factory implements EntityFactory.EntityTypeFactory {
 
@@ -53,6 +52,7 @@ public class SlimeAcid extends Character {
 			setCurrentAnimation(animationProvider.get(AnimationType.DIE, state.getStateTime()));
 			expirationTime = state.getStateTime() + getCurrentAnimation().getDuration();
 			light = SLIME_ACID_LIGHT;
+			this.drawContext = SlimeAcid.this.drawContext;
 		}
 
 		@Override
@@ -64,15 +64,19 @@ public class SlimeAcid extends Character {
 		public boolean isSolid() {
 			return false;
 		}
+
 	}
 
 	private final Vector2 nextTarget = new Vector2();
 	private float nextThink;
+	private final Color color;
 
 	private SlimeAcid(Vector2 pos) {
 		super(new Body(pos, new Vector2(22, 12)));
 		nextTarget.set(pos);
 		nextThink = 0f;
+		color = new Color(0, 1, 0, 0.5f);
+		drawContext = new ColorContext(color);
 	}
 
 	@Override
@@ -135,10 +139,4 @@ public class SlimeAcid extends Character {
 		}
 	}
 
-	@Override
-	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
-		batch.setColor(1, 1, 1, 0.5f);
-		super.draw(state, batch, viewPort);
-		batch.setColor(1, 1, 1, 1);
-	}
 }

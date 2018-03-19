@@ -1,6 +1,6 @@
 package com.dungeon.game.character;
 
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.PlayerCharacter;
@@ -12,7 +12,7 @@ import com.dungeon.game.state.GameState;
 public class Witch extends PlayerCharacter {
 
 	public static Projectile.Builder CAT_PROTOTYPE = new Projectile.Builder().speed(200).timeToLive(10).autoseek(0.1f).targetRadius(60).targetPredicate(PlayerCharacter.IS_NON_PLAYER).damage(50);
-	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
+	static private Light PROJECTILE_LIGHT = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 
 	public static class Factory {
 

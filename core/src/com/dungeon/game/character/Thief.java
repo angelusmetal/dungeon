@@ -1,6 +1,6 @@
 package com.dungeon.game.character;
 
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.CooldownTrigger;
@@ -13,7 +13,7 @@ import com.dungeon.game.state.GameState;
 public class Thief extends PlayerCharacter {
 
 	public static Projectile.Builder BULLET_PROTOTYPE = new Projectile.Builder().speed(400).timeToLive(10).bounciness(10).damage(30);
-	static private Light PROJECTILE_LIGHT = new Light(60, new Quaternion(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+	static private Light PROJECTILE_LIGHT = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 	public static class Factory {
 

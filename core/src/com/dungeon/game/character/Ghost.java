@@ -1,22 +1,21 @@
 package com.dungeon.game.character;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.AnimationProvider;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Light;
-import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = 300 * 300;
-	static private Light GHOST_LIGHT = new Light(200, new Quaternion(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
+	static private Light GHOST_LIGHT = new Light(200, new Color(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
 	private float invulnerableUntil = 0;
 
 	public static class Factory implements EntityFactory.EntityTypeFactory {
@@ -44,8 +43,12 @@ public class Ghost extends Character {
 		}
 	}
 
+	private final Color color;
+
 	private Ghost(Vector2 pos) {
 		super(new Body(pos, new Vector2(16, 30)));
+		color = new Color(1, 1, 1, 0.5f);
+		drawContext = new ColorContext(color);
 	}
 
 	@Override
@@ -60,6 +63,8 @@ public class Ghost extends Character {
 			}
 			setSelfMovement(closestPlayer);
 		}
+		// Set transparency based on invulnerability
+		color.a = state.getStateTime() > invulnerableUntil ? 0.5f : 0.2f;
 	}
 
 	@Override
@@ -85,11 +90,4 @@ public class Ghost extends Character {
 		return state.getStateTime() > invulnerableUntil;
 	}
 
-	@Override
-	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
-		// TODO Parameterize this
-		batch.setColor(1, 1, 1, state.getStateTime() > invulnerableUntil ? 0.5f : 0.2f);
-		super.draw(state, batch, viewPort);
-		batch.setColor(1, 1, 1, 1);
-	}
 }

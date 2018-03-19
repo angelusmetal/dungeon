@@ -1,6 +1,6 @@
 package com.dungeon.game.object;
 
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
@@ -11,7 +11,7 @@ import com.dungeon.game.state.GameState;
 
 public class Torch extends Entity<Torch.AnimationType> {
 
-	static private Light TORCH_LIGHT = new Light(80, new Quaternion(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+	static private Light TORCH_LIGHT = new Light(80, new Color(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 
 	public enum AnimationType {
 		IDLE;

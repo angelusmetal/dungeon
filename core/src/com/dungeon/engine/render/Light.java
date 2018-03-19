@@ -1,5 +1,6 @@
 package com.dungeon.engine.render;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Quaternion;
 
@@ -76,8 +77,8 @@ public class Light {
 
 	/** Describes the base light diameter, in units */
 	public final float diameter;
-	/** Describes the light color as a Quaternion (red, green, blue, alpha) */
-	public final Quaternion color;
+	/** Describes the light color as a Color (red, green, blue, alpha) */
+	public final Color color;
 	/** Light texture to use */
 	public final Texture texture;
 	/**
@@ -91,7 +92,7 @@ public class Light {
 	 */
 	public final Supplier<Float> rotator;
 
-	public Light(float diameter, Quaternion color, Texture texture, Supplier<Float> dimmer, Supplier<Float> rotator) {
+	public Light(float diameter, Color color, Texture texture, Supplier<Float> dimmer, Supplier<Float> rotator) {
 		this.diameter = diameter;
 		this.color = color;
 		this.texture = texture;
