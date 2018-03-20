@@ -70,7 +70,7 @@ public class Ghost extends Character {
 	@Override
 	protected boolean onEntityCollision(GameState state, Entity<?> entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(state, 1);
+			entity.hit(state, 20 * state.getFrameTime());
 			return true;
 		} else {
 			return false;
@@ -78,7 +78,7 @@ public class Ghost extends Character {
 	}
 
 	@Override
-	public void hit(GameState state, int dmg) {
+	public void hit(GameState state, float dmg) {
 		if (canBeHit(state)) {
 			super.hit(state, dmg);
 			invulnerableUntil = state.getStateTime() + 1f; // invulnerable for the next 1 seconds

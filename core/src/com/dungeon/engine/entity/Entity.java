@@ -23,7 +23,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	private boolean invertX = false;
 
 	protected boolean expired;
-	protected int health = 100;
+	protected float health = 100;
 	protected int maxHealth = 100;
 
 	protected Light light = null;
@@ -211,7 +211,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		return this.body.intersects(entity.body);
 	}
 
-	public void hit(GameState state, int dmg) {
+	public void hit(GameState state, float dmg) {
 		health -= dmg;
 		if (health <= 0) {
 			setExpired(state, true);
@@ -264,8 +264,12 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		onExpire(state);
 	}
 
-	abstract public boolean isExpired(float time);
-	abstract public boolean isSolid();
+	public boolean isExpired(float time) {
+		return false;
+	}
+	public boolean isSolid() {
+		return false;
+	}
 	public boolean canBeHit(GameState state) {
 		return isSolid();
 	}
@@ -276,5 +280,8 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	protected void onTileCollision(GameState state, boolean horizontal) {}
 
 	public void think(GameState state) {}
+	public float getZIndex() {
+		return 0;
+	}
 
 }

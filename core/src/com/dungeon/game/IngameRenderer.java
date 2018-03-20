@@ -27,6 +27,8 @@ public class IngameRenderer {
 	private boolean renderLighting = true;
 
 	private final Comparator<? super Entity<?>> comp = (e1, e2) ->
+			e1.getZIndex() > e2.getZIndex() ? 1 :
+			e1.getZIndex() < e2.getZIndex() ? -1 :
 			e1.getPos().y > e2.getPos().y ? -1 :
 			e1.getPos().y < e2.getPos().y ? 1 :
 			e1.getPos().x < e2.getPos().x ? -1 :

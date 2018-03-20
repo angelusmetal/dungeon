@@ -13,6 +13,7 @@ public interface Drawable {
 
 	Vector2 getPos();
 	Vector2 getDrawOffset();
+	float getZIndex();
 
 	void draw(GameState state, SpriteBatch batch, ViewPort viewPort);
 

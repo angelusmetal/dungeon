@@ -16,12 +16,12 @@ public abstract class Tileset {
 		this.tile_size = tile_size;
 	}
 
-	public TextureRegion getTile(int x, int y) {
-		return new TextureRegion(texture, tile_size * x, tile_size * y, tile_size, tile_size);
+	public TextureRegion getTile(float x, float y) {
+		return new TextureRegion(texture, (int) (tile_size * x), (int) (tile_size * y), tile_size, tile_size);
 	}
 
-	public TextureRegion getTile(int x, int y, int x_tiles, int y_tiles) {
-		return new TextureRegion(texture, tile_size * x, tile_size * y, tile_size * x_tiles, tile_size * y_tiles);
+	public TextureRegion getTile(float x, float y, float x_tiles, float y_tiles) {
+		return new TextureRegion(texture, (int) (tile_size * x), (int) (tile_size * y), (int) (tile_size * x_tiles), (int) (tile_size * y_tiles));
 	}
 
 	protected Tile[] createTiles(TextureRegion ... regions) {
