@@ -2,7 +2,7 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Quaternion;
+import com.dungeon.engine.resource.ResourceManager;
 
 import java.util.function.Supplier;
 
@@ -14,17 +14,10 @@ public class Light {
 	public static Texture POSTERIZED_TEXTURE;
 
 	public static void initialize() {
-		NORMAL_TEXTURE = new Texture("light_1.png");
-		RAYS_TEXTURE = new Texture("light_2.png");
-		FLARE_TEXTURE = new Texture("light_3.png");
-		POSTERIZED_TEXTURE = new Texture("light_cellshaded.png");
-	}
-
-	public static void dispose() {
-		NORMAL_TEXTURE.dispose();
-		RAYS_TEXTURE.dispose();
-		FLARE_TEXTURE.dispose();
-		POSTERIZED_TEXTURE.dispose();
+		NORMAL_TEXTURE = ResourceManager.instance().getTexture("light_1.png");
+		RAYS_TEXTURE = ResourceManager.instance().getTexture("light_2.png");
+		FLARE_TEXTURE = ResourceManager.instance().getTexture("light_3.png");
+		POSTERIZED_TEXTURE = ResourceManager.instance().getTexture("light_cellshaded.png");
 	}
 
 	private static final float thinkInterval = 0.05f;

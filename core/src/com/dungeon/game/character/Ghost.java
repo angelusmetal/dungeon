@@ -9,8 +9,11 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.CatProjectileTileset;
+import com.dungeon.game.tileset.GhostTileset;
 
 public class Ghost extends Character {
 
@@ -25,9 +28,9 @@ public class Ghost extends Character {
 
 		public Factory(GameState state) {
 			this.state = state;
-			provider.register(AnimationType.IDLE, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.WALK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
-			provider.register(AnimationType.ATTACK, state.getTilesetManager().getGhostTileset().HOVER_ANIMATION);
+			provider.register(AnimationType.IDLE, ResourceManager.instance().getAnimation(GhostTileset.HOVER, GhostTileset::hover));
+			provider.register(AnimationType.WALK, ResourceManager.instance().getAnimation(GhostTileset.HOVER, GhostTileset::hover));
+			provider.register(AnimationType.ATTACK, ResourceManager.instance().getAnimation(GhostTileset.HOVER, GhostTileset::hover));
 		}
 
 		@Override

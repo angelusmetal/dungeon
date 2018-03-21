@@ -1,8 +1,8 @@
 package com.dungeon.game.tileset;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tile;
+import com.dungeon.engine.resource.ResourceManager;
 
 public class DungeonVioletTileset extends LevelTileset {
 
@@ -77,7 +77,7 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final Tile VOID_TILE = new Tile(VOID);
 
 	public DungeonVioletTileset() {
-		super(new Texture("dungeon_violet.png"), 48);
+		super(ResourceManager.instance().getTexture("dungeon_violet.png"), 48);
 	}
 
 	@Override

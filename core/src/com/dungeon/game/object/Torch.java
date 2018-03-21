@@ -6,8 +6,10 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.TorchTileset;
 
 public class Torch extends Entity<Torch.AnimationType> {
 
@@ -28,7 +30,7 @@ public class Torch extends Entity<Torch.AnimationType> {
 		@Override
 		public Entity<?> build(Vector2 origin) {
 			Torch entity = new Torch(origin);
-			entity.setCurrentAnimation(new GameAnimation<>(AnimationType.IDLE, state.getTilesetManager().getTorchTileset().TORCH_ANIMATION, state.getStateTime()));
+			entity.setCurrentAnimation(new GameAnimation<>(AnimationType.IDLE, ResourceManager.instance().getAnimation(TorchTileset.IDLE, TorchTileset::idle), state.getStateTime()));
 			entity.light = TORCH_LIGHT;
 			return entity;
 		}

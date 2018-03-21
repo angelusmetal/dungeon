@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
+import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.game.tileset.CharactersTileset32;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class CharacterSelection {
 
 	public void initialize() {
 		batch = new SpriteBatch();
-		playerCharacterScreen = new Texture("character_selection.png");
+		playerCharacterScreen = ResourceManager.instance().getTexture("character_selection.png");
 	}
 
 	public void dispose() {
@@ -86,11 +88,11 @@ public class CharacterSelection {
 
 	private Animation<TextureRegion> getAnimation(int characterId) {
 		if (characterId == 0) {
-			return state.getTilesetManager().getCharactersTileset().WITCH_WALK_ANIMATION;
+			return ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_WALK, CharactersTileset32::witchWalk);
 		} else if (characterId == 1) {
-			return state.getTilesetManager().getCharactersTileset().THIEF_WALK_ANIMATION;
+			return ResourceManager.instance().getAnimation(CharactersTileset32.THIEF_WALK, CharactersTileset32::thiefWalk);
 		} else {
-			return state.getTilesetManager().getCharactersTileset().ASSASIN_WALK_ANIMATION;
+			return ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_WALK, CharactersTileset32::assassinWalk);
 		}
 	}
 

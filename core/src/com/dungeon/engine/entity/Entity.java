@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
-import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;

@@ -7,7 +7,11 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.CatProjectileTileset;
+import com.dungeon.game.tileset.CharactersTileset32;
+import com.dungeon.game.tileset.ProjectileTileset;
 
 public class Witch extends PlayerCharacter {
 
@@ -21,9 +25,9 @@ public class Witch extends PlayerCharacter {
 
 		public Factory(GameState state) {
 			this.state = state;
-			provider.register(AnimationType.IDLE, state.getTilesetManager().getCharactersTileset().WITCH_IDLE_ANIMATION);
-			provider.register(AnimationType.WALK, state.getTilesetManager().getCharactersTileset().WITCH_WALK_ANIMATION);
-			provider.register(AnimationType.ATTACK, state.getTilesetManager().getCharactersTileset().WITCH_ATTACK_ANIMATION);
+			provider.register(AnimationType.IDLE, ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_IDLE, CharactersTileset32::witchIdle));
+			provider.register(AnimationType.WALK, ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_WALK, CharactersTileset32::witchWalk));
+			provider.register(AnimationType.ATTACK, ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_ATTACK, CharactersTileset32::witchAttack));
 		}
 
 		public Witch build(Vector2 origin) {
@@ -46,10 +50,10 @@ public class Witch extends PlayerCharacter {
 			super(new Body(origin, new Vector2(6, 6)), startTime, CAT_PROTOTYPE);
 			// TODO We shouldn't do this every time a projectile is built
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class);
-			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_UP);
-			provider.register(AnimationType.FLY_SOUTH, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_DOWN);
-			provider.register(AnimationType.FLY_SIDE, state.getTilesetManager().getCatProjectileTileset().PROJECTILE_FLY_ANIMATION_RIGHT);
-			provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_WITCH_EXPLODE_ANIMATION);
+			provider.register(AnimationType.FLY_NORTH, ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_UP, CatProjectileTileset::flyUp));
+			provider.register(AnimationType.FLY_SOUTH, ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_DOWN, CatProjectileTileset::flyDown));
+			provider.register(AnimationType.FLY_SIDE, ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_RIGHT, CatProjectileTileset::flyRight));
+			provider.register(AnimationType.EXPLOSION, ResourceManager.instance().getAnimation(ProjectileTileset.WITCH_EXPLODE, ProjectileTileset::witchExplode));
 			animationProvider = provider;
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH, state.getStateTime()));
 			light = PROJECTILE_LIGHT;

@@ -1,9 +1,9 @@
 package com.dungeon.game.tileset;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.resource.ResourceManager;
 
 public class TombstoneTileset extends Tileset {
 
@@ -19,10 +19,16 @@ public class TombstoneTileset extends Tileset {
 	private final TextureRegion TOMBSTONE_10 = getTile(3, 1);
 	private final TextureRegion TOMBSTONE_11 = getTile(4, 1);
 	private final TextureRegion TOMBSTONE_12 = getTile(5, 1);
-	public final Animation<TextureRegion> TOMBSTONE_SPAWN_ANIMATION = new Animation<>(0.05f, TOMBSTONE_1, TOMBSTONE_2, TOMBSTONE_3, TOMBSTONE_4, TOMBSTONE_5, TOMBSTONE_6, TOMBSTONE_7, TOMBSTONE_8, TOMBSTONE_9, TOMBSTONE_10, TOMBSTONE_11, TOMBSTONE_12);
+	private final Animation<TextureRegion> TOMBSTONE_SPAWN_ANIMATION = new Animation<>(0.05f, TOMBSTONE_1, TOMBSTONE_2, TOMBSTONE_3, TOMBSTONE_4, TOMBSTONE_5, TOMBSTONE_6, TOMBSTONE_7, TOMBSTONE_8, TOMBSTONE_9, TOMBSTONE_10, TOMBSTONE_11, TOMBSTONE_12);
+
+	public static final String SPAWN = "tombstone_spawn";
 
 	TombstoneTileset() {
-		super(new Texture("tombstone.png"), 32);
+		super(ResourceManager.instance().getTexture("tombstone.png"), 32);
+	}
+
+	public static Animation<TextureRegion> spawn() {
+		return new TombstoneTileset().TOMBSTONE_SPAWN_ANIMATION;
 	}
 
 }

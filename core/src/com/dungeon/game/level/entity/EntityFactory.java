@@ -2,7 +2,6 @@ package com.dungeon.game.level.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.game.state.GameState;
 
 import java.util.EnumMap;
 

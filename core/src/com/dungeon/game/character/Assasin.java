@@ -7,7 +7,10 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.CharactersTileset32;
+import com.dungeon.game.tileset.ProjectileTileset;
 
 public class Assasin extends PlayerCharacter {
 
@@ -21,9 +24,9 @@ public class Assasin extends PlayerCharacter {
 
 		public Factory(GameState state) {
 			this.state = state;
-			provider.register(AnimationType.IDLE, state.getTilesetManager().getCharactersTileset().ASSASIN_IDLE_ANIMATION);
-			provider.register(AnimationType.WALK, state.getTilesetManager().getCharactersTileset().ASSASIN_WALK_ANIMATION);
-			provider.register(AnimationType.ATTACK, state.getTilesetManager().getCharactersTileset().ASSASIN_ATTACK_ANIMATION);
+			provider.register(AnimationType.IDLE, ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_IDLE, CharactersTileset32::assassinIdle));
+			provider.register(AnimationType.WALK, ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_WALK, CharactersTileset32::assassinWalk));
+			provider.register(AnimationType.ATTACK, ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_ATTACK, CharactersTileset32::assasinAttack));
 		}
 
 		public Assasin build(Vector2 origin) {
@@ -45,10 +48,10 @@ public class Assasin extends PlayerCharacter {
 		public Bullet(GameState state, Vector2 origin, float startTime) {
 			super(new Body(origin, new Vector2(6, 6)), startTime, BULLET_PROTOTYPE);
 			AnimationProvider<AnimationType> provider = new AnimationProvider<>(AnimationType.class);
-			provider.register(AnimationType.FLY_NORTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_FLY_ANIMATION);
-			provider.register(AnimationType.FLY_SOUTH, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_FLY_ANIMATION);
-			provider.register(AnimationType.FLY_SIDE, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_FLY_ANIMATION);
-			provider.register(AnimationType.EXPLOSION, state.getTilesetManager().getProjectileTileset().PROJECTILE_ASSASIN_EXPLODE_ANIMATION);
+			provider.register(AnimationType.FLY_NORTH, ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_FLY, ProjectileTileset::assasinFly));
+			provider.register(AnimationType.FLY_SOUTH, ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_FLY, ProjectileTileset::assasinFly));
+			provider.register(AnimationType.FLY_SIDE, ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_FLY, ProjectileTileset::assasinFly));
+			provider.register(AnimationType.EXPLOSION, ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_EXPLODE, ProjectileTileset::assasinExplode));
 			animationProvider = provider;
 			setCurrentAnimation(provider.get(AnimationType.FLY_NORTH, state.getStateTime()));
 			light = PROJECTILE_LIGHT;

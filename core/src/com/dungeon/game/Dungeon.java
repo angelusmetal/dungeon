@@ -7,8 +7,8 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector;
-import com.dungeon.engine.controller.analog.StickAnalogControl;
 import com.dungeon.engine.controller.analog.DpadAnalogControl;
+import com.dungeon.engine.controller.analog.StickAnalogControl;
 import com.dungeon.engine.controller.player.ControllerPlayerControlBundle;
 import com.dungeon.engine.controller.player.KeyboardPlayerControlBundle;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
@@ -16,6 +16,7 @@ import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
@@ -138,6 +139,6 @@ public class Dungeon extends ApplicationAdapter {
 		ingameRenderer.dispose();
 		characterSelection.dispose();
 		state.getTilesetManager().dispose();
-		Light.dispose();
+		ResourceManager.instance().unloadAll();
 	}
 }

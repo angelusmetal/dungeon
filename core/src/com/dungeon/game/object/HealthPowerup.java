@@ -7,8 +7,11 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.PowerupsTileset;
+import com.dungeon.game.tileset.TombstoneTileset;
 
 public class HealthPowerup extends Entity<HealthPowerup.AnimationType> {
 
@@ -29,7 +32,7 @@ public class HealthPowerup extends Entity<HealthPowerup.AnimationType> {
 		@Override
 		public Entity<?> build(Vector2 origin) {
 			HealthPowerup entity = new HealthPowerup(origin);
-			entity.setCurrentAnimation(new GameAnimation<>(AnimationType.IDLE, state.getTilesetManager().getPowerupsTileset().HEALTH_ANIMATION, state.getStateTime()));
+			entity.setCurrentAnimation(new GameAnimation<>(AnimationType.IDLE, ResourceManager.instance().getAnimation(PowerupsTileset.HEALTH, PowerupsTileset::health), state.getStateTime()));
 			entity.light = HEALTH_LIGHT;
 			return entity;
 		}

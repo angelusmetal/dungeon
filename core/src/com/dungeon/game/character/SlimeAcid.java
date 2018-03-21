@@ -9,8 +9,11 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.ProjectileTileset;
+import com.dungeon.game.tileset.SlimeAcidTileset;
 
 public class SlimeAcid extends Character {
 
@@ -27,16 +30,16 @@ public class SlimeAcid extends Character {
 
 		public Factory(GameState state) {
 			this.state = state;
-			provider.register(AnimationType.IDLE, state.getTilesetManager().getSlimeAcidTileset().IDLE_ANIMATION);
-			provider.register(AnimationType.WALK, state.getTilesetManager().getSlimeAcidTileset().IDLE_ANIMATION);
-			provider.register(AnimationType.ATTACK, state.getTilesetManager().getSlimeAcidTileset().ATTACK_ANIMATION);
-			provider.register(AnimationType.DIE, state.getTilesetManager().getSlimeAcidTileset().DIE_ANIMATION);
+			provider.register(AnimationType.IDLE, ResourceManager.instance().getAnimation(SlimeAcidTileset.IDLE, SlimeAcidTileset::idle));
+			provider.register(AnimationType.WALK, ResourceManager.instance().getAnimation(SlimeAcidTileset.IDLE, SlimeAcidTileset::idle));
+			provider.register(AnimationType.ATTACK, ResourceManager.instance().getAnimation(SlimeAcidTileset.ATTACK, SlimeAcidTileset::attack));
+			provider.register(AnimationType.DIE, ResourceManager.instance().getAnimation(SlimeAcidTileset.DIE, SlimeAcidTileset::die));
 
-			poolAnimationProvider.register(PoolAnimationType.FLOOD, state.getTilesetManager().getSlimeAcidTileset().POOL_FLOOD_ANIMATION);
-			poolAnimationProvider.register(PoolAnimationType.DRY, state.getTilesetManager().getSlimeAcidTileset().POOL_DRY_ANIMATION);
+			poolAnimationProvider.register(PoolAnimationType.FLOOD, ResourceManager.instance().getAnimation(SlimeAcidTileset.POOL_FLOOD, SlimeAcidTileset::poolFlood));
+			poolAnimationProvider.register(PoolAnimationType.DRY, ResourceManager.instance().getAnimation(SlimeAcidTileset.POOL_DRY, SlimeAcidTileset::poolDry));
 
-			splatAnimationProvider.register(SplatAnimationType.FLY, state.getTilesetManager().getSlimeAcidTileset().BLOB_ANIMATION);
-			splatAnimationProvider.register(SplatAnimationType.BLOW, state.getTilesetManager().getSlimeAcidTileset().SPLAT_ANIMATION);
+			splatAnimationProvider.register(SplatAnimationType.FLY, ResourceManager.instance().getAnimation(SlimeAcidTileset.BLOB, SlimeAcidTileset::blob));
+			splatAnimationProvider.register(SplatAnimationType.BLOW, ResourceManager.instance().getAnimation(SlimeAcidTileset.SPLAT, SlimeAcidTileset::splat));
 		}
 
 		@Override

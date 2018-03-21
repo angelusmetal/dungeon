@@ -1,9 +1,9 @@
 package com.dungeon.game.tileset;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.resource.ResourceManager;
 
 public class TorchTileset extends Tileset {
 
@@ -15,11 +15,16 @@ public class TorchTileset extends Tileset {
 	private final TextureRegion TORCH_6 = getTile(1, 1);
 	private final TextureRegion TORCH_7 = getTile(2, 1);
 	private final TextureRegion TORCH_8 = getTile(3, 1);
-	public final Animation<TextureRegion> TORCH_ANIMATION = new Animation<>(0.05f, TORCH_1, TORCH_2, TORCH_3, TORCH_4, TORCH_5, TORCH_6, TORCH_7, TORCH_8);
+	private final Animation<TextureRegion> TORCH_ANIMATION = loop(0.05f, TORCH_1, TORCH_2, TORCH_3, TORCH_4, TORCH_5, TORCH_6, TORCH_7, TORCH_8);
+
+	public static final String IDLE = "torch_idle";
 
 	TorchTileset() {
-		super(new Texture("torch.png"), 32);
-		TORCH_ANIMATION.setPlayMode(Animation.PlayMode.LOOP);
+		super(ResourceManager.instance().getTexture("torch.png"), 32);
+	}
+
+	public static Animation<TextureRegion> idle() {
+		return new TorchTileset().TORCH_ANIMATION;
 	}
 
 }
