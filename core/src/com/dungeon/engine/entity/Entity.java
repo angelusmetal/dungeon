@@ -227,33 +227,15 @@ abstract public class Entity implements Drawable, Movable {
 		TextureRegion characterFrame = getFrame(state.getStateTime());
 		float invertX = invertX() ? -1 : 1;
 		drawContext.set(batch);
-		batch.draw(characterFrame, (getPos().x - viewPort.xOffset - getDrawOffset().x * invertX) * viewPort.scale, (getPos().y - viewPort.yOffset - getDrawOffset().y) * viewPort.scale, characterFrame.getRegionWidth() * viewPort.scale * invertX, characterFrame.getRegionHeight() * viewPort.scale);
+		viewPort.draw(batch, characterFrame, getPos().x, getPos().y, invertX, getDrawOffset());
 		drawContext.unset(batch);
 	}
 
 	public void drawLight(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		if (light != null) {
 			float dim = light.dimmer.get();
-			float diameter = light.diameter * dim * viewPort.scale;
-			float radius = diameter / 2;
 			batch.setColor(light.color.r, light.color.g, light.color.b, light.color.a * dim);
-			batch.draw(
-					light.texture,
-					(getPos().x - viewPort.xOffset) * viewPort.scale - radius,
-					(getPos().y - viewPort.yOffset) * viewPort.scale - radius,
-					radius,
-					radius,
-					diameter,
-					diameter,
-					1,
-					1,
-					light.rotator.get(),
-					0,
-					0,
-					light.texture.getWidth(),
-					light.texture.getHeight(),
-					false,
-					false);
+			viewPort.draw(batch, light.texture, getPos().x, getPos().y, light.diameter * dim, light.rotator.get());
 			batch.setColor(1, 1, 1, 1);
 		}
 	}

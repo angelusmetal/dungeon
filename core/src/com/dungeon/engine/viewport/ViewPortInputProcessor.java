@@ -6,11 +6,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ViewPortInputProcessor implements GestureDetector.GestureListener, InputProcessor {
 
-	public static final float MIN_SCALE = 1;
-	public static final float MAX_SCALE = 6;
+	public static final float[] SCALES = {0.125f, 0.25f, 0.5f, 1f, 2f, 3f, 4f, 5f, 6f};
 
 	private final ViewPort viewPort;
 	private boolean zoomEnabled = true;
+	private int scaleIndex = 7;
 
 	public ViewPortInputProcessor(ViewPort viewPort) {
 		this.viewPort = viewPort;
@@ -113,11 +113,13 @@ public class ViewPortInputProcessor implements GestureDetector.GestureListener, 
 	public boolean scrolled(int amount) {
 		if (zoomEnabled) {
 			// Change scale based on mouse wheel
-			if (amount > 0 && viewPort.scale > MIN_SCALE) {
-				viewPort.scale -= amount;
+			if (amount < 0) {
+				scaleIndex = Math.min(scaleIndex - amount, SCALES.length - 1);
+				viewPort.scale = SCALES[scaleIndex];
 			}
-			else if (amount < 0 && viewPort.scale < MAX_SCALE) {
-				viewPort.scale -= amount;
+			else if (amount > 0) {
+				scaleIndex = Math.max(scaleIndex - amount, 0);
+				viewPort.scale = SCALES[scaleIndex];
 			}
 		}
 		return zoomEnabled;

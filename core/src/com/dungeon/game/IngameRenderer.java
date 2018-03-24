@@ -121,9 +121,9 @@ public class IngameRenderer {
 		int tWidth = state.getLevelTileset().tile_size;
 		int tHeight = state.getLevelTileset().tile_size;
 		int minX = Math.max(0, viewPort.xOffset / tWidth);
-		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.xOffset + viewPort.width) / tWidth) + 1;
+		int maxX = Math.min(state.getLevel().map.length - 1, (int)(viewPort.xOffset + viewPort.width / viewPort.scale) / tWidth) + 1;
 		int minY = Math.max(0, viewPort.yOffset / tHeight - 1);
-		int maxY = Math.min(state.getLevel().map[0].length - 1, (viewPort.yOffset + viewPort.height) / tHeight);
+		int maxY = Math.min(state.getLevel().map[0].length - 1, (int)(viewPort.yOffset + viewPort.height / viewPort.scale) / tHeight);
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
 				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);

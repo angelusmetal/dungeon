@@ -66,7 +66,7 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		entityFactory = new EntityFactory();
-		state = new GameState(viewPort, entityFactory);
+		state = new GameState(entityFactory);
 
 		Tombstone.Factory tombstoneFactory = new Tombstone.Factory(state);
 		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));

@@ -33,7 +33,6 @@ public class GameState {
 	private float frameTime;
 	private Level level;
 	private TilesetManager tilesetManager;
-	private ViewPort viewPort;
 	private State currentState = State.MENU;
 
 	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
@@ -44,9 +43,8 @@ public class GameState {
 
 	private int playerCount;
 
-	public GameState(ViewPort viewPort, EntityFactory entityFactory) {
+	public GameState(EntityFactory entityFactory) {
 		this.stateTime = 0;
-		this.viewPort = viewPort;
 		this.entityFactory = entityFactory;
 		this.tilesetManager = new TilesetManager();
 		this.tilesetHelper = new TilesetHelper(getLevelTileset());
@@ -76,10 +74,6 @@ public class GameState {
 
 	public TilesetManager getTilesetManager() {
 		return tilesetManager;
-	}
-
-	public ViewPort getViewPort() {
-		return viewPort;
 	}
 
 	public State getCurrentState() {
