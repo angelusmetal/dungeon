@@ -6,14 +6,12 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.TilesetHelper;
-import com.dungeon.game.character.Assasin;
-import com.dungeon.game.character.Thief;
-import com.dungeon.game.character.Witch;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.LevelTileset;
 import com.dungeon.game.tileset.TilesetManager;
 
@@ -39,10 +37,10 @@ public class GameState {
 	private State currentState = State.MENU;
 
 	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
-	private List<Entity<?>> entities = new LinkedList<>();
+	private List<Entity> entities = new LinkedList<>();
 
 	private List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
-	private List<Entity<?>> newEntities = new LinkedList<>();
+	private List<Entity> newEntities = new LinkedList<>();
 
 	private int playerCount;
 
@@ -60,6 +58,10 @@ public class GameState {
 
 	public float getFrameTime() {
 		return frameTime;
+	}
+
+	public EntityFactory getEntityFactory() {
+		return entityFactory;
 	}
 
 	public void updateStateTime(float frameTime) {
@@ -114,11 +116,11 @@ public class GameState {
 
 	private PlayerCharacter createCharacter(int characterId, Vector2 origin) {
 		if (characterId == 0) {
-			return new Witch.Factory(this).build(origin);
+			return (PlayerCharacter) entityFactory.build(EntityType.WITCH, origin);
 		} else if (characterId == 1) {
-			return new Thief.Factory(this).build(origin);
+			return (PlayerCharacter) entityFactory.build(EntityType.THIEF, origin);
 		} else {
-			return new Assasin.Factory(this).build(origin);
+			return (PlayerCharacter) entityFactory.build(EntityType.ASSASIN, origin);
 		}
 	}
 
@@ -134,7 +136,7 @@ public class GameState {
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH, MAP_HEIGHT);
 		level = generator.generateLevel(getLevelTileset());
 	}
-	public void addEntity(Entity<?> entity) {
+	public void addEntity(Entity entity) {
 		newEntities.add(entity);
 	}
 
@@ -143,7 +145,7 @@ public class GameState {
 		newEntities.add(character);
 	}
 
-	public List<Entity<?>> getEntities() {
+	public List<Entity> getEntities() {
 		return entities;
 	}
 

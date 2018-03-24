@@ -1,7 +1,9 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.AnimationProvider;
+import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
@@ -12,7 +14,7 @@ import java.util.function.Function;
 /**
  * Base class for all projectiles
  */
-public abstract class Projectile extends Entity<Projectile.AnimationType> implements Movable, Drawable {
+public abstract class Projectile extends Entity implements Movable, Drawable {
 
 	// TODO implement expiration action
 	static private final Vector2 VERTICAL_BOUNCE = new Vector2(1, -1);
@@ -20,14 +22,6 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 
 	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerCharacter) && entity.isSolid();
 
-	/**
-	 * Describes animation types for projectiles
-	 */
-	public enum AnimationType {
-		FLY_NORTH, FLY_SOUTH, FLY_SIDE, EXPLOSION
-	}
-
-	protected AnimationProvider<AnimationType> animationProvider;
 	/** Projectile acceleration (or deceleration) ratio */
 	protected final float acceleration;
 	/** Projectile bounciness; 0 means no bounce (explode), 1 means perfect elastic bounce, in-between is bounce with absorption) */
@@ -144,7 +138,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 
 	@Override
 	protected boolean detectEntityCollision(GameState state, Vector2 step) {
-		for (Entity<?> entity : state.getEntities()) {
+		for (Entity entity : state.getEntities()) {
 			if (entity != this && collides(entity)) {
 				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
 				if (!onEntityCollision(state, entity)) {
@@ -173,11 +167,14 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 	protected void explode(GameState state) {
 		// Set exploding status and animation (and TTL to expire right after explosion end)
 		exploding = true;
-		setCurrentAnimation(animationProvider.get(AnimationType.EXPLOSION, state.getStateTime()));
+		setCurrentAnimation(new GameAnimation(getExplodeAnimation(), state.getStateTime()));
 		// TODO should spawn an explosion object instead
 		startTime = state.getStateTime();
 		timeToLive = getCurrentAnimation().getDuration();
 	}
+
+	abstract protected Animation<TextureRegion> getAnimation(Vector2 direction);
+	abstract protected Animation<TextureRegion> getExplodeAnimation();
 
 	@Override
 	public void think(GameState state) {
@@ -187,6 +184,7 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 			// Find closest target within range
 			for (Entity entity : state.getEntities()) {
 				if (targetPredicate.apply(entity)) {
+					// TODO Optimize to use dst2?
 					Vector2 v = entity.getPos().cpy().sub(getPos());
 					float len = v.len2();
 					if (len < targetRadius && (seek == null || len < seek.len2())) {
@@ -207,21 +205,13 @@ public abstract class Projectile extends Entity<Projectile.AnimationType> implem
 		// Update animation
 		if (!exploding) {
 			// Updates current animation based on the direction vector
-			AnimationType animationType;
-			if (Math.abs(getSelfMovement().x) > Math.abs(getSelfMovement().y)) {
-				// Sideways animation; negative values invert X
-				animationType = AnimationType.FLY_SIDE;
-				setInvertX(getSelfMovement().x < 0);
-			} else {
-				// North / south animation
-				animationType = getSelfMovement().y < 0 ? AnimationType.FLY_SOUTH : AnimationType.FLY_NORTH;
-			}
-			setCurrentAnimation(animationProvider.get(animationType, state.getStateTime()));
+			setInvertX(getSelfMovement().x < 0);
+			setCurrentAnimation(new GameAnimation(getAnimation(getSelfMovement()), state.getStateTime()));
 		}
 	}
 
 	@Override
-	protected boolean onEntityCollision(GameState state, Entity<?> entity) {
+	protected boolean onEntityCollision(GameState state, Entity entity) {
 		if (!exploding && NO_FRIENDLY_FIRE.apply(entity) && entity.canBeHit(state)) {
 			explode(state);
 			entity.hit(state, damage);

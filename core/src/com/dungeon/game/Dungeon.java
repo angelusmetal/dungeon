@@ -15,16 +15,19 @@ import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
-import com.dungeon.game.character.Ghost;
-import com.dungeon.game.character.SlimeAcid;
+import com.dungeon.game.character.acidslime.AcidSlimeFactory;
+import com.dungeon.game.character.assassin.AssassinFactory;
+import com.dungeon.game.character.ghost.GhostFactory;
+import com.dungeon.game.character.thief.ThiefFactory;
+import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.HealthPowerup;
+import com.dungeon.game.object.Tombstone;
 import com.dungeon.game.object.Torch;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
@@ -65,12 +68,18 @@ public class Dungeon extends ApplicationAdapter {
 		entityFactory = new EntityFactory();
 		state = new GameState(viewPort, entityFactory);
 
-		entityFactory.registerFactory(EntityType.GHOST, new Ghost.Factory(state));
-		entityFactory.registerFactory(EntityType.SLIME_ACID, new SlimeAcid.Factory(state));
+		Tombstone.Factory tombstoneFactory = new Tombstone.Factory(state);
 		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));
+		entityFactory.registerFactory(EntityType.TOMBSTONE, tombstoneFactory);
+
+		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory(state));
+		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory(state));
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerup.Factory(state));
 
-		Light.initialize();
+		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory(state, tombstoneFactory));
+		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory(state, tombstoneFactory));
+		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory(state, tombstoneFactory));
+
 		ingameRenderer = new IngameRenderer(state, viewPort);
 		ingameRenderer.initialize();
 		characterSelection = new CharacterSelection(state);
@@ -112,22 +121,22 @@ public class Dungeon extends ApplicationAdapter {
 		state.updateStateTime(Gdx.graphics.getDeltaTime());
 		characterViewPortTracker.refresh(viewPort);
 
-		// Render corresponding state
-		if (state.getCurrentState() == GameState.State.MENU) {
-			characterSelection.render();
-		} else if (state.getCurrentState() == GameState.State.INGAME) {
-			ingameRenderer.render();
-		}
-
 		// Game loop
-		for (Iterator<Entity<?>> e = state.getEntities().iterator(); e.hasNext();) {
-			Entity<?> entity = e.next();
+		for (Iterator<Entity> e = state.getEntities().iterator(); e.hasNext();) {
+			Entity entity = e.next();
 			entity.think(state);
 			entity.move(state);
 			if (entity.isExpired(state.getStateTime())) {
 				e.remove();
 				state.getPlayerCharacters().remove(entity);
 			}
+		}
+
+		// Render corresponding state
+		if (state.getCurrentState() == GameState.State.MENU) {
+			characterSelection.render();
+		} else if (state.getCurrentState() == GameState.State.INGAME) {
+			ingameRenderer.render();
 		}
 
 		state.refresh();

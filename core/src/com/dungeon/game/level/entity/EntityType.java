@@ -11,5 +11,6 @@ public enum EntityType {
 	// Items
 	HEALTH_POWERUP,
 	// Props
+	TOMBSTONE,
 	TORCH,
 }

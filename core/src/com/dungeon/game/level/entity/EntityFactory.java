@@ -12,7 +12,7 @@ import java.util.EnumMap;
 public class EntityFactory {
 
 	public interface EntityTypeFactory {
-		Entity<?> build(Vector2 origin);
+		Entity build(Vector2 origin);
 	}
 
 	private final EnumMap<EntityType, EntityTypeFactory> factories = new EnumMap<>(EntityType.class);
@@ -21,7 +21,7 @@ public class EntityFactory {
 		factories.put(type, factory);
 	}
 
-	public Entity<?> build(EntityType type, Vector2 position) {
+	public Entity build(EntityType type, Vector2 position) {
 		return factories.get(type).build(position);
 	}
 }

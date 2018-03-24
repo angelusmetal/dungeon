@@ -1,6 +1,8 @@
 package com.dungeon.game.object;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
@@ -11,35 +13,31 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.PowerupsTileset;
-import com.dungeon.game.tileset.TombstoneTileset;
 
-public class HealthPowerup extends Entity<HealthPowerup.AnimationType> {
-
-	static private Light HEALTH_LIGHT = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
-
-	public enum AnimationType {
-		IDLE;
-	}
+public class HealthPowerup extends Entity {
 
 	public static class Factory implements EntityFactory.EntityTypeFactory {
 
-		private GameState state;
+		final GameState state;
+		final Animation<TextureRegion> animation;
+		final Light light;
 
 		public Factory(GameState state) {
 			this.state = state;
+			light = new Light(80, new Color(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+			animation = ResourceManager.instance().getAnimation(PowerupsTileset.HEALTH, PowerupsTileset::health);
 		}
 
 		@Override
-		public Entity<?> build(Vector2 origin) {
-			HealthPowerup entity = new HealthPowerup(origin);
-			entity.setCurrentAnimation(new GameAnimation<>(AnimationType.IDLE, ResourceManager.instance().getAnimation(PowerupsTileset.HEALTH, PowerupsTileset::health), state.getStateTime()));
-			entity.light = HEALTH_LIGHT;
-			return entity;
+		public HealthPowerup build(Vector2 origin) {
+			return new HealthPowerup(this, origin);
 		}
 	}
 
-	private HealthPowerup(Vector2 position) {
+	private HealthPowerup(Factory factory, Vector2 position) {
 		super(new Body(position, new Vector2(10, 10)));
+		setCurrentAnimation(new GameAnimation(factory.animation, factory.state.getStateTime()));
+		light = factory.light;
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public class HealthPowerup extends Entity<HealthPowerup.AnimationType> {
 	}
 
 	@Override
-	protected boolean onEntityCollision(GameState state, Entity<?> entity) {
+	protected boolean onEntityCollision(GameState state, Entity entity) {
 		if (entity instanceof PlayerCharacter) {
 			PlayerCharacter character = (PlayerCharacter) entity;
 			character.heal(25);

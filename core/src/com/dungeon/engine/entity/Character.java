@@ -1,21 +1,18 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.AnimationProvider;
+import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
-public abstract class Character extends Entity<Character.AnimationType> implements Movable, Drawable {
+public abstract class Character extends Entity implements Movable, Drawable {
 
-	public enum AnimationType {
-		IDLE, WALK, ATTACK, DIE;
-	}
-
-	protected AnimationProvider<AnimationType> animationProvider;
 	private Vector2 aim = new Vector2(1, 0);
 
 	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.5f); // Default is fire every 0.5 seconds
@@ -24,28 +21,28 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 		super(body);
 	}
 
-	public void setAnimationProvider(AnimationProvider<AnimationType> animationProvider) {
-		this.animationProvider = animationProvider;
-	}
-
 	@Override
 	public void think(GameState state) {
 		if (getSelfMovement().x != 0) {
 			setInvertX(getSelfMovement().x < 0);
 		}
 		if (getSelfMovement().x == 0 && getSelfMovement().y == 0) {
-			if (AnimationType.IDLE != getCurrentAnimation().getId()) {
-				setCurrentAnimation(animationProvider.get(AnimationType.IDLE, state.getStateTime()));
+			if (getIdleAnimation() != getCurrentAnimation().getAnimation()) {
+				setCurrentAnimation(new GameAnimation(getIdleAnimation(), state.getStateTime()));
 			}
 		} else {
-			if (AnimationType.WALK != getCurrentAnimation().getId()) {
-				setCurrentAnimation(animationProvider.get(AnimationType.WALK, state.getStateTime()));
+			if (getWalkAnimation() != getCurrentAnimation().getAnimation()) {
+				setCurrentAnimation(new GameAnimation(getWalkAnimation(), state.getStateTime()));
 			}
 		}
 		if (getSelfMovement().len() > 0.5) {
 			aim.set(getSelfMovement());
 		}
 	}
+
+	abstract protected Animation<TextureRegion> getAttackAnimation();
+	abstract protected Animation<TextureRegion> getIdleAnimation();
+	abstract protected Animation<TextureRegion> getWalkAnimation();
 
 	@Override
 	public boolean isExpired(float time) {
@@ -66,7 +63,7 @@ public abstract class Character extends Entity<Character.AnimationType> implemen
 					// Extra offset to make projectiles appear in the character's hands
 					//projectile.getPos().y -= 8;
 					state.addEntity(projectile);
-					setCurrentAnimation(animationProvider.get(AnimationType.ATTACK, state.getStateTime()));
+					setCurrentAnimation(new GameAnimation(getAttackAnimation(), state.getStateTime()));
 				}
 			});
 		}

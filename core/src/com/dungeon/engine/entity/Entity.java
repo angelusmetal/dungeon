@@ -12,9 +12,9 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
-abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
+abstract public class Entity implements Drawable, Movable {
 
-	private GameAnimation<A> currentAnimation;
+	private GameAnimation currentAnimation;
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
 	private final Body body;
@@ -37,11 +37,11 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		return currentAnimation.getKeyFrame(stateTime);
 	}
 
-	protected GameAnimation<A> getCurrentAnimation() {
+	protected GameAnimation getCurrentAnimation() {
 		return currentAnimation;
 	}
 
-	protected void setCurrentAnimation(GameAnimation<A> currentAnimation) {
+	protected void setCurrentAnimation(GameAnimation currentAnimation) {
 		this.currentAnimation = currentAnimation;
 	}
 
@@ -182,7 +182,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 
 	protected boolean detectEntityCollision(GameState state, Vector2 step) {
 		boolean pushedBack = false;
-		for (Entity<?> entity : state.getEntities()) {
+		for (Entity entity : state.getEntities()) {
 			if (entity != this && collides(entity)) {
 				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
 				if (!onEntityCollision(state, entity)) {
@@ -273,7 +273,7 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 		return isSolid();
 	}
 	/** Handle entity collision; true if handled; false otherwise */
-	protected boolean onEntityCollision(GameState state, Entity<?> entity) {return false;}
+	protected boolean onEntityCollision(GameState state, Entity entity) {return false;}
 	protected void onExpire(GameState state) {}
 	protected void onSelfMovementUpdate() {}
 	protected void onTileCollision(GameState state, boolean horizontal) {}
@@ -281,6 +281,10 @@ abstract public class Entity<A extends Enum<A>> implements Drawable, Movable {
 	public void think(GameState state) {}
 	public float getZIndex() {
 		return 0;
+	}
+
+	public static float distance2(float distance) {
+		return distance * distance;
 	}
 
 }
