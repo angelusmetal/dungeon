@@ -24,7 +24,7 @@ public class HealthPowerup extends Entity {
 
 		public Factory(GameState state) {
 			this.state = state;
-			light = new Light(80, new Color(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+			light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
 			animation = ResourceManager.instance().getAnimation(PowerupsTileset.HEALTH, PowerupsTileset::health);
 		}
 
