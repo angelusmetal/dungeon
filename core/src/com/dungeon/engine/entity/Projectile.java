@@ -91,7 +91,7 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 
 	@Override
 	protected boolean onEntityCollision(GameState state, Entity entity) {
-		if (!hasExpired && NO_FRIENDLY_FIRE.apply(entity) && entity.canBeHit(state)) {
+		if (!hasExpired && targetPredicate.apply(entity) && entity.canBeHit(state)) {
 			expire(state);
 			entity.hit(state, damage);
 			return true;

@@ -9,7 +9,6 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.GhostTileset;
 
 public class GhostFactory implements EntityFactory.EntityTypeFactory {
 
@@ -19,7 +18,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 
 	public GhostFactory(GameState state) {
 		this.state = state;
-		idleAnimation = ResourceManager.instance().getAnimation(GhostTileset.HOVER, GhostTileset::hover);
+		idleAnimation = ResourceManager.instance().getAnimation(GhostSheet.HOVER, GhostSheet::hover);
 		characterLight = new Light(200, new Color(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
 	}
 

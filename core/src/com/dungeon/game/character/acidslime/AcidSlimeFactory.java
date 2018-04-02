@@ -12,7 +12,6 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.SlimeAcidTileset;
 
 public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
@@ -37,15 +36,15 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	public AcidSlimeFactory(GameState state) {
 		this.state = state;
 		// Character animations
-		idleAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.IDLE, SlimeAcidTileset::idle);
-		attackAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.ATTACK, SlimeAcidTileset::attack);
-		dieAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.DIE, SlimeAcidTileset::die);
+		idleAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.IDLE, AcidSlimeSheet::idle);
+		attackAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.ATTACK, AcidSlimeSheet::attack);
+		dieAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.DIE, AcidSlimeSheet::die);
 		// Pool animations
-		poolFloodAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.POOL_FLOOD, SlimeAcidTileset::poolFlood);
-		poolDryAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.POOL_DRY, SlimeAcidTileset::poolDry);
+		poolFloodAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.POOL_FLOOD, AcidSlimeSheet::poolFlood);
+		poolDryAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.POOL_DRY, AcidSlimeSheet::poolDry);
 		// Blob animations
-		blobAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.BLOB, SlimeAcidTileset::blob);
-		splatAnimation = ResourceManager.instance().getAnimation(SlimeAcidTileset.SPLAT, SlimeAcidTileset::splat);
+		blobAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.BLOB, AcidSlimeSheet::blob);
+		splatAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.SPLAT, AcidSlimeSheet::splat);
 
 		characterLight = new Light(100, new Color(0, 1, 0, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
 		poolLight = new Light(100, new Color(0, 0.5f, 0, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);

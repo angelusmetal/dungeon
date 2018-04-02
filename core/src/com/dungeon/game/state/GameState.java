@@ -42,6 +42,7 @@ public class GameState {
 	private List<Entity> newEntities = new LinkedList<>();
 
 	private int playerCount;
+	private int levelCount;
 
 	public GameState(EntityFactory entityFactory) {
 		this.stateTime = 0;
@@ -86,6 +87,9 @@ public class GameState {
 	public int getPlayerCount() {
 		return playerCount;
 	}
+	public int getLevelCount() {
+		return levelCount;
+	}
 	public void startNewLevel(List<CharacterSelection.Slot> slots) {
 		generateNewLevel();
 
@@ -99,6 +103,7 @@ public class GameState {
 		}
 		// Update player count
 		playerCount = slots.size();
+		levelCount++;
 
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {

@@ -1,11 +1,11 @@
-package com.dungeon.game.tileset;
+package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tileset;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class SlimeAcidTileset extends Tileset {
+public class AcidSlimeSheet extends Tileset {
 
 	private final TextureRegion IDLE_1 = getTile(0, 0);
 	private final TextureRegion IDLE_2 = getTile(1, 0);
@@ -71,36 +71,36 @@ public class SlimeAcidTileset extends Tileset {
 	public static final String BLOB = "slime_acid_blob";
 	public static final String SPLAT = "slime_acid_splat";
 
-	public SlimeAcidTileset() {
+	public AcidSlimeSheet() {
 		super(ResourceManager.instance().getTexture("acid_slime.png"), 32);
 	}
 
 	public static Animation<TextureRegion> idle() {
-		return new SlimeAcidTileset().IDLE_ANIMATION;
+		return new AcidSlimeSheet().IDLE_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> attack() {
-		return new SlimeAcidTileset().ATTACK_ANIMATION;
+		return new AcidSlimeSheet().ATTACK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> die() {
-		return new SlimeAcidTileset().DIE_ANIMATION;
+		return new AcidSlimeSheet().DIE_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> poolFlood() {
-		return new SlimeAcidTileset().POOL_FLOOD_ANIMATION;
+		return new AcidSlimeSheet().POOL_FLOOD_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> poolDry() {
-		return new SlimeAcidTileset().POOL_DRY_ANIMATION;
+		return new AcidSlimeSheet().POOL_DRY_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> blob() {
-		return new SlimeAcidTileset().BLOB_ANIMATION;
+		return new AcidSlimeSheet().BLOB_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> splat() {
-		return new SlimeAcidTileset().SPLAT_ANIMATION;
+		return new AcidSlimeSheet().SPLAT_ANIMATION;
 	}
 
 }

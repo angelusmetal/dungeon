@@ -1,4 +1,4 @@
-package com.dungeon.game.object;
+package com.dungeon.game.object.powerups;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,7 +12,6 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.PowerupsTileset;
 
 public class HealthPowerup extends Entity {
 
@@ -25,7 +24,7 @@ public class HealthPowerup extends Entity {
 		public Factory(GameState state) {
 			this.state = state;
 			light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
-			animation = ResourceManager.instance().getAnimation(PowerupsTileset.HEALTH, PowerupsTileset::health);
+			animation = ResourceManager.instance().getAnimation(PowerupsSheet.HEALTH, PowerupsSheet::health);
 		}
 
 		@Override

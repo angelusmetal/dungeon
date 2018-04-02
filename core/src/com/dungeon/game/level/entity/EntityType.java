@@ -7,7 +7,9 @@ public enum EntityType {
 	ASSASIN,
 	// Creatures
 	GHOST,
+	SLIME,
 	SLIME_ACID,
+	SLIME_FIRE,
 	// Items
 	HEALTH_POWERUP,
 	// Props

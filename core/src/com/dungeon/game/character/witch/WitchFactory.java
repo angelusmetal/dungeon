@@ -10,7 +10,7 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.object.Tombstone;
+import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CatProjectileTileset;
 import com.dungeon.game.tileset.CharactersTileset32;
@@ -53,7 +53,7 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.autoseek(0.1f)
 				.targetRadius(60)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
-				.damage(50);
+				.damage(25);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);

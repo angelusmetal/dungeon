@@ -1,4 +1,4 @@
-package com.dungeon.game.character.acidslime;
+package com.dungeon.game.character.fireslime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,32 +7,32 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.state.GameState;
 
-public class AcidSlime extends Character {
+public class FireSlime extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
-	private static final float POOL_SEPARATION = distance2(15);
-	private static final float ATTACK_FREQUENCY = 3f;
-	private static final float ATTACK_SPEED = 75f;
+	private static final float ATTACK_FREQUENCY = 1.5f;
+	private static final float ATTACK_SPEED = 10f;
 
-	private final AcidSlimeFactory factory;
-	private final Vector2 lastPool = new Vector2(0,0);
+	private final FireSlimeFactory factory;
 	private float nextThink;
 	private enum Status {
 		IDLE, ATTACKING
 	}
 	private Status status;
 
-	AcidSlime(AcidSlimeFactory factory, Vector2 pos) {
+	FireSlime(FireSlimeFactory factory, Vector2 pos) {
 		super(new Body(pos, new Vector2(22, 12)));
 		this.factory = factory;
 
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
 		speed = 20f;
 		light = factory.characterLight;
-		maxHealth = 100 * factory.state.getPlayerCount();
+		maxHealth = 150 * factory.state.getPlayerCount();
 		health = maxHealth;
 
 		nextThink = 0f;
@@ -49,10 +49,13 @@ public class AcidSlime extends Character {
 			Vector2 target = reTarget(state);
 			if (target.len2() > 0) {
 				nextThink = state.getStateTime() + ATTACK_FREQUENCY;
-				// Aim towards target
+				// Move towards target
 				speed = ATTACK_SPEED;
 				setSelfMovement(target);
-				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
+				// Fire a projectile
+				Projectile projectile = new FireSlimeBullet(factory, getPos(), state.getStateTime());
+				projectile.setSelfMovement(target);
+				state.addEntity(projectile);
 				this.status = Status.ATTACKING;
 			} else {
 				nextThink = state.getStateTime() + (float) Math.random() * 3f;
@@ -70,10 +73,10 @@ public class AcidSlime extends Character {
 			}
 		} else {
 			speed *= 1 - 0.5 * state.getFrameTime();
-			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
-				lastPool.set(getPos());
-				state.addEntity(new AcidPool(factory, state, getPos()));
-			}
+//			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
+//				lastPool.set(getPos());
+//				state.addEntity(new AcidPool(factory, state, getPos()));
+//			}
 		}
 	}
 
@@ -92,13 +95,12 @@ public class AcidSlime extends Character {
 
 	@Override
 	protected void onExpire(GameState state) {
-		// Create a death splatter and a pool
-		state.addEntity(new DieSplatter(factory, state, getPos()));
-		state.addEntity(new AcidPool(factory, state, getPos()));
-		// Create 5-10 blobs
-		int splats = (int) (5 + Math.random() * 5);
-		for (int i = 0; i < splats; ++i) {
-			state.addEntity(new AcidBlob(factory, state, getPos()));
+		int bullets = 2 + state.getPlayerCount() * 2;
+		for (int i = 0; i < bullets; ++i) {
+			FireSlimeBullet bullet = new FireSlimeBullet(factory, getPos(), state.getStateTime());
+			bullet.setSelfYMovement(1);
+			bullet.getSelfMovement().rotate(360 / bullets * i);
+			state.addEntity(bullet);
 		}
 	}
 

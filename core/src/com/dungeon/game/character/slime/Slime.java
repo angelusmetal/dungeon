@@ -1,4 +1,4 @@
-package com.dungeon.game.character.acidslime;
+package com.dungeon.game.character.slime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,14 +10,12 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.game.state.GameState;
 
-public class AcidSlime extends Character {
+public class Slime extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float POOL_SEPARATION = distance2(15);
-	private static final float ATTACK_FREQUENCY = 3f;
-	private static final float ATTACK_SPEED = 75f;
 
-	private final AcidSlimeFactory factory;
+	private final SlimeFactory factory;
 	private final Vector2 lastPool = new Vector2(0,0);
 	private float nextThink;
 	private enum Status {
@@ -25,7 +23,7 @@ public class AcidSlime extends Character {
 	}
 	private Status status;
 
-	AcidSlime(AcidSlimeFactory factory, Vector2 pos) {
+	Slime(SlimeFactory factory, Vector2 pos) {
 		super(new Body(pos, new Vector2(22, 12)));
 		this.factory = factory;
 
@@ -48,9 +46,10 @@ public class AcidSlime extends Character {
 		if (state.getStateTime() > nextThink) {
 			Vector2 target = reTarget(state);
 			if (target.len2() > 0) {
-				nextThink = state.getStateTime() + ATTACK_FREQUENCY;
+				// Attack lasts 2 seconds
+				nextThink = state.getStateTime() + 3f;
 				// Aim towards target
-				speed = ATTACK_SPEED;
+				speed = 75f;
 				setSelfMovement(target);
 				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
 				this.status = Status.ATTACKING;
@@ -70,10 +69,10 @@ public class AcidSlime extends Character {
 			}
 		} else {
 			speed *= 1 - 0.5 * state.getFrameTime();
-			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
-				lastPool.set(getPos());
-				state.addEntity(new AcidPool(factory, state, getPos()));
-			}
+//			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
+//				lastPool.set(getPos());
+//				state.addEntity(new AcidPool(factory, state, getPos()));
+//			}
 		}
 	}
 
@@ -90,17 +89,17 @@ public class AcidSlime extends Character {
 		return closestPlayer;
 	}
 
-	@Override
-	protected void onExpire(GameState state) {
-		// Create a death splatter and a pool
-		state.addEntity(new DieSplatter(factory, state, getPos()));
-		state.addEntity(new AcidPool(factory, state, getPos()));
-		// Create 5-10 blobs
-		int splats = (int) (5 + Math.random() * 5);
-		for (int i = 0; i < splats; ++i) {
-			state.addEntity(new AcidBlob(factory, state, getPos()));
-		}
-	}
+//	@Override
+//	protected void onExpire(GameState state) {
+//		// Create a death splatter and a pool
+//		state.addEntity(new DieSplatter(factory, state, getPos()));
+//		state.addEntity(new AcidPool(factory, state, getPos()));
+//		// Create 5-10 blobs
+//		int splats = (int) (5 + Math.random() * 5);
+//		for (int i = 0; i < splats; ++i) {
+//			state.addEntity(new AcidBlob(factory, state, getPos()));
+//		}
+//	}
 
 	@Override
 	protected boolean onEntityCollision(GameState state, Entity entity) {

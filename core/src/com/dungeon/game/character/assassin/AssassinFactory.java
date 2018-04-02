@@ -9,7 +9,7 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.object.Tombstone;
+import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CharactersTileset32;
 import com.dungeon.game.tileset.ProjectileTileset;
@@ -43,9 +43,9 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 
 		bulletLight = new Light(60, new Color(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		bullet = new Projectile.Builder()
-				.speed(80)
+				.speed(180)
 				.timeToLive(10)
-				.damage(100);
+				.damage(35);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 

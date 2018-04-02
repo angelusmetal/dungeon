@@ -9,7 +9,7 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.object.Tombstone;
+import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CharactersTileset32;
 import com.dungeon.game.tileset.ProjectileTileset;
@@ -45,7 +45,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.speed(400)
 				.timeToLive(10)
 				.bounciness(10)
-				.damage(30);
+				.damage(15);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);

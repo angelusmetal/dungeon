@@ -1,11 +1,11 @@
-package com.dungeon.game.tileset;
+package com.dungeon.game.object.tombstone;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tileset;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class TombstoneTileset extends Tileset {
+public class TombstoneSheet extends Tileset {
 
 	private final TextureRegion TOMBSTONE_1 = getTile(0, 0);
 	private final TextureRegion TOMBSTONE_2 = getTile(1, 0);
@@ -23,12 +23,12 @@ public class TombstoneTileset extends Tileset {
 
 	public static final String SPAWN = "tombstone_spawn";
 
-	TombstoneTileset() {
+	TombstoneSheet() {
 		super(ResourceManager.instance().getTexture("tombstone.png"), 32);
 	}
 
 	public static Animation<TextureRegion> spawn() {
-		return new TombstoneTileset().TOMBSTONE_SPAWN_ANIMATION;
+		return new TombstoneSheet().TOMBSTONE_SPAWN_ANIMATION;
 	}
 
 }

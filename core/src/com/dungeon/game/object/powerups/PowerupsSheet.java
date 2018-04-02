@@ -1,11 +1,11 @@
-package com.dungeon.game.tileset;
+package com.dungeon.game.object.powerups;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tileset;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class PowerupsTileset extends Tileset {
+public class PowerupsSheet extends Tileset {
 
 	private final TextureRegion HEALTH_1 = getTile(0, 0);
 	private final TextureRegion DAMAGE_1 = getTile(1, 0);
@@ -15,16 +15,16 @@ public class PowerupsTileset extends Tileset {
 	public static final String HEALTH = "powerup_health";
 	public static final String DAMAGE = "powerup_damage";
 
-	PowerupsTileset() {
+	PowerupsSheet() {
 		super(ResourceManager.instance().getTexture("powerups.png"), 20);
 	}
 
 	public static Animation<TextureRegion> health() {
-		return new PowerupsTileset().HEALTH_ANIMATION;
+		return new PowerupsSheet().HEALTH_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> damage() {
-		return new PowerupsTileset().DAMAGE_ANIMATION;
+		return new PowerupsSheet().DAMAGE_ANIMATION;
 	}
 
 }

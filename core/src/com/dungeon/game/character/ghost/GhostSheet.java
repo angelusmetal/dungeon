@@ -1,11 +1,11 @@
-package com.dungeon.game.tileset;
+package com.dungeon.game.character.ghost;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.Tileset;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class GhostTileset extends Tileset {
+public class GhostSheet extends Tileset {
 
 	private final TextureRegion HOVER_1 = getTile(0, 0);
 	private final TextureRegion HOVER_2 = getTile(1, 0);
@@ -20,12 +20,12 @@ public class GhostTileset extends Tileset {
 
 	public static final String HOVER = "ghost_hover";
 
-	public GhostTileset() {
+	public GhostSheet() {
 		super(ResourceManager.instance().getTexture("ghost_animation.png"), 32);
 	}
 
 	public static Animation<TextureRegion> hover() {
-		return new GhostTileset().HOVER_ANIMATION;
+		return new GhostSheet().HOVER_ANIMATION;
 	}
 
 }

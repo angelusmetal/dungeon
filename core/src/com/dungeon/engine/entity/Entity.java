@@ -241,7 +241,7 @@ abstract public class Entity implements Drawable, Movable {
 		if (light != null) {
 			float dim = light.dimmer.get();
 			batch.setColor(light.color.r, light.color.g, light.color.b, light.color.a * dim);
-			viewPort.draw(batch, light.texture, getPos().x, getPos().y, light.diameter * dim, light.rotator.get());
+			viewPort.draw(batch, light.texture, getPos().x, getPos().y + z, light.diameter * dim, light.rotator.get());
 			batch.setColor(1, 1, 1, 1);
 		}
 	}

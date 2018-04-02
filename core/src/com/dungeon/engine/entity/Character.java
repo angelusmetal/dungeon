@@ -15,7 +15,7 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	private Vector2 aim = new Vector2(1, 0);
 
-	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.5f); // Default is fire every 0.5 seconds
+	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.25f); // Default is fire every 0.25 seconds
 
 	public Character(Body body) {
 		super(body);

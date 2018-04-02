@@ -1,4 +1,4 @@
-package com.dungeon.game.object;
+package com.dungeon.game.object.powerups;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
@@ -9,7 +9,7 @@ public class DamagePowerup extends Entity {
 
 	public DamagePowerup(GameState state, Vector2 position) {
 		super(new Body(position, new Vector2(10, 10)));
-//		setCurrentAnimation(new GameAnimation(AnimationType.IDLE, ResourceManager.instance().getAnimation(PowerupsTileset.DAMAGE, PowerupsTileset::damage), state.getStateTime()));
+//		setCurrentAnimation(new GameAnimation(AnimationType.IDLE, ResourceManager.instance().getAnimation(PowerupsSheet.DAMAGE, PowerupsSheet::damage), state.getStateTime()));
 	}
 
 	@Override

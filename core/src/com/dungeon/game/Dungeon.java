@@ -21,14 +21,16 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
 import com.dungeon.game.character.acidslime.AcidSlimeFactory;
 import com.dungeon.game.character.assassin.AssassinFactory;
+import com.dungeon.game.character.fireslime.FireSlimeFactory;
 import com.dungeon.game.character.ghost.GhostFactory;
+import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.character.thief.ThiefFactory;
 import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.object.HealthPowerup;
-import com.dungeon.game.object.Tombstone;
-import com.dungeon.game.object.Torch;
+import com.dungeon.game.object.powerups.HealthPowerup;
+import com.dungeon.game.object.tombstone.Tombstone;
+import com.dungeon.game.object.torch.Torch;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.GameState;
@@ -73,7 +75,10 @@ public class Dungeon extends ApplicationAdapter {
 		entityFactory.registerFactory(EntityType.TOMBSTONE, tombstoneFactory);
 
 		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory(state));
+		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory(state));
 		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory(state));
+		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory(state));
+
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerup.Factory(state));
 
 		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory(state, tombstoneFactory));

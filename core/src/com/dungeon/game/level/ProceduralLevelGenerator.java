@@ -129,7 +129,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
-		List<EntityType> monsterTypes = Arrays.asList(EntityType.GHOST, EntityType.SLIME_ACID);
+		List<EntityType> monsterTypes = Arrays.asList(EntityType.GHOST, EntityType.SLIME, EntityType.SLIME_ACID, EntityType.SLIME_FIRE);
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
