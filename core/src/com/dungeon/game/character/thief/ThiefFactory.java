@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Particle;
+import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
@@ -45,6 +46,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.speed(400)
 				.timeToLive(10)
 				.bounciness(10)
+				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
 				.damage(15);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());

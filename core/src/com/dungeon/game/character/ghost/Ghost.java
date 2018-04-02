@@ -15,6 +15,7 @@ import com.dungeon.game.state.GameState;
 public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
+	private static final float INVULNERABILITY_TIME = 0.5f;
 	private final GhostFactory factory;
 	private final Color color;
 	private float invulnerableUntil = 0;
@@ -76,7 +77,7 @@ public class Ghost extends Character {
 	public void hit(GameState state, float dmg) {
 		if (canBeHit(state)) {
 			super.hit(state, dmg);
-			invulnerableUntil = state.getStateTime() + 1f; // invulnerable for the next 1 seconds
+			invulnerableUntil = state.getStateTime() + INVULNERABILITY_TIME;
 		}
 	}
 
