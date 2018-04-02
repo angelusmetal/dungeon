@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
@@ -25,7 +26,8 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 	final Animation<TextureRegion> bulletFlyAnimation;
 	final Animation<TextureRegion> bulletExplodeAnimation;
 
-	final Projectile.Builder bulletPrototype;
+	final Projectile.Builder bullet;
+	final Particle.Builder bulletExplosion;
 	final Light bulletLight;
 
 	final Function<Vector2, Tombstone> tombstoneSpawner;
@@ -40,7 +42,12 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_EXPLODE, ProjectileTileset::assasinExplode);
 
 		bulletLight = new Light(60, new Color(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
-		bulletPrototype = new Projectile.Builder().speed(80).timeToLive(10).damage(100);
+		bullet = new Projectile.Builder()
+				.speed(80)
+				.timeToLive(10)
+				.damage(100);
+		bulletExplosion = new Particle.Builder()
+				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 
 		tombstoneSpawner = tombstoneFactory::build;
 	}

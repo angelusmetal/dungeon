@@ -18,6 +18,8 @@ abstract public class Entity implements Drawable, Movable {
 	private final Vector2 selfMovement = new Vector2();
 	private final Vector2 movement = new Vector2();
 	private final Body body;
+	/** Vertical coordinate */
+	protected float z;
 	protected float speed = 3;
 	private boolean invertX = false;
 
@@ -57,6 +59,10 @@ abstract public class Entity implements Drawable, Movable {
 	@Override
 	public Vector2 getPos() {
 		return body.getOrigin();
+	}
+
+	public float getZPos() {
+		return z;
 	}
 
 	protected Vector2 getMovement() {
@@ -189,7 +195,7 @@ abstract public class Entity implements Drawable, Movable {
 					entity.onEntityCollision(state, this);
 				}
 				// If collides with a solid entity, push back
-				if (!pushedBack && entity.isSolid()) {
+				if (isSolid() && !pushedBack && entity.isSolid()) {
 					body.move(step.scl(-1));
 					pushedBack = true;
 				}
@@ -227,7 +233,7 @@ abstract public class Entity implements Drawable, Movable {
 		TextureRegion characterFrame = getFrame(state.getStateTime());
 		float invertX = invertX() ? -1 : 1;
 		drawContext.set(batch);
-		viewPort.draw(batch, characterFrame, getPos().x, getPos().y, invertX, getDrawOffset());
+		viewPort.draw(batch, characterFrame, getPos().x, getPos().y + z, invertX, getDrawOffset());
 		drawContext.unset(batch);
 	}
 

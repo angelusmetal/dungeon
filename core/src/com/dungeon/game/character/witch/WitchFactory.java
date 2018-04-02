@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
@@ -29,7 +30,8 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 	final Animation<TextureRegion> bulletFlySouthAnimation;
 	final Animation<TextureRegion> bulletExplodeAnimation;
 
-	final Projectile.Builder bulletPrototype;
+	final Projectile.Builder bullet;
+	final Particle.Builder bulletExplosion;
 	final Light bulletLight;
 
 	final Function<Vector2, Tombstone> tombstoneSpawner;
@@ -45,7 +47,15 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		bulletFlySouthAnimation = ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_DOWN, CatProjectileTileset::flyDown);
 		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.WITCH_EXPLODE, ProjectileTileset::witchExplode);
 
-		bulletPrototype = new Projectile.Builder().speed(200).timeToLive(10).autoseek(0.1f).targetRadius(60).targetPredicate(PlayerCharacter.IS_NON_PLAYER).damage(50);
+		bullet = new Projectile.Builder()
+				.speed(200)
+				.timeToLive(10)
+				.autoseek(0.1f)
+				.targetRadius(60)
+				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
+				.damage(50);
+		bulletExplosion = new Particle.Builder()
+				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 
 		tombstoneSpawner = tombstoneFactory::build;

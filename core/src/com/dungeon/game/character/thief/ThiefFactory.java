@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
@@ -25,7 +26,8 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 	final Animation<TextureRegion> bulletFlyAnimation;
 	final Animation<TextureRegion> bulletExplodeAnimation;
 
-	final Projectile.Builder bulletPrototype;
+	final Projectile.Builder bullet;
+	final Particle.Builder bulletExplosion;
 	final Light bulletLight;
 
 	final Function<Vector2, Tombstone> tombstoneSpawner;
@@ -39,7 +41,13 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.THIEF_FLY, ProjectileTileset::thiefFly);
 		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.THIEF_EXPLODE, ProjectileTileset::thiefExplode);
 
-		bulletPrototype = new Projectile.Builder().speed(400).timeToLive(10).bounciness(10).damage(30);
+		bullet = new Projectile.Builder()
+				.speed(400)
+				.timeToLive(10)
+				.bounciness(10)
+				.damage(30);
+		bulletExplosion = new Particle.Builder()
+				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		tombstoneSpawner = tombstoneFactory::build;

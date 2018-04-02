@@ -1,7 +1,5 @@
 package com.dungeon.engine.entity;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
@@ -14,44 +12,14 @@ import java.util.function.Function;
 /**
  * Base class for all projectiles
  */
-public abstract class Projectile extends Entity implements Movable, Drawable {
-
-	// TODO implement expiration action
-	static private final Vector2 VERTICAL_BOUNCE = new Vector2(1, -1);
-	static private final Vector2 HORIZONTAL_BOUNCE = new Vector2(-1, 1);
+public abstract class Projectile extends Particle implements Movable, Drawable {
 
 	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerCharacter) && entity.isSolid();
 
-	/** Projectile acceleration (or deceleration) ratio */
-	protected final float acceleration;
-	/** Projectile bounciness; 0 means no bounce (explode), 1 means perfect elastic bounce, in-between is bounce with absorption) */
-	protected int bounciness;
-	/** Autoseek ratio; 0 means no autoseek; 1 means projectile will do a hard turn towards target when within range; in-between will turn slightly */
-	protected final float autoseek;
-	/** Radius, in units, for detecting targets */
-	protected final float targetRadius;
-	/** Determines whether an entity is a target */
-	protected final Function<Entity, Boolean> targetPredicate;
-	/** Time upon which this projectile was spawned */
-	protected float startTime; // TODO make final
-	/** Time to live (in seconds) until projectile expiration */
-	protected float timeToLive; // TODO make final
-	/** Action to run when the projectile's timeToLive has expired (not when it impacted) */
-	protected final Runnable onExpire;
 	/** Damage to inflict upon hitting a target */
 	protected final int damage;
-	/** Whether this projectile is already exploding; a lot of stuff needs to be ignored if so */
-	protected boolean exploding = false;
 
-	public static class Builder {
-		private float speed = 1;
-		private float acceleration = 1;
-		private int bounciness = 0;
-		private float autoseek = 0;
-		private float targetRadius = 0;
-		private Function<Entity, Boolean> targetPredicate = (entity) -> false;
-		private float timeToLive;
-		private Runnable onExpire;
+	public static class Builder extends Particle.Builder {
 		private int damage;
 
 		public Builder speed(float speed) {
@@ -89,8 +57,13 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 			return this;
 		}
 
-		public Builder onExpire(Runnable onExpire) {
-			this.onExpire = onExpire;
+		public Builder zSpeed(float zSpeed) {
+			this.zSpeed = zSpeed;
+			return this;
+		}
+
+		public Builder zAcceleration(float zAcceleration) {
+			this.zAcceleration = zAcceleration;
 			return this;
 		}
 
@@ -101,119 +74,25 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 	}
 
 	public Projectile(Body body, float startTime, Builder builder) {
-		super(body);
-		this.startTime = startTime;
-		this.speed = builder.speed;
-		this.acceleration = builder.acceleration;
-		this.bounciness = builder.bounciness;
-		this.autoseek = builder.autoseek;
-		this.targetRadius = builder.targetRadius * builder.targetRadius; // square is actually stored for speed
-		this.targetPredicate = builder.targetPredicate;
-		this.timeToLive = builder.timeToLive;
-		this.onExpire = builder.onExpire;
+		super(body, startTime, builder);
 		this.damage = builder.damage;
-	}
-
-	public float getSpeed() {
-		return speed;
-	}
-
-	@Override
-	public boolean isExpired(float time) {
-		return (startTime + timeToLive) < time;
-	}
-
-	@Override
-	public boolean isSolid() {
-		return false;
-	}
-
-	@Override
-	public void move(GameState state) {
-		// Only if not already exploding
-		if (!exploding) {
-			super.move(state);
-		}
-	}
-
-	@Override
-	protected boolean detectEntityCollision(GameState state, Vector2 step) {
-		for (Entity entity : state.getEntities()) {
-			if (entity != this && collides(entity)) {
-				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
-				if (!onEntityCollision(state, entity)) {
-					entity.onEntityCollision(state, this);
-				}
-			}
-		}
-		return false; // Projectiles are never pushed back
-	}
-
-	@Override
-	protected void onTileCollision(GameState state, boolean horizontal) {
-		if (!exploding) {
-			if (bounciness > 0) {
-				bounciness--;
-				setSelfMovement(getSelfMovement().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE));
-			} else {
-				explode(state);
-			}
-		}
 	}
 
 	/**
 	 * Triggers the projectile explosion
 	 */
-	protected void explode(GameState state) {
-		// Set exploding status and animation (and TTL to expire right after explosion end)
-		exploding = true;
-		setCurrentAnimation(new GameAnimation(getExplodeAnimation(), state.getStateTime()));
-		// TODO should spawn an explosion object instead
-		startTime = state.getStateTime();
-		timeToLive = getCurrentAnimation().getDuration();
-	}
-
-	abstract protected Animation<TextureRegion> getAnimation(Vector2 direction);
-	abstract protected Animation<TextureRegion> getExplodeAnimation();
-
 	@Override
-	public void think(GameState state) {
-		speed *= acceleration;
-		if (autoseek > 0) {
-			Vector2 seek = null;
-			// Find closest target within range
-			for (Entity entity : state.getEntities()) {
-				if (targetPredicate.apply(entity)) {
-					// TODO Optimize to use dst2?
-					Vector2 v = entity.getPos().cpy().sub(getPos());
-					float len = v.len2();
-					if (len < targetRadius && (seek == null || len < seek.len2())) {
-						seek = v;
-					}
-				}
-			}
-			// If a target has been found, autoseek
-			if (seek != null) {
-				float seekClamp = autoseek * speed;
-				float speedClamp = speed - seekClamp;
-				seek.clamp(seekClamp, seekClamp);
-				setSelfMovement(getSelfMovement().setLength(speedClamp).add(seek));
-			}
-		} else {
-			setSelfMovement(getSelfMovement().setLength(speed));
-		}
-		// Update animation
-		if (!exploding) {
-			// Updates current animation based on the direction vector
-			setInvertX(getSelfMovement().x < 0);
-			setCurrentAnimation(new GameAnimation(getAnimation(getSelfMovement()), state.getStateTime()));
-		}
+	public void expire(GameState state) {
+		super.expire(state);
+		state.addEntity(createExplosion(state, getPos()));
 	}
+
+	abstract protected Particle createExplosion(GameState state, Vector2 origin);
 
 	@Override
 	protected boolean onEntityCollision(GameState state, Entity entity) {
-		if (!exploding && NO_FRIENDLY_FIRE.apply(entity) && entity.canBeHit(state)) {
-			explode(state);
+		if (!hasExpired && NO_FRIENDLY_FIRE.apply(entity) && entity.canBeHit(state)) {
+			expire(state);
 			entity.hit(state, damage);
 			return true;
 		} else {
