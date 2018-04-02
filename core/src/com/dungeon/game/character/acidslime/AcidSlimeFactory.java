@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Light;
@@ -24,6 +25,9 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	final Animation<TextureRegion> poolDryAnimation;
 	final Animation<TextureRegion> blobAnimation;
 	final Animation<TextureRegion> splatAnimation;
+
+	final Particle.Builder blob;
+	final Particle.Builder splat;
 
 	final Light characterLight;
 	final Light poolLight;
@@ -45,6 +49,13 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 		characterLight = new Light(100, new Color(0, 1, 0, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
 		poolLight = new Light(100, new Color(0, 0.5f, 0, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+
+		blob = new Particle.Builder()
+				.speed(50)
+				.zAcceleration(-120)
+				.timeToLive(10);
+		splat = new Particle.Builder()
+				.timeToLive(splatAnimation.getAnimationDuration());
 
 		// Draw context
 		drawContext = new ColorContext(new Color(1, 1, 1, 0.5f));

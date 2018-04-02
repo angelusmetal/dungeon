@@ -155,8 +155,7 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 	@Override
 	public void think(GameState state) {
-		// TODO Acceleration & zAcceleration should take frametime into account
-		speed *= acceleration;
+		speed += acceleration * state.getFrameTime();
 
 		// Apply autoseek
 		if (autoseek > 0) {
@@ -167,11 +166,13 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 		// Apply vertical acceleration & bounciness
 		if (!hasExpired) {
-			zSpeed *= zAcceleration;
+			zSpeed += zAcceleration * state.getFrameTime();
 			z += zSpeed * state.getFrameTime();
 			if (z < 0) {
 				if (bounciness > 0) {
 					bounciness--;
+					z = 0;
+					zSpeed *= -0.5;
 				} else {
 					expire(state);
 				}
