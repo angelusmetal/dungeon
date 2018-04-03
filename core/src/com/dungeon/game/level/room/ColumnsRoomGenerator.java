@@ -31,8 +31,8 @@ public class ColumnsRoomGenerator implements RoomGenerator {
 	}
 
 	@Override
-	public Room generate(int left, int bottom, int width, int height) {
-		Room room = new Room(left, bottom, width, height);
+	public Room generate(int left, int bottom, int width, int height, int generation) {
+		Room room = new Room(left, bottom, width, height, generation);
 
 		// Create a rectangle
 		for (int x = 0; x < width; ++x) {

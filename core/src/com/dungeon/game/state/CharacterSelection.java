@@ -74,7 +74,7 @@ public class CharacterSelection {
 
 	public void confirmSelection(PlayerControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
-		state.startNewLevel(slots);
+		state.startNewGame(slots);
 	}
 
 	private Optional<Slot> getSlot(PlayerControlBundle control) {

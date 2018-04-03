@@ -105,13 +105,11 @@ public class ProceduralLevelGenerator {
 		} else {
 			direction = closestEdgeY == startY ? Direction.UP : Direction.DOWN;
 		}
-		// Generate the root (heart) room, and the rest from there
-		generateRoom(startX, startY, direction, Type.HEART);
 
-		// Make the last generated room the exit room
-		Room lastRoom = rooms.get(rooms.size() - 1);
-		Vector2 exitPosition = lastRoom.spawnPoints.get(random.nextInt(lastRoom.spawnPoints.size()));
-		tiles[(int)exitPosition.x][(int)exitPosition.y] = TileType.EXIT;
+		// Generate rooms
+		while (rooms.isEmpty()) {
+			generateRooms(startX, startY, direction, Type.HEART);
+		}
 
 		Tile[][] map = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
@@ -125,6 +123,7 @@ public class ProceduralLevelGenerator {
 		level.rooms = rooms;
 		level.walkableTiles = tiles;
 		level.entityPlaceholders = generateEntities();
+
 		return level;
 	}
 
@@ -148,6 +147,19 @@ public class ProceduralLevelGenerator {
 		for (Room room : rooms) {
 			placeholders.addAll(room.placeholders);
 		}
+
+		// Pick one of the furthest-placed rooms and place the exit there
+//		int farthest = rooms.stream().map(r -> r.generation).max(Integer::compareTo).orElseThrow(() -> new RuntimeException("Could not find farthest room"));
+		Room exitRoom = null;
+		for (Room room : rooms) {
+			if (exitRoom == null || room.generation > exitRoom.generation) {
+				exitRoom = room;
+			}
+		}
+//		Room exitRoom = rooms.stream().filter(r -> r.generation == farthest).findFirst().orElseThrow(() -> new RuntimeException("Could not find farthest room"));
+		Vector2 exitPosition = exitRoom.spawnPoints.get(random.nextInt(exitRoom.spawnPoints.size()));
+		placeholders.add(new EntityPlaceholder(EntityType.EXIT, exitPosition));
+
 		return placeholders;
 	}
 
@@ -217,33 +229,33 @@ public class ProceduralLevelGenerator {
 		final Type type;
 		final ConnectionPoint originPoint;
 		final int roomSeparation;
-		public Frame(int x, int y, Direction direction, Type type, ConnectionPoint originPoint, int roomSeparation) {
+		final int generation;
+		public Frame(int x, int y, Direction direction, Type type, ConnectionPoint originPoint, int roomSeparation, int generation) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
 			this.type = type;
 			this.originPoint = originPoint;
 			this.roomSeparation = roomSeparation;
-
+			this.generation = generation;
 		}
 	}
 
-	private void generateRoom(int x, int y, Direction direction, Type type) {
+	private void generateRooms(int x, int y, Direction direction, Type type) {
 		Stack<Frame> stack = new Stack<>();
-		stack.push(new Frame(x, y, direction, type, null, 0));
+		stack.push(new Frame(x, y, direction, type, null, 0, 1));
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();
 			System.out.println("Generating " + frame.type + " room...");
 			// Check the available size, depending on the direction
-			Room room = attemptRoom(frame.x, frame.y, frame.direction);
+			Room room = attemptRoom(frame.x, frame.y, frame.generation, frame.direction);
 			if (room != null) {
-//				System.out.println("   -> x: " + frame.x + ", y: " + frame.y + ", width: " + roomWidth + ", height: " + roomHeight);
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					System.out.println("   -> Visiting connection point " + point + "...");
 					// Attempt to generate a room in that direction (at a random separation)
 					int roomSeparation = (int) (Math.random() * (maxRoomSeparation - minRoomSize) + minRoomSeparation);
-					stack.push(new Frame(point.coords.x + point.direction.x * roomSeparation, point.coords.y + point.direction.y * roomSeparation, point.direction, Type.NORMAL, point, roomSeparation));
+					stack.push(new Frame(point.coords.x + point.direction.x * roomSeparation, point.coords.y + point.direction.y * roomSeparation, point.direction, Type.NORMAL, point, roomSeparation, frame.generation + 1));
 				});
 				if (frame.originPoint != null) {
 					frame.originPoint.active = true;
@@ -261,7 +273,7 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	private Room attemptRoom(int x, int y, Direction direction) {
+	private Room attemptRoom(int x, int y, int generation, Direction direction) {
 		if (x < 2 || x >= width - 2 || y < 2 || y >= height - 2) {
 			return null;
 		}
@@ -272,7 +284,7 @@ public class ProceduralLevelGenerator {
 		int roomHeight = random.nextInt((generator.maxHeight() - generator.minHeight()) / 2) * 2 + generator.minHeight();
 		for (int rWidth = roomWidth; rWidth >= generator.minWidth(); rWidth-=2) {
 			for (int rHeight = roomHeight; rHeight >= generator.minHeight(); rHeight-=2) {
-				Room room = generateRoom(generator, x, y, roomWidth, roomHeight, direction);
+				Room room = generateRooms(generator, x, y, roomWidth, roomHeight, generation + 1, direction);
 				if (canPlaceRoom(room)) {
 					placeRoom(room);
 					addConnectionPoints(room, direction);
@@ -284,7 +296,7 @@ public class ProceduralLevelGenerator {
 		return null;
 	}
 
-	private Room generateRoom(RoomGenerator generator, int x, int y, int width, int height, Direction direction) {
+	private Room generateRooms(RoomGenerator generator, int x, int y, int width, int height, int generation, Direction direction) {
 		int left, bottom;
 		if (direction == Direction.LEFT || direction == Direction.RIGHT) {
 			bottom = y - height / 2;
@@ -302,7 +314,7 @@ public class ProceduralLevelGenerator {
 			}
 		}
 
-		return generator.generate(left, bottom, width, height);
+		return generator.generate(left, bottom, width, height, generation);
 	}
 
 	private boolean canPlaceRoom(Room room) {

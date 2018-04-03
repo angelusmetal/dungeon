@@ -13,10 +13,8 @@ import com.dungeon.game.state.GameState;
 public class Slime extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
-	private static final float POOL_SEPARATION = distance2(15);
 
 	private final SlimeFactory factory;
-	private final Vector2 lastPool = new Vector2(0,0);
 	private float nextThink;
 	private enum Status {
 		IDLE, ATTACKING
@@ -30,7 +28,7 @@ public class Slime extends Character {
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
 		speed = 20f;
 		light = factory.characterLight;
-		maxHealth = 100 * factory.state.getPlayerCount();
+		maxHealth = 100 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
 		health = maxHealth;
 
 		nextThink = 0f;

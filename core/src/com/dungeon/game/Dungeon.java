@@ -15,6 +15,7 @@ import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
@@ -28,6 +29,7 @@ import com.dungeon.game.character.thief.ThiefFactory;
 import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.object.exit.ExitPlatformFactory;
 import com.dungeon.game.object.powerups.HealthPowerup;
 import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.object.torch.Torch;
@@ -69,6 +71,8 @@ public class Dungeon extends ApplicationAdapter {
 
 		entityFactory = new EntityFactory();
 		state = new GameState(entityFactory);
+
+		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory(state));
 
 		Tombstone.Factory tombstoneFactory = new Tombstone.Factory(state);
 		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));
@@ -143,6 +147,9 @@ public class Dungeon extends ApplicationAdapter {
 		} else if (state.getCurrentState() == GameState.State.INGAME) {
 			ingameRenderer.render();
 		}
+
+		// Render effects on top
+		state.getRenderEffects().forEach(e -> e.render(state));
 
 		state.refresh();
 		this.frame += 1;

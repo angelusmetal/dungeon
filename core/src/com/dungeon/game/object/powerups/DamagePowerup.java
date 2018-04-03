@@ -9,7 +9,7 @@ public class DamagePowerup extends Entity {
 
 	public DamagePowerup(GameState state, Vector2 position) {
 		super(new Body(position, new Vector2(10, 10)));
-//		setCurrentAnimation(new GameAnimation(AnimationType.IDLE, ResourceManager.instance().getAnimation(PowerupsSheet.DAMAGE, PowerupsSheet::damage), state.getStateTime()));
+//		setCurrentAnimation(new GameAnimation(AnimationType.IDLE, ResourceManager.instance().getAnimation(ExitPlatformSheet.DAMAGE, ExitPlatformSheet::damage), state.getStateTime()));
 	}
 
 	@Override

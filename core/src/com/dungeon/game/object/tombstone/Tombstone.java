@@ -28,7 +28,7 @@ public class Tombstone extends Entity {
 		}
 	}
 
-	public Tombstone(Factory factory, Vector2 position) {
+	Tombstone(Factory factory, Vector2 position) {
 		super(new Body(position, new Vector2(10, 10)));
 		setCurrentAnimation(new GameAnimation(factory.animation, factory.state.getStateTime()));
 	}

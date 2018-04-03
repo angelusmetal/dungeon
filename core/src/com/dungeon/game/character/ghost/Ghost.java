@@ -28,7 +28,7 @@ public class Ghost extends Character {
 		setCurrentAnimation(new GameAnimation(getIdleAnimation(), factory.state.getStateTime()));
 		speed = 20f;
 		light = factory.characterLight;
-		maxHealth = 100 * factory.state.getPlayerCount();
+		maxHealth = 100 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
 		health = maxHealth;
 	}
 

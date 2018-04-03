@@ -1,9 +1,12 @@
 package com.dungeon.game.state;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.render.effect.FadeEffect;
+import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.TilesetHelper;
 import com.dungeon.game.level.Level;
@@ -15,6 +18,8 @@ import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.LevelTileset;
 import com.dungeon.game.tileset.TilesetManager;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,8 +29,8 @@ public class GameState {
 		MENU, INGAME, GAMEOVER
 	}
 
-	public final int MAP_WIDTH = 100;
-	public final int MAP_HEIGHT = 100;
+	public final int MAP_WIDTH = 30;
+	public final int MAP_HEIGHT = 30;
 	private final TilesetHelper tilesetHelper;
 	private final EntityFactory entityFactory;
 
@@ -41,8 +46,13 @@ public class GameState {
 	private List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
 	private List<Entity> newEntities = new LinkedList<>();
 
+	private List<CharacterSelection.Slot> slots;
+
 	private int playerCount;
 	private int levelCount;
+
+	private List<RenderEffect> renderEffects = new ArrayList<>();
+	private List<RenderEffect> newRenderEffects = new ArrayList<>();
 
 	public GameState(EntityFactory entityFactory) {
 		this.stateTime = 0;
@@ -87,10 +97,25 @@ public class GameState {
 	public int getPlayerCount() {
 		return playerCount;
 	}
+
 	public int getLevelCount() {
 		return levelCount;
 	}
-	public void startNewLevel(List<CharacterSelection.Slot> slots) {
+
+	public void startNewGame(List<CharacterSelection.Slot> slots) {
+		this.slots = slots;
+		startNewLevel();
+	}
+
+	public void exitLevel() {
+		addRenderEffect(FadeEffect.fadeOut(getStateTime(), this::startNewLevel));
+	}
+
+	public void startNewLevel() {
+
+		playerCharacters.clear();
+		entities.clear();
+
 		generateNewLevel();
 
 		// Get starting room and spawn players there
@@ -111,6 +136,8 @@ public class GameState {
 		}
 
 		setCurrentState(GameState.State.INGAME);
+
+		addRenderEffect(FadeEffect.fadeIn(getStateTime()));
 	}
 
 	private PlayerCharacter createCharacter(int characterId, Vector2 origin) {
@@ -132,7 +159,7 @@ public class GameState {
 	}
 
 	public void generateNewLevel() {
-		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH, MAP_HEIGHT);
+		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH + (levelCount * 10), MAP_HEIGHT + (levelCount * 10));
 		level = generator.generateLevel(getLevelTileset());
 	}
 	public void addEntity(Entity entity) {
@@ -152,10 +179,28 @@ public class GameState {
 		return playerCharacters;
 	}
 
+	public void addRenderEffect(RenderEffect effect) {
+		newRenderEffects.add(effect);
+	}
+
+	public List<RenderEffect> getRenderEffects() {
+		return renderEffects;
+	}
+
 	public void refresh() {
 		playerCharacters.addAll(newPlayerCharacters);
 		newPlayerCharacters.clear();
 		entities.addAll(newEntities);
 		newEntities.clear();
+
+		for (Iterator<RenderEffect> e = renderEffects.iterator(); e.hasNext(); ) {
+			RenderEffect effect = e.next();
+			if (effect.isExpired(stateTime)) {
+				e.remove();
+				effect.dispose();
+			}
+		}
+		renderEffects.addAll(newRenderEffects);
+		newRenderEffects.clear();
 	}
 }

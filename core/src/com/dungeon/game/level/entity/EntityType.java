@@ -1,6 +1,8 @@
 package com.dungeon.game.level.entity;
 
 public enum EntityType {
+	// Exit altar
+	EXIT,
 	// Player characters
 	WITCH,
 	THIEF,

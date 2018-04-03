@@ -32,7 +32,7 @@ public class FireSlime extends Character {
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
 		speed = 20f;
 		light = factory.characterLight;
-		maxHealth = 150 * factory.state.getPlayerCount();
+		maxHealth = 150 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
 		health = maxHealth;
 
 		nextThink = 0f;

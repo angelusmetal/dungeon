@@ -7,5 +7,5 @@ public interface RoomGenerator {
 	int maxWidth();
 	int minHeight();
 	int maxHeight();
-	Room generate(int left, int bottom, int width, int height);
+	Room generate(int left, int bottom, int width, int height, int generation);
 }
