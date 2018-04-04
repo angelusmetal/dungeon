@@ -17,7 +17,7 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerCharacter) && entity.isSolid();
 
 	/** Damage to inflict upon hitting a target */
-	protected final int damage;
+	protected int damage;
 
 	public static class Builder extends Particle.Builder {
 		private int damage;

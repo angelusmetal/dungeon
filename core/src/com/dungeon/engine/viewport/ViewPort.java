@@ -29,6 +29,15 @@ public class ViewPort {
 				textureRegion.getRegionHeight() * scale);
 	}
 
+	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float width, float height) {
+		batch.draw(
+				textureRegion,
+				(x - xOffset) * scale,
+				(y - yOffset) * scale,
+				width * scale,
+				height * scale);
+	}
+
 	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter2, float rotation) {
 		float diameter = diameter2 * scale;
 		float radius = diameter / 2f;

@@ -149,14 +149,8 @@ public class ProceduralLevelGenerator {
 		}
 
 		// Pick one of the furthest-placed rooms and place the exit there
-//		int farthest = rooms.stream().map(r -> r.generation).max(Integer::compareTo).orElseThrow(() -> new RuntimeException("Could not find farthest room"));
-		Room exitRoom = null;
-		for (Room room : rooms) {
-			if (exitRoom == null || room.generation > exitRoom.generation) {
-				exitRoom = room;
-			}
-		}
-//		Room exitRoom = rooms.stream().filter(r -> r.generation == farthest).findFirst().orElseThrow(() -> new RuntimeException("Could not find farthest room"));
+		int farthest = rooms.stream().map(r -> r.generation).max(Integer::compareTo).orElseThrow(() -> new RuntimeException("Could not find farthest room"));
+		Room exitRoom = rooms.stream().filter(r -> r.generation == farthest).findFirst().orElseThrow(() -> new RuntimeException("Could not find farthest room"));
 		Vector2 exitPosition = exitRoom.spawnPoints.get(random.nextInt(exitRoom.spawnPoints.size()));
 		placeholders.add(new EntityPlaceholder(EntityType.EXIT, exitPosition));
 

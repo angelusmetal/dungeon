@@ -18,6 +18,7 @@ class FireSlimeBullet extends Projectile {
 		this.factory = factory;
 		light = factory.bulletLight;
 		setCurrentAnimation(new GameAnimation(getAnimation(getSelfMovement()), startTime));
+		damage = 5 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
 	}
 
 	@Override

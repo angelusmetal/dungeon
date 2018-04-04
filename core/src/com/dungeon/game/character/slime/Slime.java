@@ -28,7 +28,7 @@ public class Slime extends Character {
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
 		speed = 20f;
 		light = factory.characterLight;
-		maxHealth = 100 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
+		maxHealth = 75 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
 		health = maxHealth;
 
 		nextThink = 0f;

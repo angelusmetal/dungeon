@@ -15,6 +15,7 @@ import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
@@ -41,7 +42,7 @@ import com.dungeon.game.state.SelectionPlayerControlListener;
 import java.util.Iterator;
 
 public class Dungeon extends ApplicationAdapter {
-	public static final float INITIAL_SCALE = 4;
+	public static final float INITIAL_SCALE = 3;
 	private GameState state;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
@@ -50,6 +51,8 @@ public class Dungeon extends ApplicationAdapter {
 	private IngameRenderer ingameRenderer;
 	private CharacterSelection characterSelection;
 	private EntityFactory entityFactory;
+
+	private boolean fading = false;
 
 	long frame = 0;
 
@@ -152,6 +155,16 @@ public class Dungeon extends ApplicationAdapter {
 		state.getRenderEffects().forEach(e -> e.render(state));
 
 		state.refresh();
+
+		if (!fading && state.getCurrentState() == GameState.State.INGAME && state.playersAlive() == 0) {
+			fading = true;
+			state.addRenderEffect(FadeEffect.fadeOutDeath(state.getStateTime(), () -> {
+				state.setCurrentState(GameState.State.MENU);
+				state.addRenderEffect(FadeEffect.fadeIn(state.getStateTime()));
+				fading = false;
+			}));
+		}
+
 		this.frame += 1;
 	}
 

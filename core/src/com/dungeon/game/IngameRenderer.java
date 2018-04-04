@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
+import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
@@ -25,6 +26,7 @@ public class IngameRenderer {
 	// Developer tools
 	private boolean renderScene = true;
 	private boolean renderLighting = true;
+	private boolean renderHealthbars = true;
 
 	private final Comparator<? super Entity> comp = (e1, e2) ->
 			e1.getZIndex() > e2.getZIndex() ? 1 :
@@ -91,6 +93,13 @@ public class IngameRenderer {
 
 			// Restore blend function
 			batch.setBlendFunction(srcFunc, dstFunc);
+			batch.end();
+		}
+
+		// Render UI elements
+		if (renderHealthbars) {
+			batch.begin();
+			state.getEntities().stream().filter(e -> e instanceof Character).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(state, batch, viewPort));
 			batch.end();
 		}
 

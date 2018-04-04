@@ -32,7 +32,7 @@ public class FireSlime extends Character {
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
 		speed = 20f;
 		light = factory.characterLight;
-		maxHealth = 150 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
+		maxHealth = 50 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
 		health = maxHealth;
 
 		nextThink = 0f;
@@ -95,7 +95,7 @@ public class FireSlime extends Character {
 
 	@Override
 	protected void onExpire(GameState state) {
-		int bullets = 2 + state.getPlayerCount() * 2;
+		int bullets = (factory.state.getPlayerCount() + factory.state.getLevelCount()) * 2;
 		for (int i = 0; i < bullets; ++i) {
 			FireSlimeBullet bullet = new FireSlimeBullet(factory, getPos(), state.getStateTime());
 			bullet.setSelfYMovement(1);

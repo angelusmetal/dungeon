@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
+import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.tileset.CharactersTileset32;
 
@@ -74,7 +75,7 @@ public class CharacterSelection {
 
 	public void confirmSelection(PlayerControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
-		state.startNewGame(slots);
+		state.addRenderEffect(FadeEffect.fadeOut(state.getStateTime(), () -> state.startNewGame(slots)));
 	}
 
 	private Optional<Slot> getSlot(PlayerControlBundle control) {

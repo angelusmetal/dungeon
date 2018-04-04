@@ -15,10 +15,14 @@ import com.dungeon.game.state.GameState;
 public class Ghost extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
-	private static final float INVULNERABILITY_TIME = 0.5f;
+	private static final float VISIBLE_TIME = 2f;
 	private final GhostFactory factory;
 	private final Color color;
-	private float invulnerableUntil = 0;
+	private float visibleUntil = 0;
+
+	private enum Status {
+		IDLE, ATTACKING
+	}
 
 	Ghost(GhostFactory factory, Vector2 pos) {
 		super(new Body(pos, new Vector2(16, 30)));
@@ -45,7 +49,8 @@ public class Ghost extends Character {
 			setSelfMovement(closestPlayer);
 		}
 		// Set transparency based on invulnerability
-		color.a = state.getStateTime() > invulnerableUntil ? 0.5f : 0.2f;
+		color.a = Math.min(Math.max((visibleUntil - state.getStateTime()), 0.1f), 0.5f);
+		speed = state.getStateTime() > visibleUntil ? 60f : 20f;
 	}
 
 	@Override
@@ -75,15 +80,14 @@ public class Ghost extends Character {
 
 	@Override
 	public void hit(GameState state, float dmg) {
-		if (canBeHit(state)) {
-			super.hit(state, dmg);
-			invulnerableUntil = state.getStateTime() + INVULNERABILITY_TIME;
-		}
+		super.hit(state, dmg);
+		visibleUntil = state.getStateTime() + VISIBLE_TIME;
+		System.out.println("Visible until: " + visibleUntil);
 	}
 
-	@Override
-	public boolean canBeHit(GameState state) {
-		return state.getStateTime() > invulnerableUntil;
-	}
+//	@Override
+//	public boolean canBeHit(GameState state) {
+//		return state.getStateTime() > visibleUntil;
+//	}
 
 }

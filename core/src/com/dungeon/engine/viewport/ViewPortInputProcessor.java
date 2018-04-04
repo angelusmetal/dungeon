@@ -10,7 +10,7 @@ public class ViewPortInputProcessor implements GestureDetector.GestureListener, 
 
 	private final ViewPort viewPort;
 	private boolean zoomEnabled = true;
-	private int scaleIndex = 7;
+	private int scaleIndex = 5;
 
 	public ViewPortInputProcessor(ViewPort viewPort) {
 		this.viewPort = viewPort;

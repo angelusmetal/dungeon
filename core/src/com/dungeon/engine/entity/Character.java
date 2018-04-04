@@ -73,11 +73,8 @@ public abstract class Character extends Entity implements Movable, Drawable {
 		return null;
 	}
 
-	@Override
-	public void draw(GameState state, SpriteBatch batch, ViewPort viewPort) {
-		super.draw(state, batch, viewPort);
+	public void drawHealthbar(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		// Draw health bar
-		batch.draw(state.getTilesetManager().getHudTileset().HEALTH_BAR, (getPos().x - viewPort.xOffset - getBoundingBox().x / 2) * viewPort.scale, (getPos().y - viewPort.yOffset + getBoundingBox().y / 2) * viewPort.scale, getBoundingBox().x * viewPort.scale * health/maxHealth, 2 * viewPort.scale);
+		viewPort.draw(batch, state.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x- getBoundingBox().x / 2, getPos().y + getBoundingBox().y / 2 + z, getBoundingBox().x * health/maxHealth, 2);
 	}
-
 }

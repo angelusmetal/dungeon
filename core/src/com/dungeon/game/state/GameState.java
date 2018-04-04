@@ -1,13 +1,11 @@
 package com.dungeon.game.state;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
-import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.TilesetHelper;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
@@ -29,8 +27,8 @@ public class GameState {
 		MENU, INGAME, GAMEOVER
 	}
 
-	public final int MAP_WIDTH = 30;
-	public final int MAP_HEIGHT = 30;
+	public final int MAP_WIDTH = 40;
+	public final int MAP_HEIGHT = 40;
 	private final TilesetHelper tilesetHelper;
 	private final EntityFactory entityFactory;
 
@@ -202,5 +200,9 @@ public class GameState {
 		}
 		renderEffects.addAll(newRenderEffects);
 		newRenderEffects.clear();
+	}
+
+	public int playersAlive() {
+		return playerCharacters.size() + newPlayerCharacters.size();
 	}
 }
