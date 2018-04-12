@@ -7,8 +7,10 @@ import com.dungeon.game.state.GameState;
 
 public class DamagePowerup extends Entity {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
+
 	public DamagePowerup(GameState state, Vector2 position) {
-		super(new Body(position, new Vector2(10, 10)));
+		super(new Body(position, BOUNDING_BOX));
 //		setCurrentAnimation(new GameAnimation(AnimationType.IDLE, ResourceManager.instance().getAnimation(ExitPlatformSheet.DAMAGE, ExitPlatformSheet::damage), state.getStateTime()));
 	}
 

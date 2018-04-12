@@ -14,6 +14,8 @@ import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(16, 30);
+
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float VISIBLE_TIME = 2f;
 	private final GhostFactory factory;
@@ -25,7 +27,7 @@ public class Ghost extends Character {
 	}
 
 	Ghost(GhostFactory factory, Vector2 pos) {
-		super(new Body(pos, new Vector2(16, 30)));
+		super(new Body(pos, BOUNDING_BOX));
 		this.factory = factory;
 		color = new Color(1, 1, 1, 0.5f);
 		drawContext = new ColorContext(color);
@@ -36,17 +38,19 @@ public class Ghost extends Character {
 		health = maxHealth;
 	}
 
+	private static final Vector2 target = new Vector2();
+
 	@Override
 	public void think(GameState state) {
 		super.think(state);
 		Vector2 closestPlayer = new Vector2();
 		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
-			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
-			float len = v.len2();
+			target.set(playerCharacter.getPos()).sub(getPos());
+			float len = target.len2();
 			if (len < MIN_TARGET_DISTANCE && (closestPlayer.len2() == 0 || len < closestPlayer.len2())) {
-				closestPlayer = v;
+				closestPlayer = target;
 			}
-			setSelfMovement(closestPlayer);
+			setSelfImpulse(closestPlayer);
 		}
 		// Set transparency based on invulnerability
 		color.a = Math.min(Math.max((visibleUntil - state.getStateTime()), 0.1f), 0.5f);

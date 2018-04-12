@@ -19,7 +19,7 @@ public class CharacterPlayerControlListener implements PlayerControlBundle.Liste
 	public void updateDirection(Vector2 vector) {
 		PlayerCharacter character = control.getCharacter();
 		if (character != null) {
-			character.setSelfMovement(vector);
+			character.setSelfImpulse(vector);
 		}
 	}
 

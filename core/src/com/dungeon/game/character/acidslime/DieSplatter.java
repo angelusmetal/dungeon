@@ -8,10 +8,11 @@ import com.dungeon.game.state.GameState;
 
 class DieSplatter extends Entity {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
 	private final float expirationTime;
 
 	public DieSplatter(AcidSlimeFactory factory, GameState state, Vector2 origin) {
-		super(new Body(origin, new Vector2(22, 12)));
+		super(new Body(origin, BOUNDING_BOX));
 		setCurrentAnimation(new GameAnimation(factory.dieAnimation, state.getStateTime()));
 		expirationTime = state.getStateTime() + getCurrentAnimation().getDuration();
 		light = factory.characterLight;

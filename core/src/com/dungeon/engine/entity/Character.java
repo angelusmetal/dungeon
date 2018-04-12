@@ -23,10 +23,10 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	@Override
 	public void think(GameState state) {
-		if (getSelfMovement().x != 0) {
-			setInvertX(getSelfMovement().x < 0);
+		if (getSelfImpulse().x != 0) {
+			setInvertX(getSelfImpulse().x < 0);
 		}
-		if (getSelfMovement().x == 0 && getSelfMovement().y == 0) {
+		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
 			if (getIdleAnimation() != getCurrentAnimation().getAnimation()) {
 				setCurrentAnimation(new GameAnimation(getIdleAnimation(), state.getStateTime()));
 			}
@@ -35,8 +35,8 @@ public abstract class Character extends Entity implements Movable, Drawable {
 				setCurrentAnimation(new GameAnimation(getWalkAnimation(), state.getStateTime()));
 			}
 		}
-		if (getSelfMovement().len() > 0.5) {
-			aim.set(getSelfMovement());
+		if (getSelfImpulse().len() > 0.5) {
+			aim.set(getSelfImpulse());
 		}
 	}
 
@@ -59,7 +59,7 @@ public abstract class Character extends Entity implements Movable, Drawable {
 			fireCooldown.attempt(state.getStateTime(), () -> {
 				Projectile projectile = createProjectile(state, getPos().cpy().mulAdd(aim, 2));
 				if (projectile != null) {
-					projectile.setSelfMovement(aim);
+					projectile.setSelfImpulse(aim);
 					// Extra offset to make projectiles appear in the character's hands
 					//projectile.getPos().y -= 8;
 					state.addEntity(projectile);

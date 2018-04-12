@@ -9,11 +9,11 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
-import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.state.GameState;
 
 public class FireSlime extends Character {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float ATTACK_FREQUENCY = 1.5f;
 	private static final float ATTACK_SPEED = 10f;
@@ -26,7 +26,7 @@ public class FireSlime extends Character {
 	private Status status;
 
 	FireSlime(FireSlimeFactory factory, Vector2 pos) {
-		super(new Body(pos, new Vector2(22, 12)));
+		super(new Body(pos, BOUNDING_BOX));
 		this.factory = factory;
 
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
@@ -42,8 +42,8 @@ public class FireSlime extends Character {
 	@Override
 	public void think(GameState state) {
 //		super.think(state);
-		if (getSelfMovement().x != 0) {
-			setInvertX(getSelfMovement().x < 0);
+		if (getSelfImpulse().x != 0) {
+			setInvertX(getSelfImpulse().x < 0);
 		}
 		if (state.getStateTime() > nextThink) {
 			Vector2 target = reTarget(state);
@@ -51,10 +51,10 @@ public class FireSlime extends Character {
 				nextThink = state.getStateTime() + ATTACK_FREQUENCY;
 				// Move towards target
 				speed = ATTACK_SPEED;
-				setSelfMovement(target);
+				setSelfImpulse(target);
 				// Fire a projectile
 				Projectile projectile = new FireSlimeBullet(factory, getPos(), state.getStateTime());
-				projectile.setSelfMovement(target);
+				projectile.setSelfImpulse(target);
 				state.addEntity(projectile);
 				this.status = Status.ATTACKING;
 			} else {
@@ -63,10 +63,10 @@ public class FireSlime extends Character {
 				// Aim random direction
 				if (Math.random() > 0.7f) {
 					Vector2 newDirection = new Vector2((float)Math.random() * 20f - 10f, (float)Math.random() * 20f - 10f);
-					setSelfMovement(newDirection);
+					setSelfImpulse(newDirection);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				} else {
-					setSelfMovement(Vector2.Zero);
+					setSelfImpulse(Vector2.Zero);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				}
 				this.status = Status.IDLE;
@@ -98,8 +98,8 @@ public class FireSlime extends Character {
 		int bullets = (factory.state.getPlayerCount() + factory.state.getLevelCount()) * 2;
 		for (int i = 0; i < bullets; ++i) {
 			FireSlimeBullet bullet = new FireSlimeBullet(factory, getPos(), state.getStateTime());
-			bullet.setSelfYMovement(1);
-			bullet.getSelfMovement().rotate(360 / bullets * i);
+			bullet.setSelfImpulse(0, 1);
+			bullet.getSelfImpulse().rotate(360 / bullets * i);
 			state.addEntity(bullet);
 		}
 	}

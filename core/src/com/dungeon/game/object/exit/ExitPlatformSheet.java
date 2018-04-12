@@ -13,7 +13,7 @@ public class ExitPlatformSheet extends Tileset {
 	public static final String IDLE = "exit_platform_idle";
 
 	ExitPlatformSheet() {
-		super(ResourceManager.instance().getTexture("exit_altar.png"), 32);
+		super(ResourceManager.instance().getTexture("exit_altar.png"), 64);
 	}
 
 	public static Animation<TextureRegion> idle() {

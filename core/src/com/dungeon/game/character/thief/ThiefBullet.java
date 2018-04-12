@@ -11,13 +11,15 @@ import com.dungeon.game.state.GameState;
 
 class ThiefBullet extends Projectile {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(6, 6);
+
 	private final ThiefFactory factory;
 
 	public ThiefBullet(ThiefFactory factory, Vector2 origin, float startTime) {
-		super(new Body(origin, new Vector2(6, 6)), startTime, factory.bullet);
+		super(new Body(origin, BOUNDING_BOX), startTime, factory.bullet);
 		this.factory = factory;
 		light = factory.bulletLight;
-		setCurrentAnimation(new GameAnimation(getAnimation(getSelfMovement()), startTime));
+		setCurrentAnimation(new GameAnimation(getAnimation(getSelfImpulse()), startTime));
 	}
 
 	@Override
@@ -35,7 +37,7 @@ class ThiefBullet extends Projectile {
 		private final ThiefFactory factory;
 
 		public Explosion(ThiefFactory factory, Vector2 origin, float startTime) {
-			super(new Body(origin, new Vector2(6, 6)), startTime, factory.bulletExplosion);
+			super(new Body(origin, BOUNDING_BOX), startTime, factory.bulletExplosion);
 			this.factory = factory;
 			light = factory.bulletLight;
 			setCurrentAnimation(new GameAnimation(factory.bulletExplodeAnimation, startTime));

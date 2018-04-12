@@ -5,9 +5,8 @@ import com.dungeon.game.state.GameState;
 
 public interface Movable {
 
-	void setSelfXMovement(float x);
-	void setSelfYMovement(float y);
-	void setSelfMovement(Vector2 vector);
-	Vector2 getSelfMovement();
+	void setSelfImpulse(Vector2 vector);
+	void setSelfImpulse(float x, float y);
+	Vector2 getSelfImpulse();
 	void move(GameState gameState);
 }

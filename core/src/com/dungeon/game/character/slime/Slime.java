@@ -12,6 +12,7 @@ import com.dungeon.game.state.GameState;
 
 public class Slime extends Character {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 
 	private final SlimeFactory factory;
@@ -22,7 +23,7 @@ public class Slime extends Character {
 	private Status status;
 
 	Slime(SlimeFactory factory, Vector2 pos) {
-		super(new Body(pos, new Vector2(22, 12)));
+		super(new Body(pos, BOUNDING_BOX));
 		this.factory = factory;
 
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
@@ -38,8 +39,8 @@ public class Slime extends Character {
 	@Override
 	public void think(GameState state) {
 //		super.think(state);
-		if (getSelfMovement().x != 0) {
-			setInvertX(getSelfMovement().x < 0);
+		if (getSelfImpulse().x != 0) {
+			setInvertX(getSelfImpulse().x < 0);
 		}
 		if (state.getStateTime() > nextThink) {
 			Vector2 target = reTarget(state);
@@ -48,7 +49,7 @@ public class Slime extends Character {
 				nextThink = state.getStateTime() + 3f;
 				// Aim towards target
 				speed = 75f;
-				setSelfMovement(target);
+				setSelfImpulse(target);
 				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
 				this.status = Status.ATTACKING;
 			} else {
@@ -57,10 +58,10 @@ public class Slime extends Character {
 				// Aim random direction
 				if (Math.random() > 0.7f) {
 					Vector2 newDirection = new Vector2((float)Math.random() * 20f - 10f, (float)Math.random() * 20f - 10f);
-					setSelfMovement(newDirection);
+					setSelfImpulse(newDirection);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				} else {
-					setSelfMovement(Vector2.Zero);
+					setSelfImpulse(Vector2.Zero);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				}
 				this.status = Status.IDLE;

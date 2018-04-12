@@ -14,6 +14,8 @@ import com.dungeon.game.state.GameState;
 
 public class Torch extends Entity {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
+
 	public static class Factory implements EntityFactory.EntityTypeFactory {
 
 		final GameState state;
@@ -33,7 +35,7 @@ public class Torch extends Entity {
 	}
 
 	public Torch(Factory factory, Vector2 position) {
-		super(new Body(position, new Vector2(10, 10)));
+		super(new Body(position, BOUNDING_BOX));
 		setCurrentAnimation(new GameAnimation(factory.animation, factory.state.getStateTime()));
 		light = factory.light;
 	}

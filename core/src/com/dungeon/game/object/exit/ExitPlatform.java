@@ -9,10 +9,11 @@ import com.dungeon.game.state.GameState;
 
 public class ExitPlatform extends Entity {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(32, 32);
 	boolean exited = false;
 
 	ExitPlatform(ExitPlatformFactory factory, Vector2 origin) {
-		super(new Body(origin, new Vector2(32, 32)));
+		super(new Body(origin, BOUNDING_BOX));
 		setCurrentAnimation(new GameAnimation(factory.animation, 0));
 	}
 

@@ -12,6 +12,7 @@ import com.dungeon.game.state.GameState;
 
 public class AcidSlime extends Character {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float POOL_SEPARATION = distance2(15);
 	private static final float ATTACK_FREQUENCY = 3f;
@@ -26,7 +27,7 @@ public class AcidSlime extends Character {
 	private Status status;
 
 	AcidSlime(AcidSlimeFactory factory, Vector2 pos) {
-		super(new Body(pos, new Vector2(22, 12)));
+		super(new Body(pos, BOUNDING_BOX));
 		this.factory = factory;
 
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
@@ -42,8 +43,8 @@ public class AcidSlime extends Character {
 	@Override
 	public void think(GameState state) {
 //		super.think(state);
-		if (getSelfMovement().x != 0) {
-			setInvertX(getSelfMovement().x < 0);
+		if (getSelfImpulse().x != 0) {
+			setInvertX(getSelfImpulse().x < 0);
 		}
 		if (state.getStateTime() > nextThink) {
 			Vector2 target = reTarget(state);
@@ -51,7 +52,7 @@ public class AcidSlime extends Character {
 				nextThink = state.getStateTime() + ATTACK_FREQUENCY;
 				// Aim towards target
 				speed = ATTACK_SPEED;
-				setSelfMovement(target);
+				setSelfImpulse(target);
 				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
 				this.status = Status.ATTACKING;
 			} else {
@@ -60,10 +61,10 @@ public class AcidSlime extends Character {
 				// Aim random direction
 				if (Math.random() > 0.7f) {
 					Vector2 newDirection = new Vector2((float)Math.random() * 20f - 10f, (float)Math.random() * 20f - 10f);
-					setSelfMovement(newDirection);
+					setSelfImpulse(newDirection);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				} else {
-					setSelfMovement(Vector2.Zero);
+					setSelfImpulse(Vector2.Zero);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				}
 				this.status = Status.IDLE;
@@ -96,7 +97,7 @@ public class AcidSlime extends Character {
 		state.addEntity(new DieSplatter(factory, state, getPos()));
 		state.addEntity(new AcidPool(factory, state, getPos()));
 		// Create 5-10 blobs
-		int splats = (int) (5 + Math.random() * 5);
+		int splats = (int) (15 + Math.random() * 10);
 		for (int i = 0; i < splats; ++i) {
 			state.addEntity(new AcidBlob(factory, state, getPos()));
 		}

@@ -141,7 +141,7 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		if (!hasExpired) {
 			if (bounciness > 0) {
 				bounciness--;
-				setSelfMovement(getSelfMovement().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE));
+				setSelfImpulse(getSelfImpulse().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE));
 			} else {
 				expire(state);
 			}
@@ -161,7 +161,7 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		if (autoseek > 0) {
 			applyAutoseek(state);
 		} else {
-			setSelfMovement(getSelfMovement().setLength(speed));
+			setSelfImpulse(getSelfImpulse().setLength(speed));
 		}
 
 		// Apply vertical acceleration & bounciness
@@ -182,34 +182,37 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		// Update animation
 		if (!hasExpired) {
 			// Updates current animation based on the direction vector
-			setInvertX(getSelfMovement().x < 0);
+			setInvertX(getSelfImpulse().x < 0);
 			Animation<TextureRegion> currentAnimation = getCurrentAnimation().getAnimation();
-			Animation<TextureRegion> newAnimation = getAnimation(getSelfMovement());
+			Animation<TextureRegion> newAnimation = getAnimation(getSelfImpulse());
 			if (newAnimation != currentAnimation) {
 				setCurrentAnimation(new GameAnimation(newAnimation, state.getStateTime()));
 			}
 		}
 	}
 
+	private static final Vector2 target = new Vector2();
+	private static final Vector2 seek = new Vector2();
+
 	private void applyAutoseek(GameState state) {
-		Vector2 seek = null;
+		boolean found = false;
 		// Find closest target within range
 		for (Entity entity : state.getEntities()) {
 			if (targetPredicate.apply(entity)) {
-				// TODO Optimize to use dst2?
-				Vector2 v = entity.getPos().cpy().sub(getPos());
-				float len = v.len2();
-				if (len < targetRadius && (seek == null || len < seek.len2())) {
-					seek = v;
+				target.set(entity.getPos()).sub(getPos());
+				float len = target.len2();
+				if (len < targetRadius && (!found || len < seek.len2())) {
+					found = true;
+					seek.set(target);
 				}
 			}
 		}
 		// If a target has been found, autoseek
-		if (seek != null) {
+		if (found) {
 			float seekClamp = autoseek * speed;
 			float speedClamp = speed - seekClamp;
 			seek.clamp(seekClamp, seekClamp);
-			setSelfMovement(getSelfMovement().setLength(speedClamp).add(seek));
+			setSelfImpulse(getSelfImpulse().setLength(speedClamp).add(seek));
 		}
 	}
 

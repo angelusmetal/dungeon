@@ -11,10 +11,11 @@ import com.dungeon.game.state.GameState;
 
 public class Witch extends PlayerCharacter {
 
+	private static final Vector2 BOUNDING_BOX = new Vector2(14, 28);
 	private final WitchFactory factory;
 
 	Witch(WitchFactory factory, Vector2 pos) {
-		super(new Body(pos, new Vector2(14, 28)));
+		super(new Body(pos, BOUNDING_BOX));
 		this.factory = factory;
 		setCurrentAnimation(new GameAnimation(getIdleAnimation(), factory.state.getStateTime()));
 		speed = 60f;

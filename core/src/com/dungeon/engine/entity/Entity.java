@@ -15,12 +15,21 @@ import com.dungeon.game.state.GameState;
 abstract public class Entity implements Drawable, Movable {
 
 	private GameAnimation currentAnimation;
-	private final Vector2 selfMovement = new Vector2();
+	/**
+	 * Self impulse the entity will constantly applied. Gets added to the current movement vector at a rate of 1x per
+	 * second.
+	 */
+	private final Vector2 selfImpulse = new Vector2();
+	/**
+	 * Movement vector
+	 */
 	private final Vector2 movement = new Vector2();
+
 	private final Body body;
 	/** Vertical coordinate */
 	protected float z;
 	protected float speed = 3;
+	protected float friction = 10;
 	private boolean invertX = false;
 
 	protected boolean expired;
@@ -75,39 +84,50 @@ abstract public class Entity implements Drawable, Movable {
 	}
 
 	@Override
-	public void setSelfXMovement(float x) {
-		selfMovement.x = x;
+	public void setSelfImpulse(Vector2 vector) {
+		selfImpulse.set(vector);
 		onSelfMovementUpdate();
 	}
 
 	@Override
-	public void setSelfYMovement(float y) {
-		selfMovement.y = y;
+	public void setSelfImpulse(float x, float y) {
+		selfImpulse.set(x, y);
 		onSelfMovementUpdate();
 	}
 
 	@Override
-	public void setSelfMovement(Vector2 vector) {
-		selfMovement.set(vector);
-		onSelfMovementUpdate();
+	public Vector2 getSelfImpulse() {
+		return selfImpulse;
 	}
 
-	@Override
-	public Vector2 getSelfMovement() {
-		return selfMovement;
-	}
+
+	private static final Vector2 frameMovement = new Vector2();
+	private static final Vector2 stepX = new Vector2();
+	private static final Vector2 stepY = new Vector2();
 
 	@Override
 	public void move(GameState state) {
-		// Update movementSpeed
-		movement.add(selfMovement);
-		movement.clamp(0, speed * state.getFrameTime());
 
-		float distance = movement.len();
+		// Update movement
+		float oldLength = movement.len();
+		movement.add(selfImpulse.x * speed, selfImpulse.y * speed);
+		float newLength = movement.len();
+
+		// Even though an impulse can make the movement exceed the speed, selfImpulse should not help exceed it
+		// (otherwise, it would accelerate indefinetly), but it can still help decrease it
+		if (newLength > oldLength && newLength > speed) {
+			float diff = newLength - speed;
+			frameMovement.set(selfImpulse).setLength(diff);
+			movement.sub(frameMovement);
+		}
+
+		frameMovement.set(movement).scl(state.getFrameTime());
+
+		float distance = frameMovement.len();
 
 		// Split into 1 px steps, and decompose in axes
-		Vector2 stepX = movement.cpy().clamp(0,1);
-		Vector2 stepY = stepX.cpy();
+		stepX.set(frameMovement).clamp(0,1);
+		stepY.set(stepX);
 		stepX.y = 0;
 		stepY.x = 0;
 
@@ -123,7 +143,7 @@ abstract public class Entity implements Drawable, Movable {
 				collidedX = detectEntityCollision(state, stepX);
 			}
 			if (collidedX) {
-				movement.x = 0;
+				frameMovement.x = 0;
 			}
 			if (!collidedY) {
 				body.move(stepY);
@@ -133,7 +153,7 @@ abstract public class Entity implements Drawable, Movable {
 				collidedY = detectEntityCollision(state, stepY);
 			}
 			if (collidedY) {
-				movement.y = 0;
+				frameMovement.y = 0;
 			}
 			distance -= 1;
 		}
@@ -158,7 +178,8 @@ abstract public class Entity implements Drawable, Movable {
 		}
 
 		// Decrease speed
-		movement.scl(0.7f);
+		movement.scl(1 / (1 + (state.getFrameTime() * friction)));
+
 		// Round out very small values
 		if (Math.abs(movement.x) < 0.1f) {
 			movement.x = 0;

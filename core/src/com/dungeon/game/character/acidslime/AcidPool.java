@@ -9,13 +9,15 @@ import com.dungeon.game.state.GameState;
 
 class AcidPool extends Entity {
 
-	static private final float DPS = 5f;
-	static private final float TTL = 5f;
+	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
+	private static final float DPS = 5f;
+	private static final float TTL = 5f;
+
 	private final AcidSlimeFactory factory;
 	private final float expirationTime;
 
 	public AcidPool(AcidSlimeFactory factory, GameState state, Vector2 origin) {
-		super(new Body(origin, new Vector2(22, 12)));
+		super(new Body(origin, BOUNDING_BOX));
 		this.factory = factory;
 		getPos().add(0, -8);
 		setCurrentAnimation(new GameAnimation(factory.poolFloodAnimation, state.getStateTime()));
