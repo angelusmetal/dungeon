@@ -22,6 +22,8 @@ public class IngameRenderer {
 	private SpriteBatch batch;
 	private FrameBuffer lightingBuffer;
 	private TextureRegion lightingRegion;
+	private FrameBuffer viewportBuffer;
+	private TextureRegion viewportRegion;
 
 	// Developer tools
 	private boolean renderScene = true;
@@ -45,9 +47,15 @@ public class IngameRenderer {
 
 	public void initialize() {
 		batch = new SpriteBatch();
-		lightingBuffer = new FrameBuffer(Pixmap.Format.RGB565, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+
+		lightingBuffer = new FrameBuffer(Pixmap.Format.RGB565, viewPort.width, viewPort.height, false);
 		lightingRegion = new TextureRegion(lightingBuffer.getColorBufferTexture());
 		lightingRegion.flip(false, true);
+
+		viewportBuffer = new FrameBuffer(Pixmap.Format.RGB565, viewPort.width, viewPort.height, false);
+		viewportRegion = new TextureRegion(viewportBuffer.getColorBufferTexture());
+		viewportRegion.flip(false, true);
+
 		randomizeBaseLight();
 	}
 
@@ -68,11 +76,16 @@ public class IngameRenderer {
 
 		// Render scene
 		if (renderScene) {
+			viewportBuffer.begin();
 			batch.begin();
 			// Draw map
 			drawMap();
 			// Iterate entities in render order and draw them
 			state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
+			batch.end();
+			viewportBuffer.end();
+			batch.begin();
+			batch.draw(viewportRegion, 0, 0, viewportBuffer.getWidth(), viewportBuffer.getHeight());
 			batch.end();
 		} else {
 			batch.begin();
