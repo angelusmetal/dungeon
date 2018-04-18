@@ -102,6 +102,7 @@ public class GameState {
 
 	public void startNewGame(List<CharacterSelection.Slot> slots) {
 		this.slots = slots;
+		levelCount = 0;
 		startNewLevel();
 	}
 
