@@ -23,28 +23,28 @@ public class ViewPort {
 	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float invertX, Vector2 drawOffset) {
 		batch.draw(
 				textureRegion,
-				(x - xOffset - drawOffset.x * invertX) * scale,
-				(y - yOffset - drawOffset.y) * scale,
-				textureRegion.getRegionWidth() * scale * invertX,
-				textureRegion.getRegionHeight() * scale);
+				(x - xOffset - drawOffset.x * invertX),
+				(y - yOffset - drawOffset.y),
+				textureRegion.getRegionWidth() * invertX,
+				textureRegion.getRegionHeight());
 	}
 
 	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float width, float height) {
 		batch.draw(
 				textureRegion,
-				(x - xOffset) * scale,
-				(y - yOffset) * scale,
-				width * scale,
-				height * scale);
+				(x - xOffset),
+				(y - yOffset),
+				width,
+				height);
 	}
 
 	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter2, float rotation) {
-		float diameter = diameter2 * scale;
+		float diameter = diameter2;
 		float radius = diameter / 2f;
 		batch.draw(
 				texture,
-				(x - xOffset) * scale - radius,
-				(y - yOffset) * scale - radius,
+				(x - xOffset) - radius,
+				(y - yOffset) - radius,
 				radius,
 				radius,
 				diameter,

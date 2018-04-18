@@ -3,12 +3,15 @@ package com.dungeon.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.render.BlendFunctionContext;
+import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
@@ -20,10 +23,10 @@ public class IngameRenderer {
 	private final ViewPort viewPort;
 
 	private SpriteBatch batch;
-	private FrameBuffer lightingBuffer;
-	private TextureRegion lightingRegion;
-	private FrameBuffer viewportBuffer;
-	private TextureRegion viewportRegion;
+
+	private ViewPortBuffer lightingBuffer;
+	private ViewPortBuffer viewportBuffer;
+	private BlendFunctionContext lightingContext;
 
 	// Developer tools
 	private boolean renderScene = true;
@@ -43,20 +46,22 @@ public class IngameRenderer {
 	public IngameRenderer(GameState state, ViewPort viewPort) {
 		this.state = state;
 		this.viewPort = viewPort;
+		this.lightingBuffer = new ViewPortBuffer(viewPort);
+		this.viewportBuffer = new ViewPortBuffer(viewPort);
+		this.lightingContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 	}
 
 	public void initialize() {
 		batch = new SpriteBatch();
 
-		lightingBuffer = new FrameBuffer(Pixmap.Format.RGB565, viewPort.width, viewPort.height, false);
-		lightingRegion = new TextureRegion(lightingBuffer.getColorBufferTexture());
-		lightingRegion.flip(false, true);
-
-		viewportBuffer = new FrameBuffer(Pixmap.Format.RGB565, viewPort.width, viewPort.height, false);
-		viewportRegion = new TextureRegion(viewportBuffer.getColorBufferTexture());
-		viewportRegion.flip(false, true);
+		resetBuffers();
 
 		randomizeBaseLight();
+	}
+
+	private void resetBuffers() {
+		lightingBuffer.reset();
+		viewportBuffer.reset();
 	}
 
 	public void randomizeBaseLight() {
@@ -76,69 +81,55 @@ public class IngameRenderer {
 
 		// Render scene
 		if (renderScene) {
-			viewportBuffer.begin();
-			batch.begin();
-			// Draw map
-			drawMap();
-			// Iterate entities in render order and draw them
-			state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
-			batch.end();
-			viewportBuffer.end();
-			batch.begin();
-			batch.draw(viewportRegion, 0, 0, viewportBuffer.getWidth(), viewportBuffer.getHeight());
-			batch.end();
+			viewportBuffer.render((batch) -> {
+				// Draw map
+				drawMap(batch);
+				// Iterate entities in render order and draw them
+				state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
+			});
 		} else {
-			batch.begin();
-			Gdx.gl.glClearColor(1, 1, 1, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			batch.end();
+			viewportBuffer.render((batch) -> {
+				Gdx.gl.glClearColor(1, 1, 1, 1);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
 		}
 
 		// Draw lighting on top of scene
 		if (renderLighting) {
-			batch.begin();
-			// remember SpriteBatch's current functions
-			int srcFunc = batch.getBlendSrcFunc();
-			int dstFunc = batch.getBlendDstFunc();
-			batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ZERO);
-
-			batch.draw(lightingRegion, 0, 0, lightingBuffer.getWidth(), lightingBuffer.getHeight());
-
-			// Restore blend function
-			batch.setBlendFunction(srcFunc, dstFunc);
-			batch.end();
+			viewportBuffer.render((batch) -> {
+				lightingContext.run(batch, lightingBuffer::draw);
+			});
 		}
 
 		// Render UI elements
 		if (renderHealthbars) {
-			batch.begin();
-			state.getEntities().stream().filter(e -> e instanceof Character).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(state, batch, viewPort));
-			batch.end();
+			viewportBuffer.render((batch) -> {
+				state.getEntities().stream().filter(e -> e instanceof Character).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(state, batch, viewPort));
+			});
 		}
 
+		batch.begin();
+		viewportBuffer.drawScaled(batch);
+		batch.end();
 	}
 
 	private void renderLight() {
-		lightingBuffer.begin();
-		batch.begin();
+		lightingBuffer.render((batch) -> {
+			// remember SpriteBatch's current functions
+			int srcFunc = batch.getBlendSrcFunc();
+			int dstFunc = batch.getBlendDstFunc();
+			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 
-		// remember SpriteBatch's current functions
-		int srcFunc = batch.getBlendSrcFunc();
-		int dstFunc = batch.getBlendDstFunc();
-		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
+			Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			state.getEntities().stream().sorted(comp).forEach(e -> e.drawLight(state, batch, viewPort));
 
-		Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		state.getEntities().stream().sorted(comp).forEach(e -> e.drawLight(state, batch, viewPort));
-
-		// Restore blend function
-		batch.setBlendFunction(srcFunc, dstFunc);
-
-		batch.end();
-		lightingBuffer.end();
+			// Restore blend function
+			batch.setBlendFunction(srcFunc, dstFunc);
+		});
 	}
 
-	private void drawMap() {
+	private void drawMap(SpriteBatch batch) {
 		// Only render the visible portion of the map
 		int tWidth = state.getLevelTileset().tile_size;
 		int tHeight = state.getLevelTileset().tile_size;
@@ -149,7 +140,7 @@ public class IngameRenderer {
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
 				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);
-				batch.draw(textureRegion, (x * tWidth - viewPort.xOffset) * viewPort.scale, (y * tHeight - viewPort.yOffset) * viewPort.scale, textureRegion.getRegionWidth() * viewPort.scale, textureRegion.getRegionHeight() * viewPort.scale);
+				batch.draw(textureRegion, (x * tWidth - viewPort.xOffset), (y * tHeight - viewPort.yOffset), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 			}
 		}
 	}
