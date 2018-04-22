@@ -2,10 +2,10 @@ package com.dungeon.game.object.exit;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class ExitPlatformSheet extends Tileset {
+public class ExitPlatformSheet extends TileSheet {
 
 	private final TextureRegion IDLE_1 = getTile(0, 0);
 	private final Animation<TextureRegion> IDLE_ANIMATION = new Animation<>(1f, IDLE_1);

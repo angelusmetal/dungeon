@@ -6,7 +6,6 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
-import com.dungeon.game.TilesetHelper;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
@@ -29,7 +28,6 @@ public class GameState {
 
 	public final int MAP_WIDTH = 40;
 	public final int MAP_HEIGHT = 40;
-	private final TilesetHelper tilesetHelper;
 	private final EntityFactory entityFactory;
 
 	private float stateTime;
@@ -56,7 +54,6 @@ public class GameState {
 		this.stateTime = 0;
 		this.entityFactory = entityFactory;
 		this.tilesetManager = new TilesetManager();
-		this.tilesetHelper = new TilesetHelper(getLevelTileset());
 	}
 
 	public float getStateTime() {
@@ -151,10 +148,6 @@ public class GameState {
 
 	public LevelTileset getLevelTileset() {
 		return tilesetManager.getDungeonVioletTileset();
-	}
-
-	public TilesetHelper getTilesetHelper() {
-		return tilesetHelper;
 	}
 
 	public void generateNewLevel() {

@@ -12,9 +12,9 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.CatProjectileTileset;
-import com.dungeon.game.tileset.CharactersTileset32;
-import com.dungeon.game.tileset.ProjectileTileset;
+import com.dungeon.game.tileset.CatProjectileSheet;
+import com.dungeon.game.tileset.CharactersSheet32;
+import com.dungeon.game.tileset.ProjectileSheet;
 
 import java.util.function.Function;
 
@@ -39,13 +39,13 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 	public WitchFactory(GameState state, Tombstone.Factory tombstoneFactory) {
 		this.state = state;
 
-		idleAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_IDLE, CharactersTileset32::witchIdle);
-		walkAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_WALK, CharactersTileset32::witchWalk);
-		attackAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_ATTACK, CharactersTileset32::witchAttack);
-		bulletFlySideAnimation = ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_RIGHT, CatProjectileTileset::flyRight);
-		bulletFlyNorthAnimation = ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_UP, CatProjectileTileset::flyUp);
-		bulletFlySouthAnimation = ResourceManager.instance().getAnimation(CatProjectileTileset.FLY_DOWN, CatProjectileTileset::flyDown);
-		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.WITCH_EXPLODE, ProjectileTileset::witchExplode);
+		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_IDLE, CharactersSheet32::witchIdle);
+		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
+		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_ATTACK, CharactersSheet32::witchAttack);
+		bulletFlySideAnimation = ResourceManager.instance().getAnimation(CatProjectileSheet.FLY_RIGHT, CatProjectileSheet::flyRight);
+		bulletFlyNorthAnimation = ResourceManager.instance().getAnimation(CatProjectileSheet.FLY_UP, CatProjectileSheet::flyUp);
+		bulletFlySouthAnimation = ResourceManager.instance().getAnimation(CatProjectileSheet.FLY_DOWN, CatProjectileSheet::flyDown);
+		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.WITCH_EXPLODE, ProjectileSheet::witchExplode);
 
 		bullet = new Projectile.Builder()
 				.speed(200)

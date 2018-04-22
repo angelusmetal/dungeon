@@ -2,10 +2,10 @@ package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class AcidSlimeSheet extends Tileset {
+public class AcidSlimeSheet extends TileSheet {
 
 	private final TextureRegion IDLE_1 = getTile(0, 0);
 	private final TextureRegion IDLE_2 = getTile(1, 0);

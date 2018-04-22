@@ -2,10 +2,10 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class ProjectileTileset extends Tileset {
+public class ProjectileSheet extends TileSheet {
 
 	private final TextureRegion PROJECTILE_ASSASIN_FLY = getTile(0, 0);
 	private final TextureRegion PROJECTILE_ASSASIN_EXPLODE_1 = getTile(1, 0);
@@ -41,32 +41,32 @@ public class ProjectileTileset extends Tileset {
 	public static final String WITCH_FLY = "projectile_witch_fly";
 	public static final String WITCH_EXPLODE = "projectile_witch_explode";
 
-	ProjectileTileset() {
+	ProjectileSheet() {
 		super(ResourceManager.instance().getTexture("projectile.png"), 16);
 	}
 
 	public static Animation<TextureRegion> assasinFly() {
-		return new ProjectileTileset().PROJECTILE_ASSASIN_FLY_ANIMATION;
+		return new ProjectileSheet().PROJECTILE_ASSASIN_FLY_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> assasinExplode() {
-		return new ProjectileTileset().PROJECTILE_ASSASIN_EXPLODE_ANIMATION;
+		return new ProjectileSheet().PROJECTILE_ASSASIN_EXPLODE_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> thiefFly() {
-		return new ProjectileTileset().PROJECTILE_THIEF_FLY_ANIMATION;
+		return new ProjectileSheet().PROJECTILE_THIEF_FLY_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> thiefExplode() {
-		return new ProjectileTileset().PROJECTILE_THIEF_EXPLODE_ANIMATION;
+		return new ProjectileSheet().PROJECTILE_THIEF_EXPLODE_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> witchFly() {
-		return new ProjectileTileset().PROJECTILE_WITCH_FLY_ANIMATION;
+		return new ProjectileSheet().PROJECTILE_WITCH_FLY_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> witchExplode() {
-		return new ProjectileTileset().PROJECTILE_WITCH_EXPLODE_ANIMATION;
+		return new ProjectileSheet().PROJECTILE_WITCH_EXPLODE_ANIMATION;
 	}
 
 }

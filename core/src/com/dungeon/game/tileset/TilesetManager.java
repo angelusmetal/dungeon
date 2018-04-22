@@ -3,17 +3,17 @@ package com.dungeon.game.tileset;
 public class TilesetManager {
 
 	private final DungeonVioletTileset dungeonVioletTileset;
-	private final HudTileset hudTileset;
+	private final HudSheet hudTileset;
 
 	public TilesetManager() {
 		dungeonVioletTileset = new DungeonVioletTileset();
-		hudTileset = new HudTileset();
+		hudTileset = new HudSheet();
 	}
 
 	public DungeonVioletTileset getDungeonVioletTileset() {
 		return dungeonVioletTileset;
 	}
-	public HudTileset getHudTileset() {
+	public HudSheet getHudTileset() {
 		return hudTileset;
 	}
 

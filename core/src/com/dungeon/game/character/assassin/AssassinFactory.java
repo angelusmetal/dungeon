@@ -12,8 +12,8 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.CharactersTileset32;
-import com.dungeon.game.tileset.ProjectileTileset;
+import com.dungeon.game.tileset.CharactersSheet32;
+import com.dungeon.game.tileset.ProjectileSheet;
 
 import java.util.function.Function;
 
@@ -36,11 +36,11 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 	public AssassinFactory(GameState state, Tombstone.Factory tombstoneFactory) {
 		this.state = state;
 
-		attackAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_ATTACK, CharactersTileset32::assasinAttack);
-		idleAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_IDLE, CharactersTileset32::assassinIdle);
-		walkAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_WALK, CharactersTileset32::assassinWalk);
-		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_FLY, ProjectileTileset::assasinFly);
-		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.ASSASSIN_EXPLODE, ProjectileTileset::assasinExplode);
+		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_ATTACK, CharactersSheet32::assasinAttack);
+		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_IDLE, CharactersSheet32::assassinIdle);
+		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_WALK, CharactersSheet32::assassinWalk);
+		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.ASSASSIN_FLY, ProjectileSheet::assasinFly);
+		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.ASSASSIN_EXPLODE, ProjectileSheet::assasinExplode);
 
 		bulletLight = new Light(60, new Color(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		bullet = new Projectile.Builder()

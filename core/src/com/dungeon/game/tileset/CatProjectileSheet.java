@@ -2,10 +2,10 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class CatProjectileTileset extends Tileset {
+public class CatProjectileSheet extends TileSheet {
 
 	private final TextureRegion PROJECTILE_FLY_RIGHT_1 = getTile(0, 0);
 	private final TextureRegion PROJECTILE_FLY_RIGHT_2 = getTile(1, 0);
@@ -27,20 +27,20 @@ public class CatProjectileTileset extends Tileset {
 	public static final String FLY_UP = "projectile_cat_up";
 	public static final String FLY_DOWN = "projectile_cat_down";
 
-	CatProjectileTileset() {
+	CatProjectileSheet() {
 		super(ResourceManager.instance().getTexture("cat_projectile.png"), 24);
 	}
 
 	public static Animation<TextureRegion> flyRight() {
-		return new CatProjectileTileset().PROJECTILE_FLY_ANIMATION_RIGHT;
+		return new CatProjectileSheet().PROJECTILE_FLY_ANIMATION_RIGHT;
 	}
 
 	public static Animation<TextureRegion> flyUp() {
-		return new CatProjectileTileset().PROJECTILE_FLY_ANIMATION_UP;
+		return new CatProjectileSheet().PROJECTILE_FLY_ANIMATION_UP;
 	}
 
 	public static Animation<TextureRegion> flyDown() {
-		return new CatProjectileTileset().PROJECTILE_FLY_ANIMATION_DOWN;
+		return new CatProjectileSheet().PROJECTILE_FLY_ANIMATION_DOWN;
 	}
 
 }

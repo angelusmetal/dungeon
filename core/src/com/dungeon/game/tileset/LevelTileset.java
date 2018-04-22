@@ -2,9 +2,9 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.render.Tile;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 
-public abstract class LevelTileset extends Tileset {
+public abstract class LevelTileset extends TileSheet {
 
 	public LevelTileset(Texture texture, int tile_size) {
 		super(texture, tile_size);

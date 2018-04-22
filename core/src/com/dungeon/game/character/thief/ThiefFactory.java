@@ -12,8 +12,8 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.object.tombstone.Tombstone;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.CharactersTileset32;
-import com.dungeon.game.tileset.ProjectileTileset;
+import com.dungeon.game.tileset.CharactersSheet32;
+import com.dungeon.game.tileset.ProjectileSheet;
 
 import java.util.function.Function;
 
@@ -36,11 +36,11 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 	public ThiefFactory(GameState state, Tombstone.Factory tombstoneFactory) {
 		this.state = state;
 
-		idleAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.THIEF_IDLE, CharactersTileset32::thiefIdle);
-		walkAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.THIEF_WALK, CharactersTileset32::thiefWalk);
-		attackAnimation = ResourceManager.instance().getAnimation(CharactersTileset32.THIEF_ATTACK, CharactersTileset32::thiefAttack);
-		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.THIEF_FLY, ProjectileTileset::thiefFly);
-		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileTileset.THIEF_EXPLODE, ProjectileTileset::thiefExplode);
+		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_IDLE, CharactersSheet32::thiefIdle);
+		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
+		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_ATTACK, CharactersSheet32::thiefAttack);
+		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.THIEF_FLY, ProjectileSheet::thiefFly);
+		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.THIEF_EXPLODE, ProjectileSheet::thiefExplode);
 
 		bullet = new Projectile.Builder()
 				.speed(400)

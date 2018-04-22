@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Random;
 
-public abstract class Tileset {
+public abstract class TileSheet {
 	public final Texture texture;
 	public final int tile_size;
 	private static final Random random = new Random();
 
-	public Tileset(Texture texture, int tile_size) {
+	public TileSheet(Texture texture, int tile_size) {
 		this.texture = texture;
 		this.tile_size = tile_size;
 	}

@@ -2,10 +2,10 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class CharactersTileset32 extends Tileset {
+public class CharactersSheet32 extends TileSheet {
 
 	private final TextureRegion WITCH_WALK_1 = getTile(0, 0);
 	private final TextureRegion WITCH_WALK_2 = getTile(1, 0);
@@ -86,44 +86,44 @@ public class CharactersTileset32 extends Tileset {
 	public static final String WITCH_ATTACK = "witch_attack";
 	public static final String WITCH_IDLE = "witch_idle";
 
-	public CharactersTileset32() {
+	public CharactersSheet32() {
 		super(ResourceManager.instance().getTexture("characters_32b.png"), 32);
 	}
 
 	public static Animation<TextureRegion> witchWalk() {
-		return new CharactersTileset32().WITCH_WALK_ANIMATION;
+		return new CharactersSheet32().WITCH_WALK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> witchAttack() {
-		return new CharactersTileset32().WITCH_ATTACK_ANIMATION;
+		return new CharactersSheet32().WITCH_ATTACK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> witchIdle() {
-		return new CharactersTileset32().WITCH_IDLE_ANIMATION;
+		return new CharactersSheet32().WITCH_IDLE_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> assassinWalk() {
-		return new CharactersTileset32().ASSASSIN_WALK_ANIMATION;
+		return new CharactersSheet32().ASSASSIN_WALK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> assasinAttack() {
-		return new CharactersTileset32().ASSASSIN_ATTACK_ANIMATION;
+		return new CharactersSheet32().ASSASSIN_ATTACK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> assassinIdle() {
-		return new CharactersTileset32().ASSASSIN_IDLE_ANIMATION;
+		return new CharactersSheet32().ASSASSIN_IDLE_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> thiefWalk() {
-		return new CharactersTileset32().THIEF_WALK_ANIMATION;
+		return new CharactersSheet32().THIEF_WALK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> thiefAttack() {
-		return new CharactersTileset32().THIEF_ATTACK_ANIMATION;
+		return new CharactersSheet32().THIEF_ATTACK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> thiefIdle() {
-		return new CharactersTileset32().THIEF_IDLE_ANIMATION;
+		return new CharactersSheet32().THIEF_IDLE_ANIMATION;
 	}
 
 }

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.resource.ResourceManager;
-import com.dungeon.game.tileset.CharactersTileset32;
+import com.dungeon.game.tileset.CharactersSheet32;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +86,11 @@ public class CharacterSelection {
 
 	private Animation<TextureRegion> getAnimation(int characterId) {
 		if (characterId == 0) {
-			return ResourceManager.instance().getAnimation(CharactersTileset32.WITCH_WALK, CharactersTileset32::witchWalk);
+			return ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
 		} else if (characterId == 1) {
-			return ResourceManager.instance().getAnimation(CharactersTileset32.THIEF_WALK, CharactersTileset32::thiefWalk);
+			return ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
 		} else {
-			return ResourceManager.instance().getAnimation(CharactersTileset32.ASSASSIN_WALK, CharactersTileset32::assassinWalk);
+			return ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_WALK, CharactersSheet32::assassinWalk);
 		}
 	}
 

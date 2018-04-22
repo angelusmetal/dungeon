@@ -2,10 +2,10 @@ package com.dungeon.game.object.powerups;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class PowerupsSheet extends Tileset {
+public class PowerupsSheet extends TileSheet {
 
 	private final TextureRegion HEALTH_1 = getTile(0, 0);
 	private final TextureRegion DAMAGE_1 = getTile(1, 0);

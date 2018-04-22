@@ -2,10 +2,10 @@ package com.dungeon.game.object.torch;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tileset;
+import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
 
-public class TorchSheet extends Tileset {
+public class TorchSheet extends TileSheet {
 
 	private final TextureRegion TORCH_1 = getTile(0, 0);
 	private final TextureRegion TORCH_2 = getTile(1, 0);
