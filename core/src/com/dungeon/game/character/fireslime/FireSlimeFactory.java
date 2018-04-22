@@ -27,9 +27,11 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	final Projectile.Builder bullet;
 	final Particle.Builder bulletExplosion;
+	final Particle.Builder bulletTrail;
 
 	final Light characterLight;
 	final Light bulletLight;
+	final Light bulletTrailLight;
 
 	final DrawContext drawContext;
 
@@ -42,14 +44,19 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 		characterLight = new Light(100, new Color(1, 0.5f, 0, 0.8f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 		bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+		bulletTrailLight = new Light(20, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 
 		bullet = new Projectile.Builder()
 				.speed(100)
 				.timeToLive(10)
 				.targetPredicate(PlayerCharacter.IS_PLAYER)
-				.damage(30);
+				.damage(30)
+				.trailFrequency(0.1f);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(explosionAnimation.getAnimationDuration());
+		bulletTrail = new Particle.Builder()
+				.timeToLive(explosionAnimation.getAnimationDuration())
+				.zSpeed(10);
 
 		// Draw context
 		drawContext = new ColorContext(new Color(1, 1, 1, 0.8f));

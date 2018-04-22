@@ -29,7 +29,9 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 
 	final Projectile.Builder bullet;
 	final Particle.Builder bulletExplosion;
+	final Particle.Builder bulletTrail;
 	final Light bulletLight;
+	final Light bulletTrailLight;
 
 	final Function<Vector2, Tombstone> tombstoneSpawner;
 
@@ -47,10 +49,15 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(10)
 				.bounciness(10)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
-				.damage(15);
+				.damage(15)
+				.trailFrequency(0.02f);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
+		bulletTrail = new Particle.Builder()
+				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
+				.zSpeed(0);
 		bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		bulletTrailLight = new Light(20, new Color(0.3f, 0.9f, 0.2f, 0.1f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		tombstoneSpawner = tombstoneFactory::build;
 	}

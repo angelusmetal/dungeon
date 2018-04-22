@@ -26,7 +26,7 @@ class AcidBlob extends Particle {
 		zSpeed = (float) Math.random() * 50 + 50;
 		setSelfImpulse((float) Math.random() * 100f - 50f, (float) Math.random() * 20f - 10f);
 		setCurrentAnimation(new GameAnimation(factory.blobAnimation, state.getStateTime()));
-		light = factory.poolLight;
+		light = factory.blobLight;
 		drawContext = new ColorContext(new Color(1, 1, 1, 0.5f));
 	}
 
@@ -53,7 +53,7 @@ class AcidBlob extends Particle {
 		public Explosion(AcidSlimeFactory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), startTime, factory.splat);
 			this.factory = factory;
-			light = factory.poolLight;
+			light = factory.blobLight;
 			setCurrentAnimation(new GameAnimation(factory.splatAnimation, startTime));
 		}
 

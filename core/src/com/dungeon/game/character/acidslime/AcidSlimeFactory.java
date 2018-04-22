@@ -30,6 +30,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	final Light characterLight;
 	final Light poolLight;
+	final Light blobLight;
 
 	final DrawContext drawContext;
 
@@ -48,6 +49,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 		characterLight = new Light(100, new Color(0, 1, 0, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
 		poolLight = new Light(100, new Color(0, 0.5f, 0, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		blobLight = new Light(30, new Color(0, 0.5f, 0, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		blob = new Particle.Builder()
 				.speed(50)

@@ -32,6 +32,7 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 
 	final Projectile.Builder bullet;
 	final Particle.Builder bulletExplosion;
+	final Particle.Builder bulletTrail;
 	final Light bulletLight;
 
 	final Function<Vector2, Tombstone> tombstoneSpawner;
@@ -53,9 +54,13 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.autoseek(0.1f)
 				.targetRadius(60)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
-				.damage(25);
+				.damage(25)
+				.trailFrequency(0.05f);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
+		bulletTrail = new Particle.Builder()
+				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
+				.zSpeed(20);
 		bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 
 		tombstoneSpawner = tombstoneFactory::build;

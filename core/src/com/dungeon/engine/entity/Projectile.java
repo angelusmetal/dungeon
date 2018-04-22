@@ -1,7 +1,6 @@
 package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
@@ -18,9 +17,13 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 
 	/** Damage to inflict upon hitting a target */
 	protected int damage;
+	/** How often to spawn a "trail" particle */
+	private float trailFrequency;
+	private float nextTrailSpawn = 0;
 
 	public static class Builder extends Particle.Builder {
 		private int damage;
+		private float trailFrequency;
 
 		public Builder speed(float speed) {
 			this.speed = speed;
@@ -71,11 +74,29 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 			this.damage = damage;
 			return this;
 		}
+
+		public Builder trailFrequency(float trailFrequency) {
+			this.trailFrequency = trailFrequency;
+			return this;
+		}
 	}
 
 	public Projectile(Body body, float startTime, Builder builder) {
 		super(body, startTime, builder);
 		this.damage = builder.damage;
+		this.trailFrequency = builder.trailFrequency;
+	}
+
+	@Override
+	public void think(GameState state) {
+		super.think(state);
+		if (state.getStateTime() > nextTrailSpawn) {
+			nextTrailSpawn = state.getStateTime() + trailFrequency;
+			Particle trail = createTrail(state, getPos());
+			if (trail != null) {
+				state.addEntity(trail);
+			}
+		}
 	}
 
 	/**
@@ -88,6 +109,9 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 	}
 
 	abstract protected Particle createExplosion(GameState state, Vector2 origin);
+	protected Particle createTrail(GameState state, Vector2 origin) {
+		return null;
+	}
 
 	@Override
 	protected boolean onEntityCollision(GameState state, Entity entity) {

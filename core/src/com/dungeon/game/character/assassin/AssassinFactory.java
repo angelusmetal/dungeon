@@ -29,7 +29,9 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 
 	final Projectile.Builder bullet;
 	final Particle.Builder bulletExplosion;
+	final Particle.Builder bulletTrail;
 	final Light bulletLight;
+	final Light bulletTrailLight;
 
 	final Function<Vector2, Tombstone> tombstoneSpawner;
 
@@ -43,13 +45,18 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.ASSASSIN_EXPLODE, ProjectileSheet::assasinExplode);
 
 		bulletLight = new Light(60, new Color(0.8f, 0.3f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		bulletTrailLight = new Light(60, new Color(0.8f, 0.3f, 0.2f, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		bullet = new Projectile.Builder()
 				.speed(180)
 				.timeToLive(10)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
-				.damage(35);
+				.damage(35)
+				.trailFrequency(0.1f);
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
+		bulletTrail = new Particle.Builder()
+				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
+				.zSpeed(10);
 
 		tombstoneSpawner = tombstoneFactory::build;
 	}
