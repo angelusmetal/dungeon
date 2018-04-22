@@ -52,7 +52,6 @@ public class CharacterSelection {
 	public boolean addControl(PlayerControlBundle control) {
 		if (slots.size() < 4) {
 			slots.add(new Slot(control, ++currentPlayer));
-			System.out.println("Added player!");
 			return true;
 		} else {
 			return false;
@@ -62,14 +61,12 @@ public class CharacterSelection {
 	public void selectNextCharacter(PlayerControlBundle control) {
 		getSlot(control).ifPresent(s -> {
 			s.characterId = (s.characterId + 1) % CHARACTER_COUNT;
-			System.out.println("Player " + s.playerId + " switched to character " + s.characterId);
 		});
 	}
 
 	public void selectPrevCharacter(PlayerControlBundle control) {
 		getSlot(control).ifPresent(s -> {
 			s.characterId = (s.characterId - 1 + CHARACTER_COUNT) % CHARACTER_COUNT;
-			System.out.println("Player " + s.playerId + " switched to character " + s.characterId);
 		});
 	}
 

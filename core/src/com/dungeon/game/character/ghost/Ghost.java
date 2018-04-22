@@ -86,7 +86,6 @@ public class Ghost extends Character {
 	public void hit(GameState state, float dmg) {
 		super.hit(state, dmg);
 		visibleUntil = state.getStateTime() + VISIBLE_TIME;
-		System.out.println("Visible until: " + visibleUntil);
 	}
 
 //	@Override

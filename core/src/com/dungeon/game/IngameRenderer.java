@@ -2,11 +2,8 @@ package com.dungeon.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
@@ -133,14 +130,14 @@ public class IngameRenderer {
 		// Only render the visible portion of the map
 		int tWidth = state.getLevelTileset().tile_size;
 		int tHeight = state.getLevelTileset().tile_size;
-		int minX = Math.max(0, viewPort.xOffset / tWidth);
-		int maxX = Math.min(state.getLevel().map.length - 1, (int)(viewPort.xOffset + viewPort.width / viewPort.scale) / tWidth) + 1;
-		int minY = Math.max(0, viewPort.yOffset / tHeight - 1);
-		int maxY = Math.min(state.getLevel().map[0].length - 1, (int)(viewPort.yOffset + viewPort.height / viewPort.scale) / tHeight);
+		int minX = Math.max(0, viewPort.cameraX / tWidth);
+		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.cameraX + viewPort.width) / tWidth) + 1;
+		int minY = Math.max(0, viewPort.cameraY / tHeight - 1);
+		int maxY = Math.min(state.getLevel().map[0].length - 1, (viewPort.cameraY + viewPort.height) / tHeight);
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
 				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);
-				batch.draw(textureRegion, (x * tWidth - viewPort.xOffset), (y * tHeight - viewPort.yOffset), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				batch.draw(textureRegion, (x * tWidth - viewPort.cameraX), (y * tHeight - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 			}
 		}
 	}

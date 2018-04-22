@@ -6,3 +6,12 @@
     # foregroundFPS = 0
     # backgroundFPS = 0
     # vSyncEnabled = false
+[viewport]
+    # Position within screen where viewport gets drawn
+    # posx = 400
+    # posy = 200
+    # Dimensions default to screen size if not set
+    # width = 800
+    # height = 400
+    # Scaling gives the blocky appeal
+    scale = 3.0

@@ -24,10 +24,11 @@ public class ViewPortBuffer {
 		if (frameBuffer != null) {
 			frameBuffer.dispose();
 		}
-		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, viewPort.width, viewPort.height, false);
+		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, viewPort.cameraWidth, viewPort.cameraHeight, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
 		textureRegion.flip(false, true);
 		textureRegion.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
 	public void dispose() {
@@ -49,6 +50,6 @@ public class ViewPortBuffer {
 	}
 
 	public void drawScaled(SpriteBatch batch) {
-		batch.draw(textureRegion, 0, 0, frameBuffer.getWidth() * viewPort.scale, frameBuffer.getHeight() * viewPort.scale);
+		batch.draw(textureRegion, viewPort.posX, viewPort.posY, frameBuffer.getWidth() * viewPort.getScale(), frameBuffer.getHeight() * viewPort.getScale());
 	}
 }

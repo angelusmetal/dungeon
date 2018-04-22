@@ -29,8 +29,8 @@ public class CharacterViewPortTracker {
 			avgY /= characters.size();
 
 			// Place camera in the middle of all characters
-			viewPort.xOffset = (int) (avgX - viewPort.width / viewPort.scale / 2);
-			viewPort.yOffset = (int) (avgY - viewPort.height / viewPort.scale / 2);
+			viewPort.cameraX = (int) (avgX - viewPort.cameraWidth / 2);
+			viewPort.cameraY = (int) (avgY - viewPort.cameraHeight / 2);
 		}
 	}
 }

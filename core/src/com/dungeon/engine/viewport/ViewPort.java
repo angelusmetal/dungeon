@@ -6,25 +6,39 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class ViewPort {
+	public final int posX;
+	public final int posY;
 	public final int width;
 	public final int height;
-	public float scale = 4;
-	public int xOffset = 0;
-	public int yOffset = 0;
+	public int cameraX = 0;
+	public int cameraY = 0;
+	public int cameraWidth;
+	public int cameraHeight;
+	private float scale;
 
-	public ViewPort(int width, int height, int xOffset, int yOffset, float scale) {
+	public ViewPort(int posX, int posY, int width, int height, float scale) {
+		this.posX = posX;
+		this.posY = posY;
 		this.width = width;
 		this.height = height;
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
+		setScale(scale);
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
 		this.scale = scale;
+		this.cameraWidth = (int) (width / scale);
+		this.cameraHeight = (int) (height / scale);
 	}
 
 	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float invertX, Vector2 drawOffset) {
 		batch.draw(
 				textureRegion,
-				(x - xOffset - drawOffset.x * invertX),
-				(y - yOffset - drawOffset.y),
+				(x - cameraX - drawOffset.x * invertX),
+				(y - cameraY - drawOffset.y),
 				textureRegion.getRegionWidth() * invertX,
 				textureRegion.getRegionHeight());
 	}
@@ -32,19 +46,18 @@ public class ViewPort {
 	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float width, float height) {
 		batch.draw(
 				textureRegion,
-				(x - xOffset),
-				(y - yOffset),
+				(x - cameraX),
+				(y - cameraY),
 				width,
 				height);
 	}
 
-	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter2, float rotation) {
-		float diameter = diameter2;
+	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter, float rotation) {
 		float radius = diameter / 2f;
 		batch.draw(
 				texture,
-				(x - xOffset) - radius,
-				(y - yOffset) - radius,
+				(x - cameraX) - radius,
+				(y - cameraY) - radius,
 				radius,
 				radius,
 				diameter,
@@ -66,8 +79,8 @@ public class ViewPort {
 				"width=" + width +
 				", height=" + height +
 				", scale=" + scale +
-				", xOffset=" + xOffset +
-				", yOffset=" + yOffset +
+				", cameraX=" + cameraX +
+				", cameraY=" + cameraY +
 				'}';
 	}
 }

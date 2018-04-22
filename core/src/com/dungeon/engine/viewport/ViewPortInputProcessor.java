@@ -44,8 +44,8 @@ public class ViewPortInputProcessor implements GestureDetector.GestureListener, 
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		viewPort.xOffset += deltaX / viewPort.scale;
-		viewPort.yOffset -= deltaY / viewPort.scale;
+		viewPort.cameraX += deltaX / viewPort.getScale();
+		viewPort.cameraY -= deltaY / viewPort.getScale();
 		return false;
 	}
 
@@ -115,11 +115,11 @@ public class ViewPortInputProcessor implements GestureDetector.GestureListener, 
 			// Change scale based on mouse wheel
 			if (amount < 0) {
 				scaleIndex = Math.min(scaleIndex - amount, SCALES.length - 1);
-				viewPort.scale = SCALES[scaleIndex];
+				viewPort.setScale(SCALES[scaleIndex]);
 			}
 			else if (amount > 0) {
 				scaleIndex = Math.max(scaleIndex - amount, 0);
-				viewPort.scale = SCALES[scaleIndex];
+				viewPort.setScale(SCALES[scaleIndex]);
 			}
 		}
 		return zoomEnabled;

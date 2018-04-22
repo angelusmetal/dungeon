@@ -16,7 +16,6 @@ import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.FadeEffect;
-import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
@@ -38,11 +37,13 @@ import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.SelectionPlayerControlListener;
+import com.moandjiezana.toml.Toml;
 
 import java.util.Iterator;
 
 public class Dungeon extends ApplicationAdapter {
-	public static final float INITIAL_SCALE = 3;
+	public static final double DEFAULT_SCALE = 3;
+	private final Toml configuration;
 	private GameState state;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
@@ -56,10 +57,13 @@ public class Dungeon extends ApplicationAdapter {
 
 	long frame = 0;
 
+	public Dungeon(Toml configuration) {
+		this.configuration = configuration;
+	}
+
 	@Override
 	public void create () {
-		viewPort = new ViewPort(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, INITIAL_SCALE);
-		viewPortInputProcessor = new ViewPortInputProcessor(viewPort);
+		initViewPort();
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(viewPortInputProcessor);
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
@@ -115,6 +119,16 @@ public class Dungeon extends ApplicationAdapter {
 		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
 	}
 
+	private void initViewPort() {
+		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
+		int posX = configuration.getLong("viewport.posx", 0L).intValue();
+		int posY = configuration.getLong("viewport.posy", 0L).intValue();
+		int width = configuration.getLong("viewport.width", (long) Gdx.graphics.getWidth()).intValue();
+		int height = configuration.getLong("viewport.height", (long) Gdx.graphics.getHeight()).intValue();
+		viewPort = new ViewPort(posX, posY, width, height, scale);
+		viewPortInputProcessor = new ViewPortInputProcessor(viewPort);
+	}
+
 	private void addDeveloperHotkeys() {
 		addDeveloperHotkey(Input.Keys.F1, ingameRenderer::toggleLighting);
 		addDeveloperHotkey(Input.Keys.F2, ingameRenderer::toggleScene);
@@ -127,6 +141,9 @@ public class Dungeon extends ApplicationAdapter {
 		Trigger trigger = new Trigger(keyboardToggle);
 		trigger.addListener(runnable);
 	}
+
+	float nextFpsDisplay = 0;
+	int frameCnt = 0;
 
 	@Override
 	public void render() {
@@ -166,6 +183,13 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		this.frame += 1;
+		
+		frameCnt++;
+		if (state.getStateTime() >= nextFpsDisplay) {
+			System.out.println("FPS: " + frameCnt);
+			frameCnt = 0;
+			nextFpsDisplay = state.getStateTime() + 1;
+		}
 	}
 
 	@Override

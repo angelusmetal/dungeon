@@ -13,6 +13,6 @@ public class DesktopLauncher {
 		// Read configuration from file
 		Toml toml = new Toml().read(TextureResource.class.getClassLoader().getResourceAsStream("config.toml"));
 		LwjglApplicationConfiguration config = toml.getTable("application").to(LwjglApplicationConfiguration.class);
-		new LwjglApplication(new Dungeon(), config);
+		new LwjglApplication(new Dungeon(toml), config);
 	}
 }
