@@ -13,8 +13,9 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
 import java.util.Comparator;
+import java.util.function.Predicate;
 
-public class IngameRenderer {
+public class ViewPortRenderer {
 
 	private final GameState state;
 	private final ViewPort viewPort;
@@ -38,14 +39,28 @@ public class IngameRenderer {
 			e1.getPos().x < e2.getPos().x ? -1 :
 			e1.getPos().x > e2.getPos().x ? 1 : 0;
 
+	private final Predicate<? super Entity> entityInCamera;
+	private final Predicate<? super Entity> lightInCamera;
+
 	private final Vector3 baseLight = new Vector3(0.3f, 0.2f, 0.1f);
 
-	public IngameRenderer(GameState state, ViewPort viewPort) {
+	public ViewPortRenderer(GameState state, ViewPort viewPort) {
 		this.state = state;
 		this.viewPort = viewPort;
 		this.lightingBuffer = new ViewPortBuffer(viewPort);
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.lightingContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
+		entityInCamera = (e) ->
+			e.getPos().x < viewPort.cameraX + viewPort.cameraWidth &&
+			e.getPos().x + e.getFrame(state.getStateTime()).getRegionWidth() > viewPort.cameraX &&
+			e.getPos().y < viewPort.cameraY + viewPort.cameraHeight &&
+			e.getPos().y + e.getFrame(state.getStateTime()).getRegionHeight() > viewPort.cameraY;
+		lightInCamera = (e) ->
+			e.getLight() != null &&
+			e.getPos().x - e.getLight().diameter < viewPort.cameraX + viewPort.cameraWidth &&
+			e.getPos().x + e.getLight().diameter > viewPort.cameraX &&
+			e.getPos().y - e.getLight().diameter < viewPort.cameraY + viewPort.cameraHeight &&
+			e.getPos().y + e.getLight().diameter > viewPort.cameraY;
 	}
 
 	public void initialize() {
@@ -82,7 +97,7 @@ public class IngameRenderer {
 				// Draw map
 				drawMap(batch);
 				// Iterate entities in render order and draw them
-				state.getEntities().stream().sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
+				state.getEntities().stream().filter(entityInCamera).sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
 			});
 		} else {
 			viewportBuffer.render((batch) -> {
@@ -119,7 +134,7 @@ public class IngameRenderer {
 
 			Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			state.getEntities().stream().sorted(comp).forEach(e -> e.drawLight(state, batch, viewPort));
+			state.getEntities().stream().filter(lightInCamera).sorted(comp).forEach(e -> e.drawLight(state, batch, viewPort));
 
 			// Restore blend function
 			batch.setBlendFunction(srcFunc, dstFunc);

@@ -267,6 +267,10 @@ abstract public class Entity implements Drawable, Movable {
 		}
 	}
 
+	public Light getLight() {
+		return light;
+	}
+
 	public void setExpired(GameState state, boolean expired) {
 		this.expired = expired;
 		onExpire(state);

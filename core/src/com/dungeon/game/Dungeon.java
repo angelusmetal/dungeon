@@ -49,7 +49,7 @@ public class Dungeon extends ApplicationAdapter {
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
 	private CharacterViewPortTracker characterViewPortTracker;
-	private IngameRenderer ingameRenderer;
+	private ViewPortRenderer viewPortRenderer;
 	private CharacterSelection characterSelection;
 	private EntityFactory entityFactory;
 
@@ -96,8 +96,8 @@ public class Dungeon extends ApplicationAdapter {
 		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory(state, tombstoneFactory));
 		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory(state, tombstoneFactory));
 
-		ingameRenderer = new IngameRenderer(state, viewPort);
-		ingameRenderer.initialize();
+		viewPortRenderer = new ViewPortRenderer(state, viewPort);
+		viewPortRenderer.initialize();
 		characterSelection = new CharacterSelection(state);
 		characterSelection.initialize();
 
@@ -130,9 +130,9 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	private void addDeveloperHotkeys() {
-		addDeveloperHotkey(Input.Keys.F1, ingameRenderer::toggleLighting);
-		addDeveloperHotkey(Input.Keys.F2, ingameRenderer::toggleScene);
-		addDeveloperHotkey(Input.Keys.F3, ingameRenderer::randomizeBaseLight);
+		addDeveloperHotkey(Input.Keys.F1, viewPortRenderer::toggleLighting);
+		addDeveloperHotkey(Input.Keys.F2, viewPortRenderer::toggleScene);
+		addDeveloperHotkey(Input.Keys.F3, viewPortRenderer::randomizeBaseLight);
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {
@@ -165,7 +165,7 @@ public class Dungeon extends ApplicationAdapter {
 		if (state.getCurrentState() == GameState.State.MENU) {
 			characterSelection.render();
 		} else if (state.getCurrentState() == GameState.State.INGAME) {
-			ingameRenderer.render();
+			viewPortRenderer.render();
 		}
 
 		// Render effects on top
@@ -194,7 +194,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void dispose () {
-		ingameRenderer.dispose();
+		viewPortRenderer.dispose();
 		characterSelection.dispose();
 		state.getTilesetManager().dispose();
 		ResourceManager.instance().unloadAll();
