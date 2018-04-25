@@ -1,24 +1,29 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.level.room.*;
+import com.dungeon.game.level.room.ColumnsRoomGenerator;
+import com.dungeon.game.level.room.CornersRoomGenerator;
+import com.dungeon.game.level.room.DiamondRoomGenerator;
+import com.dungeon.game.level.room.ORoomGenerator;
+import com.dungeon.game.level.room.RectangleRoomGenerator;
+import com.dungeon.game.level.room.RoomGenerator;
 import com.dungeon.game.tileset.LevelTileset;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
 public class ProceduralLevelGenerator {
-
-	// TODO streamline random methods to reduce boilerplate code and make them based on seeds
-	private static final Random random = new Random();
-	// TODO replace Math.random() with the above
 
 	private int width;
 	private int height;
 	private TileType[][] tiles;
-	private int minRoomSize = 3;
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
@@ -93,8 +98,8 @@ public class ProceduralLevelGenerator {
 
 	public Level generateLevel(LevelTileset tileset) {
 		// Pick a random position to start (excluding border rows/columns)
-		int startX = (int) (Math.random() * (width - 10)) + 5;
-		int startY = (int) (Math.random() * (height - 10)) + 5;
+		int startX = Rand.between(5, width - 5);
+		int startY = Rand.between(5, height - 5);
 
 		// Depending on the closest edge (bottom, left, right, up) pick the opposite edge as search direction to grow the room
 		Direction direction;
@@ -134,12 +139,13 @@ public class ProceduralLevelGenerator {
 		for (int r = 1; r < rooms.size(); ++r) {
 			Room room = rooms.get(r);
 			// Create a random amount of ghosts in each room
-			final int skip = (int) (Math.random() * room.spawnPoints.size());
-			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(monsterTypes.get(random.nextInt(monsterTypes.size())), pos)));
+			final int skip = Rand.nextInt(room.spawnPoints.size());
+
+			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
 
 			// A 40% chance of spawning one powerup
-			if (Math.random() < 0.4d) {
-				Vector2 pos = room.spawnPoints.get((int) (Math.random() * room.spawnPoints.size()));
+			if (Rand.chance(0.4f)) {
+				Vector2 pos = Rand.pick(room.spawnPoints);
 				placeholders.add(new EntityPlaceholder(EntityType.HEALTH_POWERUP, pos));
 			}
 		}
@@ -151,7 +157,7 @@ public class ProceduralLevelGenerator {
 		// Pick one of the furthest-placed rooms and place the exit there
 		int farthest = rooms.stream().map(r -> r.generation).max(Integer::compareTo).orElseThrow(() -> new RuntimeException("Could not find farthest room"));
 		Room exitRoom = rooms.stream().filter(r -> r.generation == farthest).findFirst().orElseThrow(() -> new RuntimeException("Could not find farthest room"));
-		Vector2 exitPosition = exitRoom.spawnPoints.get(random.nextInt(exitRoom.spawnPoints.size()));
+		Vector2 exitPosition = Rand.pick(exitRoom.spawnPoints);
 		placeholders.add(new EntityPlaceholder(EntityType.EXIT, exitPosition));
 
 		return placeholders;
@@ -248,7 +254,7 @@ public class ProceduralLevelGenerator {
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					System.out.println("   -> Visiting connection point " + point + "...");
 					// Attempt to generate a room in that direction (at a random separation)
-					int roomSeparation = (int) (Math.random() * (maxRoomSeparation - minRoomSize) + minRoomSeparation);
+					int roomSeparation = Rand.between(minRoomSeparation, maxRoomSeparation);
 					stack.push(new Frame(point.coords.x + point.direction.x * roomSeparation, point.coords.y + point.direction.y * roomSeparation, point.direction, Type.NORMAL, point, roomSeparation, frame.generation + 1));
 				});
 				if (frame.originPoint != null) {
@@ -274,8 +280,8 @@ public class ProceduralLevelGenerator {
 
 		Collections.shuffle(roomGenerators);
 		RoomGenerator generator = roomGenerators.get(0);
-		int roomWidth = random.nextInt((generator.maxWidth() - generator.minWidth()) / 2) * 2 + generator.minWidth();
-		int roomHeight = random.nextInt((generator.maxHeight() - generator.minHeight()) / 2) * 2 + generator.minHeight();
+		int roomWidth = Rand.nextInt((generator.maxWidth() - generator.minWidth()) / 2) * 2 + generator.minWidth();
+		int roomHeight = Rand.nextInt((generator.maxHeight() - generator.minHeight()) / 2) * 2 + generator.minHeight();
 		for (int rWidth = roomWidth; rWidth >= generator.minWidth(); rWidth-=2) {
 			for (int rHeight = roomHeight; rHeight >= generator.minHeight(); rHeight-=2) {
 				Room room = generateRooms(generator, x, y, roomWidth, roomHeight, generation + 1, direction);

@@ -12,8 +12,6 @@ import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
-import com.dungeon.game.character.slime.Slime;
-import com.dungeon.game.character.slime.SlimeSheet;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 

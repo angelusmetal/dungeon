@@ -9,7 +9,6 @@ import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.ColorContext;
-import com.dungeon.game.character.thief.ThiefFactory;
 import com.dungeon.game.state.GameState;
 
 class AssassinBullet extends Projectile {

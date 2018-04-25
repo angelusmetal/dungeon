@@ -1,6 +1,7 @@
 package com.dungeon.game.level.room;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
@@ -8,7 +9,7 @@ import com.dungeon.game.level.entity.EntityType;
 
 public class RectangleRoomGenerator implements RoomGenerator {
 
-	private static TileType[] DECORATIONS = {TileType.WALL_DECORATION_1, TileType.EXIT.WALL_DECORATION_2, TileType.WALL_DECORATION_3, TileType.WALL_DECORATION_4};
+	private static TileType[] DECORATIONS = {TileType.WALL_DECORATION_1, TileType.WALL_DECORATION_2, TileType.WALL_DECORATION_3, TileType.WALL_DECORATION_4};
 
 	@Override
 	public int minWidth() {
@@ -65,8 +66,8 @@ public class RectangleRoomGenerator implements RoomGenerator {
 		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + width - 1, bottom + height / 2 - 0.5f));
 
 		// Add decorations
-		if (width > 7 && Math.random() > 0.2d) {
-			TileType decoration = DECORATIONS[(int) (Math.random() * DECORATIONS.length)];
+		if (width > 7 && Rand.chance(0.2f)) {
+			TileType decoration = Rand.pick(DECORATIONS);
 			room.tiles[2][height - 1] = decoration;
 			room.tiles[width - 3][height - 1] = decoration;
 		}

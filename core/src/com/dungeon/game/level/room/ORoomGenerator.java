@@ -1,6 +1,7 @@
 package com.dungeon.game.level.room;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
@@ -85,7 +86,7 @@ public class ORoomGenerator implements RoomGenerator {
 		room.placeholders.add(EntityPlaceholder.of(EntityType.TORCH, left + width / 2 + 1.5f, bottom + height / 2f - 1));
 
 		// Add decorations
-		room.tiles[width / 2][height / 2 - 1] = DECORATIONS[(int)(Math.random() * DECORATIONS.length)];
+		room.tiles[width / 2][height / 2 - 1] = Rand.pick(DECORATIONS);
 
 		return room;
 	}

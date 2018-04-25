@@ -8,6 +8,7 @@ import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.game.state.GameState;
 
 public class AcidSlime extends Character {
@@ -56,11 +57,11 @@ public class AcidSlime extends Character {
 				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
 				this.status = Status.ATTACKING;
 			} else {
-				nextThink = state.getStateTime() + (float) Math.random() * 3f;
+				nextThink = state.getStateTime() + Rand.nextFloat(3f);
 				speed = 5f;
 				// Aim random direction
-				if (Math.random() > 0.7f) {
-					Vector2 newDirection = new Vector2((float)Math.random() * 20f - 10f, (float)Math.random() * 20f - 10f);
+				if (Rand.chance(0.7f)) {
+					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
 					setSelfImpulse(newDirection);
 					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
 				} else {
@@ -97,7 +98,7 @@ public class AcidSlime extends Character {
 		state.addEntity(new DieSplatter(factory, state, getPos()));
 		state.addEntity(new AcidPool(factory, state, getPos()));
 		// Create 5-10 blobs
-		int splats = (int) (15 + Math.random() * 10);
+		int splats = Rand.between(15, 25);
 		for (int i = 0; i < splats; ++i) {
 			state.addEntity(new AcidBlob(factory, state, getPos()));
 		}

@@ -1,6 +1,7 @@
 package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.resource.ResourceManager;
 
@@ -87,7 +88,7 @@ public class DungeonVioletTileset extends LevelTileset {
 
 	@Override
 	public Tile floor() {
-		return getRandomTile(FLOOR_TILES);
+		return Rand.pick(FLOOR_TILES);
 	}
 
 	@Override
@@ -137,22 +138,22 @@ public class DungeonVioletTileset extends LevelTileset {
 
 	@Override
 	public Tile concaveLower() {
-		return getRandomTile(CONCAVE_LOWER_TILES);
+		return Rand.pick(CONCAVE_LOWER_TILES);
 	}
 
 	@Override
 	public Tile concaveUpper() {
-		return getRandomTile(CONCAVE_UPPER_TILES);
+		return Rand.pick(CONCAVE_UPPER_TILES);
 	}
 
 	@Override
 	public Tile concaveLeft() {
-		return getRandomTile(CONCAVE_LEFT_TILES);
+		return Rand.pick(CONCAVE_LEFT_TILES);
 	}
 
 	@Override
 	public Tile concaveRight() {
-		return getRandomTile(CONCAVE_RIGHT_TILES);
+		return Rand.pick(CONCAVE_RIGHT_TILES);
 	}
 
 	@Override

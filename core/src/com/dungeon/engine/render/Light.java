@@ -2,6 +2,7 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.resource.ResourceManager;
 
 import java.util.function.Supplier;
@@ -25,7 +26,7 @@ public class Light {
 		nextThink += time;
 		if (nextThink >= thinkInterval) {
 			nextThink = 0;
-			torchlight = 0.95f + (float) (Math.random() * 0.1f);
+			torchlight = Rand.between(0.95f, 1.05f);
 
 			angle += thinkInterval;
 			sine = (float) Math.sin(angle);

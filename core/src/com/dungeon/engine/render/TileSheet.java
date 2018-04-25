@@ -4,12 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import java.util.Random;
-
 public abstract class TileSheet {
 	public final Texture texture;
 	public final int tile_size;
-	private static final Random random = new Random();
 
 	public TileSheet(Texture texture, int tile_size) {
 		this.texture = texture;
@@ -30,10 +27,6 @@ public abstract class TileSheet {
 			tiles[i] = new Tile(regions[i]);
 		}
 		return tiles;
-	}
-
-	protected Tile getRandomTile(Tile[] tiles) {
-		return tiles[random.nextInt(tiles.length)];
 	}
 
 	public Animation<TextureRegion> loop(float frameDuration, TextureRegion... frames) {

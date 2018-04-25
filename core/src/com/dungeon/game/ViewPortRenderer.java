@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.BlendFunctionContext;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
@@ -77,9 +78,9 @@ public class ViewPortRenderer {
 	}
 
 	public void randomizeBaseLight() {
-		float newX = (float) Math.random();
-		float newY = (float) Math.random();
-		float newZ = (float) Math.random();
+		float newX = Rand.nextFloat(1);
+		float newY = Rand.nextFloat(1);
+		float newZ = Rand.nextFloat(1);
 
 		float attenuation = (newX + newY + newZ) / 0.6f;
 		baseLight.set(newX / attenuation, newY / attenuation, newZ / attenuation);

@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.Particle;
-import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.game.state.GameState;
 
@@ -23,8 +22,8 @@ class AcidBlob extends Particle {
 		this.factory = factory;
 		getPos().add(0, -8);
 		z = 8;
-		zSpeed = (float) Math.random() * 50 + 50;
-		setSelfImpulse((float) Math.random() * 100f - 50f, (float) Math.random() * 20f - 10f);
+		zSpeed = Rand.between(50f, 100f);
+		setSelfImpulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
 		setCurrentAnimation(new GameAnimation(factory.blobAnimation, state.getStateTime()));
 		light = factory.blobLight;
 		drawContext = new ColorContext(new Color(1, 1, 1, 0.5f));
