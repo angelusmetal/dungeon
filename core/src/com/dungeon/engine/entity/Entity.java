@@ -10,6 +10,7 @@ import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.character.slime.Slime;
 import com.dungeon.game.state.GameState;
 
 abstract public class Entity implements Drawable, Movable {
@@ -100,6 +101,10 @@ abstract public class Entity implements Drawable, Movable {
 		return selfImpulse;
 	}
 
+	public void impulse(Vector2 vector) {
+		movement.add(vector);
+	}
+
 
 	private static final Vector2 frameMovement = new Vector2();
 	private static final Vector2 stepX = new Vector2();
@@ -143,7 +148,7 @@ abstract public class Entity implements Drawable, Movable {
 				collidedX = detectEntityCollision(state, stepX);
 			}
 			if (collidedX) {
-				frameMovement.x = 0;
+				movement.x = 0;
 			}
 			if (!collidedY) {
 				body.move(stepY);
@@ -153,7 +158,7 @@ abstract public class Entity implements Drawable, Movable {
 				collidedY = detectEntityCollision(state, stepY);
 			}
 			if (collidedY) {
-				frameMovement.y = 0;
+				movement.y = 0;
 			}
 			distance -= 1;
 		}

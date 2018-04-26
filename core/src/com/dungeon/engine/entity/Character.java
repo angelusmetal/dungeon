@@ -23,8 +23,8 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	@Override
 	public void think(GameState state) {
-		if (getSelfImpulse().x != 0) {
-			setInvertX(getSelfImpulse().x < 0);
+		if (aim.x != 0) {
+			setInvertX(aim.x < 0);
 		}
 		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
 			if (getIdleAnimation() != getCurrentAnimation().getAnimation()) {
@@ -52,6 +52,14 @@ public abstract class Character extends Entity implements Movable, Drawable {
 	@Override
 	public boolean isSolid() {
 		return true;
+	}
+
+	public void aim(Vector2 vector) {
+		aim.set(vector);
+	}
+
+	public Vector2 getAim() {
+		return aim;
 	}
 
 	public void fire(GameState state) {

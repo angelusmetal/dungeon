@@ -52,10 +52,10 @@ public class ViewPortRenderer {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.lightingContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		entityInCamera = (e) ->
-			e.getPos().x < viewPort.cameraX + viewPort.cameraWidth &&
-			e.getPos().x + e.getFrame(state.getStateTime()).getRegionWidth() > viewPort.cameraX &&
-			e.getPos().y < viewPort.cameraY + viewPort.cameraHeight &&
-			e.getPos().y + e.getFrame(state.getStateTime()).getRegionHeight() > viewPort.cameraY;
+			e.getPos().x - e.getDrawOffset().x < viewPort.cameraX + viewPort.cameraWidth &&
+			e.getPos().x + e.getDrawOffset().x + e.getFrame(state.getStateTime()).getRegionWidth() > viewPort.cameraX &&
+			e.getPos().y - e.getDrawOffset().y + e.getZPos() < viewPort.cameraY + viewPort.cameraHeight &&
+			e.getPos().y + e.getDrawOffset().y + e.getZPos() + e.getFrame(state.getStateTime()).getRegionHeight() > viewPort.cameraY;
 		lightInCamera = (e) ->
 			e.getLight() != null &&
 			e.getPos().x - e.getLight().diameter < viewPort.cameraX + viewPort.cameraWidth &&
