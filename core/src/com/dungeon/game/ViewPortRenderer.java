@@ -1,7 +1,9 @@
 package com.dungeon.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
@@ -9,7 +11,9 @@ import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.BlendFunctionContext;
+import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
@@ -31,6 +35,7 @@ public class ViewPortRenderer {
 	private boolean renderScene = true;
 	private boolean renderLighting = true;
 	private boolean renderHealthbars = true;
+	private boolean renderBoundingBoxes = false;
 
 	private final Comparator<? super Entity> comp = (e1, e2) ->
 			e1.getZIndex() > e2.getZIndex() ? 1 :
@@ -44,6 +49,9 @@ public class ViewPortRenderer {
 	private final Predicate<? super Entity> lightInCamera;
 
 	private final Vector3 baseLight = new Vector3(0.3f, 0.2f, 0.1f);
+	private final TextureRegion fill;
+
+	private static final ColorContext BOUNDING_BOXES = new ColorContext(new Color(1f, 0.2f, 0.2f, 0.3f));
 
 	public ViewPortRenderer(GameState state, ViewPort viewPort) {
 		this.state = state;
@@ -62,6 +70,8 @@ public class ViewPortRenderer {
 			e.getPos().x + e.getLight().diameter > viewPort.cameraX &&
 			e.getPos().y - e.getLight().diameter < viewPort.cameraY + viewPort.cameraHeight &&
 			e.getPos().y + e.getLight().diameter > viewPort.cameraY;
+
+		fill = new TextureRegion(ResourceManager.instance().getTexture("fill.png"));
 	}
 
 	public void initialize() {
@@ -117,7 +127,21 @@ public class ViewPortRenderer {
 		// Render UI elements
 		if (renderHealthbars) {
 			viewportBuffer.render((batch) -> {
-				state.getEntities().stream().filter(e -> e instanceof Character).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(state, batch, viewPort));
+				state.getEntities().stream().filter(e -> e instanceof Character).filter(entityInCamera).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(state, batch, viewPort));
+			});
+		}
+
+		if (renderBoundingBoxes) {
+			viewportBuffer.render((batch) -> {
+				BOUNDING_BOXES.set(batch);
+				state.getEntities().stream().filter(entityInCamera).forEach(e -> viewPort.draw(
+						batch,
+						fill,
+						e.getBody().getBottomLeft().x,
+						e.getBody().getBottomLeft().y,
+						e.getBody().getBoundingBox().x,
+						e.getBody().getBoundingBox().y));
+				BOUNDING_BOXES.unset(batch);
 			});
 		}
 
@@ -164,6 +188,14 @@ public class ViewPortRenderer {
 
 	public void toggleLighting() {
 		renderLighting = !renderLighting;
+	}
+
+	public void toggleHealthbars() {
+		renderHealthbars = !renderHealthbars;
+	}
+
+	public void toggleBoundingBox() {
+		renderBoundingBoxes = !renderBoundingBoxes;
 	}
 
 	public void dispose() {

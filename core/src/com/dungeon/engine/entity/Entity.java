@@ -84,6 +84,10 @@ abstract public class Entity implements Drawable, Movable {
 		return currentAnimation.getDrawOffset();
 	}
 
+	public Body getBody() {
+		return body;
+	}
+
 	@Override
 	public void setSelfImpulse(Vector2 vector) {
 		selfImpulse.set(vector);

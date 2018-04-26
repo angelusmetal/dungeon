@@ -60,6 +60,14 @@ public class Body {
 		return boundingBox;
 	}
 
+	public Vector2 getBottomLeft() {
+		return bottomLeft;
+	}
+
+	public Vector2 getTopRight() {
+		return topRight;
+	}
+
 	public int getLeftTile(int tile_size) {
 		return (int) (bottomLeft.x / tile_size);
 	}
