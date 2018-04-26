@@ -14,6 +14,8 @@ import com.dungeon.game.state.GameState;
 public class Slime extends Character {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
+	private static final Vector2 DRAW_OFFSET = new Vector2(16, 11);
+
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float JUMP = distance2(50);
 
@@ -29,7 +31,7 @@ public class Slime extends Character {
 	private final float zAcceleration;
 
 	Slime(SlimeFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX));
+		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
 		this.factory = factory;
 
 		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));

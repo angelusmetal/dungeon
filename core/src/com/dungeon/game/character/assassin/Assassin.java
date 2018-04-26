@@ -12,11 +12,12 @@ import com.dungeon.game.state.GameState;
 public class Assassin extends PlayerCharacter {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(13, 20);
+	private static final Vector2 DRAW_OFFSET = new Vector2(16, 16);
 
 	private final AssassinFactory factory;
 
 	Assassin(AssassinFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX));
+		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
 		this.factory = factory;
 		setCurrentAnimation(new GameAnimation(getIdleAnimation(), factory.state.getStateTime()));
 		speed = 60f;

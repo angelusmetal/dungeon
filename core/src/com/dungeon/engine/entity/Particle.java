@@ -98,8 +98,8 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 	}
 
-	public Particle(Body body, float startTime, Builder builder) {
-		super(body);
+	public Particle(Body body, Vector2 drawOffset, float startTime, Builder builder) {
+		super(body, drawOffset);
 		this.startTime = startTime;
 		this.speed = builder.speed;
 		this.zSpeed = builder.zSpeed;

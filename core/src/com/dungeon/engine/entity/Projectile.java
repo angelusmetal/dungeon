@@ -81,8 +81,8 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 		}
 	}
 
-	public Projectile(Body body, float startTime, Builder builder) {
-		super(body, startTime, builder);
+	public Projectile(Body body, Vector2 drawOffset, float startTime, Builder builder) {
+		super(body, drawOffset, startTime, builder);
 		this.damage = builder.damage;
 		this.trailFrequency = builder.trailFrequency;
 	}

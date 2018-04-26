@@ -17,8 +17,8 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.25f); // Default is fire every 0.25 seconds
 
-	public Character(Body body) {
-		super(body);
+	public Character(Body body, Vector2 drawOffset) {
+		super(body, drawOffset);
 	}
 
 	@Override
@@ -83,6 +83,7 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	public void drawHealthbar(GameState state, SpriteBatch batch, ViewPort viewPort) {
 		// Draw health bar
-		viewPort.draw(batch, state.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x- getBoundingBox().x / 2, getPos().y + getBoundingBox().y / 2 + z, getBoundingBox().x * health/maxHealth, 2);
+//		viewPort.draw(batch, state.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x - getDrawOffset().x, getPos().y - getDrawOffset().y + getBoundingBox().y + z, getBoundingBox().x * health/maxHealth, 2);
+		viewPort.draw(batch, state.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x - getBoundingBox().x / 2, getPos().y + getBoundingBox().y / 2 + 4 + z, getBoundingBox().x * health/maxHealth, 2);
 	}
 }

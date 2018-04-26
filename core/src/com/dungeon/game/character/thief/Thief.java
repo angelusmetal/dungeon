@@ -13,10 +13,12 @@ import com.dungeon.game.state.GameState;
 public class Thief extends PlayerCharacter {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(14, 28);
+	private static final Vector2 DRAW_OFFSET = new Vector2(16, 16);
+
 	private final ThiefFactory factory;
 
 	Thief(ThiefFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX));
+		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
 		this.factory = factory;
 		setCurrentAnimation(new GameAnimation(getIdleAnimation(), factory.state.getStateTime()));
 		speed = 96f;

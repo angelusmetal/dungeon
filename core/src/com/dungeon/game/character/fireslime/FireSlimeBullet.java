@@ -14,10 +14,11 @@ import com.dungeon.game.state.GameState;
 class FireSlimeBullet extends Projectile {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(6, 6);
+	private static final Vector2 DRAW_OFFSET = new Vector2(8, 8);
 	private final FireSlimeFactory factory;
 
 	public FireSlimeBullet(FireSlimeFactory factory, Vector2 origin, float startTime) {
-		super(new Body(origin, BOUNDING_BOX), startTime, factory.bullet);
+		super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bullet);
 		this.factory = factory;
 		light = factory.bulletLight;
 		setCurrentAnimation(new GameAnimation(getAnimation(getSelfImpulse()), startTime));
@@ -44,7 +45,7 @@ class FireSlimeBullet extends Projectile {
 		private final FireSlimeFactory factory;
 
 		public Explosion(FireSlimeFactory factory, Vector2 origin, float startTime) {
-			super(new Body(origin, BOUNDING_BOX), startTime, factory.bulletExplosion);
+			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bulletExplosion);
 			this.factory = factory;
 			light = factory.bulletLight;
 			setCurrentAnimation(new GameAnimation(factory.explosionAnimation, startTime));
@@ -63,7 +64,7 @@ class FireSlimeBullet extends Projectile {
 		private final Color color;
 
 		public Trail(FireSlimeFactory factory, Vector2 origin, float startTime) {
-			super(new Body(origin, BOUNDING_BOX), startTime, factory.bulletTrail);
+			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bulletTrail);
 			this.factory = factory;
 			light = factory.bulletTrailLight;
 			setCurrentAnimation(new GameAnimation(factory.explosionAnimation, startTime));

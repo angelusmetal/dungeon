@@ -39,9 +39,11 @@ abstract public class Entity implements Drawable, Movable {
 
 	protected Light light = null;
 	protected DrawContext drawContext = DrawContext.NONE;
+	private final Vector2 drawOffset;
 
-	protected Entity(Body body) {
+	protected Entity(Body body, Vector2 drawOffset) {
 		this.body = body;
+		this.drawOffset = drawOffset;
 	}
 
 	@Override
@@ -81,7 +83,7 @@ abstract public class Entity implements Drawable, Movable {
 
 	@Override
  	public Vector2 getDrawOffset() {
-		return currentAnimation.getDrawOffset();
+		return drawOffset;
 	}
 
 	public Body getBody() {

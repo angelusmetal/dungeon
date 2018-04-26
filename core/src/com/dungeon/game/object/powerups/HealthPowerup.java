@@ -16,6 +16,7 @@ import com.dungeon.game.state.GameState;
 public class HealthPowerup extends Entity {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
+	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
 
 	public static class Factory implements EntityFactory.EntityTypeFactory {
 
@@ -36,7 +37,7 @@ public class HealthPowerup extends Entity {
 	}
 
 	private HealthPowerup(Factory factory, Vector2 position) {
-		super(new Body(position, BOUNDING_BOX));
+		super(new Body(position, BOUNDING_BOX), DRAW_OFFSET);
 		setCurrentAnimation(new GameAnimation(factory.animation, factory.state.getStateTime()));
 		light = factory.light;
 	}

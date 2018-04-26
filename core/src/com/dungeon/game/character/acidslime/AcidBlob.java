@@ -14,11 +14,12 @@ import com.dungeon.game.state.GameState;
 class AcidBlob extends Particle {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(6, 6);
+	private static final Vector2 DRAW_OFFSET = new Vector2(8, 8);
 
 	private final AcidSlimeFactory factory;
 
 	public AcidBlob(AcidSlimeFactory factory, GameState state, Vector2 origin) {
-		super(new Body(origin, BOUNDING_BOX), state.getStateTime(), factory.blob);
+		super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, state.getStateTime(), factory.blob);
 		this.factory = factory;
 		getPos().add(0, -8);
 		z = 8;
@@ -50,7 +51,7 @@ class AcidBlob extends Particle {
 		private final AcidSlimeFactory factory;
 
 		public Explosion(AcidSlimeFactory factory, Vector2 origin, float startTime) {
-			super(new Body(origin, BOUNDING_BOX), startTime, factory.splat);
+			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.splat);
 			this.factory = factory;
 			light = factory.blobLight;
 			setCurrentAnimation(new GameAnimation(factory.splatAnimation, startTime));

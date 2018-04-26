@@ -14,8 +14,8 @@ import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
-	private static final Vector2 BOUNDING_BOX = new Vector2(16, 30);
-
+	private static final Vector2 BOUNDING_BOX = new Vector2(16, 26);
+	private static final Vector2 DRAW_OFFSET = new Vector2(16, 16);
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float VISIBLE_TIME = 2f;
 	private final GhostFactory factory;
@@ -27,7 +27,7 @@ public class Ghost extends Character {
 	}
 
 	Ghost(GhostFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX));
+		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
 		this.factory = factory;
 		color = new Color(1, 1, 1, 0.5f);
 		drawContext = new ColorContext(color);
