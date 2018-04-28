@@ -1,15 +1,21 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.game.state.GameState;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Base class for all projectiles
@@ -18,6 +24,18 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 	static private final Vector2 VERTICAL_BOUNCE = new Vector2(1, -1);
 	static private final Vector2 HORIZONTAL_BOUNCE = new Vector2(-1, 1);
+
+	static public BiFunction<Particle, GameState, Float> fadeOut(float alpha) {
+		return (particle, state) -> (1 - (state.getStateTime() - particle.getStartTime() / particle.getTimeToLive())) * alpha;
+	}
+
+	static public Supplier<BiConsumer<Particle, GameState>> hOscillate(float frequency, float amplitude) {
+		return () -> doHOscillate(Rand.nextFloat(6.28f), frequency, amplitude);
+	}
+
+	static private BiConsumer<Particle, GameState> doHOscillate(float phase, float frequency, float amplitude) {
+		return (particle, state) -> particle.impulse((float) Math.sin((state.getStateTime() + phase) * frequency) * amplitude, 0);
+	}
 
 	/** Projectile acceleration (or deceleration) ratio */
 	protected final float acceleration;
@@ -39,6 +57,12 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 	protected float zSpeed;
 	/** Vertical acceleration */
 	protected final float zAcceleration;
+	/** Particle color */
+	protected final Color color;
+	/** Color alpha fader */
+	protected final BiFunction<Particle, GameState, Float> fader;
+	/** Mutator */
+	protected final BiConsumer<Particle, GameState> mutator;
 
 	public static class Builder {
 		protected float speed = 1;
@@ -50,6 +74,9 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		protected float targetRadius = 0;
 		protected Function<Entity, Boolean> targetPredicate = (entity) -> false;
 		protected float timeToLive;
+		protected Color color = Color.WHITE;
+		protected BiFunction<Particle, GameState, Float> fader = (p,g) -> 1f;
+		protected Supplier<BiConsumer<Particle, GameState>> mutator = () -> (p,g) -> {};
 
 		public Builder speed(float speed) {
 			this.speed = speed;
@@ -96,6 +123,21 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 			return this;
 		}
 
+		public Builder color(Color color) {
+			this.color = color;
+			return this;
+		}
+
+		public Builder fade(BiFunction<Particle, GameState, Float> fader) {
+			this.fader = fader;
+			return this;
+		}
+
+		public Builder mutator(Supplier<BiConsumer<Particle, GameState>> mutator) {
+			this.mutator = mutator;
+			return this;
+		}
+
 	}
 
 	public Particle(Body body, Vector2 drawOffset, float startTime, Builder builder) {
@@ -110,12 +152,24 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		this.targetRadius = builder.targetRadius * builder.targetRadius; // square is actually stored for speed
 		this.targetPredicate = builder.targetPredicate;
 		this.timeToLive = builder.timeToLive;
+		this.color = builder.color.cpy();
+		this.fader = builder.fader;
+		this.drawContext = new ColorContext(color);
+		this.mutator = builder.mutator.get();
 	}
 
 	abstract protected Animation<TextureRegion> getAnimation(Vector2 direction);
 
 	public float getSpeed() {
 		return speed;
+	}
+
+	public float getStartTime() {
+		return startTime;
+	}
+
+	public float getTimeToLive() {
+		return timeToLive;
 	}
 
 	@Override
@@ -189,6 +243,11 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 				setCurrentAnimation(new GameAnimation(newAnimation, state.getStateTime()));
 			}
 		}
+
+		mutator.accept(this, state);
+
+		// Apply color fading
+		color.a = fader.apply(this, state);
 	}
 
 	private static final Vector2 target = new Vector2();

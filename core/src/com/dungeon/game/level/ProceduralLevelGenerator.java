@@ -12,17 +12,22 @@ import com.dungeon.game.level.room.ORoomGenerator;
 import com.dungeon.game.level.room.RectangleRoomGenerator;
 import com.dungeon.game.level.room.RoomGenerator;
 import com.dungeon.game.tileset.LevelTileset;
+import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class ProceduralLevelGenerator {
 
+	public static final List<String> DEFAULT_MONSTER_TYPES = Arrays.asList("GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE");
+
 	private int width;
 	private int height;
+	private final Toml configuration;
 	private TileType[][] tiles;
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
@@ -78,7 +83,8 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public ProceduralLevelGenerator(int width, int height) {
+	public ProceduralLevelGenerator(Toml configuration, int width, int height) {
+		this.configuration = configuration;
 		this.width = width;
 		this.height = height;
 		this.tiles = new TileType[width][height];
@@ -133,7 +139,8 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
-		List<EntityType> monsterTypes = Arrays.asList(EntityType.GHOST, EntityType.SLIME, EntityType.SLIME_ACID, EntityType.SLIME_FIRE);
+		List<EntityType> monsterTypes = configuration.<String>getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		float itemChance = configuration.getDouble("map.itemchance", 0.4d).floatValue();
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
@@ -144,7 +151,7 @@ public class ProceduralLevelGenerator {
 			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
 
 			// A 40% chance of spawning one powerup
-			if (Rand.chance(0.4f)) {
+			if (Rand.chance(itemChance)) {
 				Vector2 pos = Rand.pick(room.spawnPoints);
 				placeholders.add(new EntityPlaceholder(EntityType.HEALTH_POWERUP, pos));
 			}

@@ -77,7 +77,7 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		entityFactory = new EntityFactory();
-		state = new GameState(entityFactory);
+		state = new GameState(entityFactory, configuration);
 
 		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory(state));
 

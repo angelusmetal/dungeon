@@ -14,6 +14,7 @@ import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.LevelTileset;
 import com.dungeon.game.tileset.TilesetManager;
+import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +27,11 @@ public class GameState {
 		MENU, INGAME, GAMEOVER
 	}
 
-	public final int MAP_WIDTH = 40;
-	public final int MAP_HEIGHT = 40;
+	public final int BASE_MAP_WIDTH = 40;
+	public final int BASE_MAP_HEIGHT = 40;
+
 	private final EntityFactory entityFactory;
+	private final Toml configuration;
 
 	private float stateTime;
 	private float frameTime;
@@ -50,10 +53,11 @@ public class GameState {
 	private List<RenderEffect> renderEffects = new ArrayList<>();
 	private List<RenderEffect> newRenderEffects = new ArrayList<>();
 
-	public GameState(EntityFactory entityFactory) {
+	public GameState(EntityFactory entityFactory, Toml configuration) {
 		this.stateTime = 0;
 		this.entityFactory = entityFactory;
 		this.tilesetManager = new TilesetManager();
+		this.configuration = configuration;
 	}
 
 	public float getStateTime() {
@@ -151,7 +155,10 @@ public class GameState {
 	}
 
 	public void generateNewLevel() {
-		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(MAP_WIDTH + (levelCount * 10), MAP_HEIGHT + (levelCount * 10));
+		int baseWidth = configuration.getLong("map.width", (long) BASE_MAP_WIDTH).intValue();
+		int baseHeight = configuration.getLong("map.width", (long) BASE_MAP_HEIGHT).intValue();
+		int growth = configuration.getLong("map.growth", (long) 10).intValue();
+		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		level = generator.generateLevel(getLevelTileset());
 	}
 	public void addEntity(Entity entity) {

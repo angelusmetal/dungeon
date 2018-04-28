@@ -15,3 +15,10 @@
     # height = 400
     # Scaling gives the blocky appeal
     scale = 3.0
+[map]
+    # Base dimensions
+    width = 40
+    height = 40
+    growth = 10
+    creatures = ["SLIME_FIRE"]#["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
+    itemchance = 1.0

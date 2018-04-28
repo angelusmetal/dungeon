@@ -13,9 +13,9 @@ import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
-import com.dungeon.game.character.acidslime.AcidSlimeFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.tileset.FillSheet;
 import com.dungeon.game.tileset.ProjectileSheet;
 
 public class HealthPowerup extends Entity {
@@ -35,8 +35,8 @@ public class HealthPowerup extends Entity {
 			this.state = state;
 			light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
 			animation = ResourceManager.instance().getAnimation(PowerupsSheet.HEALTH, PowerupsSheet::health);
-			specAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.ASSASSIN_FLY, ProjectileSheet::assasinFly);
-			spec = new Particle.Builder().zSpeed(50).zAcceleration(100).timeToLive(1f);
+			specAnimation = ResourceManager.instance().getAnimation(FillSheet.FILL, FillSheet::fill);
+			spec = new Particle.Builder().zSpeed(50).zAcceleration(100).timeToLive(1f).color(Color.RED).fade(Particle.fadeOut(0.8f)).mutator(Particle.hOscillate(10, 5f));
 		}
 
 		@Override
@@ -58,7 +58,7 @@ public class HealthPowerup extends Entity {
 	@Override
 	public void think(GameState state) {
 		if (nextSpawn <= state.getStateTime()) {
-			nextSpawn = state.getStateTime() + 0.2f;
+			nextSpawn = state.getStateTime() + 0.05f;
 			Spec spec = new Spec(factory, getPos(), state.getStateTime());
 			spec.getPos().x += Rand.between(-10, 10);
 			spec.setZPos(Rand.between(2, 10));
@@ -91,33 +91,28 @@ public class HealthPowerup extends Entity {
 	}
 
 	private void expire(GameState state) {
-		for (int i = 0; i < 10; ++i) {
-			Spec spec = new Spec(factory, getPos(), state.getStateTime());
-			spec.getPos().x += Rand.between(-10, 10);
-			spec.setZPos(Rand.between(2, 10));
-			spec.impulse(Rand.between(-200, 200), Rand.between(-200, 200));
-			state.addEntity(spec);
+		if (!expired) {
+			for (int i = 0; i < 10; ++i) {
+				Spec spec = new Spec(factory, getPos(), state.getStateTime());
+				spec.getPos().x += Rand.between(-10, 10);
+				spec.setZPos(Rand.between(2, 10));
+				spec.impulse(Rand.between(-200, 200), Rand.between(-200, 200));
+				state.addEntity(spec);
+			}
+			expired = true;
 		}
-		expired = true;
 	}
 
-	public static class Spec extends Particle {
+	private static class Spec extends Particle {
+		private static final Vector2 BOUNDING_BOX = new Vector2(1, 1);
+		private static final Vector2 DRAW_OFFSET = new Vector2(1, 1);
 
-		private final Factory factory;
-		private final Color color;
+		private final HealthPowerup.Factory factory;
 
-		public Spec(Factory factory, Vector2 origin, float startTime) {
+		public Spec(HealthPowerup.Factory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.spec);
 			this.factory = factory;
 			setCurrentAnimation(new GameAnimation(factory.specAnimation, startTime));
-			color = new Color(1f, 1f, 1f, 1f);
-			drawContext = new ColorContext(color);
-		}
-
-		@Override
-		public void think(GameState state) {
-			color.a = (1 - (state.getStateTime() - startTime / timeToLive)) * 0.5f;
-			super.think(state);
 		}
 
 		@Override
