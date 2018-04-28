@@ -77,6 +77,10 @@ abstract public class Entity implements Drawable, Movable {
 		return z;
 	}
 
+	public void setZPos(float z) {
+		this.z = z;
+	}
+
 	protected Vector2 getMovement() {
 		return movement;
 	}
@@ -109,6 +113,10 @@ abstract public class Entity implements Drawable, Movable {
 
 	public void impulse(Vector2 vector) {
 		movement.add(vector);
+	}
+
+	public void impulse(float x, float y) {
+		movement.add(x, y);
 	}
 
 
