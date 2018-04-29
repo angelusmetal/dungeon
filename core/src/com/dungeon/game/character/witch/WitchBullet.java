@@ -1,5 +1,7 @@
 package com.dungeon.game.character.witch;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Particle;
@@ -28,7 +30,7 @@ public class WitchBullet extends Projectile {
 
 	@Override
 	protected Particle createTrail(GameState state, Vector2 origin) {
-		return new Trail(factory, origin, state.getStateTime());
+		return new Trail(factory, origin, state.getStateTime(), getCurrentAnimation().getAnimation());
 	}
 
 	public static class Explosion extends Particle {
@@ -46,13 +48,10 @@ public class WitchBullet extends Projectile {
 
 	public static class Trail extends Particle {
 
-		// TODO Maybe remove this one when all are in a single sheet
-		private static final Vector2 DRAW_OFFSET = new Vector2(4, 4);
-
-		public Trail(WitchFactory factory, Vector2 origin, float startTime) {
+		public Trail(WitchFactory factory, Vector2 origin, float startTime, Animation<TextureRegion> animation) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bulletTrail);
 			light = factory.bulletLight;
-			setCurrentAnimation(new GameAnimation(factory.bulletExplodeAnimation, startTime));
+			setCurrentAnimation(new GameAnimation(animation, startTime));
 		}
 
 	}
