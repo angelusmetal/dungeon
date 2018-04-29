@@ -63,7 +63,7 @@ public class Light {
 	}
 
 	/** Describes the base light diameter, in units */
-	public final float diameter;
+	public float diameter;
 	/** Describes the light color as a Color (red, green, blue, alpha) */
 	public final Color color;
 	/** Light texture to use */
@@ -85,5 +85,9 @@ public class Light {
 		this.texture = texture;
 		this.dimmer = dimmer;
 		this.rotator = rotator;
+	}
+
+	public Light cpy() {
+		return new Light(diameter, color.cpy(), texture, dimmer, rotator);
 	}
 }

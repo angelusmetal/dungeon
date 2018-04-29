@@ -12,7 +12,9 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
-abstract public class Entity implements Drawable, Movable {
+import java.util.List;
+
+abstract public class Entity<M> implements Drawable, Movable {
 
 	private GameAnimation currentAnimation;
 	/**
@@ -40,6 +42,9 @@ abstract public class Entity implements Drawable, Movable {
 	protected Light light = null;
 	protected DrawContext drawContext = DrawContext.NONE;
 	private final Vector2 drawOffset;
+
+	/** Mutators */
+	protected List<Mutator<M>> mutator;
 
 	protected Entity(Body body, Vector2 drawOffset) {
 		this.body = body;
@@ -310,7 +315,12 @@ abstract public class Entity implements Drawable, Movable {
 	protected void onSelfMovementUpdate() {}
 	protected void onTileCollision(GameState state, boolean horizontal) {}
 
-	public void think(GameState state) {}
+	public void think(GameState state) {
+		// Apply mutators
+		if (mutator != null) { // TODO Do better than a null check...
+			mutator.forEach(m -> m.accept((M) this, state));
+		}
+	}
 	public float getZIndex() {
 		return 0;
 	}

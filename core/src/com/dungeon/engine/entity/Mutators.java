@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.render.Light;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -26,6 +27,15 @@ public class Mutators {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(6.28f);
             return (entity, state) -> entity.impulse(0, (float) Math.sin((state.getStateTime() + phase) * frequency) * amplitude);
+        };
+    }
+
+    /** Oscillate vertically */
+    static public <T extends Entity> MutatorSupplier<T> zOscillate(float frequency, float amplitude) {
+        return (e) -> {
+            // Randomize phase so each particle oscillates differently
+            float phase = Rand.nextFloat(6.28f);
+            return (entity, state) -> entity.z += (float) Math.sin((state.getStateTime() + phase) * frequency) * amplitude * state.getFrameTime();
         };
     }
 
@@ -79,6 +89,14 @@ public class Mutators {
         };
     }
 
+
+    public static MutatorSupplier<Particle>  fadeOutLight() {
+        return (p) -> {
+            float diameter = p.light.diameter;
+            return (particle, state) -> particle.light.diameter = (1 - (state.getStateTime() - particle.getStartTime()) / particle.getTimeToLive()) * diameter;
+        };
+    }
+
     /** Sets animation based on a vector, using one sprite for up, down and sides (mirrored) */
     static public <T extends Entity> MutatorSupplier<T> faceSelfImpulse(Function<T, Vector2> vectorProvider, Animation<TextureRegion> side, Animation<TextureRegion> up, Animation<TextureRegion> down) {
         return (e) -> (entity, state) -> {
@@ -100,6 +118,5 @@ public class Mutators {
             }
         };
     }
-
 
 }

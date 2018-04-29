@@ -17,7 +17,9 @@ import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.FillSheet;
 
-public class HealthPowerup extends Entity {
+import java.util.ArrayList;
+
+public class HealthPowerup extends Entity<Entity> {
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
 	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
@@ -26,9 +28,11 @@ public class HealthPowerup extends Entity {
 
 		final GameState state;
 		final Light light;
+		final Light vanishLight;
 		final Animation<TextureRegion> animation;
 		final Animation<TextureRegion> specAnimation;
 		final Particle.Builder spec;
+		final Particle.Builder vanish;
 
 		public Factory(GameState state) {
 			this.state = state;
@@ -42,6 +46,13 @@ public class HealthPowerup extends Entity {
 					.mutate(Mutators.fadeOut(0.8f))
 					.mutate(Mutators.zAccel(100))
 					.mutate(Mutators.hOscillate(10, 5f));
+			vanishLight = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::torchlight, Light::rotateFast);
+			vanish = new Particle.Builder()
+					.timeToLive(1f)
+					.light(vanishLight)
+					.mutate(Mutators.fadeOut(0.5f))
+					.mutate(Mutators.fadeOutLight())
+					.mutate(Mutators.zAccel(10));
 		}
 
 		@Override
@@ -58,6 +69,10 @@ public class HealthPowerup extends Entity {
 		setCurrentAnimation(new GameAnimation(factory.animation, factory.state.getStateTime()));
 		light = factory.light;
 		this.factory = factory;
+		// TODO Please clean this crap up...
+		z = 4;
+		mutator = new ArrayList<>();
+		mutator.add(Mutators.zOscillate(3, 8f).get(this));
 	}
 
 	@Override
@@ -97,11 +112,14 @@ public class HealthPowerup extends Entity {
 
 	private void expire(GameState state) {
 		if (!expired) {
-			for (int i = 0; i < 10; ++i) {
+			Vanish vanish = new Vanish(factory, getPos(), state.getStateTime());
+			vanish.setZPos(z);
+			state.addEntity(vanish);
+			for (int i = 0; i < 50; ++i) {
 				Spec spec = new Spec(factory, getPos(), state.getStateTime());
-				spec.getPos().x += Rand.between(-10, 10);
+				spec.getPos().x += Rand.between(-8, 8);
 				spec.setZPos(Rand.between(2, 10));
-				spec.impulse(Rand.between(-200, 200), Rand.between(-200, 200));
+				spec.impulse(Rand.between(-100, 100), Rand.between(-100, 100));
 				state.addEntity(spec);
 			}
 			expired = true;
@@ -115,6 +133,14 @@ public class HealthPowerup extends Entity {
 		public Spec(HealthPowerup.Factory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.spec);
 			setCurrentAnimation(new GameAnimation(factory.specAnimation, startTime));
+		}
+	}
+
+	private static class Vanish extends Particle {
+
+		public Vanish(HealthPowerup.Factory factory, Vector2 origin, float startTime) {
+			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.vanish);
+			setCurrentAnimation(new GameAnimation(factory.animation, startTime));
 		}
 	}
 

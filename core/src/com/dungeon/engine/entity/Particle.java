@@ -10,6 +10,7 @@ import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Drawable;
+import com.dungeon.engine.render.Light;
 import com.dungeon.game.state.GameState;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Base class for all projectiles
  */
-public abstract class Particle extends Entity implements Movable, Drawable {
+public abstract class Particle extends Entity<Particle> implements Movable, Drawable {
 
 	/** Determines whether an entity is a target */
 	protected final Function<Entity, Boolean> targetPredicate;
@@ -34,8 +35,6 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 	protected float zSpeed;
 	/** Particle color */
 	protected final Color color;
-	/** Mutators */
-	protected final List<Mutator<Particle>> mutator;
 
 	public static class Builder {
 		protected float speed = 1;
@@ -45,6 +44,7 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		protected Function<Entity, Boolean> targetPredicate = (entity) -> false;
 		protected float timeToLive;
 		protected Color color = Color.WHITE;
+		protected Light light = null;
 		protected List<MutatorSupplier<Particle>> mutators = new ArrayList<>();
 
 		public Builder speed(float speed) {
@@ -87,7 +87,11 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 			return this;
 		}
 
-	}
+        public Builder light(Light light) {
+		    this.light = light;
+		    return this;
+        }
+    }
 
 	public Particle(Body body, Vector2 drawOffset, float startTime, Builder builder) {
 		super(body, drawOffset);
@@ -99,6 +103,7 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		this.targetPredicate = builder.targetPredicate;
 		this.timeToLive = builder.timeToLive;
 		this.color = builder.color.cpy();
+		this.light = builder.light != null ? builder.light.cpy() : null; // TODO Check this null...
 		this.drawContext = new ColorContext(this.color);
 		this.mutator = builder.mutators.stream().map(m -> m.get(this)).collect(Collectors.toList());
 	}
