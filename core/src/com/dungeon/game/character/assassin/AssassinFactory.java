@@ -56,6 +56,7 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
+				.mutate(Particle.fadeOut(1f))
 				.zSpeed(10);
 
 		tombstoneSpawner = tombstoneFactory::build;

@@ -30,11 +30,6 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 			return this;
 		}
 
-		public Builder acceleration(float acceleration) {
-			this.acceleration = acceleration;
-			return this;
-		}
-
 		public Builder bounciness(int bounciness) {
 			this.bounciness = bounciness;
 			return this;
@@ -62,11 +57,6 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 
 		public Builder zSpeed(float zSpeed) {
 			this.zSpeed = zSpeed;
-			return this;
-		}
-
-		public Builder zAcceleration(float zAcceleration) {
-			this.zAcceleration = zAcceleration;
 			return this;
 		}
 

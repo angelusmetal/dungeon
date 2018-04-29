@@ -10,13 +10,11 @@ import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.random.Rand;
-import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.FillSheet;
-import com.dungeon.game.tileset.ProjectileSheet;
 
 public class HealthPowerup extends Entity {
 
@@ -36,7 +34,13 @@ public class HealthPowerup extends Entity {
 			light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
 			animation = ResourceManager.instance().getAnimation(PowerupsSheet.HEALTH, PowerupsSheet::health);
 			specAnimation = ResourceManager.instance().getAnimation(FillSheet.FILL, FillSheet::fill);
-			spec = new Particle.Builder().zSpeed(50).zAcceleration(100).timeToLive(1f).color(Color.RED).fade(Particle.fadeOut(0.8f)).mutator(Particle.hOscillate(10, 5f));
+			spec = new Particle.Builder()
+					.zSpeed(50)
+					.timeToLive(1f)
+					.color(Color.RED)
+					.mutate(Particle.fadeOut(0.8f))
+					.mutate(Particle.zAccel(100))
+					.mutate(Particle.hOscillate(10, 5f));
 		}
 
 		@Override
@@ -60,7 +64,7 @@ public class HealthPowerup extends Entity {
 		if (nextSpawn <= state.getStateTime()) {
 			nextSpawn = state.getStateTime() + 0.05f;
 			Spec spec = new Spec(factory, getPos(), state.getStateTime());
-			spec.getPos().x += Rand.between(-10, 10);
+			spec.getPos().x += Rand.between(-8, 8);
 			spec.setZPos(Rand.between(2, 10));
 			spec.impulse(Rand.between(-10, 10), 0);
 			state.addEntity(spec);

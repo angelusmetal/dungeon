@@ -53,7 +53,8 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 		blob = new Particle.Builder()
 				.speed(50)
-				.zAcceleration(-200)
+				.color(new Color(1, 1, 1, 0.5f))
+				.mutate(Particle.zAccel(-200))
 				.timeToLive(10);
 		splat = new Particle.Builder()
 				.timeToLive(splatAnimation.getAnimationDuration());

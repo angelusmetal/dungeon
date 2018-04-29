@@ -60,7 +60,8 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
-				.zSpeed(20);
+				.mutate(Particle.fadeOut(0.8f))
+				.mutate(Particle.zAccel(100f));
 		bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 
 		tombstoneSpawner = tombstoneFactory::build;

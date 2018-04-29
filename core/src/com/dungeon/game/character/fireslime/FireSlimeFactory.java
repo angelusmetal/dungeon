@@ -54,6 +54,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(explosionAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(explosionAnimation.getAnimationDuration())
+				.mutate(Particle.fadeOut(1f))
 				.zSpeed(10);
 
 		// Draw context

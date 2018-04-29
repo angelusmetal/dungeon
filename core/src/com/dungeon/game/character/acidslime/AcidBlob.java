@@ -1,6 +1,5 @@
 package com.dungeon.game.character.acidslime;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -8,7 +7,6 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.random.Rand;
-import com.dungeon.engine.render.ColorContext;
 import com.dungeon.game.state.GameState;
 
 class AcidBlob extends Particle {
@@ -27,7 +25,6 @@ class AcidBlob extends Particle {
 		setSelfImpulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
 		setCurrentAnimation(new GameAnimation(factory.blobAnimation, state.getStateTime()));
 		light = factory.blobLight;
-		drawContext = new ColorContext(new Color(1, 1, 1, 0.5f));
 	}
 
 	@Override

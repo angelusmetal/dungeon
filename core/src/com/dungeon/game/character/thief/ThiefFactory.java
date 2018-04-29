@@ -55,6 +55,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
+				.mutate(Particle.fadeOut(1f))
 				.zSpeed(0);
 		bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		bulletTrailLight = new Light(20, new Color(0.3f, 0.9f, 0.2f, 0.1f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
