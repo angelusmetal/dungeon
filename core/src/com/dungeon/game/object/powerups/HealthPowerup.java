@@ -112,17 +112,9 @@ public class HealthPowerup extends Entity {
 		private static final Vector2 BOUNDING_BOX = new Vector2(1, 1);
 		private static final Vector2 DRAW_OFFSET = new Vector2(1, 1);
 
-		private final HealthPowerup.Factory factory;
-
 		public Spec(HealthPowerup.Factory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.spec);
-			this.factory = factory;
 			setCurrentAnimation(new GameAnimation(factory.specAnimation, startTime));
-		}
-
-		@Override
-		protected Animation<TextureRegion> getAnimation(Vector2 direction) {
-			return factory.specAnimation;
 		}
 	}
 

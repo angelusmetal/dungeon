@@ -103,8 +103,6 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		this.mutator = builder.mutators.stream().map(m -> m.get(this)).collect(Collectors.toList());
 	}
 
-	abstract protected Animation<TextureRegion> getAnimation(Vector2 direction);
-
 	public float getSpeed() {
 		return speed;
 	}

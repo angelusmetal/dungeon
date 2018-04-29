@@ -1,7 +1,5 @@
 package com.dungeon.game.character.fireslime;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Particle;
@@ -19,13 +17,8 @@ class FireSlimeBullet extends Projectile {
 		super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bullet);
 		this.factory = factory;
 		light = factory.bulletLight;
-		setCurrentAnimation(new GameAnimation(getAnimation(getSelfImpulse()), startTime));
+		setCurrentAnimation(new GameAnimation(factory.projectileAnimation, startTime));
 		damage = 5 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
-	}
-
-	@Override
-	protected Animation<TextureRegion> getAnimation(Vector2 direction) {
-		return factory.projectileAnimation;
 	}
 
 	@Override
@@ -40,36 +33,20 @@ class FireSlimeBullet extends Projectile {
 
 	class Explosion extends Particle {
 
-		private final FireSlimeFactory factory;
-
 		public Explosion(FireSlimeFactory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bulletExplosion);
-			this.factory = factory;
 			light = factory.bulletLight;
 			setCurrentAnimation(new GameAnimation(factory.explosionAnimation, startTime));
-		}
-
-		@Override
-		protected Animation<TextureRegion> getAnimation(Vector2 direction) {
-			return factory.explosionAnimation;
 		}
 
 	}
 
 	public static class Trail extends Particle {
 
-		private final FireSlimeFactory factory;
-
 		public Trail(FireSlimeFactory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.bulletTrail);
-			this.factory = factory;
 			light = factory.bulletTrailLight;
 			setCurrentAnimation(new GameAnimation(factory.explosionAnimation, startTime));
-		}
-
-		@Override
-		protected Animation<TextureRegion> getAnimation(Vector2 direction) {
-			return factory.explosionAnimation;
 		}
 
 	}

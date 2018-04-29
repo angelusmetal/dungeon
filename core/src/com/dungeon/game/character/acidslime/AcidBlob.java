@@ -1,7 +1,5 @@
 package com.dungeon.game.character.acidslime;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Particle;
@@ -38,25 +36,13 @@ class AcidBlob extends Particle {
 		state.addEntity(new Explosion(factory, getPos(), state.getStateTime()));
 	}
 
-	@Override
-	protected Animation<TextureRegion> getAnimation(Vector2 direction) {
-		return factory.blobAnimation;
-	}
-
 	public static class Explosion extends Particle {
-
-		private final AcidSlimeFactory factory;
 
 		public Explosion(AcidSlimeFactory factory, Vector2 origin, float startTime) {
 			super(new Body(origin, BOUNDING_BOX), DRAW_OFFSET, startTime, factory.splat);
-			this.factory = factory;
 			light = factory.blobLight;
 			setCurrentAnimation(new GameAnimation(factory.splatAnimation, startTime));
 		}
 
-		@Override
-		protected Animation<TextureRegion> getAnimation(Vector2 direction) {
-			return factory.splatAnimation;
-		}
 	}
 }
