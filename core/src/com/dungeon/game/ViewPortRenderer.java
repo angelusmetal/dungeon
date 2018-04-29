@@ -12,6 +12,7 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.random.Rand;
 import com.dungeon.engine.render.BlendFunctionContext;
 import com.dungeon.engine.render.ColorContext;
+import com.dungeon.engine.render.NoiseBuffer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
@@ -29,13 +30,16 @@ public class ViewPortRenderer {
 
 	private ViewPortBuffer lightingBuffer;
 	private ViewPortBuffer viewportBuffer;
+	private NoiseBuffer noiseBuffer;
 	private BlendFunctionContext lightingContext;
+	private BlendFunctionContext noiseContext;
 
 	// Developer tools
 	private boolean renderScene = true;
 	private boolean renderLighting = true;
 	private boolean renderHealthbars = true;
 	private boolean renderBoundingBoxes = false;
+	private boolean renderNoise = true;
 
 	private final Comparator<? super Entity> comp = (e1, e2) ->
 			e1.getZIndex() > e2.getZIndex() ? 1 :
@@ -58,7 +62,9 @@ public class ViewPortRenderer {
 		this.viewPort = viewPort;
 		this.lightingBuffer = new ViewPortBuffer(viewPort);
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
+		this.noiseBuffer = new NoiseBuffer(state.getConfiguration());
 		this.lightingContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
+		this.noiseContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		entityInCamera = (e) ->
 			e.getPos().x - e.getDrawOffset().x < viewPort.cameraX + viewPort.cameraWidth &&
 			e.getPos().x + e.getDrawOffset().x + e.getFrame(state.getStateTime()).getRegionWidth() > viewPort.cameraX &&
@@ -85,6 +91,7 @@ public class ViewPortRenderer {
 	private void resetBuffers() {
 		lightingBuffer.reset();
 		viewportBuffer.reset();
+		noiseBuffer.renderNoise();
 	}
 
 	public void randomizeBaseLight() {
@@ -145,6 +152,12 @@ public class ViewPortRenderer {
 			});
 		}
 
+		if (renderNoise) {
+			viewportBuffer.render((batch) -> {
+				noiseContext.run(batch, (b) -> noiseBuffer.draw(batch, viewPort.cameraWidth, viewPort.cameraHeight));
+			});
+		}
+
 		batch.begin();
 		viewportBuffer.drawScaled(batch);
 		batch.end();
@@ -198,9 +211,15 @@ public class ViewPortRenderer {
 		renderBoundingBoxes = !renderBoundingBoxes;
 	}
 
+	public void toggleNoise() {
+		renderNoise = !renderNoise;
+	}
+
 	public void dispose() {
 		batch.dispose();
 		lightingBuffer.dispose();
+		viewportBuffer.dispose();
+		noiseBuffer.dispose();
 	}
 
 }

@@ -68,6 +68,10 @@ public class GameState {
 		return frameTime;
 	}
 
+	public Toml getConfiguration() {
+		return configuration;
+	}
+
 	public EntityFactory getEntityFactory() {
 		return entityFactory;
 	}

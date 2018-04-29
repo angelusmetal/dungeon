@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.TileSheet;
 import com.dungeon.engine.resource.ResourceManager;
-import com.dungeon.game.object.powerups.PowerupsSheet;
 
 public class FillSheet extends TileSheet {
 

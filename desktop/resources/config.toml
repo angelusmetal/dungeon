@@ -22,3 +22,7 @@
     growth = 10
     creatures = ["SLIME_FIRE"]#["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
     itemchance = 1.0
+[noise]
+    width = 128
+    height = 128
+    grit = 0.3 

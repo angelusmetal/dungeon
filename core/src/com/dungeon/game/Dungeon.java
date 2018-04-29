@@ -135,6 +135,7 @@ public class Dungeon extends ApplicationAdapter {
 		addDeveloperHotkey(Input.Keys.F3, viewPortRenderer::randomizeBaseLight);
 		addDeveloperHotkey(Input.Keys.F4, viewPortRenderer::toggleHealthbars);
 		addDeveloperHotkey(Input.Keys.F5, viewPortRenderer::toggleBoundingBox);
+		addDeveloperHotkey(Input.Keys.F6, viewPortRenderer::toggleNoise);
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {
