@@ -1,9 +1,13 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.random.Rand;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Mutators {
 
@@ -72,6 +76,28 @@ public class Mutators {
         return (p) -> {
             // Fade until the end of life
             return (particle, state) -> particle.color.a = (1 - (state.getStateTime() - particle.getStartTime()) / particle.getTimeToLive()) * alpha;
+        };
+    }
+
+    /** Sets animation based on a vector, using one sprite for up, down and sides (mirrored) */
+    static public <T extends Entity> MutatorSupplier<T> faceSelfImpulse(Function<T, Vector2> vectorProvider, Animation<TextureRegion> side, Animation<TextureRegion> up, Animation<TextureRegion> down) {
+        return (e) -> (entity, state) -> {
+            Animation<TextureRegion> currentAnimation = entity.getCurrentAnimation().getAnimation();
+            Animation<TextureRegion> newAnimation;
+            Vector2 vector = vectorProvider.apply(entity);
+            // Updates current animation based on the self impulse vector
+            entity.setInvertX(vector.x < 0);
+            if (Math.abs(vector.x) > Math.abs(vector.y)) {
+                // Sideways animation
+                newAnimation = side;
+            } else {
+                // North / south animation
+                newAnimation = vector.y < 0 ? down : up;
+            }
+            // Only set if animation changed
+            if (newAnimation != currentAnimation) {
+                entity.setCurrentAnimation(new GameAnimation(newAnimation, state.getStateTime()));
+            }
         };
     }
 }

@@ -156,17 +156,6 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 			}
 		}
 
-		// Update animation
-		if (!hasExpired) {
-			// Updates current animation based on the direction vector
-			setInvertX(getSelfImpulse().x < 0);
-			Animation<TextureRegion> currentAnimation = getCurrentAnimation().getAnimation();
-			Animation<TextureRegion> newAnimation = getAnimation(getSelfImpulse());
-			if (newAnimation != currentAnimation) {
-				setCurrentAnimation(new GameAnimation(newAnimation, state.getStateTime()));
-			}
-		}
-
 		// Apply mutators
 		mutator.forEach(m -> m.accept(this, state));
 	}

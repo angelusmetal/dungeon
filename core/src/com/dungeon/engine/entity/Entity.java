@@ -81,7 +81,7 @@ abstract public class Entity implements Drawable, Movable {
 		this.z = z;
 	}
 
-	protected Vector2 getMovement() {
+	public Vector2 getMovement() {
 		return movement;
 	}
 

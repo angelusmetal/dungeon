@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
@@ -55,7 +56,8 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
 				.damage(25)
 				.trailFrequency(0.05f)
-				.mutate(Mutators.autoSeek(0.1f, 60, PlayerCharacter.IS_NON_PLAYER));
+				.mutate(Mutators.autoSeek(0.1f, 60, PlayerCharacter.IS_NON_PLAYER))
+				.mutate(Mutators.faceSelfImpulse(Entity::getMovement, bulletFlySideAnimation, bulletFlyNorthAnimation, bulletFlySouthAnimation));
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
