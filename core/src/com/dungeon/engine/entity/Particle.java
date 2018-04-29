@@ -22,11 +22,6 @@ import java.util.stream.Collectors;
  */
 public abstract class Particle extends Entity implements Movable, Drawable {
 
-	static private final Vector2 VERTICAL_BOUNCE = new Vector2(1, -1);
-	static private final Vector2 HORIZONTAL_BOUNCE = new Vector2(-1, 1);
-
-//	/** Projectile bounciness; 0 means no bounce (explode), 1 means perfect elastic bounce, in-between is bounce with absorption) */
-//	protected int bounciness;
 	/** Determines whether an entity is a target */
 	protected final Function<Entity, Boolean> targetPredicate;
 	/** Time upon which this projectile was spawned */
@@ -63,7 +58,7 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		}
 
 		public Builder bounciness(int bounciness) {
-			this.bounciness = bounciness;
+			this.bounciness = Math.min(Math.max(bounciness, 0), 1); // clamp to 0-1 values
 			return this;
 		}
 
@@ -98,8 +93,8 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		super(body, drawOffset);
 		this.startTime = startTime;
 		this.speed = builder.speed;
-		this.friction = builder.friction;
 		this.zSpeed = builder.zSpeed;
+		this.friction = builder.friction;
 		this.bounciness = builder.bounciness;
 		this.targetPredicate = builder.targetPredicate;
 		this.timeToLive = builder.timeToLive;
@@ -134,30 +129,9 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 	@Override
 	public void move(GameState state) {
-		// Only if not already hasExpired
+		// Only if not already expired
 		if (!hasExpired) {
 			super.move(state);
-		}
-	}
-
-//	@Override
-//	protected void onTileCollision(GameState state, boolean horizontal) {
-//		if (!hasExpired && bounciness > 0) {
-//			System.out.println("WTF!");
-//			expire(state);
-//		}
-//	}
-
-	@Override
-	protected void onTileCollision(GameState state, boolean horizontal) {
-		if (!hasExpired) {
-			if (bounciness > 0) {
-				bounciness--;
-				setSelfImpulse(getSelfImpulse().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE));
-				//getMovement().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE);
-			} else {
-				expire(state);
-			}
 		}
 	}
 

@@ -84,6 +84,13 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 		}
 	}
 
+	@Override
+	protected void onTileCollision(GameState state, boolean horizontal) {
+		if (!hasExpired && bounciness == 0) {
+			expire(state);
+		}
+	}
+
 	/**
 	 * Triggers the projectile explosion
 	 */

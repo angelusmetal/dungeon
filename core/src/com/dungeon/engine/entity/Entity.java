@@ -10,7 +10,6 @@ import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.character.slime.Slime;
 import com.dungeon.game.state.GameState;
 
 abstract public class Entity implements Drawable, Movable {
@@ -31,6 +30,7 @@ abstract public class Entity implements Drawable, Movable {
 	protected float z;
 	protected float speed = 3;
 	protected float friction = 10;
+	protected float bounciness = 0;
 	private boolean invertX = false;
 
 	protected boolean expired;
@@ -162,7 +162,7 @@ abstract public class Entity implements Drawable, Movable {
 				collidedX = detectEntityCollision(state, stepX);
 			}
 			if (collidedX) {
-				movement.x = 0;
+				movement.x *= -bounciness;
 			}
 			if (!collidedY) {
 				body.move(stepY);
@@ -172,7 +172,7 @@ abstract public class Entity implements Drawable, Movable {
 				collidedY = detectEntityCollision(state, stepY);
 			}
 			if (collidedY) {
-				movement.y = 0;
+				movement.y *= -bounciness;
 			}
 			distance -= 1;
 		}

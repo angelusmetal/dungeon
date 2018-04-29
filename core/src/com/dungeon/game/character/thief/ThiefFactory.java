@@ -48,7 +48,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		bullet = new Projectile.Builder()
 				.speed(400)
 				.timeToLive(10)
-				.bounciness(10)
+				.bounciness(1)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
 				.damage(15)
 				.trailFrequency(0.02f);
