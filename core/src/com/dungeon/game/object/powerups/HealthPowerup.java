@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.physics.Body;
@@ -38,9 +39,9 @@ public class HealthPowerup extends Entity {
 					.zSpeed(50)
 					.timeToLive(1f)
 					.color(Color.RED)
-					.mutate(Particle.fadeOut(0.8f))
-					.mutate(Particle.zAccel(100))
-					.mutate(Particle.hOscillate(10, 5f));
+					.mutate(Mutators.fadeOut(0.8f))
+					.mutate(Mutators.zAccel(100))
+					.mutate(Mutators.hOscillate(10, 5f));
 		}
 
 		@Override

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
@@ -56,7 +57,7 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
-				.mutate(Particle.fadeOut(1f))
+				.mutate(Mutators.fadeOut(1f))
 				.zSpeed(10);
 
 		tombstoneSpawner = tombstoneFactory::build;

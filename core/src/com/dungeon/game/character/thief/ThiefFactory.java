@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
@@ -55,7 +56,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
-				.mutate(Particle.fadeOut(1f))
+				.mutate(Mutators.fadeOut(1f))
 				.zSpeed(0);
 		bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		bulletTrailLight = new Light(20, new Color(0.3f, 0.9f, 0.2f, 0.1f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);

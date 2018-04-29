@@ -35,16 +35,6 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 			return this;
 		}
 
-		public Builder autoseek(float autoseek) {
-			this.autoseek = autoseek;
-			return this;
-		}
-
-		public Builder targetRadius(float targetRadius) {
-			this.targetRadius = targetRadius;
-			return this;
-		}
-
 		public Builder targetPredicate(Function<Entity, Boolean> targetPredicate) {
 			this.targetPredicate = targetPredicate;
 			return this;
@@ -67,6 +57,11 @@ public abstract class Projectile extends Particle implements Movable, Drawable {
 
 		public Builder trailFrequency(float trailFrequency) {
 			this.trailFrequency = trailFrequency;
+			return this;
+		}
+
+		public Builder mutate(MutatorSupplier<Particle> mutator) {
+			this.mutators.add(mutator);
 			return this;
 		}
 	}

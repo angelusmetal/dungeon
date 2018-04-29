@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
@@ -51,17 +52,16 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		bullet = new Projectile.Builder()
 				.speed(200)
 				.timeToLive(10)
-				.autoseek(0.1f)
-				.targetRadius(60)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
 				.damage(25)
-				.trailFrequency(0.05f);
+				.trailFrequency(0.05f)
+				.mutate(Mutators.autoSeek(0.1f, 60, PlayerCharacter.IS_NON_PLAYER));
 		bulletExplosion = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(bulletExplodeAnimation.getAnimationDuration())
-				.mutate(Particle.fadeOut(0.8f))
-				.mutate(Particle.zAccel(100f));
+				.mutate(Mutators.fadeOut(0.8f))
+				.mutate(Mutators.zAccel(100f));
 		bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 
 		tombstoneSpawner = tombstoneFactory::build;

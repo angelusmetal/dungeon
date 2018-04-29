@@ -25,39 +25,8 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 	static private final Vector2 VERTICAL_BOUNCE = new Vector2(1, -1);
 	static private final Vector2 HORIZONTAL_BOUNCE = new Vector2(-1, 1);
 
-	/** Fade out particle */
-	static public MutatorSupplier<Particle> fadeOut(float alpha) {
-		return (p) -> {
-			// Fade until the end of life
-			return (particle, state) -> particle.color.a = (1 - (state.getStateTime() - particle.getStartTime()) / particle.getTimeToLive()) * alpha;
-		};
-	}
-
-	/** Oscillate horizontally */
-	static public MutatorSupplier<Particle> hOscillate(float frequency, float amplitude) {
-		return (p) -> {
-			// Randomize phase so each particle oscillates differently
-			float phase = Rand.nextFloat(6.28f);
-			return (particle, state) -> particle.impulse((float) Math.sin((state.getStateTime() + phase) * frequency) * amplitude, 0);
-		};
-	}
-
-	/** Accelerate/decelerate particle in its current direction */
-	static public MutatorSupplier<Particle> accel(float acceleration) {
-		return (p) -> (particle, state) -> particle.speed += acceleration * state.getStateTime();
-	}
-
-	/** Accelerate/decelerate particle vertically */
-	static public MutatorSupplier<Particle> zAccel(float acceleration) {
-		return (p) -> (particle, state) -> particle.zSpeed += acceleration * state.getFrameTime();
-	}
-
-	/** Projectile bounciness; 0 means no bounce (explode), 1 means perfect elastic bounce, in-between is bounce with absorption) */
-	protected int bounciness;
-	/** Autoseek ratio; 0 means no autoseek; 1 means projectile will do a hard turn towards target when within range; in-between will turn slightly */
-	protected final float autoseek;
-	/** Radius, in units, for detecting targets */
-	protected final float targetRadius;
+//	/** Projectile bounciness; 0 means no bounce (explode), 1 means perfect elastic bounce, in-between is bounce with absorption) */
+//	protected int bounciness;
 	/** Determines whether an entity is a target */
 	protected final Function<Entity, Boolean> targetPredicate;
 	/** Time upon which this projectile was spawned */
@@ -70,15 +39,14 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 	protected float zSpeed;
 	/** Particle color */
 	protected final Color color;
-	/** Mutator */
+	/** Mutators */
 	protected final List<Mutator<Particle>> mutator;
 
 	public static class Builder {
 		protected float speed = 1;
 		protected float zSpeed = 0;
+		protected float friction = 0;
 		protected int bounciness = 0;
-		protected float autoseek = 0;
-		protected float targetRadius = 0;
 		protected Function<Entity, Boolean> targetPredicate = (entity) -> false;
 		protected float timeToLive;
 		protected Color color = Color.WHITE;
@@ -89,18 +57,13 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 			return this;
 		}
 
+		public Builder friction(float friction) {
+			this.friction = friction;
+			return this;
+		}
+
 		public Builder bounciness(int bounciness) {
 			this.bounciness = bounciness;
-			return this;
-		}
-
-		public Builder autoseek(float autoseek) {
-			this.autoseek = autoseek;
-			return this;
-		}
-
-		public Builder targetRadius(float targetRadius) {
-			this.targetRadius = targetRadius;
 			return this;
 		}
 
@@ -135,10 +98,9 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		super(body, drawOffset);
 		this.startTime = startTime;
 		this.speed = builder.speed;
+		this.friction = builder.friction;
 		this.zSpeed = builder.zSpeed;
 		this.bounciness = builder.bounciness;
-		this.autoseek = builder.autoseek;
-		this.targetRadius = builder.targetRadius * builder.targetRadius; // square is actually stored for speed
 		this.targetPredicate = builder.targetPredicate;
 		this.timeToLive = builder.timeToLive;
 		this.color = builder.color.cpy();
@@ -178,12 +140,21 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 		}
 	}
 
+//	@Override
+//	protected void onTileCollision(GameState state, boolean horizontal) {
+//		if (!hasExpired && bounciness > 0) {
+//			System.out.println("WTF!");
+//			expire(state);
+//		}
+//	}
+
 	@Override
 	protected void onTileCollision(GameState state, boolean horizontal) {
 		if (!hasExpired) {
 			if (bounciness > 0) {
 				bounciness--;
 				setSelfImpulse(getSelfImpulse().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE));
+				//getMovement().scl(horizontal ? HORIZONTAL_BOUNCE : VERTICAL_BOUNCE);
 			} else {
 				expire(state);
 			}
@@ -197,13 +168,6 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 	@Override
 	public void think(GameState state) {
-		// Apply autoseek
-		if (autoseek > 0) {
-			applyAutoseek(state);
-		} else {
-			setSelfImpulse(getSelfImpulse().setLength(speed));
-		}
-
 		// Apply vertical acceleration & bounciness
 		if (!hasExpired) {
 			z += zSpeed * state.getFrameTime();
@@ -231,31 +195,6 @@ public abstract class Particle extends Entity implements Movable, Drawable {
 
 		// Apply mutators
 		mutator.forEach(m -> m.accept(this, state));
-	}
-
-	private static final Vector2 target = new Vector2();
-	private static final Vector2 seek = new Vector2();
-
-	private void applyAutoseek(GameState state) {
-		boolean found = false;
-		// Find closest target within range
-		for (Entity entity : state.getEntities()) {
-			if (targetPredicate.apply(entity)) {
-				target.set(entity.getPos()).sub(getPos());
-				float len = target.len2();
-				if (len < targetRadius && (!found || len < seek.len2())) {
-					found = true;
-					seek.set(target);
-				}
-			}
-		}
-		// If a target has been found, autoseek
-		if (found) {
-			float seekClamp = autoseek * speed;
-			float speedClamp = speed - seekClamp;
-			seek.clamp(seekClamp, seekClamp);
-			setSelfImpulse(getSelfImpulse().setLength(speedClamp).add(seek));
-		}
 	}
 
 }

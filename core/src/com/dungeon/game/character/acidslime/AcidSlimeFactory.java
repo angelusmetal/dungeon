@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
@@ -54,7 +55,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		blob = new Particle.Builder()
 				.speed(50)
 				.color(new Color(1, 1, 1, 0.5f))
-				.mutate(Particle.zAccel(-200))
+				.mutate(Mutators.zAccel(-200))
 				.timeToLive(10);
 		splat = new Particle.Builder()
 				.timeToLive(splatAnimation.getAnimationDuration());

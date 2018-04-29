@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.Mutators;
 import com.dungeon.engine.entity.Particle;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.entity.Projectile;
@@ -54,7 +55,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.timeToLive(explosionAnimation.getAnimationDuration());
 		bulletTrail = new Particle.Builder()
 				.timeToLive(explosionAnimation.getAnimationDuration())
-				.mutate(Particle.fadeOut(1f))
+				.mutate(Mutators.fadeOut(1f))
 				.zSpeed(10);
 
 		// Draw context
