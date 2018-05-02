@@ -5,11 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.function.Consumer;
 
-public class ViewPortBuffer {
+public class ViewPortBuffer implements Disposable {
 	private FrameBuffer frameBuffer;
 	private TextureRegion textureRegion;
 	private ViewPort viewPort;
@@ -31,6 +32,7 @@ public class ViewPortBuffer {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
+	@Override
 	public void dispose() {
 		if (frameBuffer != null) {
 			frameBuffer.dispose();

@@ -5,10 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.random.Rand;
-import com.dungeon.engine.render.Light;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Mutators {
 

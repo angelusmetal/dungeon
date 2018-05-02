@@ -145,9 +145,6 @@ public class Dungeon extends ApplicationAdapter {
 		trigger.addListener(runnable);
 	}
 
-	float nextFpsDisplay = 0;
-	int frameCnt = 0;
-
 	@Override
 	public void render() {
 		state.updateStateTime(Gdx.graphics.getDeltaTime());
@@ -186,13 +183,6 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		this.frame += 1;
-		
-		frameCnt++;
-		if (state.getStateTime() >= nextFpsDisplay) {
-			System.out.println("FPS: " + frameCnt);
-			frameCnt = 0;
-			nextFpsDisplay = state.getStateTime() + 1;
-		}
 	}
 
 	@Override

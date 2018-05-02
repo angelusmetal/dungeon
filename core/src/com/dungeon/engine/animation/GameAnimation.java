@@ -2,7 +2,6 @@ package com.dungeon.engine.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 public class GameAnimation {
 	private final Animation<TextureRegion> animation;

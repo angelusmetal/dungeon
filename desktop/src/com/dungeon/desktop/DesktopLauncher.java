@@ -6,8 +6,6 @@ import com.dungeon.engine.resource.TextureResource;
 import com.dungeon.game.Dungeon;
 import com.moandjiezana.toml.Toml;
 
-import java.io.InputStream;
-
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		// Read configuration from file

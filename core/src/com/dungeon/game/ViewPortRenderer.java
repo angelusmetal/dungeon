@@ -3,10 +3,11 @@ package com.dungeon.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.random.Rand;
@@ -21,7 +22,7 @@ import com.dungeon.game.state.GameState;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-public class ViewPortRenderer {
+public class ViewPortRenderer implements Disposable {
 
 	private final GameState state;
 	private final ViewPort viewPort;
@@ -33,11 +34,12 @@ public class ViewPortRenderer {
 	private NoiseBuffer noiseBuffer;
 	private BlendFunctionContext lightingContext;
 	private BlendFunctionContext noiseContext;
+	private BitmapFont font;
 
 	// Developer tools
 	private boolean renderScene = true;
 	private boolean renderLighting = true;
-	private boolean renderHealthbars = true;
+	private boolean renderHealthbars = false;
 	private boolean renderBoundingBoxes = false;
 	private boolean renderNoise = true;
 
@@ -78,6 +80,7 @@ public class ViewPortRenderer {
 			e.getPos().y + e.getLight().diameter > viewPort.cameraY;
 
 		fill = new TextureRegion(ResourceManager.instance().getTexture("fill.png"));
+		this.font = new BitmapFont();
 	}
 
 	public void initialize() {
@@ -161,6 +164,10 @@ public class ViewPortRenderer {
 		batch.begin();
 		viewportBuffer.drawScaled(batch);
 		batch.end();
+
+		batch.begin();
+		font.draw(batch, Integer.toString(Gdx.graphics.getFramesPerSecond()), 10, viewPort.height - 10);
+		batch.end();
 	}
 
 	private void renderLight() {
@@ -215,11 +222,13 @@ public class ViewPortRenderer {
 		renderNoise = !renderNoise;
 	}
 
+	@Override
 	public void dispose() {
 		batch.dispose();
 		lightingBuffer.dispose();
 		viewportBuffer.dispose();
 		noiseBuffer.dispose();
+		font.dispose();
 	}
 
 }
