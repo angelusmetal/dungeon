@@ -1,6 +1,5 @@
 package com.dungeon.game.character.ghost;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -8,43 +7,35 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
-import com.dungeon.engine.physics.Body;
-import com.dungeon.engine.render.ColorContext;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
-	private static final Vector2 BOUNDING_BOX = new Vector2(16, 26);
-	private static final Vector2 DRAW_OFFSET = new Vector2(16, 16);
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float VISIBLE_TIME = 2f;
 	private final GhostFactory factory;
-	private final Color color;
 	private float visibleUntil = 0;
 
 	private enum Status {
 		IDLE, ATTACKING
 	}
 
-	Ghost(GhostFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
+	Ghost(Vector2 origin, GhostFactory factory) {
+		super(origin, factory.character);
 		this.factory = factory;
-		color = new Color(1, 1, 1, 0.5f);
-		drawContext = new ColorContext(color);
-		setCurrentAnimation(new GameAnimation(getIdleAnimation(), factory.state.getStateTime()));
-		speed = 20f;
-		light = factory.characterLight;
-		maxHealth = 100 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
+		setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
+		maxHealth = 100 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
 	}
 
 	private static final Vector2 target = new Vector2();
 
 	@Override
-	public void think(GameState state) {
-		super.think(state);
+	public void think() {
+		super.think();
 		Vector2 closestPlayer = new Vector2();
-		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
+		for (PlayerCharacter playerCharacter : GameState.getPlayerCharacters()) {
 			target.set(playerCharacter.getPos()).sub(getPos());
 			float len = target.len2();
 			if (len < MIN_TARGET_DISTANCE && (closestPlayer.len2() == 0 || len < closestPlayer.len2())) {
@@ -53,8 +44,8 @@ public class Ghost extends Character {
 			setSelfImpulse(closestPlayer);
 		}
 		// Set transparency based on invulnerability
-		color.a = Math.min(Math.max((visibleUntil - state.getStateTime()), 0.1f), 0.5f);
-		speed = state.getStateTime() > visibleUntil ? 60f : 20f;
+		color.a = Util.clamp(visibleUntil - GameState.time(), 0.1f, 0.5f);
+		speed = GameState.time() > visibleUntil ? 60f : 20f;
 	}
 
 	@Override
@@ -73,9 +64,9 @@ public class Ghost extends Character {
 	}
 
 	@Override
-	protected boolean onEntityCollision(GameState state, Entity entity) {
+	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(state, 20 * state.getFrameTime());
+			entity.hit(20 * GameState.frameTime());
 			return true;
 		} else {
 			return false;
@@ -83,14 +74,14 @@ public class Ghost extends Character {
 	}
 
 	@Override
-	public void hit(GameState state, float dmg) {
-		super.hit(state, dmg);
-		visibleUntil = state.getStateTime() + VISIBLE_TIME;
+	public void hit(float dmg) {
+		super.hit(dmg);
+		visibleUntil = GameState.time() + VISIBLE_TIME;
 	}
 
-//	@Override
-//	public boolean canBeHit(GameState state) {
-//		return state.getStateTime() > visibleUntil;
-//	}
+	@Override
+	public void onExpire() {
+		GameState.addEntity(factory.createDeath(getPos(), invertX())) ;
+	}
 
 }

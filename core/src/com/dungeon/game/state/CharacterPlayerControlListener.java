@@ -8,11 +8,9 @@ import com.dungeon.engine.entity.PlayerCharacter;
 public class CharacterPlayerControlListener implements PlayerControlBundle.Listener {
 
 	private final PlayerControlBundle control;
-	private final GameState state;
 
-	public CharacterPlayerControlListener(PlayerControlBundle control, GameState state) {
+	public CharacterPlayerControlListener(PlayerControlBundle control) {
 		this.control = control;
-		this.state = state;
 	}
 
 	@Override
@@ -52,7 +50,7 @@ public class CharacterPlayerControlListener implements PlayerControlBundle.Liste
 	public void trigger1() {
 		PlayerCharacter character = control.getCharacter();
 		if (character != null) {
-			character.fire(state);
+			character.fire();
 		}
 	}
 

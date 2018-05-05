@@ -15,7 +15,9 @@ import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.effect.FadeEffect;
+import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
@@ -30,9 +32,9 @@ import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.exit.ExitPlatformFactory;
-import com.dungeon.game.object.powerups.HealthPowerup;
-import com.dungeon.game.object.tombstone.Tombstone;
-import com.dungeon.game.object.torch.Torch;
+import com.dungeon.game.object.powerups.HealthPowerupFactory;
+import com.dungeon.game.object.tombstone.TombstoneFactory;
+import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.GameState;
@@ -42,9 +44,8 @@ import com.moandjiezana.toml.Toml;
 import java.util.Iterator;
 
 public class Dungeon extends ApplicationAdapter {
-	public static final double DEFAULT_SCALE = 3;
+	private static final double DEFAULT_SCALE = 3;
 	private final Toml configuration;
-	private GameState state;
 	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
 	private ViewPortInputProcessor viewPortInputProcessor;
@@ -55,7 +56,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	private boolean fading = false;
 
-	long frame = 0;
+	private long frame = 0;
 
 	public Dungeon(Toml configuration) {
 		this.configuration = configuration;
@@ -77,46 +78,51 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		entityFactory = new EntityFactory();
-		state = new GameState(entityFactory, configuration);
+		GameState.initialize(entityFactory, configuration);
 
-		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory(state));
+		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
 
-		Tombstone.Factory tombstoneFactory = new Tombstone.Factory(state);
-		entityFactory.registerFactory(EntityType.TORCH, new Torch.Factory(state));
+		TombstoneFactory tombstoneFactory = new TombstoneFactory();
+		entityFactory.registerFactory(EntityType.TORCH, new TorchFactory());
 		entityFactory.registerFactory(EntityType.TOMBSTONE, tombstoneFactory);
 
-		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory(state));
-		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory(state));
-		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory(state));
-		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory(state));
+		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
+		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());
+		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory());
+		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory());
 
-		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerup.Factory(state));
+		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
 
-		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory(state, tombstoneFactory));
-		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory(state, tombstoneFactory));
-		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory(state, tombstoneFactory));
+		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory(tombstoneFactory));
+		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory(tombstoneFactory));
+		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory(tombstoneFactory));
 
-		viewPortRenderer = new ViewPortRenderer(state, viewPort);
+		viewPortRenderer = new ViewPortRenderer(viewPort);
 		viewPortRenderer.initialize();
-		characterSelection = new CharacterSelection(state);
+		characterSelection = new CharacterSelection();
 		characterSelection.initialize();
 
 		// Add keyboard controller
-		PlayerControlBundle keyboardControl = new KeyboardPlayerControlBundle(state, inputMultiplexer);
-		keyboardControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(keyboardControl, state));
+		PlayerControlBundle keyboardControl = new KeyboardPlayerControlBundle(inputMultiplexer);
+		keyboardControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(keyboardControl));
 		keyboardControl.addStateListener(GameState.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			PlayerControlBundle controllerControl = new ControllerPlayerControlBundle(state, controller);
-			controllerControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(controllerControl, state));
+			PlayerControlBundle controllerControl = new ControllerPlayerControlBundle(controller);
+			controllerControl.addStateListener(GameState.State.INGAME, new CharacterPlayerControlListener(controllerControl));
 			controllerControl.addStateListener(GameState.State.MENU, new SelectionPlayerControlListener(controllerControl, characterSelection));
 		}
 
 		// Add developer hotkeys
 		addDeveloperHotkeys();
 
-		characterViewPortTracker = new CharacterViewPortTracker(state.getPlayerCharacters());
+		characterViewPortTracker = new CharacterViewPortTracker(GameState.getPlayerCharacters());
+
+		// Add watches
+		GameState.console().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
+//		GameState.console().watch("Time", () -> Float.toString(GameState.time()));
+		GameState.console().watch("Level", () -> Integer.toString(GameState.getLevelCount()));
 	}
 
 	private void initViewPort() {
@@ -147,37 +153,39 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		state.updateStateTime(Gdx.graphics.getDeltaTime());
+		GameState.addTime(Gdx.graphics.getDeltaTime());
 		characterViewPortTracker.refresh(viewPort);
 
 		// Game loop
-		for (Iterator<Entity> e = state.getEntities().iterator(); e.hasNext();) {
+		for (Iterator<Entity> e = GameState.getEntities().iterator(); e.hasNext();) {
 			Entity entity = e.next();
-			entity.think(state);
-			entity.move(state);
-			if (entity.isExpired(state.getStateTime())) {
+			entity.doThink();
+			entity.move();
+			if (entity.isExpired()) {
 				e.remove();
-				state.getPlayerCharacters().remove(entity);
+				if (entity instanceof PlayerCharacter) {
+					GameState.getPlayerCharacters().remove(entity);
+				}
 			}
 		}
 
 		// Render corresponding state
-		if (state.getCurrentState() == GameState.State.MENU) {
+		if (GameState.getCurrentState() == GameState.State.MENU) {
 			characterSelection.render();
-		} else if (state.getCurrentState() == GameState.State.INGAME) {
+		} else if (GameState.getCurrentState() == GameState.State.INGAME) {
 			viewPortRenderer.render();
 		}
 
 		// Render effects on top
-		state.getRenderEffects().forEach(e -> e.render(state));
+		GameState.getRenderEffects().forEach(RenderEffect::render);
 
-		state.refresh();
+		GameState.refresh();
 
-		if (!fading && state.getCurrentState() == GameState.State.INGAME && state.playersAlive() == 0) {
+		if (!fading && GameState.getCurrentState() == GameState.State.INGAME && GameState.playersAlive() == 0) {
 			fading = true;
-			state.addRenderEffect(FadeEffect.fadeOutDeath(state.getStateTime(), () -> {
-				state.setCurrentState(GameState.State.MENU);
-				state.addRenderEffect(FadeEffect.fadeIn(state.getStateTime()));
+			GameState.addRenderEffect(FadeEffect.fadeOutDeath(GameState.time(), () -> {
+				GameState.setCurrentState(GameState.State.MENU);
+				GameState.addRenderEffect(FadeEffect.fadeIn(GameState.time()));
 				fading = false;
 			}));
 		}
@@ -189,7 +197,7 @@ public class Dungeon extends ApplicationAdapter {
 	public void dispose () {
 		viewPortRenderer.dispose();
 		characterSelection.dispose();
-		state.getTilesetManager().dispose();
+		GameState.getTilesetManager().dispose();
 		ResourceManager.instance().unloadAll();
 	}
 }

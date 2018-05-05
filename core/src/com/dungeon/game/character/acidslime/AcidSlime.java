@@ -7,14 +7,11 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
-import com.dungeon.engine.physics.Body;
-import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 
 public class AcidSlime extends Character {
 
-	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
-	private static final Vector2 DRAW_OFFSET = new Vector2(16, 11);
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float DASH = distance2(150);
 	private static final float POOL_SEPARATION = distance2(15);
@@ -28,61 +25,59 @@ public class AcidSlime extends Character {
 	}
 	private Status status;
 
-	AcidSlime(AcidSlimeFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
+	AcidSlime(Vector2 origin, AcidSlimeFactory factory) {
+		super(origin, factory.character);
 		this.factory = factory;
 
-		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
+		setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
 		speed = 100f;
-		light = factory.characterLight;
-		maxHealth = 100 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
+		maxHealth = 100 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
 		friction = 2;
 
 		nextThink = 0f;
-		drawContext = factory.drawContext;
 	}
 
 	@Override
-	public void think(GameState state) {
+	public void think() {
 		if (getSelfImpulse().x != 0) {
 			setInvertX(getSelfImpulse().x < 0);
 		}
-		if (state.getStateTime() > nextThink) {
-			Vector2 target = reTarget(state).setLength2(DASH);
+		if (GameState.time() > nextThink) {
+			Vector2 target = reTarget().setLength2(DASH);
 			if (target.len2() > 0) {
-				nextThink = state.getStateTime() + ATTACK_FREQUENCY;
+				nextThink = GameState.time() + ATTACK_FREQUENCY;
 				// Aim towards target
 				impulse(target);
 				aim(target);
-				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
+				setCurrentAnimation(new GameAnimation(factory.attackAnimation, GameState.time()));
 				this.status = Status.ATTACKING;
 			} else {
-				nextThink = state.getStateTime() + Rand.nextFloat(3f);
+				nextThink = GameState.time() + Rand.nextFloat(3f);
 				speed = 5f;
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
+					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
+					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
 				}
 				this.status = Status.IDLE;
 			}
 		} else {
 			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
 				lastPool.set(getPos());
-				state.addEntity(new AcidPool(factory, state, getPos()));
+				GameState.addEntity(new AcidPool(getPos(), factory));
 			}
 		}
 	}
 
-	private Vector2 reTarget(GameState state) {
+	private Vector2 reTarget() {
 		Vector2 closestPlayer = new Vector2();
-		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
+		for (PlayerCharacter playerCharacter : GameState.getPlayerCharacters()) {
 			//TODO Use dst2 instead!
 			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
 			float len = v.len2();
@@ -94,25 +89,30 @@ public class AcidSlime extends Character {
 	}
 
 	@Override
-	protected void onExpire(GameState state) {
+	protected void onExpire() {
 		// Create a death splatter and a pool
-		state.addEntity(new DieSplatter(factory, state, getPos()));
-		state.addEntity(new AcidPool(factory, state, getPos()));
+		GameState.addEntity(new Entity(getPos(), factory.death));
+		GameState.addEntity(new AcidPool(getPos(), factory));
 		// Create 5-10 blobs
 		int splats = Rand.between(15, 25);
 		for (int i = 0; i < splats; ++i) {
-			state.addEntity(new AcidBlob(factory, state, getPos()));
+			GameState.addEntity(factory.createBlob(getPos()));
 		}
 	}
 
 	@Override
-	protected boolean onEntityCollision(GameState state, Entity entity) {
+	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(state, 10 * state.getFrameTime());
+			entity.hit(10 * GameState.frameTime());
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	protected void onHit() {
+		GameState.addEntity(factory.createBlob(getPos()));
 	}
 
 	// TODO This should not be here: either Character should not enforce this or this should not extend character

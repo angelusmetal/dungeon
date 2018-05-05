@@ -1,0 +1,128 @@
+package com.dungeon.engine.entity;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.render.Light;
+import com.dungeon.engine.util.Util;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+public class EntityPrototype {
+	Animation<TextureRegion> animation;
+	float bounciness = 0;
+	Color color = Color.WHITE;
+	Supplier<Float> damage;
+	Supplier<Float> friction = () -> 0f;
+	Light light = null;
+	List<TraitSupplier<Entity>> traits = new ArrayList<>();
+	Supplier<Float> speed = () -> 1f;
+	Supplier<Float> zSpeed = () -> 0f;
+	int zIndex = 0;
+	Function<Entity, Boolean> targetPredicate = (entity) -> false;
+	Supplier<Float> timeToLive = () -> null;
+
+	Vector2 boundingBox = Vector2.Zero;
+	Vector2 drawOffset = Vector2.Zero;
+
+	public EntityPrototype animation(Animation<TextureRegion> animation) {
+		this.animation = animation;
+		return this;
+	}
+
+	public EntityPrototype bounciness(float bounciness) {
+		this.bounciness = Util.clamp(bounciness, 0, 1);
+		return this;
+	}
+
+	public EntityPrototype boundingBox(Vector2 boundingBox) {
+		this.boundingBox = boundingBox;
+		return this;
+	}
+
+	public EntityPrototype color(Color color) {
+		this.color = color;
+		return this;
+	}
+
+	public EntityPrototype damage(float damage) {
+		this.damage = () -> damage;
+		return this;
+	}
+
+	public EntityPrototype damage(Supplier<Float> damage) {
+		this.damage = damage;
+		return this;
+	}
+
+	public EntityPrototype drawOffset(Vector2 drawOffset) {
+		this.drawOffset = drawOffset;
+		return this;
+	}
+
+	public EntityPrototype friction(float friction) {
+		this.friction = () -> friction;
+		return this;
+	}
+
+	public EntityPrototype friction(Supplier<Float> friction) {
+		this.friction = friction;
+		return this;
+	}
+
+	public EntityPrototype light(Light light) {
+		this.light = light;
+		return this;
+	}
+
+	public EntityPrototype with(TraitSupplier<Entity> trait) {
+		this.traits.add(trait);
+		return this;
+	}
+
+	public EntityPrototype speed(float speed) {
+		this.speed = () -> speed;
+		return this;
+	}
+
+	public EntityPrototype speed(Supplier<Float> speed) {
+		this.speed = speed;
+		return this;
+	}
+
+	public EntityPrototype targetPredicate(Function<Entity, Boolean> targetPredicate) {
+		this.targetPredicate = targetPredicate;
+		return this;
+	}
+
+	public EntityPrototype timeToLive(float timeToLive) {
+		this.timeToLive = () -> timeToLive;
+		return this;
+	}
+
+	public EntityPrototype timeToLive(Supplier<Float> timeToLive) {
+		this.timeToLive = timeToLive;
+		return this;
+	}
+
+	public EntityPrototype zIndex(int zIndex) {
+		this.zIndex = zIndex;
+		return this;
+	}
+
+	public EntityPrototype zSpeed(float zSpeed) {
+		this.zSpeed = () -> zSpeed;
+		return this;
+	}
+
+	public EntityPrototype zSpeed(Supplier<Float> zSpeed) {
+		this.zSpeed = zSpeed;
+		return this;
+	}
+
+}
+

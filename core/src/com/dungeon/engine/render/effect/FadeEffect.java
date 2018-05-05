@@ -5,11 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class FadeEffect implements RenderEffect {
 
-	public static final int DEFAULT_FADE_DURATION = 1;
+	private static final int DEFAULT_FADE_DURATION = 1;
 	private final Color start;
 	private final Color end;
 	private final Color currentBlend;
@@ -31,8 +32,8 @@ public class FadeEffect implements RenderEffect {
 	}
 
 	@Override
-	public void render(GameState state) {
-		float ratio = Math.min((state.getStateTime() - startTime) / duration, 1f);
+	public void render() {
+		float ratio = Util.clamp((GameState.time() - startTime) / duration, 0f, 1f);
 		float mix = 1 - ratio;
 		currentBlend.r = start.r * mix + end.r * ratio;
 		currentBlend.g = start.g * mix + end.g * ratio;
@@ -45,8 +46,8 @@ public class FadeEffect implements RenderEffect {
 	}
 
 	@Override
-	public boolean isExpired(float time) {
-		return time > startTime + duration;
+	public boolean isExpired() {
+		return GameState.time() > startTime + duration;
 	}
 
 	@Override

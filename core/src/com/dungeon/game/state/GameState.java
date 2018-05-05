@@ -27,95 +27,99 @@ public class GameState {
 		MENU, INGAME, GAMEOVER
 	}
 
-	public final int BASE_MAP_WIDTH = 40;
-	public final int BASE_MAP_HEIGHT = 40;
+	private static final int BASE_MAP_WIDTH = 40;
+	private static final int BASE_MAP_HEIGHT = 40;
 
-	private final EntityFactory entityFactory;
-	private final Toml configuration;
+	private static EntityFactory entityFactory;
+	private static Toml configuration;
 
-	private float stateTime;
-	private float frameTime;
-	private Level level;
-	private TilesetManager tilesetManager;
-	private State currentState = State.MENU;
+	private static float stateTime = 0;
+	private static float frameTime;
+	private static Level level;
+	private static TilesetManager tilesetManager = new TilesetManager();
+	private static State currentState = State.MENU;
+	private static Console console;
 
-	private List<PlayerCharacter> playerCharacters = new LinkedList<>();
-	private List<Entity> entities = new LinkedList<>();
+	private static List<PlayerCharacter> playerCharacters = new LinkedList<>();
+	private static List<Entity> entities = new LinkedList<>();
 
-	private List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
-	private List<Entity> newEntities = new LinkedList<>();
+	private static List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
+	private static List<Entity> newEntities = new LinkedList<>();
 
-	private List<CharacterSelection.Slot> slots;
+	private static List<CharacterSelection.Slot> slots;
 
-	private int playerCount;
-	private int levelCount;
+	private static int playerCount;
+	private static int levelCount;
 
-	private List<RenderEffect> renderEffects = new ArrayList<>();
-	private List<RenderEffect> newRenderEffects = new ArrayList<>();
+	private static List<RenderEffect> renderEffects = new ArrayList<>();
+	private static List<RenderEffect> newRenderEffects = new ArrayList<>();
 
-	public GameState(EntityFactory entityFactory, Toml configuration) {
-		this.stateTime = 0;
-		this.entityFactory = entityFactory;
-		this.tilesetManager = new TilesetManager();
-		this.configuration = configuration;
+	public static void initialize(EntityFactory entityFactory, Toml configuration) {
+		GameState.entityFactory = entityFactory;
+		GameState.configuration = configuration;
+		console = new Console(10, 3f); // TODO get size from config
 	}
 
-	public float getStateTime() {
+	public static float time() {
 		return stateTime;
 	}
 
-	public float getFrameTime() {
+	public static float frameTime() {
 		return frameTime;
 	}
 
-	public Toml getConfiguration() {
+	public static Toml getConfiguration() {
 		return configuration;
 	}
 
-	public EntityFactory getEntityFactory() {
+	public static Console console() {
+		return console;
+	}
+
+	public static EntityFactory getEntityFactory() {
 		return entityFactory;
 	}
 
-	public void updateStateTime(float frameTime) {
-		this.stateTime += frameTime;
-		this.frameTime = frameTime;
+	public static void addTime(float frameTime) {
+		stateTime += frameTime;
+		GameState.frameTime = frameTime;
 		Light.updateDimmers(frameTime);
 	}
 
-	public Level getLevel() {
+	public static Level getLevel() {
 		return level;
 	}
 
-	public TilesetManager getTilesetManager() {
+	public static TilesetManager getTilesetManager() {
 		return tilesetManager;
 	}
 
-	public State getCurrentState() {
+	public static State getCurrentState() {
 		return currentState;
 	}
-	public void setCurrentState(GameState.State newState) {
+	public static void setCurrentState(GameState.State newState) {
 		currentState = newState;
 	}
 
-	public int getPlayerCount() {
+	public static int getPlayerCount() {
 		return playerCount;
 	}
 
-	public int getLevelCount() {
+	public static int getLevelCount() {
 		return levelCount;
 	}
 
-	public void startNewGame(List<CharacterSelection.Slot> slots) {
-		this.slots = slots;
+	public static void startNewGame(List<CharacterSelection.Slot> slots) {
+		GameState.slots = slots;
 		levelCount = 0;
 		startNewLevel();
 	}
 
-	public void exitLevel() {
-		addRenderEffect(FadeEffect.fadeOut(getStateTime(), this::startNewLevel));
+	public static void exitLevel() {
+		addRenderEffect(FadeEffect.fadeOut(time(), GameState::startNewLevel));
 	}
 
-	public void startNewLevel() {
+	public static void startNewLevel() {
 
 		playerCharacters.clear();
 		entities.clear();
@@ -141,10 +145,10 @@ public class GameState {
 
 		setCurrentState(GameState.State.INGAME);
 
-		addRenderEffect(FadeEffect.fadeIn(getStateTime()));
+		addRenderEffect(FadeEffect.fadeIn(time()));
 	}
 
-	private PlayerCharacter createCharacter(int characterId, Vector2 origin) {
+	private static PlayerCharacter createCharacter(int characterId, Vector2 origin) {
 		if (characterId == 0) {
 			return (PlayerCharacter) entityFactory.build(EntityType.WITCH, origin);
 		} else if (characterId == 1) {
@@ -154,60 +158,56 @@ public class GameState {
 		}
 	}
 
-	public LevelTileset getLevelTileset() {
+	public static LevelTileset getLevelTileset() {
 		return tilesetManager.getDungeonVioletTileset();
 	}
 
-	public void generateNewLevel() {
+	public static void generateNewLevel() {
 		int baseWidth = configuration.getLong("map.width", (long) BASE_MAP_WIDTH).intValue();
 		int baseHeight = configuration.getLong("map.width", (long) BASE_MAP_HEIGHT).intValue();
 		int growth = configuration.getLong("map.growth", (long) 10).intValue();
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		level = generator.generateLevel(getLevelTileset());
 	}
-	public void addEntity(Entity entity) {
+	public static void addEntity(Entity entity) {
 		newEntities.add(entity);
 	}
 
-	public void addPlayerCharacter(PlayerCharacter character) {
+	public static void addPlayerCharacter(PlayerCharacter character) {
 		newPlayerCharacters.add(character);
 		newEntities.add(character);
 	}
 
-	public List<Entity> getEntities() {
+	public static List<Entity> getEntities() {
 		return entities;
 	}
 
-	public List<PlayerCharacter> getPlayerCharacters() {
+	public static List<PlayerCharacter> getPlayerCharacters() {
 		return playerCharacters;
 	}
 
-	public void addRenderEffect(RenderEffect effect) {
+	public static void addRenderEffect(RenderEffect effect) {
 		newRenderEffects.add(effect);
 	}
 
-	public List<RenderEffect> getRenderEffects() {
+	public static List<RenderEffect> getRenderEffects() {
 		return renderEffects;
 	}
 
-	public void refresh() {
+	public static void refresh() {
 		playerCharacters.addAll(newPlayerCharacters);
 		newPlayerCharacters.clear();
 		entities.addAll(newEntities);
 		newEntities.clear();
 
-		for (Iterator<RenderEffect> e = renderEffects.iterator(); e.hasNext(); ) {
-			RenderEffect effect = e.next();
-			if (effect.isExpired(stateTime)) {
-				e.remove();
-				effect.dispose();
-			}
-		}
+		// Dispose and remove old effects, and then add new ones
+		renderEffects.stream().filter(RenderEffect::isExpired).forEach(RenderEffect::dispose);
+		renderEffects.removeIf(RenderEffect::isExpired);
 		renderEffects.addAll(newRenderEffects);
 		newRenderEffects.clear();
 	}
 
-	public int playersAlive() {
+	public static int playersAlive() {
 		return playerCharacters.size() + newPlayerCharacters.size();
 	}
 }

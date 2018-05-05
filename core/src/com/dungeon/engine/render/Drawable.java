@@ -8,13 +8,13 @@ import com.dungeon.game.state.GameState;
 
 public interface Drawable {
 
-	TextureRegion getFrame(float stateTime);
+	TextureRegion getFrame();
 	boolean invertX();
 
 	Vector2 getPos();
 	Vector2 getDrawOffset();
 	float getZIndex();
 
-	void draw(GameState state, SpriteBatch batch, ViewPort viewPort);
+	void draw(SpriteBatch batch, ViewPort viewPort);
 
 }

@@ -7,11 +7,10 @@ import com.dungeon.engine.controller.pov.PovToggle;
 import com.dungeon.engine.controller.pov.PovTrigger;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
-import com.dungeon.game.state.GameState;
 
 public class KeyboardPlayerControlBundle extends PlayerControlBundle {
-	public KeyboardPlayerControlBundle(GameState state, InputMultiplexer inputMultiplexer) {
-		super(state);
+	public KeyboardPlayerControlBundle(InputMultiplexer inputMultiplexer) {
+		super();
 
 		// Create directional controls
 		KeyboardAnalogControl directionalControl = new KeyboardAnalogControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);

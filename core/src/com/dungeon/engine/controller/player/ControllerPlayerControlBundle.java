@@ -6,12 +6,9 @@ import com.dungeon.engine.controller.pov.PovToggle;
 import com.dungeon.engine.controller.pov.PovTrigger;
 import com.dungeon.engine.controller.toggle.ControllerToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
-import com.dungeon.game.state.GameState;
 
 public class ControllerPlayerControlBundle extends PlayerControlBundle {
-	public ControllerPlayerControlBundle(GameState state, Controller controller) {
-		super(state);
-
+	public ControllerPlayerControlBundle(Controller controller) {
 		// Create directional controls
 		StickAnalogControl directionalControl = new StickAnalogControl(3, -2);
 		PovTrigger povTrigger = new PovTrigger(new PovToggle(directionalControl));

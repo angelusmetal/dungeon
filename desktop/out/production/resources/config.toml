@@ -20,7 +20,7 @@
     width = 40
     height = 40
     growth = 10
-    creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
+    creatures = ["GHOST"]#["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
     itemchance = 1.0
 [noise]
     width = 128

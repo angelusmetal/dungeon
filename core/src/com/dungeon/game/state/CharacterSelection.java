@@ -19,7 +19,6 @@ public class CharacterSelection {
 
 	private static final int CHARACTER_COUNT = 3;
 	private int currentPlayer = 0;
-	private final GameState state;
 	private List<Slot> slots = new ArrayList<>(4);
 
 	public static class Slot {
@@ -35,10 +34,6 @@ public class CharacterSelection {
 	// Rendering stuff
 	private SpriteBatch batch;
 	private Texture playerCharacterScreen;
-
-	public CharacterSelection(GameState state) {
-		this.state = state;
-	}
 
 	public void initialize() {
 		batch = new SpriteBatch();
@@ -72,7 +67,7 @@ public class CharacterSelection {
 
 	public void confirmSelection(PlayerControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
-		state.addRenderEffect(FadeEffect.fadeOut(state.getStateTime(), () -> state.startNewGame(slots)));
+		GameState.addRenderEffect(FadeEffect.fadeOut(GameState.time(), () -> GameState.startNewGame(slots)));
 	}
 
 	private Optional<Slot> getSlot(PlayerControlBundle control) {
@@ -101,7 +96,7 @@ public class CharacterSelection {
 		batch.draw(playerCharacterScreen, 0, 0, playerCharacterScreen.getWidth() * 4, playerCharacterScreen.getHeight() * 4);
 		int x = 50, y = 80;
 		for (Slot s : slots) {
-			TextureRegion keyFrame = getAnimation(s.characterId).getKeyFrame(state.getStateTime());
+			TextureRegion keyFrame = getAnimation(s.characterId).getKeyFrame(GameState.time());
 			batch.draw(keyFrame, (x - keyFrame.getRegionWidth() / 2) * 4, (y - keyFrame.getRegionHeight() / 2) * 4, keyFrame.getRegionWidth() * 4, keyFrame.getRegionHeight() * 4);
 			x += 100;
 		}

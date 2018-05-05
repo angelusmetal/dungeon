@@ -1,4 +1,4 @@
-package com.dungeon.engine.random;
+package com.dungeon.engine.util;
 
 import java.util.List;
 import java.util.Random;

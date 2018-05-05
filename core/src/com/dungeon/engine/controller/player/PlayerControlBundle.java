@@ -45,12 +45,10 @@ public abstract class PlayerControlBundle {
 		@Override public void trigger4() {}
 	};
 
-	private final GameState state;
 	private final EnumMap<GameState.State, Listener> listeners;
 	private PlayerCharacter character;
 
-	public PlayerControlBundle(GameState state) {
-		this.state = state;
+	public PlayerControlBundle() {
 		this.listeners = new EnumMap<>(GameState.State.class);
 		for (GameState.State s : GameState.State.values()) {
 			listeners.put(s, NO_OP);
@@ -70,43 +68,43 @@ public abstract class PlayerControlBundle {
 	}
 
 	void updateDirection(Vector2 vector) {
-		listeners.get(state.getCurrentState()).updateDirection(vector);
+		listeners.get(GameState.getCurrentState()).updateDirection(vector);
 	}
 
 	void povTrigger(PovDirection pov) {
-		listeners.get(state.getCurrentState()).povTrigger(pov);
+		listeners.get(GameState.getCurrentState()).povTrigger(pov);
 	}
 
 	void toggle1(boolean on) {
-		listeners.get(state.getCurrentState()).toggle1(on);
+		listeners.get(GameState.getCurrentState()).toggle1(on);
 	}
 
 	void toggle2(boolean on) {
-		listeners.get(state.getCurrentState()).toggle2(on);
+		listeners.get(GameState.getCurrentState()).toggle2(on);
 	}
 
 	void toggle3(boolean on) {
-		listeners.get(state.getCurrentState()).toggle3(on);
+		listeners.get(GameState.getCurrentState()).toggle3(on);
 	}
 
 	void toggle4(boolean on) {
-		listeners.get(state.getCurrentState()).toggle4(on);
+		listeners.get(GameState.getCurrentState()).toggle4(on);
 	}
 
 	void trigger1() {
-		listeners.get(state.getCurrentState()).trigger1();
+		listeners.get(GameState.getCurrentState()).trigger1();
 	}
 
 	void trigger2() {
-		listeners.get(state.getCurrentState()).trigger2();
+		listeners.get(GameState.getCurrentState()).trigger2();
 	}
 
 	void trigger3() {
-		listeners.get(state.getCurrentState()).trigger3();
+		listeners.get(GameState.getCurrentState()).trigger3();
 	}
 
 	void trigger4() {
-		listeners.get(state.getCurrentState()).trigger4();
+		listeners.get(GameState.getCurrentState()).trigger4();
 	}
 
 }

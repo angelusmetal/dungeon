@@ -10,21 +10,23 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.render.BlendFunctionContext;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.NoiseBuffer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.state.Console;
 import com.dungeon.game.state.GameState;
 
 import java.util.Comparator;
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ViewPortRenderer implements Disposable {
 
-	private final GameState state;
 	private final ViewPort viewPort;
 
 	private SpriteBatch batch;
@@ -59,19 +61,18 @@ public class ViewPortRenderer implements Disposable {
 
 	private static final ColorContext BOUNDING_BOXES = new ColorContext(new Color(1f, 0.2f, 0.2f, 0.3f));
 
-	public ViewPortRenderer(GameState state, ViewPort viewPort) {
-		this.state = state;
+	public ViewPortRenderer(ViewPort viewPort) {
 		this.viewPort = viewPort;
 		this.lightingBuffer = new ViewPortBuffer(viewPort);
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
-		this.noiseBuffer = new NoiseBuffer(state.getConfiguration());
+		this.noiseBuffer = new NoiseBuffer(GameState.getConfiguration());
 		this.lightingContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.noiseContext = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		entityInCamera = (e) ->
 			e.getPos().x - e.getDrawOffset().x < viewPort.cameraX + viewPort.cameraWidth &&
-			e.getPos().x + e.getDrawOffset().x + e.getFrame(state.getStateTime()).getRegionWidth() > viewPort.cameraX &&
+			e.getPos().x + e.getDrawOffset().x + e.getFrame().getRegionWidth() > viewPort.cameraX &&
 			e.getPos().y - e.getDrawOffset().y + e.getZPos() < viewPort.cameraY + viewPort.cameraHeight &&
-			e.getPos().y + e.getDrawOffset().y + e.getZPos() + e.getFrame(state.getStateTime()).getRegionHeight() > viewPort.cameraY;
+			e.getPos().y + e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > viewPort.cameraY;
 		lightInCamera = (e) ->
 			e.getLight() != null &&
 			e.getPos().x - e.getLight().diameter < viewPort.cameraX + viewPort.cameraWidth &&
@@ -118,7 +119,7 @@ public class ViewPortRenderer implements Disposable {
 				// Draw map
 				drawMap(batch);
 				// Iterate entities in render order and draw them
-				state.getEntities().stream().filter(entityInCamera).sorted(comp).forEach(e -> e.draw(state, batch, viewPort));
+				GameState.getEntities().stream().filter(entityInCamera).sorted(comp).forEach(e -> e.draw(batch, viewPort));
 			});
 		} else {
 			viewportBuffer.render((batch) -> {
@@ -137,14 +138,14 @@ public class ViewPortRenderer implements Disposable {
 		// Render UI elements
 		if (renderHealthbars) {
 			viewportBuffer.render((batch) -> {
-				state.getEntities().stream().filter(e -> e instanceof Character).filter(entityInCamera).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(state, batch, viewPort));
+				GameState.getEntities().stream().filter(e -> e instanceof Character).filter(entityInCamera).map(e -> (Character)e).sorted(comp).forEach(e -> e.drawHealthbar(batch, viewPort));
 			});
 		}
 
 		if (renderBoundingBoxes) {
 			viewportBuffer.render((batch) -> {
 				BOUNDING_BOXES.set(batch);
-				state.getEntities().stream().filter(entityInCamera).forEach(e -> viewPort.draw(
+				GameState.getEntities().stream().filter(entityInCamera).forEach(e -> viewPort.draw(
 						batch,
 						fill,
 						e.getBody().getBottomLeft().x,
@@ -165,8 +166,29 @@ public class ViewPortRenderer implements Disposable {
 		viewportBuffer.drawScaled(batch);
 		batch.end();
 
+		// TODO This should actually go elsewhere (separated from viewport)
+		drawConsole();
+	}
+
+	private void drawConsole() {
 		batch.begin();
-		font.draw(batch, Integer.toString(Gdx.graphics.getFramesPerSecond()), 10, viewPort.height - 10);
+		int x = 10;
+		int y = viewPort.height - 10;
+		for (Console.LogLine log : GameState.console().getLog()) {
+			log.color.a = Math.max((log.expiration - GameState.time()) / GameState.console().getMessageExpiration(), 0);
+			font.setColor(log.color);
+			font.draw(batch, log.message, x, y);
+			y -= 16;
+		}
+
+		font.setColor(Color.WHITE);
+
+		x = viewPort.width - 100;
+		y = viewPort.height - 10;
+		for (Map.Entry<String, Supplier<String>> watch : GameState.console().getWatches().entrySet()) {
+			font.draw(batch, watch.getKey() + ": " + watch.getValue().get(), x, y);
+			y -= 16;
+		}
 		batch.end();
 	}
 
@@ -179,7 +201,7 @@ public class ViewPortRenderer implements Disposable {
 
 			Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			state.getEntities().stream().filter(lightInCamera).sorted(comp).forEach(e -> e.drawLight(state, batch, viewPort));
+			GameState.getEntities().stream().filter(lightInCamera).sorted(comp).forEach(e -> e.drawLight(batch, viewPort));
 
 			// Restore blend function
 			batch.setBlendFunction(srcFunc, dstFunc);
@@ -188,16 +210,15 @@ public class ViewPortRenderer implements Disposable {
 
 	private void drawMap(SpriteBatch batch) {
 		// Only render the visible portion of the map
-		int tWidth = state.getLevelTileset().tile_size;
-		int tHeight = state.getLevelTileset().tile_size;
-		int minX = Math.max(0, viewPort.cameraX / tWidth);
-		int maxX = Math.min(state.getLevel().map.length - 1, (viewPort.cameraX + viewPort.width) / tWidth) + 1;
-		int minY = Math.max(0, viewPort.cameraY / tHeight - 1);
-		int maxY = Math.min(state.getLevel().map[0].length - 1, (viewPort.cameraY + viewPort.height) / tHeight);
+		int tSize = GameState.getLevelTileset().tile_size;
+		int minX = Math.max(0, viewPort.cameraX / tSize);
+		int maxX = Math.min(GameState.getLevel().map.length - 1, (viewPort.cameraX + viewPort.width) / tSize) + 1;
+		int minY = Math.max(0, viewPort.cameraY / tSize - 1);
+		int maxY = Math.min(GameState.getLevel().map[0].length - 1, (viewPort.cameraY + viewPort.height) / tSize);
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
-				TextureRegion textureRegion = state.getLevel().map[x][y].animation.getKeyFrame(state.getStateTime(), true);
-				batch.draw(textureRegion, (x * tWidth - viewPort.cameraX), (y * tHeight - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				TextureRegion textureRegion = GameState.getLevel().map[x][y].animation.getKeyFrame(GameState.time(), true);
+				batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 			}
 		}
 	}

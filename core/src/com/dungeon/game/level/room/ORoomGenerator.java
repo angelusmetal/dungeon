@@ -1,7 +1,7 @@
 package com.dungeon.game.level.room;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
-import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
@@ -17,22 +16,22 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.25f); // Default is fire every 0.25 seconds
 
-	public Character(Body body, Vector2 drawOffset) {
-		super(body, drawOffset);
+	public Character(Vector2 origin, EntityPrototype prototype) {
+		super(origin, prototype);
 	}
 
 	@Override
-	public void think(GameState state) {
+	public void think() {
 		if (aim.x != 0) {
 			setInvertX(aim.x < 0);
 		}
 		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
 			if (getIdleAnimation() != getCurrentAnimation().getAnimation()) {
-				setCurrentAnimation(new GameAnimation(getIdleAnimation(), state.getStateTime()));
+				setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
 			}
 		} else {
 			if (getWalkAnimation() != getCurrentAnimation().getAnimation()) {
-				setCurrentAnimation(new GameAnimation(getWalkAnimation(), state.getStateTime()));
+				setCurrentAnimation(new GameAnimation(getWalkAnimation(), GameState.time()));
 			}
 		}
 		if (getSelfImpulse().len() > 0.5) {
@@ -43,11 +42,6 @@ public abstract class Character extends Entity implements Movable, Drawable {
 	abstract protected Animation<TextureRegion> getAttackAnimation();
 	abstract protected Animation<TextureRegion> getIdleAnimation();
 	abstract protected Animation<TextureRegion> getWalkAnimation();
-
-	@Override
-	public boolean isExpired(float time) {
-		return expired;
-	}
 
 	@Override
 	public boolean isSolid() {
@@ -62,28 +56,28 @@ public abstract class Character extends Entity implements Movable, Drawable {
 		return aim;
 	}
 
-	public void fire(GameState state) {
+	public void fire() {
 		if (!expired) {
-			fireCooldown.attempt(state.getStateTime(), () -> {
-				Projectile projectile = createProjectile(state, getPos().cpy().mulAdd(aim, 2));
+			fireCooldown.attempt(GameState.time(), () -> {
+				Entity projectile = createProjectile(getPos().cpy().mulAdd(aim, 2));
 				if (projectile != null) {
-					projectile.impulse(aim.cpy().setLength(projectile.getSpeed()));
+					projectile.impulse(aim.cpy().setLength(projectile.speed));
 					// Extra offset to make projectiles appear in the character's hands
 					//projectile.getPos().y -= 8;
-					state.addEntity(projectile);
-					setCurrentAnimation(new GameAnimation(getAttackAnimation(), state.getStateTime()));
+					GameState.addEntity(projectile);
+					setCurrentAnimation(new GameAnimation(getAttackAnimation(), GameState.time()));
 				}
 			});
 		}
 	}
 
-	protected Projectile createProjectile(GameState state, Vector2 pos) {
+	protected Entity createProjectile(Vector2 pos) {
 		return null;
 	}
 
-	public void drawHealthbar(GameState state, SpriteBatch batch, ViewPort viewPort) {
+	public void drawHealthbar(SpriteBatch batch, ViewPort viewPort) {
 		// Draw health bar
-//		viewPort.draw(batch, state.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x - getDrawOffset().x, getPos().y - getDrawOffset().y + getBoundingBox().y + z, getBoundingBox().x * health/maxHealth, 2);
-		viewPort.draw(batch, state.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x - getBoundingBox().x / 2, getPos().y + getBoundingBox().y / 2 + 4 + z, getBoundingBox().x * health/maxHealth, 2);
+//		viewPort.draw(batch, GameState.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x - getDrawOffset().x, getPos().y - getDrawOffset().y + getBoundingBox().y + z, getBoundingBox().x * health/maxHealth, 2);
+		viewPort.draw(batch, GameState.getTilesetManager().getHudTileset().HEALTH_BAR, getPos().x - getBoundingBox().x / 2, getPos().y + getBoundingBox().y / 2 + 4 + z, getBoundingBox().x * health/maxHealth, 2);
 	}
 }

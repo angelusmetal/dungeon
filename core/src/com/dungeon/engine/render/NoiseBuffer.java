@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Util;
 import com.moandjiezana.toml.Toml;
 
 public class NoiseBuffer {
@@ -21,7 +22,7 @@ public class NoiseBuffer {
 	public NoiseBuffer(Toml configuration) {
 		this.width = configuration.getLong("noise.width", 128L).intValue();
 		this.height = configuration.getLong("noise.height", 128L).intValue();
-		this.grit = (float) Math.min(Math.max(configuration.getDouble("noise.grit", 0.3d), 0), 1);
+		this.grit = Util.clamp(configuration.getDouble("noise.grit", 0.3d).floatValue(), 0, 1);
 		this.batch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());

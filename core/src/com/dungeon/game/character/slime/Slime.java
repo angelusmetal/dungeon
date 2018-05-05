@@ -7,14 +7,10 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
-import com.dungeon.engine.physics.Body;
-import com.dungeon.engine.random.Rand;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 
 public class Slime extends Character {
-
-	private static final Vector2 BOUNDING_BOX = new Vector2(22, 12);
-	private static final Vector2 DRAW_OFFSET = new Vector2(16, 11);
 
 	private static final float MIN_TARGET_DISTANCE = distance2(300);
 	private static final float JUMP = distance2(50);
@@ -30,58 +26,53 @@ public class Slime extends Character {
 	/** Vertical acceleration */
 	private final float zAcceleration;
 
-	Slime(SlimeFactory factory, Vector2 pos) {
-		super(new Body(pos, BOUNDING_BOX), DRAW_OFFSET);
+	Slime(Vector2 origin, SlimeFactory factory) {
+		super(origin, factory.character);
 		this.factory = factory;
 
-		setCurrentAnimation(new GameAnimation(factory.idleAnimation, factory.state.getStateTime()));
-		speed = 100f;
-		friction = 1;
-		light = factory.characterLight;
-		maxHealth = 75 * (factory.state.getPlayerCount() + factory.state.getLevelCount());
+		setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+		maxHealth = 75 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
 
 		nextThink = 0f;
-		drawContext = factory.drawContext;
 
-		zSpeed = 0;
 		zAcceleration = -200;
 	}
 
 	@Override
-	public void think(GameState state) {
+	public void think() {
 //		super.think(state);
 		if (getAim().x != 0) {
 			setInvertX(getAim().x < 0);
 		}
-		if (state.getStateTime() > nextThink) {
-			Vector2 target = reTarget(state).setLength2(JUMP);
+		if (GameState.time() > nextThink) {
+			Vector2 target = reTarget().setLength2(JUMP);
 			if (target.len2() > 0) {
 				// Attack lasts 2 seconds
-				nextThink = state.getStateTime() + 3f;
+				nextThink = GameState.time() + 3f;
 				// Aim towards target
 				impulse(target);
 				aim(target);
 				zSpeed = 100;
-				setCurrentAnimation(new GameAnimation(factory.attackAnimation, state.getStateTime()));
+				setCurrentAnimation(new GameAnimation(factory.attackAnimation, GameState.time()));
 				this.status = Status.ATTACKING;
 			} else {
-				nextThink = state.getStateTime() + Rand.nextFloat(3f);
+				nextThink = GameState.time() + Rand.nextFloat(3f);
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(10f, 10), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
+					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, state.getStateTime()));
+					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
 				}
 				this.status = Status.IDLE;
 			}
 		} else {
-			zSpeed += zAcceleration * state.getFrameTime();
-			z += zSpeed * state.getFrameTime();
+			zSpeed += zAcceleration * GameState.frameTime();
+			z += zSpeed * GameState.frameTime();
 			if (z < 0) {
 				z = 0;
 			}
@@ -90,9 +81,9 @@ public class Slime extends Character {
 		}
 	}
 
-	private Vector2 reTarget(GameState state) {
+	private Vector2 reTarget() {
 		Vector2 closestPlayer = new Vector2();
-		for (PlayerCharacter playerCharacter : state.getPlayerCharacters()) {
+		for (PlayerCharacter playerCharacter : GameState.getPlayerCharacters()) {
 			//TODO Use dst2 instead!
 			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
 			float len = v.len2();
@@ -116,9 +107,9 @@ public class Slime extends Character {
 //	}
 
 	@Override
-	protected boolean onEntityCollision(GameState state, Entity entity) {
+	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(state, 10 * state.getFrameTime());
+			entity.hit(10 * GameState.frameTime());
 			return true;
 		} else {
 			return false;
