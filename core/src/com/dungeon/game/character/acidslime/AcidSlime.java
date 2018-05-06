@@ -70,7 +70,7 @@ public class AcidSlime extends Character {
 		} else {
 			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
 				lastPool.set(getPos());
-				GameState.addEntity(new AcidPool(getPos(), factory));
+				GameState.addEntity(factory.createPool(this));
 			}
 		}
 	}
@@ -91,12 +91,12 @@ public class AcidSlime extends Character {
 	@Override
 	protected void onExpire() {
 		// Create a death splatter and a pool
-		GameState.addEntity(new Entity(getPos(), factory.death));
-		GameState.addEntity(new AcidPool(getPos(), factory));
+		GameState.addEntity(factory.createDeath(this));
+		GameState.addEntity(factory.createPool(this));
 		// Create a bunch of blobs
 		int splats = Rand.between(8, 16);
 		for (int i = 0; i < splats; ++i) {
-			GameState.addEntity(factory.createBlob(getPos()));
+			GameState.addEntity(factory.createBlob(this));
 		}
 	}
 
@@ -112,7 +112,7 @@ public class AcidSlime extends Character {
 
 	@Override
 	protected void onHit() {
-		GameState.addEntity(factory.createBlob(getPos()));
+		GameState.addEntity(factory.createBlob(this));
 	}
 
 	// TODO This should not be here: either Character should not enforce this or this should not extend character

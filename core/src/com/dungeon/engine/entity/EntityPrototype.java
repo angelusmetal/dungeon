@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public class EntityPrototype {
 	Animation<TextureRegion> animation;
 	float bounciness = 0;
-	Color color = Color.WHITE;
+	Supplier<Color> color = Color.WHITE::cpy;
 	Supplier<Float> damage;
 	Supplier<Float> friction = () -> 0f;
 	Light light = null;
@@ -45,6 +45,11 @@ public class EntityPrototype {
 	}
 
 	public EntityPrototype color(Color color) {
+		this.color = color::cpy;
+		return this;
+	}
+
+	public EntityPrototype color(Supplier<Color> color) {
 		this.color = color;
 		return this;
 	}

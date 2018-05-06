@@ -83,7 +83,7 @@ public class Entity implements Drawable, Movable {
 		this.friction = builder.friction.get();
 		this.bounciness = builder.bounciness;
 		this.targetPredicate = builder.targetPredicate;
-		this.color = builder.color.cpy();
+		this.color = builder.color.get();
 		this.light = builder.light != null ? builder.light.cpy() : null; // TODO Check this null...
 		this.drawContext = new ColorContext(this.color);
 		this.zIndex = builder.zIndex;
@@ -176,6 +176,14 @@ public class Entity implements Drawable, Movable {
 
 	public void impulse(float x, float y) {
 		movement.add(x, y);
+	}
+
+	public void setColor(Color color) {
+		this.color.set(color);
+	}
+
+	public Color getColor() {
+		return color;
 	}
 
 	private static final Vector2 frameMovement = new Vector2();

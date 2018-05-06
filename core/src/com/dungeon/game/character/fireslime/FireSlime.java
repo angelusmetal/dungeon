@@ -7,6 +7,7 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 
@@ -40,9 +41,9 @@ public class FireSlime extends Character {
 				speed = ATTACK_SPEED;
 				setSelfImpulse(target);
 				// Fire a projectile
-				Entity projectile = new Entity(getPos(), factory.bullet) {};
-				projectile.setSelfImpulse(target);
-				GameState.addEntity(projectile);
+				Entity bullet = factory.createBullet(getPos());
+				bullet.setSelfImpulse(target);
+				GameState.addEntity(bullet);
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
 				speed = 5f;
@@ -78,7 +79,7 @@ public class FireSlime extends Character {
 	protected void onExpire() {
 		int bullets = (GameState.getPlayerCount() + GameState.getLevelCount()) * 2;
 		for (int i = 0; i < bullets; ++i) {
-			Entity bullet = new Entity(getPos(), factory.bullet) {};
+			Entity bullet = factory.createBullet(getPos());
 			bullet.setSelfImpulse(0, 1);
 			bullet.getSelfImpulse().rotate(360 / bullets * i);
 			GameState.addEntity(bullet);

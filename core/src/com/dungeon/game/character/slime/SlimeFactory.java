@@ -16,6 +16,8 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
+import java.util.function.Supplier;
+
 public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	final Animation<TextureRegion> idleAnimation;
@@ -38,12 +40,15 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
 		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
-		Color lightColor = new Color(0, 0.5f, 1, 0.5f);
-		Color blobLightColor = new Color(0, 0.5f, 1, 0.2f);
-		Color blobColor = new Color(0.3f, 0.6f, 0.8f, 0.5f);
+		Supplier<Color> color = () -> new Color(
+				Rand.between(0.5f, 1f),
+				Rand.between(0.5f, 1f),
+				Rand.between(0.5f, 1f),
+				0.5f);
+
+		Color lightColor = new Color(1, 1, 1, 0.5f);
 
 		Light characterLight = new Light(50, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
-		Light blobLight = new Light(30, blobLightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
@@ -53,7 +58,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		character = new EntityPrototype()
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
-				.color(new Color(1, 1, 1, 0.5f))
+				.color(color)
 				.light(characterLight)
 				.speed(100f)
 				.zSpeed(0)
@@ -70,8 +75,6 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.animation(blobAnimation)
 				.boundingBox(blobBouncingBox)
 				.drawOffset(blobDrawOffset)
-				.color(blobColor)
-				.light(blobLight)
 				.speed(50)
 				.zSpeed(() -> Rand.between(50f, 100f))
 				.with(Traits.zAccel(-200))
@@ -80,27 +83,31 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.animation(splatAnimation)
 				.boundingBox(blobBouncingBox)
 				.drawOffset(blobDrawOffset)
-				.color(blobColor)
-				.light(blobLight)
 				.timeToLive(splatAnimation.getAnimationDuration());
 	}
 
 	@Override
 	public Entity build(Vector2 origin) {
-		return new Slime(origin, this);
+		Slime slime = new Slime(origin, this);
+		slime.getLight().color.set(slime.getColor());
+		return slime;
 	}
 
-	public Entity createDeath(Vector2 origin, float z) {
-		Entity entity = new Entity(origin, death);
-		entity.setZPos(z);
+	Entity createDeath(Entity dying) {
+		Entity entity = new Entity(dying.getPos(), death);
+		entity.setZPos(dying.getZPos());
+		entity.setColor(dying.getColor());
+		entity.getLight().color.set(dying.getColor());
 		return entity;
 	}
 
-	public Entity createBlob(Vector2 origin) {
-		Entity entity = new Entity(origin, blob) {
+	Entity createBlob(Entity dying) {
+		Entity entity = new Entity(dying.getPos(), blob) {
 			@Override
 			protected void onExpire() {
-				GameState.addEntity(new Entity(getPos(), splat));
+				Entity splatEntity = new Entity(getPos(), splat);
+				splatEntity.setColor(dying.getColor());
+				GameState.addEntity(splatEntity);
 			}
 			@Override
 			protected void onGroundRest() {
@@ -109,6 +116,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		};
 		entity.setZPos(8);
 		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
+		entity.setColor(dying.getColor());
 		return entity;
 	}
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
@@ -63,10 +64,14 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.with(Traits.generator(0.1f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()
 				.animation(explosionAnimation)
+				.boundingBox(bulletBoundingBox)
+				.drawOffset(bulletDrawOffset)
 				.light(bulletLight)
 				.timeToLive(explosionAnimation.getAnimationDuration());
 		bulletTrail = new EntityPrototype()
 				.animation(explosionAnimation)
+				.boundingBox(bulletBoundingBox)
+				.drawOffset(bulletDrawOffset)
 				.light(bulletTrailLight)
 				.timeToLive(explosionAnimation.getAnimationDuration())
 				.with(Traits.fadeOut(1f))
@@ -78,8 +83,21 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		return new FireSlime(origin, this);
 	}
 
+	Entity createBullet(Vector2 origin) {
+		return new Projectile(origin, bullet) {
+			@Override
+			protected void onExpire() {
+				GameState.addEntity(createBulletExplosion(getPos()));
+			}
+		};
+	}
+
 	private Entity createBulletTrail(Entity entity) {
 		return new Entity(entity.getPos(), bulletTrail);
+	}
+
+	private Entity createBulletExplosion(Vector2 origin) {
+		return new Entity(origin, bulletExplosion);
 	}
 
 }

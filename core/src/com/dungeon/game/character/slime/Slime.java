@@ -106,17 +106,17 @@ public class Slime extends Character {
 
 	@Override
 	protected void onExpire() {
-		GameState.addEntity(factory.createDeath(getPos(), getZPos()));
+		GameState.addEntity(factory.createDeath(this));
 		// Create a bunch of blobs
 		int splats = Rand.between(8, 16);
 		for (int i = 0; i < splats; ++i) {
-			GameState.addEntity(factory.createBlob(getPos()));
+			GameState.addEntity(factory.createBlob(this));
 		}
 	}
 
 	@Override
 	protected void onHit() {
-		GameState.addEntity(factory.createBlob(getPos()));
+		GameState.addEntity(factory.createBlob(this));
 	}
 
 	// TODO This should not be here: either Character should not enforce this or this should not extend character
