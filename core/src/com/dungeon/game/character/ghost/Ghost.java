@@ -45,7 +45,7 @@ public class Ghost extends Character {
 		}
 		// Set transparency based on invulnerability
 		color.a = Util.clamp(visibleUntil - GameState.time(), 0.1f, 0.5f);
-		speed = GameState.time() > visibleUntil ? 60f : 20f;
+		speed = GameState.time() > visibleUntil ? 40f : 20f;
 	}
 
 	@Override

@@ -94,18 +94,6 @@ public class Slime extends Character {
 		return closestPlayer;
 	}
 
-//	@Override
-//	protected void onExpire(GameState state) {
-//		// Create a death splatter and a pool
-//		state.addEntity(new DieSplatter(factory, state, getPos()));
-//		state.addEntity(new AcidPool(factory, state, getPos()));
-//		// Create 5-10 blobs
-//		int splats = (int) (5 + Math.random() * 5);
-//		for (int i = 0; i < splats; ++i) {
-//			state.addEntity(new AcidBlob(factory, state, getPos()));
-//		}
-//	}
-
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
@@ -114,6 +102,21 @@ public class Slime extends Character {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	protected void onExpire() {
+		GameState.addEntity(factory.createDeath(getPos(), getZPos()));
+		// Create a bunch of blobs
+		int splats = Rand.between(8, 16);
+		for (int i = 0; i < splats; ++i) {
+			GameState.addEntity(factory.createBlob(getPos()));
+		}
+	}
+
+	@Override
+	protected void onHit() {
+		GameState.addEntity(factory.createBlob(getPos()));
 	}
 
 	// TODO This should not be here: either Character should not enforce this or this should not extend character

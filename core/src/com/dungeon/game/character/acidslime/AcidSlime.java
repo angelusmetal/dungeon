@@ -93,8 +93,8 @@ public class AcidSlime extends Character {
 		// Create a death splatter and a pool
 		GameState.addEntity(new Entity(getPos(), factory.death));
 		GameState.addEntity(new AcidPool(getPos(), factory));
-		// Create 5-10 blobs
-		int splats = Rand.between(15, 25);
+		// Create a bunch of blobs
+		int splats = Rand.between(8, 16);
 		for (int i = 0; i < splats; ++i) {
 			GameState.addEntity(factory.createBlob(getPos()));
 		}

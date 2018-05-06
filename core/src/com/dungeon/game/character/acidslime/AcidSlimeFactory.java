@@ -10,6 +10,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.game.character.slime.SlimeBlobsSheet;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
@@ -35,26 +36,28 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		attackAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.ATTACK, AcidSlimeSheet::attack);
 		dieAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.DIE, AcidSlimeSheet::die);
 		// Pool animations
-		poolFloodAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.POOL_FLOOD, AcidSlimeSheet::poolFlood);
-		poolDryAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.POOL_DRY, AcidSlimeSheet::poolDry);
+		poolFloodAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.POOL_FLOOD, SlimeBlobsSheet::poolFlood);
+		poolDryAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.POOL_DRY, SlimeBlobsSheet::poolDry);
 		// Blob animations
-		blobAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.BLOB, AcidSlimeSheet::blob);
-		splatAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.SPLAT, AcidSlimeSheet::splat);
+		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
+		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
-		Light characterLight = new Light(100, new Color(0, 1, 0, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
-		Light poolLight = new Light(100, new Color(0, 0.5f, 0, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
-		Light blobLight = new Light(30, new Color(0, 0.5f, 0, 0.2f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Color color = new Color(1, 1, 1, 0.5f);
+		Color lightColor = new Color(0, 1, 0, 0.5f);
+		Color blobLightColor = new Color(0, 1, 0, 0.2f);
+		Color blobColor = new Color(0.25f, 0.75f, 0.2f, 0.5f);
+
+		Light characterLight = new Light(100, lightColor, Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
+		Light poolLight = new Light(100, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Light blobLight = new Light(30, blobLightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
-
 		Vector2 poolBoundingBox = new Vector2(22, 12);
 		Vector2 poolDrawOffset = new Vector2(16, 3);
-
 		Vector2 blobBouncingBox = new Vector2(6, 6);
 		Vector2 blobDrawOffset = new Vector2(8, 8);
 
-		Color color = new Color(1, 1, 1, 0.5f);
 		character = new EntityPrototype()
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
@@ -71,7 +74,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.animation(poolFloodAnimation)
 				.boundingBox(poolBoundingBox)
 				.drawOffset(poolDrawOffset)
-				.color(color)
+				.color(blobColor)
 				.light(poolLight)
 				.timeToLive(5f)
 				.with(Traits.fadeOutLight())
@@ -80,19 +83,17 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.animation(blobAnimation)
 				.boundingBox(blobBouncingBox)
 				.drawOffset(blobDrawOffset)
-				.color(color)
+				.color(blobColor)
 				.light(blobLight)
 				.speed(50)
 				.zSpeed(() -> Rand.between(50f, 100f))
-				.color(new Color(1, 1, 1, 0.5f))
-				.light(blobLight)
 				.with(Traits.zAccel(-200))
 				.timeToLive(10);
 		splat = new EntityPrototype()
 				.animation(splatAnimation)
 				.boundingBox(blobBouncingBox)
 				.drawOffset(blobDrawOffset)
-				.color(color)
+				.color(blobColor)
 				.light(blobLight)
 				.timeToLive(splatAnimation.getAnimationDuration());
 

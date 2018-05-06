@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.Trait;
+import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
@@ -17,33 +20,95 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> attackAnimation;
-
-	final Light characterLight;
+	final Animation<TextureRegion> dieAnimation;
+	final Animation<TextureRegion> blobAnimation;
+	final Animation<TextureRegion> splatAnimation;
 
 	final EntityPrototype character;
+	final EntityPrototype death;
+	final EntityPrototype blob;
+	final EntityPrototype splat;
 
 	public SlimeFactory() {
 		// Character animations
 		idleAnimation = ResourceManager.instance().getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
 		attackAnimation = ResourceManager.instance().getAnimation(SlimeSheet.ATTACK, SlimeSheet::attack);
+		dieAnimation = ResourceManager.instance().getAnimation(SlimeSheet.DIE, SlimeSheet::die);
+		// Blob animations
+		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
+		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
-		characterLight = new Light(50, new Color(0, 0.5f, 1, 0.5f), Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Color lightColor = new Color(0, 0.5f, 1, 0.5f);
+		Color blobLightColor = new Color(0, 0.5f, 1, 0.2f);
+		Color blobColor = new Color(0.3f, 0.6f, 0.8f, 0.5f);
 
-		Vector2 BOUNDING_BOX = new Vector2(22, 12);
-		Vector2 DRAW_OFFSET = new Vector2(16, 11);
+		Light characterLight = new Light(50, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Light blobLight = new Light(30, blobLightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+
+		Vector2 characterBoundingBox = new Vector2(22, 12);
+		Vector2 characterDrawOffset = new Vector2(16, 11);
+		Vector2 blobBouncingBox = new Vector2(6, 6);
+		Vector2 blobDrawOffset = new Vector2(8, 8);
 
 		character = new EntityPrototype()
-				.boundingBox(BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
+				.boundingBox(characterBoundingBox)
+				.drawOffset(characterDrawOffset)
 				.color(new Color(1, 1, 1, 0.5f))
 				.light(characterLight)
 				.speed(100f)
 				.zSpeed(0)
 				.friction(1);
+		death = new EntityPrototype()
+				.animation(dieAnimation)
+				.boundingBox(characterBoundingBox)
+				.drawOffset(characterDrawOffset)
+				.color(new Color(1, 1, 1, 0.5f))
+				.light(characterLight)
+				.with(Traits.fadeOutLight())
+				.timeToLive(dieAnimation.getAnimationDuration());
+		blob = new EntityPrototype()
+				.animation(blobAnimation)
+				.boundingBox(blobBouncingBox)
+				.drawOffset(blobDrawOffset)
+				.color(blobColor)
+				.light(blobLight)
+				.speed(50)
+				.zSpeed(() -> Rand.between(50f, 100f))
+				.with(Traits.zAccel(-200))
+				.timeToLive(10);
+		splat = new EntityPrototype()
+				.animation(splatAnimation)
+				.boundingBox(blobBouncingBox)
+				.drawOffset(blobDrawOffset)
+				.color(blobColor)
+				.light(blobLight)
+				.timeToLive(splatAnimation.getAnimationDuration());
 	}
 
 	@Override
 	public Entity build(Vector2 origin) {
 		return new Slime(origin, this);
+	}
+
+	public Entity createDeath(Vector2 origin, float z) {
+		Entity entity = new Entity(origin, death);
+		entity.setZPos(z);
+		return entity;
+	}
+
+	public Entity createBlob(Vector2 origin) {
+		Entity entity = new Entity(origin, blob) {
+			@Override
+			protected void onExpire() {
+				GameState.addEntity(new Entity(getPos(), splat));
+			}
+			@Override
+			protected void onGroundRest() {
+				expire();
+			}
+		};
+		entity.setZPos(8);
+		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
+		return entity;
 	}
 }
