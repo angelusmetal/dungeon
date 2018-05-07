@@ -52,6 +52,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		Color lightColor = new Color(0, 1, 0, 0.5f);
 
 		Light characterLight = new Light(100, lightColor, Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
+		Light deathLight = new Light(150, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		Light poolLight = new Light(100, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
@@ -70,8 +71,8 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.animation(dieAnimation)
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
-				.timeToLive(dieAnimation.getAnimationDuration())
-				.light(characterLight);
+				.timeToLive(dieAnimation.getAnimationDuration() + 1f)
+				.light(deathLight);
 		pool = new EntityPrototype()
 				.animation(poolFloodAnimation)
 				.boundingBox(poolBoundingBox)

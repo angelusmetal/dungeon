@@ -59,7 +59,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 				.light(light)
 				.with(Traits.zOscillate(3, 8f))
 				.with(Traits.generator(0.05f, (powerup) -> {
-					Entity spec = new Entity(powerup.getPos(), specPrototype) {};
+					Entity spec = new Entity(powerup.getPos(), specPrototype);
 					spec.getPos().x += Rand.between(-8, 8);
 					spec.setZPos(Rand.between(2, 10));
 					spec.impulse(Rand.between(-10, 10), 0);

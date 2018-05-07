@@ -49,6 +49,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		Color lightColor = new Color(1, 1, 1, 0.5f);
 
 		Light characterLight = new Light(50, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Light deathLight = new Light(100, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
@@ -68,9 +69,9 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
 				.color(new Color(1, 1, 1, 0.5f))
-				.light(characterLight)
+				.light(deathLight)
 				.with(Traits.fadeOutLight())
-				.timeToLive(dieAnimation.getAnimationDuration());
+				.timeToLive(dieAnimation.getAnimationDuration() + 1f);
 		blob = new EntityPrototype()
 				.animation(blobAnimation)
 				.boundingBox(blobBouncingBox)
