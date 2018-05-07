@@ -2,9 +2,7 @@ package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
-import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 

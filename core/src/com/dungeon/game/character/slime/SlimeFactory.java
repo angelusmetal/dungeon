@@ -6,13 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Trait;
 import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.render.ColorContext;
-import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
@@ -40,11 +38,11 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
 		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
-		Supplier<Color> color = () -> new Color(
-				Rand.between(0.5f, 1f),
-				Rand.between(0.5f, 1f),
-				Rand.between(0.5f, 1f),
-				0.5f);
+		Supplier<Color> color = () -> Util.hsvaToColor(
+				Rand.between(0f, 1f),
+				1f,
+				Rand.between(0.7f, 1f),
+				0.7f);
 
 		Color lightColor = new Color(1, 1, 1, 0.5f);
 

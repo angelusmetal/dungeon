@@ -14,8 +14,6 @@ import com.dungeon.game.character.slime.SlimeBlobsSheet;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 
-import java.util.function.Supplier;
-
 public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	final Animation<TextureRegion> idleAnimation;
@@ -44,11 +42,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
 		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
-		Supplier<Color> color = () -> new Color(
-				Rand.between(0f, 0.7f),
-				Rand.between(0.3f, 1f),
-				Rand.between(0f, 0.7f),
-				0.5f);
+		Color color = new Color(0, 1, 0, 0.5f);
 		Color lightColor = new Color(0, 1, 0, 0.5f);
 
 		Light characterLight = new Light(100, lightColor, Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);

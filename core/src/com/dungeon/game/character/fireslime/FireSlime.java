@@ -7,7 +7,6 @@ import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
-import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 

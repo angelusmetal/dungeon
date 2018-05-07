@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.moandjiezana.toml.Toml;
 

@@ -7,7 +7,6 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.state.GameState;
 
 public class TombstoneFactory implements EntityFactory.EntityTypeFactory {
 

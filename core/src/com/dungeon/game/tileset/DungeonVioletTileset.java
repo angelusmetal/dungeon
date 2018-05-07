@@ -1,9 +1,9 @@
 package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 
 public class DungeonVioletTileset extends LevelTileset {
 

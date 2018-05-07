@@ -17,7 +17,6 @@ import com.dungeon.game.tileset.TilesetManager;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 

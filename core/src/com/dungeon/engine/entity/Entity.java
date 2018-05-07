@@ -10,6 +10,7 @@ import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
+import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
@@ -44,7 +45,7 @@ public class Entity implements Drawable, Movable {
 	 */
 	protected float friction;
 	/**
-	 *
+	 * Bounciness ratio (0...1)
 	 */
 	protected float bounciness = 0;
 	private boolean invertX = false;
@@ -73,10 +74,13 @@ public class Entity implements Drawable, Movable {
 	/** zIndex for ordering sprites */
 	private float zIndex = 0;
 
+	private DrawFunction drawFunction;
+
 	public Entity(Vector2 origin, EntityPrototype builder) {
 		this.setCurrentAnimation(new GameAnimation(builder.animation, GameState.time()));
 		this.body = new Body(origin, builder.boundingBox);
 		this.drawOffset = builder.drawOffset;
+		this.drawFunction = builder.drawFunction.get();
 		this.startTime = GameState.time();
 		this.speed = builder.speed.get();
 		this.zSpeed = builder.zSpeed.get();
@@ -350,10 +354,8 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		TextureRegion characterFrame = getFrame();
-		float invertX = invertX() ? -1 : 1;
 		drawContext.set(batch);
-		viewPort.draw(batch, characterFrame, getPos().x, getPos().y + z, invertX, getDrawOffset());
+		drawFunction.draw(viewPort, batch, this);
 		drawContext.unset(batch);
 	}
 

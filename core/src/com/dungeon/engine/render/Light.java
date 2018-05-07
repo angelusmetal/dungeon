@@ -2,8 +2,8 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 
 import java.util.function.Supplier;
 
