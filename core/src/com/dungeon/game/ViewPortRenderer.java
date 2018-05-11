@@ -61,6 +61,9 @@ public class ViewPortRenderer implements Disposable {
 
 	private static final ColorContext BOUNDING_BOXES = new ColorContext(new Color(1f, 0.2f, 0.2f, 0.3f));
 
+	private int renderCalls = 0;
+	private float frameTime;
+
 	public ViewPortRenderer(ViewPort viewPort) {
 		this.viewPort = viewPort;
 		this.lightingBuffer = new ViewPortBuffer(viewPort);
@@ -108,6 +111,9 @@ public class ViewPortRenderer implements Disposable {
 	}
 
 	public void render () {
+		int currentRenderCalls = 0;
+		long start = System.nanoTime();
+
 		// Render light in a separate frame buffer
 		if (renderLighting) {
 			renderLight();
@@ -164,7 +170,15 @@ public class ViewPortRenderer implements Disposable {
 
 		batch.begin();
 		viewportBuffer.drawScaled(batch);
+		currentRenderCalls += batch.renderCalls;
 		batch.end();
+
+		currentRenderCalls += lightingBuffer.getLastRenderCalls();
+		lightingBuffer.resetLastRenderCalls();
+		currentRenderCalls += viewportBuffer.getLastRenderCalls();
+		viewportBuffer.resetLastRenderCalls();
+		renderCalls = currentRenderCalls;
+		frameTime = (System.nanoTime() - start) / 1_000_000f;
 
 		// TODO This should actually go elsewhere (separated from viewport)
 		drawConsole();
@@ -183,7 +197,7 @@ public class ViewPortRenderer implements Disposable {
 
 		font.setColor(Color.WHITE);
 
-		x = viewPort.width - 100;
+		x = viewPort.width - 200;
 		y = viewPort.height - 10;
 		for (Map.Entry<String, Supplier<String>> watch : GameState.console().getWatches().entrySet()) {
 			font.draw(batch, watch.getKey() + ": " + watch.getValue().get(), x, y);
@@ -201,7 +215,7 @@ public class ViewPortRenderer implements Disposable {
 
 			Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			GameState.getEntities().stream().filter(lightInCamera).sorted(comp).forEach(e -> e.drawLight(batch, viewPort));
+			GameState.getEntities().stream().filter(lightInCamera).forEach(e -> e.drawLight(batch, viewPort));
 
 			// Restore blend function
 			batch.setBlendFunction(srcFunc, dstFunc);
@@ -241,6 +255,14 @@ public class ViewPortRenderer implements Disposable {
 
 	public void toggleNoise() {
 		renderNoise = !renderNoise;
+	}
+
+	public int getRenderCalls() {
+		return renderCalls;
+	}
+
+	public float getFrameTime() {
+		return frameTime;
 	}
 
 	@Override

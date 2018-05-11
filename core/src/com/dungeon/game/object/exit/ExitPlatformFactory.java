@@ -46,7 +46,7 @@ public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 				.boundingBox(BOUNDING_BOX)
 				.drawOffset(DRAW_OFFSET)
 				.light(light)
-				.with(Traits.generator(0.3f, (generator) -> {
+				.with(Traits.generator(0.1f, (generator) -> {
 					Entity particle = new Entity(generator.getPos(), cloud);
 					particle.impulse(Rand.between(-30, 30), Rand.between(-30, 30));
 					return particle;

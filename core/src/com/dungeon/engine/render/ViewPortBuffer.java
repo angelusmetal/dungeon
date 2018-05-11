@@ -15,6 +15,7 @@ public class ViewPortBuffer implements Disposable {
 	private TextureRegion textureRegion;
 	private ViewPort viewPort;
 	private SpriteBatch batch;
+	private int renderCalls;
 
 	public ViewPortBuffer(ViewPort viewPort) {
 		this.viewPort = viewPort;
@@ -43,6 +44,7 @@ public class ViewPortBuffer implements Disposable {
 		frameBuffer.begin();
 		batch.begin();
 		consumer.accept(batch);
+		renderCalls += batch.renderCalls;
 		batch.end();
 		frameBuffer.end();
 	}
@@ -54,4 +56,13 @@ public class ViewPortBuffer implements Disposable {
 	public void drawScaled(SpriteBatch batch) {
 		batch.draw(textureRegion, viewPort.posX, viewPort.posY, frameBuffer.getWidth() * viewPort.getScale(), frameBuffer.getHeight() * viewPort.getScale());
 	}
+
+	public int getLastRenderCalls() {
+		return renderCalls;
+	}
+
+	public void resetLastRenderCalls() {
+		renderCalls = 0;
+	}
+
 }
