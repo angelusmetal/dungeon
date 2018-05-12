@@ -19,6 +19,7 @@ import com.dungeon.game.state.GameState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Entity implements Drawable, Movable {
@@ -62,7 +63,7 @@ public class Entity implements Drawable, Movable {
 	protected List<Trait<Entity>> traits;
 
 	/** Determines whether an entity is a target */
-	protected final Function<Entity, Boolean> targetPredicate;
+	protected final Predicate<Entity> targetPredicate;
 	/** Time upon which this projectile was spawned */
 	protected final float startTime;
 	/** Expiration time of entity */
@@ -289,6 +290,17 @@ public class Entity implements Drawable, Movable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Move towards destination using self impulse (to get correct speed clamping), and clearing current movement (to
+	 * ignore whatever push was already in place).
+	 * @param destination Destination position.
+	 */
+	public void moveStrictlyTo(Vector2 destination) {
+		getMovement().set(Vector2.Zero);
+		setSelfImpulse(destination.x - getPos().x, destination.y - getPos().y);
+		getSelfImpulse().setLength2(1);
 	}
 
 	private boolean detectTileCollision(Vector2 step) {

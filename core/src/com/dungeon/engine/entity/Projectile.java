@@ -30,7 +30,7 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
-		if (!expired && targetPredicate.apply(entity) && entity.canBeHit()) {
+		if (!expired && targetPredicate.test(entity) && entity.canBeHit()) {
 			expire();
 			entity.hit(damage);
 			return true;

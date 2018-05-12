@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Light;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class PlayerCharacter extends Character {
 
@@ -15,8 +16,8 @@ public abstract class PlayerCharacter extends Character {
 		light = TORCH_LIGHT;
 	}
 
-	public static final Function<Entity, Boolean> IS_PLAYER = entity -> entity instanceof PlayerCharacter;
-	public static final Function<Entity, Boolean> IS_NON_PLAYER = entity -> entity instanceof Character && !(entity instanceof PlayerCharacter);
+	public static final Predicate<Entity> IS_PLAYER = entity -> entity instanceof PlayerCharacter;
+	public static final Predicate<Entity> IS_NON_PLAYER = entity -> entity instanceof Character && !(entity instanceof PlayerCharacter);
 
 	public void heal(int amount) {
 		health += amount;

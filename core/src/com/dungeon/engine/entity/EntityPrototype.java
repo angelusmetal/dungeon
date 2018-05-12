@@ -11,6 +11,7 @@ import com.dungeon.engine.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class EntityPrototype {
@@ -24,7 +25,7 @@ public class EntityPrototype {
 	Supplier<Float> speed = () -> 1f;
 	Supplier<Float> zSpeed = () -> 0f;
 	int zIndex = 0;
-	Function<Entity, Boolean> targetPredicate = (entity) -> false;
+	Predicate<Entity> targetPredicate = (entity) -> false;
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
 
@@ -106,7 +107,7 @@ public class EntityPrototype {
 		return this;
 	}
 
-	public EntityPrototype targetPredicate(Function<Entity, Boolean> targetPredicate) {
+	public EntityPrototype targetPredicate(Predicate<Entity> targetPredicate) {
 		this.targetPredicate = targetPredicate;
 		return this;
 	}

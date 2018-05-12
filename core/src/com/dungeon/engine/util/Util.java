@@ -25,4 +25,5 @@ public class Util {
 			default: throw new RuntimeException("Invalid HSV conversion:  " + hue + ", " + saturation + ", " + value);
 		}
 	}
+
 }

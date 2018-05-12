@@ -4,10 +4,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
+import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class Traits {
 
@@ -52,14 +56,14 @@ public class Traits {
     private static final Vector2 target = new Vector2();
     private static final Vector2 seek = new Vector2();
 
-    static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Function<Entity, Boolean> targetting) {
+    static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Predicate<Entity> targetting) {
         return (e) -> {
             float range2 = range * range;
             return (source) -> {
                 boolean found = false;
-                // Find closest target within range
+                // Find accept target within range
                 for (Entity entity : GameState.getEntities()) {
-                    if (targetting.apply(entity)) {
+                    if (targetting.test(entity)) {
                         target.set(entity.getPos()).sub(source.getPos());
                         float len = target.len2();
                         if (len < range2 && (!found || len < seek.len2())) {
@@ -79,6 +83,27 @@ public class Traits {
             };
         };
     }
+
+//    static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Supplier<Stream<Entity>> targetSupplier) {
+//        return (e) -> {
+//            float range2 = range * range;
+//            Timer targettingTimer = new Timer (0.2f);
+//            return (source) -> {
+//                // Re-target periodically
+//                targettingTimer.doAtInterval(() -> {
+//                    ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(source), ClosestEntity::accept, ClosestEntity::combine);
+//                    if (closest.getDst2() < range2) {
+//                        Vector2 seek = closest.getEntity().getPos().cpy().sub(source.getPos());
+//                        float seekClamp = strength * source.speed;
+//                        float speedClamp = source.speed - seekClamp;
+//                        seek.setLength(seekClamp);
+//                        source.impulse(seek);
+//                        source.getMovement().setLength(speedClamp);
+//                    }
+//                });
+//            };
+//        };
+//    }
 
     /** Fade out particle */
     static public <T extends Entity> TraitSupplier<T> fadeOut(float alpha) {
