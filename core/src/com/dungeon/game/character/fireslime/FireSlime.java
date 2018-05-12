@@ -8,11 +8,12 @@ import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class FireSlime extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = distance2(300);
+	private static final float MIN_TARGET_DISTANCE = Util.length2(300);
 	private static final float ATTACK_FREQUENCY = 1.5f;
 	private static final float ATTACK_SPEED = 10f;
 

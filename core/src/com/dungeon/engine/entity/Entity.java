@@ -422,8 +422,4 @@ public class Entity implements Drawable, Movable {
 		return zIndex;
 	}
 
-	public static float distance2(float distance) {
-		return distance * distance;
-	}
-
 }

@@ -33,7 +33,7 @@ public class FadeEffect implements RenderEffect {
 
 	@Override
 	public void render() {
-		float ratio = Util.clamp((GameState.time() - startTime) / duration, 0f, 1f);
+		float ratio = Util.clamp((GameState.time() - startTime) / duration);
 		float mix = 1 - ratio;
 		currentBlend.r = start.r * mix + end.r * ratio;
 		currentBlend.g = start.g * mix + end.g * ratio;

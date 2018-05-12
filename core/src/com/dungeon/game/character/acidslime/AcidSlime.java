@@ -8,13 +8,14 @@ import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class AcidSlime extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = distance2(300);
-	private static final float DASH = distance2(150);
-	private static final float POOL_SEPARATION = distance2(15);
+	private static final float MIN_TARGET_DISTANCE = Util.length2(300);
+	private static final float DASH = Util.length2(150);
+	private static final float POOL_SEPARATION = Util.length2(15);
 	private static final float ATTACK_FREQUENCY = 3f;
 
 	private final AcidSlimeFactory factory;

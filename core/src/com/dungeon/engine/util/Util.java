@@ -3,6 +3,10 @@ package com.dungeon.engine.util;
 import com.badlogic.gdx.graphics.Color;
 
 public class Util {
+	public static float clamp(float val) {
+		return Math.max(0f, Math.min(1f, val));
+	}
+
 	public static float clamp(float val, float min, float max) {
 		return Math.max(min, Math.min(max, val));
 	}
@@ -26,4 +30,7 @@ public class Util {
 		}
 	}
 
+	public static float length2(float length) {
+		return length * length;
+	}
 }

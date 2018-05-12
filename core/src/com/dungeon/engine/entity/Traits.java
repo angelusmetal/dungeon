@@ -1,17 +1,21 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static com.dungeon.engine.util.Util.length2;
 
 public class Traits {
 
@@ -52,58 +56,27 @@ public class Traits {
         return (e) -> (entity) -> entity.zSpeed += acceleration * GameState.frameTime();
     }
 
-    // NOTE Not thread-safe; use ThreadLocal if multi-thread is desired
-    private static final Vector2 target = new Vector2();
-    private static final Vector2 seek = new Vector2();
-
-    static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Predicate<Entity> targetting) {
+    static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Supplier<Stream<Entity>> targetSupplier) {
         return (e) -> {
-            float range2 = range * range;
+            // TODO Factor time in the calculation, so it can be done at fixed intervals, instead of at every frame (which also changes behavior based on framerate)
+//            float interval = 0.2f;
+            float range2 = length2(range);
+            float seekClamp = Util.clamp(strength) * e.speed;
+//            Timer targetingTimer = new Timer (interval);
             return (source) -> {
-                boolean found = false;
-                // Find accept target within range
-                for (Entity entity : GameState.getEntities()) {
-                    if (targetting.test(entity)) {
-                        target.set(entity.getPos()).sub(source.getPos());
-                        float len = target.len2();
-                        if (len < range2 && (!found || len < seek.len2())) {
-                            found = true;
-                            seek.set(target);
-                        }
+                // Re-target periodically
+//                targetingTimer.doAtInterval(() -> {
+                    ClosestEntity closest = targetSupplier.get().collect(() -> new ClosestEntity(source), ClosestEntity::accept, ClosestEntity::combine);
+                    if (closest.getDst2() < range2) {
+                        Vector2 seek = closest.getEntity().getPos().cpy().sub(source.getPos());
+                        seek.setLength(seekClamp);
+                        source.impulse(seek);
+                        source.getMovement().setLength(source.speed);
                     }
-                }
-                // If a target has been found, autoseek
-                if (found) {
-                    float seekClamp = strength * source.speed;
-                    float speedClamp = source.speed - seekClamp;
-                    seek.setLength(seekClamp);
-                    source.impulse(seek);
-                    source.getMovement().setLength(speedClamp);
-                }
+//                });
             };
         };
     }
-
-//    static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Supplier<Stream<Entity>> targetSupplier) {
-//        return (e) -> {
-//            float range2 = range * range;
-//            Timer targettingTimer = new Timer (0.2f);
-//            return (source) -> {
-//                // Re-target periodically
-//                targettingTimer.doAtInterval(() -> {
-//                    ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(source), ClosestEntity::accept, ClosestEntity::combine);
-//                    if (closest.getDst2() < range2) {
-//                        Vector2 seek = closest.getEntity().getPos().cpy().sub(source.getPos());
-//                        float seekClamp = strength * source.speed;
-//                        float speedClamp = source.speed - seekClamp;
-//                        seek.setLength(seekClamp);
-//                        source.impulse(seek);
-//                        source.getMovement().setLength(speedClamp);
-//                    }
-//                });
-//            };
-//        };
-//    }
 
     /** Fade out particle */
     static public <T extends Entity> TraitSupplier<T> fadeOut(float alpha) {

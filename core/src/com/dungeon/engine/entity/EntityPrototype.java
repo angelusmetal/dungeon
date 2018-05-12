@@ -38,7 +38,7 @@ public class EntityPrototype {
 	}
 
 	public EntityPrototype bounciness(float bounciness) {
-		this.bounciness = Util.clamp(bounciness, 0, 1);
+		this.bounciness = Util.clamp(bounciness);
 		return this;
 	}
 

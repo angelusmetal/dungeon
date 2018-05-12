@@ -14,7 +14,7 @@ import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
-	private static final float MAX_TARGET_DISTANCE = distance2(300);
+	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
 	private static final float VISIBLE_TIME = 2f;
 	private final GhostFactory factory;
 	private float visibleUntil = 0;

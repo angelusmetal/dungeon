@@ -8,12 +8,13 @@ import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class Slime extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = distance2(300);
-	private static final float JUMP = distance2(50);
+	private static final float MIN_TARGET_DISTANCE = Util.length2(300);
+	private static final float JUMP = Util.length2(50);
 
 	private final SlimeFactory factory;
 	private float nextThink;
