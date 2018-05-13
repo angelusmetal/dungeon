@@ -48,7 +48,7 @@ public class Traits {
 
     /** Accelerate/decelerate particle in its current direction */
     static public <T extends Entity> TraitSupplier<T> accel(float acceleration) {
-        return (e) -> (entity) -> entity.speed += acceleration * GameState.time();
+        return (e) -> (entity) -> entity.speed += acceleration * GameState.frameTime();
     }
 
     /** Accelerate/decelerate particle vertically */

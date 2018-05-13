@@ -16,9 +16,11 @@ import com.dungeon.engine.render.NoiseBuffer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.Console;
 import com.dungeon.game.state.GameState;
+import com.moandjiezana.toml.Toml;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -56,16 +58,20 @@ public class ViewPortRenderer implements Disposable {
 	private final Predicate<? super Entity> entityInCamera;
 	private final Predicate<? super Entity> lightInCamera;
 
-	private final Vector3 baseLight = new Vector3(0.3f, 0.2f, 0.1f);
+	private final Color baseLight = Color.WHITE.cpy();
 	private final TextureRegion fill;
+	private final Toml configuration;
+	private final float gamma;
 
 	private static final ColorContext BOUNDING_BOXES = new ColorContext(new Color(1f, 0.2f, 0.2f, 0.3f));
 
 	private int renderCalls = 0;
 	private float frameTime;
 
-	public ViewPortRenderer(ViewPort viewPort) {
+	public ViewPortRenderer(ViewPort viewPort, Toml configuration) {
 		this.viewPort = viewPort;
+		this.configuration = configuration;
+		this.gamma = configuration.getDouble("viewport.gamma", 1.0d).floatValue();
 		this.lightingBuffer = new ViewPortBuffer(viewPort);
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.noiseBuffer = new NoiseBuffer(GameState.getConfiguration());
@@ -102,12 +108,7 @@ public class ViewPortRenderer implements Disposable {
 	}
 
 	public void randomizeBaseLight() {
-		float newX = Rand.nextFloat(1);
-		float newY = Rand.nextFloat(1);
-		float newZ = Rand.nextFloat(1);
-
-		float attenuation = (newX + newY + newZ) / 0.6f;
-		baseLight.set(newX / attenuation, newY / attenuation, newZ / attenuation);
+		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.3f, 1f, 1f));
 	}
 
 	public void render () {
@@ -137,7 +138,9 @@ public class ViewPortRenderer implements Disposable {
 		// Draw lighting on top of scene
 		if (renderLighting) {
 			viewportBuffer.render((batch) -> {
+				batch.setColor(baseLight);
 				lightingContext.run(batch, lightingBuffer::draw);
+				batch.setColor(Color.WHITE);
 			});
 		}
 
@@ -213,7 +216,8 @@ public class ViewPortRenderer implements Disposable {
 			int dstFunc = batch.getBlendDstFunc();
 			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 
-			Gdx.gl.glClearColor(baseLight.x, baseLight.y, baseLight.z, 1);
+//			Gdx.gl.glClearColor(baseLight.r, baseLight.g, baseLight.b, baseLight.a);
+			Gdx.gl.glClearColor(gamma, gamma, gamma, baseLight.a);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GameState.getEntities().stream().filter(lightInCamera).forEach(e -> e.drawLight(batch, viewPort));
 

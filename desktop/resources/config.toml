@@ -14,12 +14,14 @@
     # width = 800
     # height = 400
     # Scaling gives the blocky appeal
-    scale = 3.0
+    scale = 4.0
+    gamma = 0.2
 [map]
     # Base dimensions
     width = 40
     height = 40
     growth = 10
+    #creatures = ["GHOST"]
     creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
     itemchance = 1.0
 [noise]

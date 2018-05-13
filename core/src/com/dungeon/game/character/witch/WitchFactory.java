@@ -50,7 +50,7 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		Vector2 characterDrawOffset = new Vector2(16, 13);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
-		Vector2 bulletDrawOffset = new Vector2(10, 10);
+		Vector2 bulletDrawOffset = new Vector2(12, 10);
 
 		Light bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
 

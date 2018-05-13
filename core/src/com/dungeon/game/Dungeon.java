@@ -97,7 +97,7 @@ public class Dungeon extends ApplicationAdapter {
 		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory(tombstoneFactory));
 		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory(tombstoneFactory));
 
-		viewPortRenderer = new ViewPortRenderer(viewPort);
+		viewPortRenderer = new ViewPortRenderer(viewPort, configuration);
 		viewPortRenderer.initialize();
 		characterSelection = new CharacterSelection();
 		characterSelection.initialize();
