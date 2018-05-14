@@ -3,7 +3,6 @@ package com.dungeon.game.character.slime;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
@@ -11,7 +10,7 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
-public class Slime extends Character {
+public class SlimeSpawn extends Character {
 
 	private static final float MIN_TARGET_DISTANCE = Util.length2(300);
 	private static final float JUMP = Util.length2(50);
@@ -23,12 +22,12 @@ public class Slime extends Character {
 	}
 	private Status status;
 
-	Slime(Vector2 origin, SlimeFactory factory) {
-		super(origin, factory.character);
+	SlimeSpawn(Vector2 origin, SlimeFactory factory) {
+		super(origin, factory.spawn);
 		this.factory = factory;
 
-		setCurrentAnimation(factory.blinkAnimation);
-		maxHealth = 75 * (GameState.getPlayerCount() + GameState.getLevelCount());
+		setCurrentAnimation(factory.spawnBlinkAnimation);
+		maxHealth = 25 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
 		nextThink = 0f;
 	}
@@ -47,7 +46,7 @@ public class Slime extends Character {
 				impulse(target);
 				aim(target);
 				zSpeed = 100;
-				updateCurrentAnimation(factory.idleAnimation);
+				updateCurrentAnimation(factory.spawnIdleAnimation);
 				this.status = Status.ATTACKING;
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
@@ -56,10 +55,10 @@ public class Slime extends Character {
 					Vector2 newDirection = new Vector2(Rand.between(10f, 10), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					updateCurrentAnimation(factory.blinkAnimation);
+					updateCurrentAnimation(factory.spawnBlinkAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					updateCurrentAnimation(factory.blinkAnimation);
+					updateCurrentAnimation(factory.spawnBlinkAnimation);
 				}
 				this.status = Status.IDLE;
 			}
@@ -71,7 +70,7 @@ public class Slime extends Character {
 
 	@Override
 	protected void onGroundRest() {
-		updateCurrentAnimation(factory.blinkAnimation);
+		updateCurrentAnimation(factory.spawnBlinkAnimation);
 	}
 
 	private Vector2 reTarget() {
@@ -99,16 +98,7 @@ public class Slime extends Character {
 
 	@Override
 	protected void onExpire() {
-		GameState.addEntity(factory.createDeath(this));
-		// Create a bunch of blobs
-		int splats = Rand.between(8, 16);
-		for (int i = 0; i <= splats; ++i) {
-			GameState.addEntity(factory.createBlob(this));
-		}
-		int spawns = Rand.between(0, 1);
-		for (int i = 0; i <= spawns; ++i) {
-			GameState.addEntity(factory.createSpawn(this));
-		}
+		GameState.addEntity(factory.createSpawnDeath(this));
 	}
 
 	@Override

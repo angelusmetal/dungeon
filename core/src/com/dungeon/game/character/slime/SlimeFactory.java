@@ -23,9 +23,14 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	final Animation<TextureRegion> dieAnimation;
 	final Animation<TextureRegion> blobAnimation;
 	final Animation<TextureRegion> splatAnimation;
+	final Animation<TextureRegion> spawnIdleAnimation;
+	final Animation<TextureRegion> spawnBlinkAnimation;
+	final Animation<TextureRegion> spawnDieAnimation;
 
 	final EntityPrototype character;
+	final EntityPrototype spawn;
 	final EntityPrototype death;
+	final EntityPrototype spawnDeath;
 	final EntityPrototype blob;
 	final EntityPrototype splat;
 
@@ -34,6 +39,10 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		idleAnimation = ResourceManager.instance().getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
 		blinkAnimation = ResourceManager.instance().getAnimation(SlimeSheet.BLINK, SlimeSheet::blink);
 		dieAnimation = ResourceManager.instance().getAnimation(SlimeSheet.DIE, SlimeSheet::die);
+		// Spawn animations
+		spawnIdleAnimation = ResourceManager.instance().getAnimation(SlimeSpawnSheet.IDLE, SlimeSpawnSheet::idle);
+		spawnBlinkAnimation = ResourceManager.instance().getAnimation(SlimeSpawnSheet.BLINK, SlimeSpawnSheet::blink);
+		spawnDieAnimation = ResourceManager.instance().getAnimation(SlimeSpawnSheet.DIE, SlimeSpawnSheet::die);
 		// Blob animations
 		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
 		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
@@ -47,10 +56,13 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		Color lightColor = new Color(1, 1, 1, 0.5f);
 
 		Light characterLight = new Light(50, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Light spawnLight = new Light(25, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 		Light deathLight = new Light(100, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
+		Vector2 spawnBoundingBox = new Vector2(11, 6);
+		Vector2 spawnDrawOffset = new Vector2(8, 5);
 		Vector2 blobBouncingBox = new Vector2(6, 6);
 		Vector2 blobDrawOffset = new Vector2(8, 8);
 
@@ -63,10 +75,27 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.zSpeed(0)
 				.with(Traits.zAccel(-200))
 				.friction(1);
+		spawn = new EntityPrototype()
+				.boundingBox(spawnBoundingBox)
+				.drawOffset(spawnDrawOffset)
+				.color(color)
+				.light(spawnLight)
+				.speed(100f)
+				.zSpeed(0)
+				.with(Traits.zAccel(-200))
+				.friction(1);
 		death = new EntityPrototype()
 				.animation(dieAnimation)
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
+				.color(new Color(1, 1, 1, 0.5f))
+				.light(deathLight)
+				.with(Traits.fadeOutLight())
+				.timeToLive(dieAnimation.getAnimationDuration() + 1f);
+		spawnDeath = new EntityPrototype()
+				.animation(spawnDieAnimation)
+				.boundingBox(spawnBoundingBox)
+				.drawOffset(spawnDrawOffset)
 				.color(new Color(1, 1, 1, 0.5f))
 				.light(deathLight)
 				.with(Traits.fadeOutLight())
@@ -93,8 +122,25 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		return slime;
 	}
 
+	Entity createSpawn(Entity dying) {
+		Entity entity = new SlimeSpawn(dying.getPos(), this);
+		entity.setZPos(dying.getZPos());
+		entity.setColor(dying.getColor());
+		entity.getLight().color.set(dying.getColor());
+		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
+		return entity;
+	}
+
 	Entity createDeath(Entity dying) {
 		Entity entity = new Entity(dying.getPos(), death);
+		entity.setZPos(dying.getZPos());
+		entity.setColor(dying.getColor());
+		entity.getLight().color.set(dying.getColor());
+		return entity;
+	}
+
+	Entity createSpawnDeath(Entity dying) {
+		Entity entity = new Entity(dying.getPos(), spawnDeath);
 		entity.setZPos(dying.getZPos());
 		entity.setColor(dying.getColor());
 		entity.getLight().color.set(dying.getColor());
