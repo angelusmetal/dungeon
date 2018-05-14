@@ -118,10 +118,7 @@ public class Traits {
                 // North / south animation
                 newAnimation = vector.y < 0 ? down : up;
             }
-            // Only set if animation changed
-            if (!entity.isCurrentAnimation(newAnimation)) {
-                entity.setCurrentAnimation(new GameAnimation(newAnimation, GameState.time()));
-            }
+            entity.updateCurrentAnimation(newAnimation);
         };
     }
 

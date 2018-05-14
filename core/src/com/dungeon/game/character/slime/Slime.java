@@ -22,27 +22,19 @@ public class Slime extends Character {
 		IDLE, ATTACKING
 	}
 	private Status status;
-	/** Vertical speed */
-	private float zSpeed;
-	/** Vertical acceleration */
-	private final float zAcceleration;
 
 	Slime(Vector2 origin, SlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
 
-		setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+		setCurrentAnimation(factory.blinkAnimation);
 		maxHealth = 75 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
-
 		nextThink = 0f;
-
-		zAcceleration = -200;
 	}
 
 	@Override
 	public void think() {
-//		super.think(state);
 		if (getAim().x != 0) {
 			setInvertX(getAim().x < 0);
 		}
@@ -55,7 +47,7 @@ public class Slime extends Character {
 				impulse(target);
 				aim(target);
 				zSpeed = 100;
-				setCurrentAnimation(new GameAnimation(factory.attackAnimation, GameState.time()));
+				updateCurrentAnimation(factory.idleAnimation);
 				this.status = Status.ATTACKING;
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
@@ -64,22 +56,22 @@ public class Slime extends Character {
 					Vector2 newDirection = new Vector2(Rand.between(10f, 10), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+					updateCurrentAnimation(factory.blinkAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+					updateCurrentAnimation(factory.blinkAnimation);
 				}
 				this.status = Status.IDLE;
 			}
 		} else {
-			zSpeed += zAcceleration * GameState.frameTime();
-			z += zSpeed * GameState.frameTime();
-			if (z < 0) {
-				z = 0;
-			}
 			// No friction while in the air
 			friction = z > 0 ? 0 : 8;
 		}
+	}
+
+	@Override
+	protected void onGroundRest() {
+		updateCurrentAnimation(factory.blinkAnimation);
 	}
 
 	private Vector2 reTarget() {

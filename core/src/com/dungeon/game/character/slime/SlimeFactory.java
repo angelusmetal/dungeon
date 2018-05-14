@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	final Animation<TextureRegion> idleAnimation;
-	final Animation<TextureRegion> attackAnimation;
+	final Animation<TextureRegion> blinkAnimation;
 	final Animation<TextureRegion> dieAnimation;
 	final Animation<TextureRegion> blobAnimation;
 	final Animation<TextureRegion> splatAnimation;
@@ -32,7 +32,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	public SlimeFactory() {
 		// Character animations
 		idleAnimation = ResourceManager.instance().getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
-		attackAnimation = ResourceManager.instance().getAnimation(SlimeSheet.ATTACK, SlimeSheet::attack);
+		blinkAnimation = ResourceManager.instance().getAnimation(SlimeSheet.BLINK, SlimeSheet::blink);
 		dieAnimation = ResourceManager.instance().getAnimation(SlimeSheet.DIE, SlimeSheet::die);
 		// Blob animations
 		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
@@ -61,6 +61,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.light(characterLight)
 				.speed(100f)
 				.zSpeed(0)
+				.with(Traits.zAccel(-200))
 				.friction(1);
 		death = new EntityPrototype()
 				.animation(dieAnimation)

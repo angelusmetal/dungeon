@@ -60,7 +60,9 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
 				.color(color)
-				.light(characterLight);
+				.light(characterLight)
+				.speed(100)
+				.friction(2);
 		death = new EntityPrototype()
 				.animation(dieAnimation)
 				.boundingBox(characterBoundingBox)

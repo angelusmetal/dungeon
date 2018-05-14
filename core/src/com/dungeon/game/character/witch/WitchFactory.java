@@ -57,7 +57,8 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		character = new EntityPrototype()
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
-				.friction(10f);
+				.friction(10f)
+				.speed(60);
 		bullet = new EntityPrototype()
 				.boundingBox(bulletBoundingBox)
 				.drawOffset(bulletDrawOffset)

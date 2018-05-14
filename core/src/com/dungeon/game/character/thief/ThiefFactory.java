@@ -56,7 +56,8 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		character = new EntityPrototype()
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
-				.friction(10f);
+				.friction(10f)
+				.speed(96f);
 		bullet = new EntityPrototype()
 				.animation(bulletFlyAnimation)
 				.boundingBox(bulletBoundingBox)

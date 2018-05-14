@@ -16,8 +16,7 @@ public class Thief extends PlayerCharacter {
 	Thief(Vector2 origin, ThiefFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-		setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
-		speed = 96f;
+		setCurrentAnimation(getIdleAnimation());
 		health = 60;
 		fireCooldown = new CooldownTrigger(0.2f);
 	}

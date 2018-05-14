@@ -51,10 +51,10 @@ public class FireSlime extends Character {
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
 					setSelfImpulse(newDirection);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+					updateCurrentAnimation(factory.idleAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+					updateCurrentAnimation(factory.idleAnimation);
 				}
 			}
 		} else {

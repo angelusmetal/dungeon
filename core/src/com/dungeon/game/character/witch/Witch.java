@@ -15,8 +15,7 @@ public class Witch extends PlayerCharacter {
 	Witch(Vector2 origin, WitchFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-		setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
-		speed = 60f;
+		setCurrentAnimation(factory.idleAnimation);
 		health = 90;
 	}
 

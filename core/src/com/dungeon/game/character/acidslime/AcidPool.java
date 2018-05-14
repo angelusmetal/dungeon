@@ -21,7 +21,7 @@ public class AcidPool extends Entity {
 	@Override
 	public void think() {
 		if (GameState.time() > expirationTime - 0.5f && getCurrentAnimation().getAnimation() != factory.poolDryAnimation) {
-			setCurrentAnimation(new GameAnimation(factory.poolDryAnimation, GameState.time()));
+			setCurrentAnimation(factory.poolDryAnimation);
 		}
 	}
 

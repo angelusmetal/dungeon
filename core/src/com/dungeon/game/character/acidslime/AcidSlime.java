@@ -30,12 +30,9 @@ public class AcidSlime extends Character {
 		super(origin, factory.character);
 		this.factory = factory;
 
-		setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
-		speed = 100f;
+		setCurrentAnimation(factory.idleAnimation);
 		maxHealth = 100 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
-		friction = 2;
-
 		nextThink = 0f;
 	}
 
@@ -51,7 +48,7 @@ public class AcidSlime extends Character {
 				// Aim towards target
 				impulse(target);
 				aim(target);
-				setCurrentAnimation(new GameAnimation(factory.attackAnimation, GameState.time()));
+				updateCurrentAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
@@ -61,10 +58,10 @@ public class AcidSlime extends Character {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+					updateCurrentAnimation(factory.idleAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					setCurrentAnimation(new GameAnimation(factory.idleAnimation, GameState.time()));
+					updateCurrentAnimation(factory.idleAnimation);
 				}
 				this.status = Status.IDLE;
 			}

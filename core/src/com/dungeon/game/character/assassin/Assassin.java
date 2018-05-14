@@ -15,8 +15,7 @@ public class Assassin extends PlayerCharacter {
 	Assassin(Vector2 origin, AssassinFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-		setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
-		speed = 60f;
+		setCurrentAnimation(factory.idleAnimation);
 		health = 100f;
 	}
 

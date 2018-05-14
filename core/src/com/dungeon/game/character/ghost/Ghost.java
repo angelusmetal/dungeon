@@ -27,7 +27,7 @@ public class Ghost extends Character {
 	Ghost(Vector2 origin, GhostFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-		setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
+		setCurrentAnimation(factory.idleAnimation);
 		maxHealth = 100 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
 	}

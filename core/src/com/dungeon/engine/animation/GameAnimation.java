@@ -2,10 +2,15 @@ package com.dungeon.engine.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.game.state.GameState;
 
 public class GameAnimation {
 	private final Animation<TextureRegion> animation;
 	private final float start;
+
+	public GameAnimation(Animation<TextureRegion> animation) {
+		this(animation, GameState.time());
+	}
 
 	public GameAnimation(Animation<TextureRegion> animation, float animationStart) {
 		this.animation = animation;

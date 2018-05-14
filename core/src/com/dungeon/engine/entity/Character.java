@@ -26,13 +26,9 @@ public abstract class Character extends Entity implements Movable, Drawable {
 			setInvertX(aim.x < 0);
 		}
 		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-			if (getIdleAnimation() != getCurrentAnimation().getAnimation()) {
-				setCurrentAnimation(new GameAnimation(getIdleAnimation(), GameState.time()));
-			}
+			updateCurrentAnimation(getIdleAnimation());
 		} else {
-			if (getWalkAnimation() != getCurrentAnimation().getAnimation()) {
-				setCurrentAnimation(new GameAnimation(getWalkAnimation(), GameState.time()));
-			}
+			updateCurrentAnimation(getWalkAnimation());
 		}
 		if (getSelfImpulse().len() > 0.5) {
 			aim.set(getSelfImpulse());
@@ -65,7 +61,7 @@ public abstract class Character extends Entity implements Movable, Drawable {
 					// Extra offset to make projectiles appear in the character's hands
 					//projectile.getPos().y -= 8;
 					GameState.addEntity(projectile);
-					setCurrentAnimation(new GameAnimation(getAttackAnimation(), GameState.time()));
+					updateCurrentAnimation(getAttackAnimation());
 				}
 			});
 		}

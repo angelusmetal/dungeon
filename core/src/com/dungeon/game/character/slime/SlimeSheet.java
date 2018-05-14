@@ -11,8 +11,8 @@ public class SlimeSheet extends TileSheet {
 	private final TextureRegion IDLE_2 = getTile(1, 0);
 	private final TextureRegion IDLE_3 = getTile(2, 0);
 
-	private final TextureRegion ATTACK_1 = getTile(3, 0);
-	private final TextureRegion ATTACK_2 = getTile(0, 1);
+	private final TextureRegion BLINK_1 = getTile(3, 0);
+	private final TextureRegion BLINK_2 = getTile(0, 1);
 
 	private final TextureRegion DIE_1 = getTile(1, 1);
 	private final TextureRegion DIE_2 = getTile(2, 1);
@@ -24,11 +24,11 @@ public class SlimeSheet extends TileSheet {
 	private final TextureRegion DIE_8 = getTile(0, 3);
 
 	private final Animation<TextureRegion> IDLE_ANIMATION = loop(0.25f, IDLE_1, IDLE_2, IDLE_3, IDLE_2);
-	private final Animation<TextureRegion> ATTACK_ANIMATION = loop(0.1f, IDLE_3, ATTACK_1, ATTACK_2, ATTACK_1);
+	private final Animation<TextureRegion> BLINK_ANIMATION = loop(0.1f, IDLE_3, BLINK_1, BLINK_2, BLINK_2, BLINK_2, BLINK_1, IDLE_3, IDLE_3, IDLE_3, IDLE_3);
 	private final Animation<TextureRegion> DIE_ANIMATION = new Animation<>(0.07f, DIE_1, DIE_2, DIE_3, DIE_4, DIE_5, DIE_6, DIE_7, DIE_8);
 
 	public static final String IDLE = "slime_idle";
-	public static final String ATTACK = "slime_attack";
+	public static final String BLINK = "slime_blink";
 	public static final String DIE = "slime_die";
 
 	public SlimeSheet() {
@@ -39,8 +39,8 @@ public class SlimeSheet extends TileSheet {
 		return new SlimeSheet().IDLE_ANIMATION;
 	}
 
-	public static Animation<TextureRegion> attack() {
-		return new SlimeSheet().ATTACK_ANIMATION;
+	public static Animation<TextureRegion> blink() {
+		return new SlimeSheet().BLINK_ANIMATION;
 	}
 
 	public static Animation<TextureRegion> die() {

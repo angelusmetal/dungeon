@@ -14,8 +14,10 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.character.slime.Slime;
 import com.dungeon.game.state.GameState;
 
+import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -78,7 +80,7 @@ public class Entity implements Drawable, Movable {
 	private DrawFunction drawFunction;
 
 	public Entity(Vector2 origin, EntityPrototype builder) {
-		this.setCurrentAnimation(new GameAnimation(builder.animation, GameState.time()));
+		this.setCurrentAnimation(builder.animation);
 		this.body = new Body(origin, builder.boundingBox);
 		this.drawOffset = builder.drawOffset;
 		this.drawFunction = builder.drawFunction.get();
@@ -117,12 +119,18 @@ public class Entity implements Drawable, Movable {
 		return currentAnimation;
 	}
 
-	public boolean isCurrentAnimation(Animation<TextureRegion> animation) {
-		return currentAnimation != null && currentAnimation.getAnimation() == animation;
-	}
-
 	public void setCurrentAnimation(GameAnimation currentAnimation) {
 		this.currentAnimation = currentAnimation;
+	}
+
+	public void setCurrentAnimation(Animation<TextureRegion> animation) {
+		this.currentAnimation = new GameAnimation(animation);
+	}
+
+	public void updateCurrentAnimation(Animation<TextureRegion> animation) {
+		if (currentAnimation != null && currentAnimation.getAnimation() != animation) {
+			this.currentAnimation = new GameAnimation(animation);
+		}
 	}
 
 	@Override
@@ -282,10 +290,11 @@ public class Entity implements Drawable, Movable {
 		if (!expired) {
 			z += zSpeed * GameState.frameTime();
 			if (z < 0) {
+				z = 0;
 				if (bounciness > 0 && Math.abs(zSpeed) < 10) {
-					z = 0;
 					zSpeed *= -bounciness;
 				} else {
+					zSpeed = 0;
 					onGroundRest();
 				}
 			}
