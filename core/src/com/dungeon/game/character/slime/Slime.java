@@ -8,23 +8,16 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class Slime extends Character {
-
-	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
-	private static final float JUMP = Util.length2(50);
 
 	private final SlimeFactory factory;
 	private float nextThink;
 	Slime(Vector2 origin, SlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-
 		setCurrentAnimation(factory.blinkAnimation);
-		maxHealth = 75 * (GameState.getPlayerCount() + GameState.getLevelCount());
-		health = maxHealth;
 	}
 
 	@Override
@@ -34,9 +27,9 @@ public class Slime extends Character {
 		}
 		if (GameState.time() > nextThink) {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
-				nextThink = GameState.time() + 3f;
-				impulseTowards(closest.getEntity().getPos(), JUMP);
+			if (closest.getDst2() < factory.maxTargetDistance) {
+				nextThink = GameState.time() + factory.attackFrequency;
+				impulseTowards(closest.getEntity().getPos(), factory.jumpDistance);
 				aim(getMovement());
 				zSpeed = 100;
 				updateCurrentAnimation(factory.idleAnimation);
@@ -67,7 +60,7 @@ public class Slime extends Character {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(10 * GameState.frameTime());
+			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {
 			return false;
@@ -78,7 +71,7 @@ public class Slime extends Character {
 	protected void onExpire() {
 		GameState.addEntity(factory.createDeath(this));
 		// Create a bunch of blobs
-		int splats = Rand.between(8, 16);
+		int splats = Rand.between(factory.blobsOnDeath / 2, factory.blobsOnDeath);
 		for (int i = 0; i <= splats; ++i) {
 			GameState.addEntity(factory.createBlob(this));
 		}

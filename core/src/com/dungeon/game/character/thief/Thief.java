@@ -3,7 +3,6 @@ package com.dungeon.game.character.thief;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.CooldownTrigger;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
@@ -17,7 +16,6 @@ public class Thief extends PlayerCharacter {
 		super(origin, factory.character);
 		this.factory = factory;
 		setCurrentAnimation(getIdleAnimation());
-		health = 60;
 		fireCooldown = new CooldownTrigger(0.2f);
 	}
 

@@ -10,7 +10,6 @@ import com.dungeon.engine.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -28,6 +27,7 @@ public class EntityPrototype {
 	Predicate<Entity> targetPredicate = (entity) -> false;
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
+	Supplier<Integer> health = () -> 100;
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
@@ -64,6 +64,16 @@ public class EntityPrototype {
 
 	public EntityPrototype damage(Supplier<Float> damage) {
 		this.damage = damage;
+		return this;
+	}
+
+	public EntityPrototype health(int health) {
+		this.health = () -> health;
+		return this;
+	}
+
+	public EntityPrototype health(Supplier<Integer> health) {
+		this.health = health;
 		return this;
 	}
 

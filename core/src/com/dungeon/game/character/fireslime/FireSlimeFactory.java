@@ -11,8 +11,10 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.moandjiezana.toml.Toml;
 
 public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 
@@ -29,7 +31,24 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 	final Light bulletLight;
 	final Light bulletTrailLight;
 
+	final float maxTargetDistance;
+	final float attackFrequency;
+	final float attackSpeed;
+	final float idleSpeed;
+	final float damagePerSecond;
+
 	public FireSlimeFactory() {
+		Toml config = GameState.getConfiguration().getTable("creatures.SLIME_FIRE");
+		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
+		attackFrequency = config.getDouble("attackFrequency", 1.5d).floatValue();
+		attackSpeed = config.getLong("attackSpeed", 10L).floatValue();
+		idleSpeed = config.getLong("idleSpeed", 5L).floatValue();
+		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();
+		int health = config.getLong("health", 50L).intValue();
+		float speed = config.getLong("speed", 20L).floatValue();
+		float bulletSpeed = config.getLong("bulletSpeed", 100L).floatValue();
+		float bulletDamage = config.getLong("bulletDamage", 5L).floatValue();
+
 		// Character animations
 		idleAnimation = ResourceManager.instance().getAnimation(FireSlimeSheet.IDLE, FireSlimeSheet::idle);
 		projectileAnimation = ResourceManager.instance().getAnimation(FireSlimeSheet.PROJECTILE, FireSlimeSheet::projectile);
@@ -51,16 +70,17 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.drawOffset(characterDrawOffset)
 				.color(new Color(1, 1, 1, 0.8f))
 				.light(characterLight)
-				.speed(20f);
+				.speed(speed)
+				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		bullet = new EntityPrototype()
 				.animation(projectileAnimation)
 				.boundingBox(bulletBoundingBox)
 				.drawOffset(bulletDrawOffset)
 				.light(bulletLight)
-				.speed(100)
+				.speed(bulletSpeed)
 				.timeToLive(10)
 				.targetPredicate(PlayerCharacter.IS_PLAYER)
-				.damage(() -> 5f * (GameState.getPlayerCount() + GameState.getLevelCount()))
+				.damage(() -> bulletDamage * (GameState.getPlayerCount() + GameState.getLevelCount()))
 				.with(Traits.generator(0.1f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()
 				.animation(explosionAnimation)

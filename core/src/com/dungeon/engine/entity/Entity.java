@@ -14,13 +14,10 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.character.slime.Slime;
 import com.dungeon.game.state.GameState;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -100,6 +97,8 @@ public class Entity implements Drawable, Movable {
 		if (timeToLive != null) {
 			traits.add(Traits.expireByTime().get(this));
 		}
+		this.maxHealth = builder.health.get();
+		this.health = maxHealth;
 	}
 
 	@Override

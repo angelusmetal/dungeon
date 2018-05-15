@@ -16,6 +16,7 @@ import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CharactersSheet32;
 import com.dungeon.game.tileset.ProjectileSheet;
+import com.moandjiezana.toml.Toml;
 
 import java.util.function.Function;
 
@@ -38,6 +39,13 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 	final Function<Vector2, Entity> tombstoneSpawner;
 
 	public ThiefFactory(TombstoneFactory tombstoneFactory) {
+		Toml config = GameState.getConfiguration().getTable("creatures.THIEF");
+		int health = config.getLong("health", 60L).intValue();
+		float speed = config.getLong("speed", 96L).floatValue();
+		float friction = config.getLong("friction", 10L).floatValue();
+		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();
+		float bulletDamage = config.getLong("bulletDamage", 25L).floatValue();
+
 		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_IDLE, CharactersSheet32::thiefIdle);
 		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
 		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_ATTACK, CharactersSheet32::thiefAttack);
@@ -56,18 +64,19 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		character = new EntityPrototype()
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
-				.friction(10f)
-				.speed(96f);
+				.health(health)
+				.speed(speed)
+				.friction(friction);
 		bullet = new EntityPrototype()
 				.animation(bulletFlyAnimation)
 				.boundingBox(bulletBoundingBox)
 				.drawOffset(bulletDrawOffset)
 				.light(bulletLight)
-				.speed(200)
+				.speed(bulletSpeed)
 				.timeToLive(3)
 				.bounciness(1)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
-				.damage(25)
+				.damage(bulletDamage)
 				.with(Traits.generator(0.052f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()
 				.animation(bulletExplodeAnimation)

@@ -9,7 +9,10 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.state.GameState;
+import com.moandjiezana.toml.Toml;
 
 public class GhostFactory implements EntityFactory.EntityTypeFactory {
 
@@ -17,7 +20,22 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 	final EntityPrototype character;
 	final EntityPrototype death;
 
+	final float maxTargetDistance;
+	final float visibleTime;
+	final float visibleSpeed;
+	final float stealthSpeed;
+	final float damagePerSecond;
+
 	public GhostFactory() {
+		Toml config = GameState.getConfiguration().getTable("creatures.GHOST");
+		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
+		visibleTime = config.getDouble("visibleTime", 2d).floatValue();
+		visibleSpeed = config.getLong("visibleSpeed", 20L).floatValue();
+		stealthSpeed = config.getLong("stealthSpeed", 40L).floatValue();
+		damagePerSecond = config.getLong("damagePerSecond", 20L).floatValue();
+		int health = config.getLong("health", 100L).intValue();
+		float speed = config.getLong("speed", 20L).floatValue();
+
 		idleAnimation = ResourceManager.instance().getAnimation(GhostSheet.HOVER, GhostSheet::hover);
 
 		Vector2 boundingBox = new Vector2(16, 26);
@@ -29,7 +47,8 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 				.drawOffset(drawOffset)
 				.color(new Color(1, 1, 1, 0.5f))
 				.light(characterLight)
-				.speed(20f);
+				.speed(speed)
+				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		death = new EntityPrototype()
 				.animation(idleAnimation)
 				.boundingBox(boundingBox)

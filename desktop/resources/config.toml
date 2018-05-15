@@ -1,7 +1,8 @@
 [application] # Accepts all LwjglApplicationConfiguration properties here...
     # Set the screen size
-    width = 1600
-    height = 800
+    width = 1600 # 1920
+    height = 800 # 1080
+    fullscreen = false
     # Uncomment these if you want to unlock FPS...
     # foregroundFPS = 0
     # backgroundFPS = 0
@@ -15,16 +16,78 @@
     # height = 400
     # Scaling gives the blocky appeal
     scale = 4.0
-    gamma = 0.2
+    gamma = 0.1
 [map]
     # Base dimensions
     width = 40
     height = 40
     growth = 10
-    #creatures = ["GHOST"]
+    #creatures = ["SLIME"]
     creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
     itemchance = 1.0
 [noise]
     width = 128
     height = 128
     grit = 0.2
+[creatures]
+
+    # Characters
+    [creatures.ASSASIN]
+        health = 100
+		speed = 60
+		friction = 10
+		bulletSpeed = 180
+		bulletDamage = 35
+    [creatures.THIEF]
+        health = 60
+		speed = 96
+		friction = 10
+		bulletSpeed = 200
+		bulletDamage = 25
+    [creatures.WITCH]
+        health = 90
+		speed = 60
+		friction = 10
+		bulletSpeed = 200
+		bulletDamage = 25
+
+    # Creatures
+    [creatures.GHOST]
+        health = 100
+		speed = 20
+		maxTargetDistance = 300 # Targeting distance
+		visibleTime = 2.0       # Visible time, in seconds
+		visibleSpeed = 20       # Speed while visible
+		stealthSpeed = 40       # Speed while stealth
+		damagePerSecond = 20    # Damage dealth per second upon contact
+    [creatures.SLIME]
+        health = 75
+        spawnHealth = 25        # Health of spawns
+		speed = 100
+		friction = 1
+		maxTargetDistance = 300 # Targeting distance
+		jumpDistance = 50       # Jump distance
+		damagePerSecond = 10    # Damage dealth per second upon contact
+		blobsOnDeath = 16       # Max amount of blobs spawned upon death
+		attackFrequency = 3.0   # Frequency of attacks, in seconds
+    [creatures.SLIME_ACID]
+        health = 100
+		speed = 100
+		friction = 2
+		maxTargetDistance = 300 # Targeting distance
+		dashDistance = 150      # Dashing distance
+		poolSeparation = 15     # Separation between acid pools
+		poolDuration = 5.0      # Duration of acid pools, in seconds
+		poolDamage = 5          # Damage per second caused by the acid pool
+		attackFrequency = 3.0   # Frequency of attacks, in seconds
+		damagePerSecond = 10    # Damage dealth per second upon contact
+    [creatures.SLIME_FIRE]
+        health = 50
+        speed = 20
+		maxTargetDistance = 300 # Targeting distance
+		attackFrequency = 1.5   # Frequency of attacks, in seconds
+		attackSpeed = 10        # Movement speed while attacking
+		idleSpeed = 5           # Movement speed while idle
+		bulletSpeed = 100       # Bullet speed
+		bulletDamage = 5        # Bullet damage
+		damagePerSecond = 10    # Damage dealth per second upon contact

@@ -17,6 +17,7 @@ import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CatProjectileSheet;
 import com.dungeon.game.tileset.CharactersSheet32;
 import com.dungeon.game.tileset.ProjectileSheet;
+import com.moandjiezana.toml.Toml;
 
 import java.util.function.Function;
 
@@ -38,6 +39,13 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 	final Function<Vector2, Entity> tombstoneSpawner;
 
 	public WitchFactory(TombstoneFactory tombstoneFactory) {
+		Toml config = GameState.getConfiguration().getTable("creatures.THIEF");
+		int health = config.getLong("health", 90L).intValue();
+		float speed = config.getLong("speed", 60L).floatValue();
+		float friction = config.getLong("friction", 10L).floatValue();
+		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();
+		float bulletDamage = config.getLong("bulletDamage", 25L).floatValue();
+
 		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_IDLE, CharactersSheet32::witchIdle);
 		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
 		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_ATTACK, CharactersSheet32::witchAttack);
@@ -57,16 +65,17 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		character = new EntityPrototype()
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
-				.friction(10f)
-				.speed(60);
+				.health(health)
+				.speed(speed)
+				.friction(friction);
 		bullet = new EntityPrototype()
 				.boundingBox(bulletBoundingBox)
 				.drawOffset(bulletDrawOffset)
 				.light(bulletLight)
-				.speed(200)
+				.speed(bulletSpeed)
 				.timeToLive(10)
 				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
-				.damage(25)
+				.damage(bulletDamage)
 				.with(Traits.autoSeek(0.1f, 60, () -> GameState.getEntities().stream().filter(PlayerCharacter.IS_NON_PLAYER)))
 				.with(Traits.animationByVector(Entity::getMovement, bulletFlySideAnimation, bulletFlyNorthAnimation, bulletFlySouthAnimation))
 				.with(Traits.generator(0.05f, this::createBulletTrail));

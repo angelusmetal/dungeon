@@ -8,15 +8,9 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.Util;
-import com.dungeon.game.character.acidslime.AcidSlime;
 import com.dungeon.game.state.GameState;
 
 public class FireSlime extends Character {
-
-	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
-	private static final float ATTACK_FREQUENCY = 1.5f;
-	private static final float ATTACK_SPEED = 10f;
 
 	private final FireSlimeFactory factory;
 	private float nextThink;
@@ -24,9 +18,6 @@ public class FireSlime extends Character {
 	FireSlime(Vector2 origin, FireSlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-		maxHealth = 50 * (GameState.getPlayerCount() + GameState.getLevelCount());
-		health = maxHealth;
-		nextThink = 0f;
 	}
 
 	@Override
@@ -36,10 +27,10 @@ public class FireSlime extends Character {
 		}
 		if (GameState.time() > nextThink) {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
-				nextThink = GameState.time() + ATTACK_FREQUENCY;
+			if (closest.getDst2() < factory.maxTargetDistance) {
+				nextThink = GameState.time() + factory.attackFrequency;
 				// Move towards target
-				speed = ATTACK_SPEED;
+				speed = factory.attackSpeed;
 				moveStrictlyTowards(closest.getEntity().getPos());
 				// Fire a projectile
 				Entity bullet = factory.createBullet(getPos());
@@ -47,7 +38,7 @@ public class FireSlime extends Character {
 				GameState.addEntity(bullet);
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
-				speed = 5f;
+				speed = factory.idleSpeed;
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
@@ -77,7 +68,7 @@ public class FireSlime extends Character {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(10 * GameState.frameTime());
+			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {
 			return false;

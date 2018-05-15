@@ -13,6 +13,7 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.moandjiezana.toml.Toml;
 
 import java.util.function.Supplier;
 
@@ -34,7 +35,24 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	final EntityPrototype blob;
 	final EntityPrototype splat;
 
+	final float maxTargetDistance;
+	final float jumpDistance;
+	final float damagePerSecond;
+	final int blobsOnDeath;
+	final float attackFrequency;
+
 	public SlimeFactory() {
+		Toml config = GameState.getConfiguration().getTable("creatures.SLIME");
+		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
+		jumpDistance = Util.length2(config.getLong("jumpDistance", 50L));
+		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();
+		blobsOnDeath = config.getLong("blobsOnDeath", 16L).intValue();
+		attackFrequency = config.getDouble("attackFrequency", 3d).floatValue();
+		int health = config.getLong("health", 75L).intValue();
+		int spawnHealth = config.getLong("spawnHealth", 25L).intValue();
+		float speed = config.getLong("speed", 100L).floatValue();
+		float friction = config.getLong("friction", 1L).floatValue();
+
 		// Character animations
 		idleAnimation = ResourceManager.instance().getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
 		blinkAnimation = ResourceManager.instance().getAnimation(SlimeSheet.BLINK, SlimeSheet::blink);
@@ -71,19 +89,21 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.drawOffset(characterDrawOffset)
 				.color(color)
 				.light(characterLight)
-				.speed(100f)
+				.speed(speed)
 				.zSpeed(0)
 				.with(Traits.zAccel(-200))
-				.friction(1);
+				.friction(friction)
+				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		spawn = new EntityPrototype()
 				.boundingBox(spawnBoundingBox)
 				.drawOffset(spawnDrawOffset)
 				.color(color)
 				.light(spawnLight)
-				.speed(100f)
+				.speed(speed)
 				.zSpeed(0)
 				.with(Traits.zAccel(-200))
-				.friction(1);
+				.friction(friction)
+				.health(() -> spawnHealth * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		death = new EntityPrototype()
 				.animation(dieAnimation)
 				.boundingBox(characterBoundingBox)

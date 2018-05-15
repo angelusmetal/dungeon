@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Light;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class PlayerCharacter extends Character {

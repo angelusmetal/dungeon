@@ -13,8 +13,6 @@ import com.dungeon.game.state.GameState;
 
 public class Ghost extends Character {
 
-	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
-	private static final float VISIBLE_TIME = 2f;
 	private final GhostFactory factory;
 	private float visibleUntil = 0;
 	private final Timer targettingTimer = new Timer(0.2f);
@@ -23,8 +21,6 @@ public class Ghost extends Character {
 		super(origin, factory.character);
 		this.factory = factory;
 		setCurrentAnimation(factory.idleAnimation);
-		maxHealth = 100 * (GameState.getPlayerCount() + GameState.getLevelCount());
-		health = maxHealth;
 	}
 
 	@Override
@@ -33,13 +29,13 @@ public class Ghost extends Character {
 		// Re-target periodically
 		targettingTimer.doAtInterval(() -> {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
+			if (closest.getDst2() < factory.maxTargetDistance) {
 				moveStrictlyTowards(closest.getEntity().getPos());
 			}
 		});
 		// Set transparency based on invulnerability
 		color.a = Util.clamp(visibleUntil - GameState.time(), 0.1f, 0.5f);
-		speed = GameState.time() > visibleUntil ? 40f : 20f;
+		speed = GameState.time() > visibleUntil ? factory.stealthSpeed : factory.visibleSpeed;
 	}
 
 	@Override
@@ -60,7 +56,7 @@ public class Ghost extends Character {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(20 * GameState.frameTime());
+			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {
 			return false;
@@ -70,7 +66,7 @@ public class Ghost extends Character {
 	@Override
 	public void hit(float dmg) {
 		super.hit(dmg);
-		visibleUntil = GameState.time() + VISIBLE_TIME;
+		visibleUntil = GameState.time() + factory.visibleTime;
 	}
 
 	@Override

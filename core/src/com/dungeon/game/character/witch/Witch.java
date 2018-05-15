@@ -3,7 +3,6 @@ package com.dungeon.game.character.witch;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.state.GameState;
@@ -16,7 +15,6 @@ public class Witch extends PlayerCharacter {
 		super(origin, factory.character);
 		this.factory = factory;
 		setCurrentAnimation(factory.idleAnimation);
-		health = 90;
 	}
 
 	@Override

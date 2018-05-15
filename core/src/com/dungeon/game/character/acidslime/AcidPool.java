@@ -1,14 +1,11 @@
 package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.game.state.GameState;
 
 public class AcidPool extends Entity {
-
-	private static final float DPS = 5f;
 
 	private final AcidSlimeFactory factory;
 
@@ -28,7 +25,7 @@ public class AcidPool extends Entity {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(DPS * GameState.frameTime());
+			entity.hit(factory.poolDamage * GameState.frameTime());
 			return true;
 		} else {
 			return false;

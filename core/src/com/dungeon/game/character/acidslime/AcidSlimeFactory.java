@@ -10,9 +10,11 @@ import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.character.slime.SlimeBlobsSheet;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
+import com.moandjiezana.toml.Toml;
 
 public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
@@ -30,7 +32,26 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	final EntityPrototype blob;
 	final EntityPrototype splat;
 
+	final float maxTargetDistance;
+	final float dashDistance;
+	final float poolSeparation;
+	final float poolDamage;
+	final float attackFrequency;
+	final float damagePerSecond;
+
 	public AcidSlimeFactory() {
+		Toml config = GameState.getConfiguration().getTable("creatures.SLIME_ACID");
+		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
+		dashDistance = Util.length2(config.getLong("dashDistance", 150L));
+		poolSeparation = Util.length2(config.getLong("poolSeparation", 15L));
+		poolDamage = config.getLong("poolDamage", 5L);
+		attackFrequency = config.getDouble("attackFrequency", 3d).floatValue();
+		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();
+		int health = config.getLong("health", 100L).intValue();
+		float speed = config.getLong("speed", 100L).floatValue();
+		float friction = config.getLong("friction", 2L).floatValue();
+		float poolDuration = config.getDouble("poolDuration", 5d).floatValue();
+
 		// Character animations
 		idleAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.IDLE, AcidSlimeSheet::idle);
 		attackAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.ATTACK, AcidSlimeSheet::attack);
@@ -61,8 +82,9 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.drawOffset(characterDrawOffset)
 				.color(color)
 				.light(characterLight)
-				.speed(100)
-				.friction(2);
+				.speed(speed)
+				.friction(friction)
+				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		death = new EntityPrototype()
 				.animation(dieAnimation)
 				.boundingBox(characterBoundingBox)
@@ -75,7 +97,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.drawOffset(poolDrawOffset)
 				.color(color)
 				.light(poolLight)
-				.timeToLive(5f)
+				.timeToLive(poolDuration)
 				.with(Traits.fadeOutLight())
 				.zIndex(-1);
 		blob = new EntityPrototype()

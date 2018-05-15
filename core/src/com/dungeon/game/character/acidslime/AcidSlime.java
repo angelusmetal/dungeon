@@ -8,16 +8,9 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.Util;
-import com.dungeon.game.character.slime.Slime;
 import com.dungeon.game.state.GameState;
 
 public class AcidSlime extends Character {
-
-	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
-	private static final float DASH = Util.length2(150);
-	private static final float POOL_SEPARATION = Util.length2(15);
-	private static final float ATTACK_FREQUENCY = 3f;
 
 	private final AcidSlimeFactory factory;
 	private final Vector2 lastPool = new Vector2(0,0);
@@ -32,9 +25,6 @@ public class AcidSlime extends Character {
 		this.factory = factory;
 
 		setCurrentAnimation(factory.idleAnimation);
-		maxHealth = 100 * (GameState.getPlayerCount() + GameState.getLevelCount());
-		health = maxHealth;
-		nextThink = 0f;
 	}
 
 	@Override
@@ -44,10 +34,10 @@ public class AcidSlime extends Character {
 		}
 		if (GameState.time() > nextThink) {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
-				nextThink = GameState.time() + ATTACK_FREQUENCY;
+			if (closest.getDst2() < factory.maxTargetDistance) {
+				nextThink = GameState.time() + factory.attackFrequency;
 				// Aim towards target
-				impulseTowards(closest.getEntity().getPos(), DASH);
+				impulseTowards(closest.getEntity().getPos(), factory.dashDistance);
 				aim(getMovement());
 				updateCurrentAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
@@ -67,7 +57,7 @@ public class AcidSlime extends Character {
 				this.status = Status.IDLE;
 			}
 		} else {
-			if (status == Status.ATTACKING && getPos().dst2(lastPool) > POOL_SEPARATION) {
+			if (status == Status.ATTACKING && getPos().dst2(lastPool) > factory.poolSeparation) {
 				lastPool.set(getPos());
 				GameState.addEntity(factory.createPool(this));
 			}
@@ -89,7 +79,7 @@ public class AcidSlime extends Character {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
-			entity.hit(10 * GameState.frameTime());
+			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {
 			return false;
