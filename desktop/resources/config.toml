@@ -91,3 +91,16 @@
 		bulletSpeed = 100       # Bullet speed
 		bulletDamage = 5        # Bullet damage
 		damagePerSecond = 10    # Damage dealth per second upon contact
+
+#
+# Configuration for controllers
+#
+# povControl - POV control
+# analogControlX - X analog axis (use negative value to invert axis)
+# analogControlY - Y analog axis (use negative value to invert axis)
+#
+[controllers]
+[controllers."Logitech RumblePad 2 USB"]
+	povControl = 0
+	analogControlX = 3
+	analogControlY = -2

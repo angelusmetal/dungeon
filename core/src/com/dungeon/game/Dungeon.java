@@ -70,9 +70,22 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
+		Toml controllerConfigs = configuration.getTable("controllers");
+
 		for (Controller controller : Controllers.getControllers()) {
-			DpadAnalogControl povControl = new DpadAnalogControl(0);
-			StickAnalogControl analogControl = new StickAnalogControl(3, -2);
+			System.out.println("Found controller: " + controller.getName());
+			// Look for explicit controller config, or use defaults
+			Toml controllerCfg = controllerConfigs.getTable('"' + controller.getName() + '"');
+			int povCode = 0;
+			int xAxis = 3;
+			int yAxis = -2;
+			if (controllerCfg != null) {
+				povCode = controllerCfg.getLong("povCode", 0L).intValue();
+				xAxis = controllerCfg.getLong("xAxis", 3L).intValue();
+				yAxis = controllerCfg.getLong("yAxis", -2L).intValue();
+			}
+			DpadAnalogControl povControl = new DpadAnalogControl(povCode);
+			StickAnalogControl analogControl = new StickAnalogControl(xAxis, yAxis);
 			controller.addListener(povControl);
 			controller.addListener(analogControl);
 		}
