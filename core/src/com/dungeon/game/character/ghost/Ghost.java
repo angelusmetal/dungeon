@@ -3,7 +3,6 @@ package com.dungeon.game.character.ghost;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
@@ -20,10 +19,6 @@ public class Ghost extends Character {
 	private float visibleUntil = 0;
 	private final Timer targettingTimer = new Timer(0.2f);
 
-	private enum Status {
-		IDLE, ATTACKING
-	}
-
 	Ghost(Vector2 origin, GhostFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
@@ -39,7 +34,7 @@ public class Ghost extends Character {
 		targettingTimer.doAtInterval(() -> {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
-				moveStrictlyTo(closest.getEntity().getPos());
+				moveStrictlyTowards(closest.getEntity().getPos());
 			}
 		});
 		// Set transparency based on invulnerability

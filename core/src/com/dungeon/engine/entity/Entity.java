@@ -306,10 +306,19 @@ public class Entity implements Drawable, Movable {
 	 * ignore whatever push was already in place).
 	 * @param destination Destination position.
 	 */
-	public void moveStrictlyTo(Vector2 destination) {
+	public void moveStrictlyTowards(Vector2 destination) {
 		getMovement().set(Vector2.Zero);
 		setSelfImpulse(destination.x - getPos().x, destination.y - getPos().y);
 		getSelfImpulse().setLength2(1);
+	}
+
+	/**
+	 * Impulse towards destination, with the specified vector length
+	 * @param destination Destination position.
+	 * @param length2 impulse length
+	 */
+	public void impulseTowards(Vector2 destination, float length2) {
+		impulse(destination.cpy().sub(getPos()).setLength2(length2));
 	}
 
 	private boolean detectTileCollision(Vector2 step) {

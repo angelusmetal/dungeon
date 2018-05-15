@@ -3,26 +3,21 @@ package com.dungeon.game.character.slime;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
 public class Slime extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = Util.length2(300);
+	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
 	private static final float JUMP = Util.length2(50);
 
 	private final SlimeFactory factory;
 	private float nextThink;
-	private enum Status {
-		IDLE, ATTACKING
-	}
-	private Status status;
-
 	Slime(Vector2 origin, SlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
@@ -30,7 +25,6 @@ public class Slime extends Character {
 		setCurrentAnimation(factory.blinkAnimation);
 		maxHealth = 75 * (GameState.getPlayerCount() + GameState.getLevelCount());
 		health = maxHealth;
-		nextThink = 0f;
 	}
 
 	@Override
@@ -39,16 +33,13 @@ public class Slime extends Character {
 			setInvertX(getAim().x < 0);
 		}
 		if (GameState.time() > nextThink) {
-			Vector2 target = reTarget().setLength2(JUMP);
-			if (target.len2() > 0) {
-				// Attack lasts 2 seconds
+			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
+			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
 				nextThink = GameState.time() + 3f;
-				// Aim towards target
-				impulse(target);
-				aim(target);
+				impulseTowards(closest.getEntity().getPos(), JUMP);
+				aim(getMovement());
 				zSpeed = 100;
 				updateCurrentAnimation(factory.idleAnimation);
-				this.status = Status.ATTACKING;
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
 				// Aim random direction
@@ -61,7 +52,6 @@ public class Slime extends Character {
 					setSelfImpulse(Vector2.Zero);
 					updateCurrentAnimation(factory.blinkAnimation);
 				}
-				this.status = Status.IDLE;
 			}
 		} else {
 			// No friction while in the air
@@ -72,19 +62,6 @@ public class Slime extends Character {
 	@Override
 	protected void onGroundRest() {
 		updateCurrentAnimation(factory.blinkAnimation);
-	}
-
-	private Vector2 reTarget() {
-		Vector2 closestPlayer = new Vector2();
-		for (PlayerCharacter playerCharacter : GameState.getPlayerCharacters()) {
-			//TODO Use dst2 instead!
-			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
-			float len = v.len2();
-			if (len < MIN_TARGET_DISTANCE && (closestPlayer.len2() == 0 || len < closestPlayer.len2())) {
-				closestPlayer = v;
-			}
-		}
-		return closestPlayer;
 	}
 
 	@Override

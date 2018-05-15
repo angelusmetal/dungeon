@@ -3,17 +3,18 @@ package com.dungeon.game.character.acidslime;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.character.slime.Slime;
 import com.dungeon.game.state.GameState;
 
 public class AcidSlime extends Character {
 
-	private static final float MIN_TARGET_DISTANCE = Util.length2(300);
+	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
 	private static final float DASH = Util.length2(150);
 	private static final float POOL_SEPARATION = Util.length2(15);
 	private static final float ATTACK_FREQUENCY = 3f;
@@ -42,12 +43,12 @@ public class AcidSlime extends Character {
 			setInvertX(getSelfImpulse().x < 0);
 		}
 		if (GameState.time() > nextThink) {
-			Vector2 target = reTarget().setLength2(DASH);
-			if (target.len2() > 0) {
+			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
+			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
 				nextThink = GameState.time() + ATTACK_FREQUENCY;
 				// Aim towards target
-				impulse(target);
-				aim(target);
+				impulseTowards(closest.getEntity().getPos(), DASH);
+				aim(getMovement());
 				updateCurrentAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
 			} else {
@@ -71,19 +72,6 @@ public class AcidSlime extends Character {
 				GameState.addEntity(factory.createPool(this));
 			}
 		}
-	}
-
-	private Vector2 reTarget() {
-		Vector2 closestPlayer = new Vector2();
-		for (PlayerCharacter playerCharacter : GameState.getPlayerCharacters()) {
-			//TODO Use dst2 instead!
-			Vector2 v = playerCharacter.getPos().cpy().sub(getPos());
-			float len = v.len2();
-			if (len < MIN_TARGET_DISTANCE && (closestPlayer.len2() == 0 || len < closestPlayer.len2())) {
-				closestPlayer = v;
-			}
-		}
-		return closestPlayer;
 	}
 
 	@Override
