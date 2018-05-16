@@ -1,6 +1,8 @@
 package com.dungeon.engine.viewport;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -71,6 +73,11 @@ public class ViewPort {
 				texture.getHeight(),
 				false,
 				false);
+	}
+
+	public void draw(SpriteBatch batch, BitmapFont font, float x, float y, String text, Color color) {
+		font.setColor(color);
+		font.draw(batch, text, x - cameraX, y - cameraY);
 	}
 
 	@Override

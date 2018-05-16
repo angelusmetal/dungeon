@@ -73,10 +73,12 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 
 			@Override
 			protected boolean onEntityCollision(Entity entity) {
-				if (entity instanceof PlayerCharacter) {
+				if (!expired && entity instanceof PlayerCharacter) {
 					PlayerCharacter character = (PlayerCharacter) entity;
-					character.heal(25);
+					int amount = 25;
+					character.heal(amount);
 					expire();
+					GameState.console().log("Healed for " + amount, Color.RED);
 					return true;
 				} else {
 					return false;
