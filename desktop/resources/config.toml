@@ -16,7 +16,7 @@
     # height = 400
     # Scaling gives the blocky appeal
     scale = 4.0
-    gamma = 0.1
+    gamma = 0.3
 [map]
     # Base dimensions
     width = 40
@@ -25,10 +25,11 @@
     #creatures = ["SLIME"]
     creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
     itemchance = 1.0
-[noise]
-    width = 128
-    height = 128
-    grit = 0.2
+[rendering]
+    noiseHidth = 128
+    noiseHeight = 128
+    noiseGrit = 0.2
+    blurOpacity = 0.3
 [creatures]
 
     # Characters

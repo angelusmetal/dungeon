@@ -55,21 +55,6 @@ public class ConsoleFragment implements RenderFragment {
 		enabled = !enabled;
 	}
 
-	private void drawMap(SpriteBatch batch) {
-		// Only render the visible portion of the map
-		int tSize = GameState.getLevelTileset().tile_size;
-		int minX = Math.max(0, viewPort.cameraX / tSize);
-		int maxX = Math.min(GameState.getLevel().map.length - 1, (viewPort.cameraX + viewPort.width) / tSize) + 1;
-		int minY = Math.max(0, viewPort.cameraY / tSize - 1);
-		int maxY = Math.min(GameState.getLevel().map[0].length - 1, (viewPort.cameraY + viewPort.height) / tSize);
-		for (int x = minX; x < maxX; x++) {
-			for (int y = maxY; y > minY; y--) {
-				TextureRegion textureRegion = GameState.getLevel().map[x][y].animation.getKeyFrame(GameState.time(), true);
-				batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
-			}
-		}
-	}
-
 	@Override
 	public void dispose() {}
 

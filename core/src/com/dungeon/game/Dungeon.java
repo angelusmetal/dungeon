@@ -39,6 +39,7 @@ import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.state.OverlayText;
 import com.dungeon.game.state.SelectionPlayerControlListener;
 import com.moandjiezana.toml.Toml;
 
@@ -182,6 +183,13 @@ public class Dungeon extends ApplicationAdapter {
 				if (entity instanceof PlayerCharacter) {
 					GameState.getPlayerCharacters().remove(entity);
 				}
+			}
+		}
+		for (Iterator<OverlayText> t = GameState.getOverlayTexts().iterator(); t.hasNext();) {
+			OverlayText overlayText = t.next();
+			overlayText.think();
+			if (overlayText.isExpired()) {
+				t.remove();
 			}
 		}
 

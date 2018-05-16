@@ -15,6 +15,7 @@ import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
+import com.dungeon.game.state.OverlayText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -371,6 +372,9 @@ public class Entity implements Drawable, Movable {
 	public void hit(float dmg) {
 		health -= dmg;
 		onHit();
+		if (dmg > 1) {
+			GameState.addOverlayText(new OverlayText(getPos(), "" + (int) dmg, new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
+		}
 		if (health <= 0) {
 			expire();
 		}

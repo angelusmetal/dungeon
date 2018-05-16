@@ -40,9 +40,9 @@ public class GameState {
 	private static Console console;
 
 	private static List<PlayerCharacter> playerCharacters = new LinkedList<>();
-	private static List<Entity> entities = new LinkedList<>();
-
 	private static List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
+
+	private static List<Entity> entities = new LinkedList<>();
 	private static List<Entity> newEntities = new LinkedList<>();
 
 	private static List<CharacterSelection.Slot> slots;
@@ -52,6 +52,9 @@ public class GameState {
 
 	private static List<RenderEffect> renderEffects = new ArrayList<>();
 	private static List<RenderEffect> newRenderEffects = new ArrayList<>();
+
+	private static List<OverlayText> overlayTexts = new ArrayList<>();
+	private static List<OverlayText> newOverelayTexts = new ArrayList<>();
 
 	public static void initialize(EntityFactory entityFactory, Toml configuration) {
 		GameState.entityFactory = entityFactory;
@@ -177,12 +180,20 @@ public class GameState {
 		newEntities.add(character);
 	}
 
+	public static void addOverlayText(OverlayText overlayText) {
+		newOverelayTexts.add(overlayText);
+	}
+
 	public static List<Entity> getEntities() {
 		return entities;
 	}
 
 	public static List<PlayerCharacter> getPlayerCharacters() {
 		return playerCharacters;
+	}
+
+	public static List<OverlayText> getOverlayTexts() {
+		return overlayTexts;
 	}
 
 	public static void addRenderEffect(RenderEffect effect) {
@@ -198,6 +209,8 @@ public class GameState {
 		newPlayerCharacters.clear();
 		entities.addAll(newEntities);
 		newEntities.clear();
+		overlayTexts.addAll(newOverelayTexts);
+		newOverelayTexts.clear();
 
 		// Dispose and remove old effects, and then add new ones
 		renderEffects.stream().filter(RenderEffect::isExpired).forEach(RenderEffect::dispose);

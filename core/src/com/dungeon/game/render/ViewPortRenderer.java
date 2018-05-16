@@ -1,11 +1,8 @@
 package com.dungeon.game.render;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.ArrayList;
@@ -17,8 +14,6 @@ public class ViewPortRenderer implements Disposable {
 
 	private final ViewPortBuffer viewportBuffer;
 
-	private final Color baseLight = Color.WHITE.cpy();
-
 	private int renderCalls = 0;
 	private float frameTime;
 
@@ -28,6 +23,8 @@ public class ViewPortRenderer implements Disposable {
 	private final HealthbarFragment healthbarFragment;
 	private final CollisionFragment collisionFragment;
 	private final NoiseFragment noiseFragment;
+	private final MotionBlurFragment motionBlurFragment;
+	private final OverlayTextFragment overlayTextFragment;
 	private final ScaleFragment scaleFragment;
 	private final ConsoleFragment consoleFragment;
 	private final List<RenderFragment> pipeline = new ArrayList<>();
@@ -42,8 +39,10 @@ public class ViewPortRenderer implements Disposable {
 		healthbarFragment = new HealthbarFragment(viewPort, viewportBuffer);
 		collisionFragment = new CollisionFragment(viewPort, viewportBuffer);
 		noiseFragment = new NoiseFragment(viewPort, viewportBuffer);
+		motionBlurFragment = new MotionBlurFragment(viewPort, viewportBuffer);
 		scaleFragment = new ScaleFragment(viewPort, viewportBuffer, batch);
 		consoleFragment = new ConsoleFragment(viewPort, batch);
+		overlayTextFragment = new OverlayTextFragment(viewPort, viewportBuffer);
 
 		pipeline.add(mapFragment);
 		pipeline.add(entitiesFragment);
@@ -51,6 +50,8 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.add(healthbarFragment);
 		pipeline.add(collisionFragment);
 		pipeline.add(noiseFragment);
+		pipeline.add(motionBlurFragment);
+		pipeline.add(overlayTextFragment);
 		pipeline.add(scaleFragment);
 		pipeline.add(consoleFragment);
 
@@ -69,7 +70,7 @@ public class ViewPortRenderer implements Disposable {
 	}
 
 	public void randomizeBaseLight() {
-		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.3f, 1f, 1f));
+		lightFragment.randomizeBaseLight();
 	}
 
 	public void render () {

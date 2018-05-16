@@ -20,9 +20,9 @@ public class NoiseBuffer {
 	private final SpriteBatch batch;
 
 	public NoiseBuffer(Toml configuration) {
-		this.width = configuration.getLong("noise.width", 128L).intValue();
-		this.height = configuration.getLong("noise.height", 128L).intValue();
-		this.grit = Util.clamp(configuration.getDouble("noise.grit", 0.3d).floatValue());
+		this.width = configuration.getLong("rendering.noiseWidth", 128L).intValue();
+		this.height = configuration.getLong("rendering.noiseHeight", 128L).intValue();
+		this.grit = Util.clamp(configuration.getDouble("rendering.noiseGrit", 0.3d).floatValue());
 		this.batch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());

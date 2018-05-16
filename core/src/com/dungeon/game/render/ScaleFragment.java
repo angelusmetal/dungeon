@@ -21,10 +21,8 @@ public class ScaleFragment implements RenderFragment {
 	public void render() {
 		if (enabled) {
 			batch.begin();
-//		batch.setColor(new Color(1,1,1,0.2f));
 			viewportBuffer.drawScaled(batch);
 //			currentRenderCalls += batch.renderCalls;
-//		batch.setColor(Color.WHITE);
 			batch.end();
 		}
 	}
