@@ -40,6 +40,7 @@ public class ResourceManager {
 
 	public void unloadAll() {
 		textures.forEach((k, v) -> v.unload());
+		fonts.forEach((k, v) -> v.dispose());
 	}
 
 }

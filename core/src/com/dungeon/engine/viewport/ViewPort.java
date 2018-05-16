@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Entity;
 
 public class ViewPort {
 	public final int posX;
@@ -78,6 +79,14 @@ public class ViewPort {
 	public void draw(SpriteBatch batch, BitmapFont font, float x, float y, String text, Color color) {
 		font.setColor(color);
 		font.draw(batch, text, x - cameraX, y - cameraY);
+	}
+
+	public boolean isInViewPort(Entity e) {
+		return
+				e.getPos().x - e.getDrawOffset().x < cameraX + cameraWidth &&
+				e.getPos().x + e.getDrawOffset().x + e.getFrame().getRegionWidth() > cameraX &&
+				e.getPos().y - e.getDrawOffset().y + e.getZPos() < cameraY + cameraHeight &&
+				e.getPos().y + e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
 	}
 
 	@Override

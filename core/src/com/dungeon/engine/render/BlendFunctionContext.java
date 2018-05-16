@@ -2,8 +2,6 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.util.function.Consumer;
-
 public class BlendFunctionContext implements DrawContext {
 
 	private final int srcFunc;
@@ -26,9 +24,4 @@ public class BlendFunctionContext implements DrawContext {
 		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
 	}
 
-	public void run(SpriteBatch batch, Consumer<SpriteBatch> consumer) {
-		set(batch);
-		consumer.accept(batch);
-		unset(batch);
-	}
 }

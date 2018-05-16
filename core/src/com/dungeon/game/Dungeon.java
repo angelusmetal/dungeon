@@ -35,6 +35,7 @@ import com.dungeon.game.object.exit.ExitPlatformFactory;
 import com.dungeon.game.object.powerups.HealthPowerupFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.object.torch.TorchFactory;
+import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.GameState;

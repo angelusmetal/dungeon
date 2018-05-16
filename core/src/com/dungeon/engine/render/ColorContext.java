@@ -20,4 +20,5 @@ public class ColorContext implements DrawContext {
 	public void unset(SpriteBatch batch) {
 		batch.setColor(Color.WHITE);
 	}
+
 }

@@ -27,4 +27,5 @@ public interface DrawFunction {
 			return (vp, b, e) -> vp.draw(b, texture, e.getPos().x, e.getPos().y + e.getZPos(), texture.getWidth(), GameState.time() * actualSpeed);
 		};
 	}
+
 }

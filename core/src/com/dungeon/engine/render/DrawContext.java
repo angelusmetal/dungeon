@@ -14,4 +14,9 @@ public interface DrawContext {
 	/** Reset the draw context after drawing */
 	void unset(SpriteBatch batch);
 
+	default void run(SpriteBatch batch, Runnable consumer) {
+		set(batch);
+		consumer.run();
+		unset(batch);
+	}
 }
