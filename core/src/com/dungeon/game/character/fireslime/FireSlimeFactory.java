@@ -62,7 +62,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		Vector2 characterDrawOffset = new Vector2(16, 11);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
-		Vector2 bulletDrawOffset = new Vector2(4, 4);
+		Vector2 bulletDrawOffset = new Vector2(8, 8);
 
 		character = new EntityPrototype()
 				.animation(idleAnimation)

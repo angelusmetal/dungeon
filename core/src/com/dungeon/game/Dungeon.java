@@ -140,6 +140,9 @@ public class Dungeon extends ApplicationAdapter {
 		GameState.console().watch("Level", () -> Integer.toString(GameState.getLevelCount()));
 		GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
 		GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
+
+		// Register effects
+		GameState.setMotionBlur(viewPortRenderer::beginMotionBlur);
 	}
 
 	private void initViewPort() {

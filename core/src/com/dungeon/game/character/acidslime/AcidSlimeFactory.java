@@ -73,7 +73,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
 		Vector2 poolBoundingBox = new Vector2(22, 12);
-		Vector2 poolDrawOffset = new Vector2(16, 3);
+		Vector2 poolDrawOffset = new Vector2(16, 0);
 		Vector2 blobBouncingBox = new Vector2(6, 6);
 		Vector2 blobDrawOffset = new Vector2(8, 8);
 
@@ -90,6 +90,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
 				.timeToLive(dieAnimation.getAnimationDuration() + 1f)
+				.with(Traits.fadeOutLight())
 				.light(deathLight);
 		pool = new EntityPrototype()
 				.animation(poolFloodAnimation)

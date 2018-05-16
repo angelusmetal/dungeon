@@ -22,7 +22,7 @@ public class ConsoleFragment implements RenderFragment {
 	public ConsoleFragment(ViewPort viewPort, SpriteBatch batch) {
 		this.viewPort = viewPort;
 		this.batch = batch;
-		this.font = ResourceManager.instance().getFont("alegreya-sans-sc-black-20");
+		this.font = ResourceManager.instance().getFont("alegreya-sans-sc-black-15");
 	}
 
 	@Override

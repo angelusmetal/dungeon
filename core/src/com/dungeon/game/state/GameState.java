@@ -56,6 +56,8 @@ public class GameState {
 	private static List<OverlayText> overlayTexts = new ArrayList<>();
 	private static List<OverlayText> newOverelayTexts = new ArrayList<>();
 
+	private static Runnable motionBlur;
+
 	public static void initialize(EntityFactory entityFactory, Toml configuration) {
 		GameState.entityFactory = entityFactory;
 		GameState.configuration = configuration;
@@ -221,5 +223,13 @@ public class GameState {
 
 	public static int playersAlive() {
 		return playerCharacters.size() + newPlayerCharacters.size();
+	}
+
+	public static void setMotionBlur(Runnable runnable) {
+		GameState.motionBlur = runnable;
+	}
+
+	public static void doMotionBlur() {
+		motionBlur.run();
 	}
 }

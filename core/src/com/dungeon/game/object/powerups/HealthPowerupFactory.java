@@ -78,7 +78,8 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 					int amount = 25;
 					character.heal(amount);
 					expire();
-					GameState.console().log("Healed for " + amount, Color.RED);
+					GameState.console().log("Healed for " + amount, Color.GOLD);
+					GameState.doMotionBlur();
 					return true;
 				} else {
 					return false;

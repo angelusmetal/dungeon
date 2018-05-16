@@ -109,6 +109,10 @@ public class ViewPortRenderer implements Disposable {
 		noiseFragment.toggle();
 	}
 
+	public void beginMotionBlur() {
+		motionBlurFragment.begin();
+	}
+
 	public int getRenderCalls() {
 		return renderCalls;
 	}
