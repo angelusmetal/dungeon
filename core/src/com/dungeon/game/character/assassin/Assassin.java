@@ -36,6 +36,7 @@ public class Assassin extends PlayerCharacter {
 
 	@Override
 	protected void onExpire() {
+		super.onExpire();
 		GameState.addEntity(factory.tombstoneSpawner.apply(getPos()));
 	}
 

@@ -79,9 +79,4 @@ public class SlimeSpawn extends Character {
 		GameState.addEntity(factory.createBlob(this));
 	}
 
-	// TODO This should not be here: either Character should not enforce this or this should not extend character
-	@Override protected Animation<TextureRegion> getAttackAnimation() {return null;}
-	@Override protected Animation<TextureRegion> getIdleAnimation() {return null;}
-	@Override protected Animation<TextureRegion> getWalkAnimation() {return null;}
-
 }

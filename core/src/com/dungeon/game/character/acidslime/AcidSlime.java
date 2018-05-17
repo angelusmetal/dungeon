@@ -29,8 +29,8 @@ public class AcidSlime extends Character {
 
 	@Override
 	public void think() {
-		if (getSelfImpulse().x != 0) {
-			setInvertX(getSelfImpulse().x < 0);
+		if (getMovement().x != 0) {
+			setInvertX(getMovement().x < 0);
 		}
 		if (GameState.time() > nextThink) {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
@@ -57,9 +57,14 @@ public class AcidSlime extends Character {
 				this.status = Status.IDLE;
 			}
 		} else {
-			if (status == Status.ATTACKING && getPos().dst2(lastPool) > factory.poolSeparation) {
-				lastPool.set(getPos());
-				GameState.addEntity(factory.createPool(this));
+			if (status == Status.ATTACKING) {
+				if (getPos().dst2(lastPool) > factory.poolSeparation) {
+					lastPool.set(getPos());
+					GameState.addEntity(factory.createPool(this));
+				}
+				if (GameState.time() >= nextThink - 2) {
+					updateCurrentAnimation(factory.idleAnimation);
+				}
 			}
 		}
 	}
@@ -90,10 +95,5 @@ public class AcidSlime extends Character {
 	protected void onHit() {
 		GameState.addEntity(factory.createBlob(this));
 	}
-
-	// TODO This should not be here: either Character should not enforce this or this should not extend character
-	@Override protected Animation<TextureRegion> getAttackAnimation() {return null;}
-	@Override protected Animation<TextureRegion> getIdleAnimation() {return null;}
-	@Override protected Animation<TextureRegion> getWalkAnimation() {return null;}
 
 }

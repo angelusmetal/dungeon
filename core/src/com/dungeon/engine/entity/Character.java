@@ -1,8 +1,6 @@
 package com.dungeon.engine.entity;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
@@ -20,27 +18,18 @@ public abstract class Character extends Entity implements Movable, Drawable {
 	}
 
 	@Override
-	public void think() {
-		if (aim.x != 0) {
-			setInvertX(aim.x < 0);
-		}
-		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-			updateCurrentAnimation(getIdleAnimation());
-		} else {
-			updateCurrentAnimation(getWalkAnimation());
-		}
-		if (getSelfImpulse().len() > 0.5) {
-			aim.set(getSelfImpulse());
-		}
-	}
-
-	abstract protected Animation<TextureRegion> getAttackAnimation();
-	abstract protected Animation<TextureRegion> getIdleAnimation();
-	abstract protected Animation<TextureRegion> getWalkAnimation();
-
-	@Override
 	public boolean isSolid() {
 		return true;
+	}
+
+	@Override
+	public void think() {
+		if (getAim().x != 0) {
+			setInvertX(getAim().x < 0);
+		}
+		if (getSelfImpulse().len() > 0.5) {
+			aim(getSelfImpulse());
+		}
 	}
 
 	public void aim(Vector2 vector) {
@@ -49,25 +38,6 @@ public abstract class Character extends Entity implements Movable, Drawable {
 
 	public Vector2 getAim() {
 		return aim;
-	}
-
-	public void fire() {
-		if (!expired) {
-			fireCooldown.attempt(GameState.time(), () -> {
-				Entity projectile = createProjectile(getPos().cpy().mulAdd(aim, 2));
-				if (projectile != null) {
-					projectile.impulse(aim.cpy().setLength(projectile.speed));
-					// Extra offset to make projectiles appear in the character's hands
-					//projectile.getPos().y -= 8;
-					GameState.addEntity(projectile);
-					updateCurrentAnimation(getAttackAnimation());
-				}
-			});
-		}
-	}
-
-	protected Entity createProjectile(Vector2 pos) {
-		return null;
 	}
 
 	public void drawHealthbar(SpriteBatch batch, ViewPort viewPort) {

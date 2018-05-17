@@ -253,7 +253,7 @@ public class ProceduralLevelGenerator {
 		stack.push(new Frame(x, y, direction, type, null, 0, 1));
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();
-			System.out.println("Generating " + frame.type + " room...");
+			System.out.println("Generating " + frame.type + " room at " + frame.x + ", " + frame.y + ", with direction " + frame.direction);
 			// Check the available size, depending on the direction
 			Room room = attemptRoom(frame.x, frame.y, frame.generation, frame.direction);
 			if (room != null) {

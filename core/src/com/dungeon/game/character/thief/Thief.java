@@ -38,6 +38,7 @@ public class Thief extends PlayerCharacter {
 
 	@Override
 	protected void onExpire() {
+		super.onExpire();
 		GameState.addEntity(factory.tombstoneSpawner.apply(getPos()));
 	}
 

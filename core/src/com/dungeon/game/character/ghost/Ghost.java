@@ -39,21 +39,6 @@ public class Ghost extends Character {
 	}
 
 	@Override
-	protected Animation<TextureRegion> getAttackAnimation() {
-		return factory.idleAnimation;
-	}
-
-	@Override
-	protected Animation<TextureRegion> getIdleAnimation() {
-		return factory.idleAnimation;
-	}
-
-	@Override
-	protected Animation<TextureRegion> getWalkAnimation() {
-		return factory.idleAnimation;
-	}
-
-	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerCharacter) {
 			entity.hit(factory.damagePerSecond * GameState.frameTime());
