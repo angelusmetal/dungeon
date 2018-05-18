@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector;
+import com.dungeon.engine.controller.ControllerConfig;
 import com.dungeon.engine.controller.analog.DpadAnalogControl;
 import com.dungeon.engine.controller.analog.StickAnalogControl;
 import com.dungeon.engine.controller.player.ControllerPlayerControlBundle;
@@ -19,6 +20,7 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
@@ -44,6 +46,7 @@ import com.dungeon.game.state.SelectionPlayerControlListener;
 import com.moandjiezana.toml.Toml;
 
 import java.util.Iterator;
+import java.util.Map;
 
 public class Dungeon extends ApplicationAdapter {
 	private static final double DEFAULT_SCALE = 3;
@@ -72,22 +75,13 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		Toml controllerConfigs = configuration.getTable("controllers");
+		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getPojoMap(configuration, "controllers", "id", ControllerConfig.class);
 
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println("Found controller: " + controller.getName());
-			// Look for explicit controller config, or use defaults
-			Toml controllerCfg = controllerConfigs.getTable('"' + controller.getName() + '"');
-			int povCode = 0;
-			int xAxis = 3;
-			int yAxis = -2;
-			if (controllerCfg != null) {
-				povCode = controllerCfg.getLong("povCode", 0L).intValue();
-				xAxis = controllerCfg.getLong("xAxis", 3L).intValue();
-				yAxis = controllerCfg.getLong("yAxis", -2L).intValue();
-			}
-			DpadAnalogControl povControl = new DpadAnalogControl(povCode);
-			StickAnalogControl analogControl = new StickAnalogControl(xAxis, yAxis);
+			ControllerConfig controllerConfig = controllerConfigs.getOrDefault(controller.getName(), ControllerConfig.DEFAULT);
+			DpadAnalogControl povControl = new DpadAnalogControl(controllerConfig.povControl);
+			StickAnalogControl analogControl = new StickAnalogControl(controllerConfig.analogControlX, controllerConfig.analogControlY);
 			controller.addListener(povControl);
 			controller.addListener(analogControl);
 		}
