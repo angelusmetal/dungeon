@@ -8,8 +8,22 @@ import java.util.Map;
 
 public class ConfigUtil {
 
-	public static <T> Map<String, T> getPojoMap(Toml configuration, String arrayName, String keyFieldName, Class<T> targetType) {
+	public static Map<String, Toml> getTomlMap(Toml configuration, String arrayName, String keyFieldName) {
+		Map<String, Toml> map = new HashMap<>();
 
+		for (Toml item : configuration.getTables(arrayName)) {
+			// Get key field
+			String key = item.getString(keyFieldName);
+			if (key == null) {
+				continue;
+			}
+			map.put(key, item);
+		}
+
+		return map;
+	}
+
+	public static <T> Map<String, T> getPojoMap(Toml configuration, String arrayName, String keyFieldName, Class<T> targetType) {
 		Map<String, T> map = new HashMap<>();
 
 		for (Toml item : configuration.getTables(arrayName)) {
@@ -25,7 +39,7 @@ public class ConfigUtil {
 			if (key == null) {
 				continue;
 			}
-			map.put(item.getString(key), pojo);
+			map.put(key, pojo);
 			try {
 				for (Field field : targetType.getDeclaredFields()) {
 					String name = field.getName();

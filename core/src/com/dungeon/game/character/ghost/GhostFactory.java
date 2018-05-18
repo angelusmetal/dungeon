@@ -9,6 +9,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
@@ -27,7 +28,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 	final float damagePerSecond;
 
 	public GhostFactory() {
-		Toml config = GameState.getConfiguration().getTable("creatures.GHOST");
+		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("GHOST");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
 		visibleTime = config.getDouble("visibleTime", 2d).floatValue();
 		visibleSpeed = config.getLong("visibleSpeed", 20L).floatValue();

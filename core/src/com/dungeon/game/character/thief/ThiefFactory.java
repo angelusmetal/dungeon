@@ -11,6 +11,7 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.state.GameState;
@@ -39,7 +40,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 	final Function<Vector2, Entity> tombstoneSpawner;
 
 	public ThiefFactory(TombstoneFactory tombstoneFactory) {
-		Toml config = GameState.getConfiguration().getTable("creatures.THIEF");
+		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("THIEF");
 		int health = config.getLong("health", 60L).intValue();
 		float speed = config.getLong("speed", 96L).floatValue();
 		float friction = config.getLong("friction", 10L).floatValue();

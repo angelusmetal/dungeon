@@ -11,6 +11,7 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
@@ -38,7 +39,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 	final float damagePerSecond;
 
 	public FireSlimeFactory() {
-		Toml config = GameState.getConfiguration().getTable("creatures.SLIME_FIRE");
+		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("SLIME_FIRE");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
 		attackFrequency = config.getDouble("attackFrequency", 1.5d).floatValue();
 		attackSpeed = config.getLong("attackSpeed", 10L).floatValue();

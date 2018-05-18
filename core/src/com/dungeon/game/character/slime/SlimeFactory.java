@@ -9,6 +9,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
@@ -42,7 +43,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	final float attackFrequency;
 
 	public SlimeFactory() {
-		Toml config = GameState.getConfiguration().getTable("creatures.SLIME");
+		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("SLIME");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
 		jumpDistance = Util.length2(config.getLong("jumpDistance", 50L));
 		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();

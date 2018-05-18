@@ -9,6 +9,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.character.slime.SlimeBlobsSheet;
@@ -40,7 +41,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	final float damagePerSecond;
 
 	public AcidSlimeFactory() {
-		Toml config = GameState.getConfiguration().getTable("creatures.SLIME_ACID");
+		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("SLIME_ACID");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
 		dashDistance = Util.length2(config.getLong("dashDistance", 150L));
 		poolSeparation = Util.length2(config.getLong("poolSeparation", 15L));
