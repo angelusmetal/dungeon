@@ -25,7 +25,9 @@ public abstract class PlayerCharacter extends Character {
 	public void think() {
 		super.think();
 		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-			updateCurrentAnimation(getIdleAnimation());
+			if (getCurrentAnimation().getAnimation() != getAttackAnimation() || getCurrentAnimation().isFinished()) {
+				updateCurrentAnimation(getIdleAnimation());
+			}
 		} else {
 			updateCurrentAnimation(getWalkAnimation());
 		}

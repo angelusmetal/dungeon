@@ -29,4 +29,8 @@ public class GameAnimation {
 	public float getDuration() {
 		return animation.getAnimationDuration();
 	}
+
+	public boolean isFinished() {
+		return GameState.time() >= start + animation.getAnimationDuration();
+	}
 }

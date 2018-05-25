@@ -14,6 +14,7 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.character.witch.Witch;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
@@ -128,7 +129,7 @@ public class Entity implements Drawable, Movable {
 	}
 
 	public void updateCurrentAnimation(Animation<TextureRegion> animation) {
-		if (currentAnimation != null && currentAnimation.getAnimation() != animation) {
+		if (currentAnimation == null || currentAnimation.getAnimation() != animation) {
 			this.currentAnimation = new GameAnimation(animation);
 		}
 	}

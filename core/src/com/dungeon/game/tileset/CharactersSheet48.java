@@ -57,21 +57,10 @@ public class CharactersSheet32 extends TileSheet {
 	private final TextureRegion THIEF_WALK_2 = getTile(1, 2);
 	private final TextureRegion THIEF_WALK_3 = getTile(2, 2);
 	private final TextureRegion THIEF_WALK_4 = getTile(3, 2);
-	private final TextureRegion THIEF_WALK_5 = getTile(4, 2);
-	private final TextureRegion THIEF_WALK_6 = getTile(5, 2);
-	private final TextureRegion THIEF_WALK_7 = getTile(6, 2);
-	private final TextureRegion THIEF_WALK_8 = getTile(7, 2);
-	private final TextureRegion THIEF_ATTACK_1 = getTile(9, 2);
-	private final TextureRegion THIEF_ATTACK_2 = getTile(10, 2);
-	private final TextureRegion THIEF_ATTACK_3 = getTile(11, 2);
-	private final TextureRegion THIEF_ATTACK_4 = getTile(12, 2);
-	private final TextureRegion THIEF_ATTACK_5 = getTile(13, 2);
-	private final TextureRegion THIEF_ATTACK_6 = getTile(14, 2);
-	private final TextureRegion THIEF_ATTACK_7 = getTile(15, 2);
-	private final TextureRegion THIEF_ATTACK_8 = getTile(16, 2);
-	private final TextureRegion THIEF_IDLE_1 = getTile(20, 2);
-	private final TextureRegion THIEF_IDLE_2 = getTile(21, 2);
-	private final TextureRegion THIEF_IDLE_3 = getTile(22, 2);
+	private final TextureRegion THIEF_ATTACK_1 = getTile(8, 2);
+	private final TextureRegion THIEF_ATTACK_2 = getTile(9, 2);
+	private final TextureRegion THIEF_IDLE_1 = getTile(0, 2);
+	private final TextureRegion THIEF_IDLE_2 = getTile(6, 2);
 
 	private final Animation<TextureRegion> WITCH_WALK_ANIMATION = loop(0.05f, WITCH_WALK_1, WITCH_WALK_2, WITCH_WALK_3, WITCH_WALK_4, WITCH_WALK_5, WITCH_WALK_6, WITCH_WALK_7, WITCH_WALK_8, WITCH_WALK_9);
 	private final Animation<TextureRegion> WITCH_ATTACK_ANIMATION = new Animation<>(0.08f, WITCH_ATTACK_1, WITCH_ATTACK_2, WITCH_ATTACK_3, WITCH_ATTACK_4, WITCH_ATTACK_5, WITCH_ATTACK_6, WITCH_ATTACK_7, WITCH_ATTACK_8, WITCH_ATTACK_9, WITCH_ATTACK_10);
@@ -81,8 +70,8 @@ public class CharactersSheet32 extends TileSheet {
 	private final Animation<TextureRegion> ASSASSIN_ATTACK_ANIMATION = new Animation<>(0.02f, ASSASSIN_ATTACK_1, ASSASSIN_ATTACK_2, ASSASSIN_ATTACK_3, ASSASSIN_ATTACK_4, ASSASSIN_ATTACK_5, ASSASSIN_ATTACK_6, ASSASSIN_ATTACK_7, ASSASSIN_ATTACK_8, ASSASSIN_ATTACK_9, ASSASSIN_ATTACK_10);
 	private final Animation<TextureRegion> ASSASSIN_IDLE_ANIMATION = loop(0.3f, ASSASSIN_IDLE_1, ASSASSIN_IDLE_2, ASSASSIN_IDLE_3, ASSASSIN_IDLE_2);
 
-	private final Animation<TextureRegion> THIEF_WALK_ANIMATION = loop(0.05f, THIEF_WALK_1, THIEF_WALK_2, THIEF_WALK_3, THIEF_WALK_4, THIEF_WALK_5, THIEF_WALK_6, THIEF_WALK_7, THIEF_WALK_8);
-	private final Animation<TextureRegion> THIEF_ATTACK_ANIMATION = new Animation<>(0.05f, THIEF_ATTACK_1, THIEF_ATTACK_2, THIEF_ATTACK_3, THIEF_ATTACK_4, THIEF_ATTACK_5, THIEF_ATTACK_6, THIEF_ATTACK_7, THIEF_ATTACK_8);
+	private final Animation<TextureRegion> THIEF_WALK_ANIMATION = loop(0.1f, THIEF_WALK_1, THIEF_WALK_2, THIEF_WALK_3, THIEF_WALK_4);
+	private final Animation<TextureRegion> THIEF_ATTACK_ANIMATION = new Animation<>(0.1f, THIEF_ATTACK_1, THIEF_ATTACK_2, THIEF_ATTACK_1);
 	private final Animation<TextureRegion> THIEF_IDLE_ANIMATION = loop(0.5f, THIEF_IDLE_1, THIEF_IDLE_2);
 
 	public static final String ASSASSIN_WALK = "assassin_walk";
