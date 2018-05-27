@@ -33,6 +33,8 @@ import com.dungeon.game.character.thief.ThiefFactory;
 import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.object.door.HorizontalDoorFactory;
+import com.dungeon.game.object.door.VerticalDoorFactory;
 import com.dungeon.game.object.exit.ExitPlatformFactory;
 import com.dungeon.game.object.powerups.HealthPowerupFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
@@ -94,6 +96,8 @@ public class Dungeon extends ApplicationAdapter {
 		TombstoneFactory tombstoneFactory = new TombstoneFactory();
 		entityFactory.registerFactory(EntityType.TORCH, new TorchFactory());
 		entityFactory.registerFactory(EntityType.TOMBSTONE, tombstoneFactory);
+		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, new VerticalDoorFactory());
+		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, new HorizontalDoorFactory());
 
 		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
 		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());

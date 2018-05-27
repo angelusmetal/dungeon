@@ -14,7 +14,6 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.character.witch.Witch;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
@@ -63,8 +62,8 @@ public class Entity implements Drawable, Movable {
 	/** Aspects */
 	protected List<Trait<Entity>> traits;
 
-	/** Determines whether an entity is a target */
-	protected final Predicate<Entity> targetPredicate;
+	/** Determines whether an entity can be hit */
+	protected final Predicate<Entity> hitPredicate;
 	/** Time upon which this projectile was spawned */
 	protected final float startTime;
 	/** Expiration time of entity */
@@ -79,7 +78,7 @@ public class Entity implements Drawable, Movable {
 	private DrawFunction drawFunction;
 
 	public Entity(Vector2 origin, EntityPrototype builder) {
-		this.setCurrentAnimation(builder.animation);
+		this.setCurrentAnimation(builder.animation.get());
 		this.body = new Body(origin, builder.boundingBox);
 		this.drawOffset = builder.drawOffset;
 		this.drawFunction = builder.drawFunction.get();
@@ -88,7 +87,7 @@ public class Entity implements Drawable, Movable {
 		this.zSpeed = builder.zSpeed.get();
 		this.friction = builder.friction.get();
 		this.bounciness = builder.bounciness;
-		this.targetPredicate = builder.targetPredicate;
+		this.hitPredicate = builder.hitPredicate;
 		this.color = builder.color.get();
 		this.light = builder.light != null ? builder.light.cpy() : null; // TODO Check this null...
 		this.drawContext = new ColorContext(this.color);
@@ -371,13 +370,15 @@ public class Entity implements Drawable, Movable {
 	}
 
 	public void hit(float dmg) {
-		health -= dmg;
-		onHit();
-		if (dmg > 1) {
-			GameState.addOverlayText(new OverlayText(getPos(), "" + (int) dmg, new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
-		}
-		if (health <= 0) {
-			expire();
+		if (canBeHurt()) {
+			health -= dmg;
+			onHit();
+			if (dmg > 1) {
+				GameState.addOverlayText(new OverlayText(getPos(), "" + (int) dmg, new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
+			}
+			if (health <= 0) {
+				expire();
+			}
 		}
 	}
 
@@ -422,6 +423,9 @@ public class Entity implements Drawable, Movable {
 	}
 	public boolean canBeHit() {
 		return isSolid();
+	}
+	public boolean canBeHurt() {
+		return canBeHit();
 	}
 
 	/** Handle entity collision; true if handled; false otherwise */

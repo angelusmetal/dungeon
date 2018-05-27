@@ -80,7 +80,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.light(bulletLight)
 				.speed(bulletSpeed)
 				.timeToLive(10)
-				.targetPredicate(PlayerCharacter.IS_PLAYER)
+				.hitPredicate(PlayerCharacter.HIT_PLAYERS)
 				.damage(() -> bulletDamage * (GameState.getPlayerCount() + GameState.getLevelCount()))
 				.with(Traits.generator(0.1f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()

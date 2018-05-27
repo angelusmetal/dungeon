@@ -3,6 +3,7 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
+import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 
@@ -30,7 +31,7 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
-		if (!expired && targetPredicate.test(entity) && entity.canBeHit()) {
+		if (!expired && hitPredicate.test(entity) && entity.canBeHit()) {
 			expire();
 			entity.hit(damage);
 			return true;

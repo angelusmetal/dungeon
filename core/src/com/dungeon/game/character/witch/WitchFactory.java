@@ -75,9 +75,9 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.light(bulletLight)
 				.speed(bulletSpeed)
 				.timeToLive(10)
-				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
+				.hitPredicate(PlayerCharacter.HIT_NON_PLAYERS)
 				.damage(bulletDamage)
-				.with(Traits.autoSeek(0.1f, 60, () -> GameState.getEntities().stream().filter(PlayerCharacter.IS_NON_PLAYER)))
+				.with(Traits.autoSeek(0.1f, 60, () -> GameState.getEntities().stream().filter(PlayerCharacter.TARGET_NON_PLAYER_CHARACTERS)))
 				.with(Traits.animationByVector(Entity::getMovement, bulletFlySideAnimation, bulletFlyNorthAnimation, bulletFlySouthAnimation))
 				.with(Traits.generator(0.05f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()

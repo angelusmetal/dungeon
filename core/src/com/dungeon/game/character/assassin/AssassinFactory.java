@@ -44,7 +44,7 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 		float bulletSpeed = config.getLong("bulletSpeed", 180L).floatValue();
 		float bulletDamage = config.getLong("bulletDamage", 35L).floatValue();
 
-		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_ATTACK, CharactersSheet32::assasinAttack);
+		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_ATTACK, CharactersSheet32::assassinAttack);
 		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_IDLE, CharactersSheet32::assassinIdle);
 		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_WALK, CharactersSheet32::assassinWalk);
 		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.ASSASSIN_FLY, ProjectileSheet::assasinFly);
@@ -72,7 +72,7 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 				.light(bulletLight)
 				.speed(bulletSpeed)
 				.timeToLive(10)
-				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
+				.hitPredicate(PlayerCharacter.HIT_NON_PLAYERS)
 				.damage(bulletDamage)
 				.with(Traits.generator(0.1f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()

@@ -18,8 +18,10 @@ public abstract class PlayerCharacter extends Character {
 		light = TORCH_LIGHT;
 	}
 
-	public static final Predicate<Entity> IS_PLAYER = entity -> entity instanceof PlayerCharacter;
-	public static final Predicate<Entity> IS_NON_PLAYER = entity -> entity instanceof Character && !(entity instanceof PlayerCharacter);
+	public static final Predicate<Entity> TARGET_PLAYER_CHARACTERS = entity -> entity instanceof PlayerCharacter;
+	public static final Predicate<Entity> HIT_PLAYERS = entity -> entity instanceof PlayerCharacter || !(entity instanceof Character);
+	public static final Predicate<Entity> TARGET_NON_PLAYER_CHARACTERS = entity -> entity instanceof Character && !(entity instanceof PlayerCharacter);
+	public static final Predicate<Entity> HIT_NON_PLAYERS = entity -> !(entity instanceof PlayerCharacter);
 
 	@Override
 	public void think() {

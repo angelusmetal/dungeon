@@ -76,7 +76,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.speed(bulletSpeed)
 				.timeToLive(3)
 				.bounciness(1)
-				.targetPredicate(PlayerCharacter.IS_NON_PLAYER)
+				.hitPredicate(PlayerCharacter.HIT_NON_PLAYERS)
 				.damage(bulletDamage)
 				.with(Traits.generator(0.052f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()

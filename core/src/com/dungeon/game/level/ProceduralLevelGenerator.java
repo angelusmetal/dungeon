@@ -103,22 +103,21 @@ public class ProceduralLevelGenerator {
 	}
 
 	public Level generateLevel(LevelTileset tileset) {
-		// Pick a random position to start (excluding border rows/columns)
-		int startX = Rand.between(5, width - 5);
-		int startY = Rand.between(5, height - 5);
-
-		// Depending on the closest edge (bottom, left, right, up) pick the opposite edge as search direction to grow the room
-		Direction direction;
-		int closestEdgeX = Math.min(startX, width - startX);
-		int closestEdgeY = Math.min(startY, height - startY);
-		if (closestEdgeX < closestEdgeY) {
-			direction = closestEdgeX == startX ? Direction.RIGHT : Direction.LEFT;
-		} else {
-			direction = closestEdgeY == startY ? Direction.UP : Direction.DOWN;
-		}
-
 		// Generate rooms
 		while (rooms.isEmpty()) {
+			// Pick a random position to start (excluding border rows/columns)
+			int startX = Rand.between(5, width - 5);
+			int startY = Rand.between(5, height - 5);
+
+			// Depending on the closest edge (bottom, left, right, up) pick the opposite edge as search direction to grow the room
+			Direction direction;
+			int closestEdgeX = Math.min(startX, width - startX);
+			int closestEdgeY = Math.min(startY, height - startY);
+			if (closestEdgeX < closestEdgeY) {
+				direction = closestEdgeX == startX ? Direction.RIGHT : Direction.LEFT;
+			} else {
+				direction = closestEdgeY == startY ? Direction.UP : Direction.DOWN;
+			}
 			generateRooms(startX, startY, direction, Type.HEART);
 		}
 
@@ -139,7 +138,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
-		List<EntityType> monsterTypes = configuration.<String>getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		List<EntityType> monsterTypes = configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
 		float itemChance = configuration.getDouble("map.itemchance", 0.4d).floatValue();
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 		// Create monsters in each room, to begin with
@@ -257,6 +256,10 @@ public class ProceduralLevelGenerator {
 			// Check the available size, depending on the direction
 			Room room = attemptRoom(frame.x, frame.y, frame.generation, frame.direction);
 			if (room != null) {
+				if (frame.originPoint != null) {
+					// Add door
+					addDoor(frame, room);
+				}
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					System.out.println("   -> Visiting connection point " + point + "...");
@@ -278,6 +281,15 @@ public class ProceduralLevelGenerator {
 				System.out.println("... but could not place it");
 			}
 		}
+	}
+
+	private void addDoor(Frame frame, Room room) {
+		EntityType doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
+		// TODO replace Coords with Vector2...
+		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f, frame.originPoint.coords.y + 0.5f));
+		room.placeholders.add(door);
+		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.coords.y + 0.5f + frame.roomSeparation * frame.direction.y));
+		room.placeholders.add(door);
 	}
 
 	private Room attemptRoom(int x, int y, int generation, Direction direction) {

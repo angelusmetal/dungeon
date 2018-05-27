@@ -43,6 +43,8 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final TextureRegion WALL_DECOR_2 = getTile(3, 4);
 	private final TextureRegion WALL_DECOR_3 = getTile(4, 4);
 	private final TextureRegion WALL_DECOR_4 = getTile(5, 4);
+	private final TextureRegion DOOR_VERTICAL = getTile(8, 0);
+	private final TextureRegion DOOR_HORIZONTAL = getTile(9, 0, 1, 2);
 
 //	public final TextureRegion OVERLAY_1 = getTile(0, 0);
 //	public final TextureRegion OVERLAY_2 = getTile(0, 1);
@@ -71,6 +73,8 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final Tile WALL_DECOR_2_TILE = new Tile(WALL_DECOR_2);
 	private final Tile WALL_DECOR_3_TILE = new Tile(WALL_DECOR_3);
 	private final Tile WALL_DECOR_4_TILE = new Tile(WALL_DECOR_4);
+	private final Tile DOOR_VERTICAL_TILE = new Tile(DOOR_VERTICAL);
+	private final Tile DOOR_HORIZONTAL_TILE = new Tile(DOOR_HORIZONTAL);
 
 //	private final Tile OVERLAY_1_TILE = new Tile(OVERLAY_1);
 //	private final Tile OVERLAY_2_TILE = new Tile(OVERLAY_2);
@@ -174,5 +178,15 @@ public class DungeonVioletTileset extends LevelTileset {
 	@Override
 	public Tile wallDecoration4() {
 		return WALL_DECOR_4_TILE;
+	}
+
+	@Override
+	public Tile doorVertical() {
+		return DOOR_VERTICAL_TILE;
+	}
+
+	@Override
+	public Tile doorHorizontal() {
+		return DOOR_HORIZONTAL_TILE;
 	}
 }

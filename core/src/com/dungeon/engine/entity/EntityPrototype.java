@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class EntityPrototype {
-	Animation<TextureRegion> animation;
+	Supplier<Animation<TextureRegion>> animation = () -> null;
 	float bounciness = 0;
 	Supplier<Color> color = Color.WHITE::cpy;
 	Supplier<Float> damage;
@@ -24,7 +24,7 @@ public class EntityPrototype {
 	Supplier<Float> speed = () -> 1f;
 	Supplier<Float> zSpeed = () -> 0f;
 	int zIndex = 0;
-	Predicate<Entity> targetPredicate = (entity) -> false;
+	Predicate<Entity> hitPredicate = (entity) -> false;
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
 	Supplier<Integer> health = () -> 100;
@@ -33,6 +33,11 @@ public class EntityPrototype {
 	Vector2 drawOffset = Vector2.Zero;
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
+		this.animation = () -> animation;
+		return this;
+	}
+
+	public EntityPrototype animation(Supplier<Animation<TextureRegion>> animation) {
 		this.animation = animation;
 		return this;
 	}
@@ -97,6 +102,11 @@ public class EntityPrototype {
 		return this;
 	}
 
+	public EntityPrototype hitPredicate(Predicate<Entity> hitPredicate) {
+		this.hitPredicate = hitPredicate;
+		return this;
+	}
+
 	public EntityPrototype light(Light light) {
 		this.light = light;
 		return this;
@@ -114,11 +124,6 @@ public class EntityPrototype {
 
 	public EntityPrototype speed(Supplier<Float> speed) {
 		this.speed = speed;
-		return this;
-	}
-
-	public EntityPrototype targetPredicate(Predicate<Entity> targetPredicate) {
-		this.targetPredicate = targetPredicate;
 		return this;
 	}
 

@@ -15,7 +15,6 @@ public class CharactersSheet32 extends TileSheet {
 	private final TextureRegion WITCH_WALK_6 = getTile(5, 0);
 	private final TextureRegion WITCH_WALK_7 = getTile(6, 0);
 	private final TextureRegion WITCH_WALK_8 = getTile(7, 0);
-	private final TextureRegion WITCH_WALK_9 = getTile(8, 0);
 	private final TextureRegion WITCH_ATTACK_1 = getTile(9, 0);
 	private final TextureRegion WITCH_ATTACK_2 = getTile(10, 0);
 	private final TextureRegion WITCH_ATTACK_3 = getTile(11, 0);
@@ -24,8 +23,6 @@ public class CharactersSheet32 extends TileSheet {
 	private final TextureRegion WITCH_ATTACK_6 = getTile(14, 0);
 	private final TextureRegion WITCH_ATTACK_7 = getTile(15, 0);
 	private final TextureRegion WITCH_ATTACK_8 = getTile(16, 0);
-	private final TextureRegion WITCH_ATTACK_9 = getTile(17, 0);
-	private final TextureRegion WITCH_ATTACK_10 = getTile(18, 0);
 	private final TextureRegion WITCH_IDLE_1 = getTile(20, 0);
 	private final TextureRegion WITCH_IDLE_2 = getTile(21, 0);
 	private final TextureRegion WITCH_IDLE_3 = getTile(22, 0);
@@ -73,9 +70,9 @@ public class CharactersSheet32 extends TileSheet {
 	private final TextureRegion THIEF_IDLE_2 = getTile(21, 2);
 	private final TextureRegion THIEF_IDLE_3 = getTile(22, 2);
 
-	private final Animation<TextureRegion> WITCH_WALK_ANIMATION = loop(0.05f, WITCH_WALK_1, WITCH_WALK_2, WITCH_WALK_3, WITCH_WALK_4, WITCH_WALK_5, WITCH_WALK_6, WITCH_WALK_7, WITCH_WALK_8, WITCH_WALK_9);
-	private final Animation<TextureRegion> WITCH_ATTACK_ANIMATION = new Animation<>(0.08f, WITCH_ATTACK_1, WITCH_ATTACK_2, WITCH_ATTACK_3, WITCH_ATTACK_4, WITCH_ATTACK_5, WITCH_ATTACK_6, WITCH_ATTACK_7, WITCH_ATTACK_8, WITCH_ATTACK_9, WITCH_ATTACK_10);
-	private final Animation<TextureRegion> WITCH_IDLE_ANIMATION = loop(0.3f, WITCH_IDLE_1, WITCH_IDLE_2, WITCH_IDLE_3, WITCH_IDLE_2);
+	private final Animation<TextureRegion> WITCH_WALK_ANIMATION = loop(0.05f, WITCH_WALK_1, WITCH_WALK_2, WITCH_WALK_3, WITCH_WALK_4, WITCH_WALK_5, WITCH_WALK_6, WITCH_WALK_7, WITCH_WALK_8);
+	private final Animation<TextureRegion> WITCH_ATTACK_ANIMATION = new Animation<>(0.05f, WITCH_ATTACK_1, WITCH_ATTACK_2, WITCH_ATTACK_3, WITCH_ATTACK_4, WITCH_ATTACK_5, WITCH_ATTACK_6, WITCH_ATTACK_7, WITCH_ATTACK_8);
+	private final Animation<TextureRegion> WITCH_IDLE_ANIMATION = loop(0.5f, WITCH_IDLE_1, WITCH_IDLE_2);
 
 	private final Animation<TextureRegion> ASSASSIN_WALK_ANIMATION = loop(0.05f, ASSASSIN_WALK_1, ASSASSIN_WALK_2, ASSASSIN_WALK_3, ASSASSIN_WALK_4, ASSASSIN_WALK_5, ASSASSIN_WALK_6/*, ASSASSIN_WALK_7, ASSASSIN_WALK_8, ASSASSIN_WALK_9*/);
 	private final Animation<TextureRegion> ASSASSIN_ATTACK_ANIMATION = new Animation<>(0.02f, ASSASSIN_ATTACK_1, ASSASSIN_ATTACK_2, ASSASSIN_ATTACK_3, ASSASSIN_ATTACK_4, ASSASSIN_ATTACK_5, ASSASSIN_ATTACK_6, ASSASSIN_ATTACK_7, ASSASSIN_ATTACK_8, ASSASSIN_ATTACK_9, ASSASSIN_ATTACK_10);
@@ -117,7 +114,7 @@ public class CharactersSheet32 extends TileSheet {
 		return new CharactersSheet32().ASSASSIN_WALK_ANIMATION;
 	}
 
-	public static Animation<TextureRegion> assasinAttack() {
+	public static Animation<TextureRegion> assassinAttack() {
 		return new CharactersSheet32().ASSASSIN_ATTACK_ANIMATION;
 	}
 

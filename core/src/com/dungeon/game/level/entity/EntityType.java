@@ -17,4 +17,6 @@ public enum EntityType {
 	// Props
 	TOMBSTONE,
 	TORCH,
+	DOOR_VERTICAL,
+	DOOR_HORIZONTAL,
 }
