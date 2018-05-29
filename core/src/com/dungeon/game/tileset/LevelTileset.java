@@ -31,4 +31,8 @@ public abstract class LevelTileset extends TileSheet {
 	public abstract Tile wallDecoration4();
 	public abstract Tile doorVertical();
 	public abstract Tile doorHorizontal();
+	public abstract Tile bookshelf();
+	public abstract Tile table();
+	public abstract Tile table2();
+	public abstract Tile cage();
 }

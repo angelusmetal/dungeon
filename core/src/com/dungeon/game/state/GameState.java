@@ -19,10 +19,11 @@ import com.dungeon.game.level.Room;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.object.door.DoorFactory;
+import com.dungeon.game.object.props.DoorFactory;
 import com.dungeon.game.object.exit.ExitPlatformFactory;
 import com.dungeon.game.object.particle.ParticleFactory;
 import com.dungeon.game.object.powerups.HealthPowerupFactory;
+import com.dungeon.game.object.props.FurnitureFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.tileset.LevelTileset;
@@ -86,6 +87,11 @@ public class GameState {
 		DoorFactory doorFactory = new DoorFactory();
 		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, doorFactory::buildVertical);
 		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, doorFactory::buildHorizontal);
+		FurnitureFactory furnitureFactory = new FurnitureFactory();
+		entityFactory.registerFactory(EntityType.BOOKSHELF, furnitureFactory::buildBookshelf);
+		entityFactory.registerFactory(EntityType.TABLE, furnitureFactory::buildTable);
+		entityFactory.registerFactory(EntityType.TABLE2, furnitureFactory::buildTable2);
+		entityFactory.registerFactory(EntityType.CAGE, furnitureFactory::buildCage);
 
 		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
 		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());

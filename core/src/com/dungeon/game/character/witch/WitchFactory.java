@@ -50,8 +50,8 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		bulletFlySouthAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_DOWN, CatProjectileSheet::flyDown);
 		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.WITCH_EXPLODE, ProjectileSheet::witchExplode);
 
-		Vector2 characterBoundingBox = new Vector2(14, 22);
-		Vector2 characterDrawOffset = new Vector2(16, 13);
+		Vector2 characterBoundingBox = new Vector2(14, 12);
+		Vector2 characterDrawOffset = new Vector2(16, 6);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
 		Vector2 bulletDrawOffset = new Vector2(12, 10);

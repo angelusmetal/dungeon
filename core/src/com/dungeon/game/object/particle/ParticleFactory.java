@@ -112,7 +112,7 @@ public class ParticleFactory {
 				stop();
 			}
 		};
-		particle.impulse(Rand.between(-20, 20), Rand.between(-20, 20));
+		particle.impulse(Rand.between(-50, 50), Rand.between(-20, 20));
 		return particle;
 	}
 
@@ -122,7 +122,7 @@ public class ParticleFactory {
 				stop();
 			}
 		};
-		particle.impulse(Rand.between(-20, 20), Rand.between(-20, 20));
+		particle.impulse(Rand.between(-50, 50), Rand.between(-20, 20));
 		return particle;
 	}
 

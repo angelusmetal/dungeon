@@ -1,4 +1,4 @@
-package com.dungeon.game.object.door;
+package com.dungeon.game.object.props;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
@@ -70,7 +70,7 @@ public class DoorFactory {
 				};
 				GameState.addEntity(openingDoor);
 			}
-// TODO Re-enable this once we can interact some other way with the door
+// TODO Re-enable this once we can interact some other way with the props
 //			@Override public boolean canBeHurt() {
 //				return false;
 //			}

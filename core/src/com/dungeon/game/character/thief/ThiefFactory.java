@@ -48,8 +48,8 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		bulletFlyAnimation = ResourceManager.getAnimation(ProjectileSheet.THIEF_FLY, ProjectileSheet::thiefFly);
 		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.THIEF_EXPLODE, ProjectileSheet::thiefExplode);
 
-		Vector2 characterBoundingBox = new Vector2(14, 21);
-		Vector2 characterDrawOffset = new Vector2(16, 11);
+		Vector2 characterBoundingBox = new Vector2(14, 12);
+		Vector2 characterDrawOffset = new Vector2(16, 6);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
 		Vector2 bulletDrawOffset = new Vector2(4, 4);

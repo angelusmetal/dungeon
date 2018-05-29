@@ -45,6 +45,10 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final TextureRegion WALL_DECOR_4 = getTile(5, 4);
 	private final TextureRegion DOOR_VERTICAL = getTile(8, 0);
 	private final TextureRegion DOOR_HORIZONTAL = getTile(9, 0, 1, 2);
+	private final TextureRegion BOOKSHELF = getTile(8, 3);
+	private final TextureRegion TABLE_1 = getTile(9, 3);
+	private final TextureRegion TABLE_2 = getTile(9, 4);
+	private final TextureRegion CAGE = getTile(8, 4);
 
 //	public final TextureRegion OVERLAY_1 = getTile(0, 0);
 //	public final TextureRegion OVERLAY_2 = getTile(0, 1);
@@ -75,6 +79,11 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final Tile WALL_DECOR_4_TILE = new Tile(WALL_DECOR_4);
 	private final Tile DOOR_VERTICAL_TILE = new Tile(DOOR_VERTICAL);
 	private final Tile DOOR_HORIZONTAL_TILE = new Tile(DOOR_HORIZONTAL);
+
+	private final Tile BOOKSHELF_TILE = new Tile(BOOKSHELF);
+	private final Tile TABLE_1_TILE = new Tile(TABLE_1);
+	private final Tile TABLE_2_TILE = new Tile(TABLE_2);
+	private final Tile CAGE_TILE = new Tile(CAGE);
 
 //	private final Tile OVERLAY_1_TILE = new Tile(OVERLAY_1);
 //	private final Tile OVERLAY_2_TILE = new Tile(OVERLAY_2);
@@ -188,5 +197,25 @@ public class DungeonVioletTileset extends LevelTileset {
 	@Override
 	public Tile doorHorizontal() {
 		return DOOR_HORIZONTAL_TILE;
+	}
+
+	@Override
+	public Tile bookshelf() {
+		return BOOKSHELF_TILE;
+	}
+
+	@Override
+	public Tile table() {
+		return TABLE_1_TILE;
+	}
+
+	@Override
+	public Tile table2() {
+		return TABLE_2_TILE;
+	}
+
+	@Override
+	public Tile cage() {
+		return CAGE_TILE;
 	}
 }

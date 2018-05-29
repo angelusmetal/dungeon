@@ -141,13 +141,22 @@ public class ProceduralLevelGenerator {
 		List<EntityType> monsterTypes = configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
 		float itemChance = configuration.getDouble("map.itemchance", 0.4d).floatValue();
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
+
+		// TODO Away with this awful hack!
+		List<EntityType> spawnTypes = new ArrayList<>(monsterTypes);
+		spawnTypes.add(EntityType.BOOKSHELF);
+		spawnTypes.add(EntityType.TABLE);
+		spawnTypes.add(EntityType.TABLE2);
+		spawnTypes.add(EntityType.CAGE);
+
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
 			Room room = rooms.get(r);
-			// Create a random amount of ghosts in each room
-			final int skip = Rand.nextInt(room.spawnPoints.size());
-
-			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
+//			// Create a random amount of monsters in each room
+//			final int skip = Rand.nextInt(room.spawnPoints.size());
+//
+//			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
+			room.spawnPoints.stream().forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(spawnTypes), pos)));
 
 			// A 40% chance of spawning one powerup
 			if (Rand.chance(itemChance)) {
@@ -257,7 +266,7 @@ public class ProceduralLevelGenerator {
 			Room room = attemptRoom(frame.x, frame.y, frame.generation, frame.direction);
 			if (room != null) {
 				if (frame.originPoint != null) {
-					// Add door
+					// Add props
 					addDoor(frame, room);
 				}
 				// Pick each connection point and attempt to place a room
