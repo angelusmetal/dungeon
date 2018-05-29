@@ -12,23 +12,17 @@ import java.util.function.Supplier;
 
 public class ResourceManager {
 
-	private static final ResourceManager INSTANCE = new ResourceManager();
+	private static final Map<String, TextureResource> textures = new HashMap<>();
+	private static final Map<String, Animation<TextureRegion>> animations = new HashMap<>();
+	private static final Map<String, BitmapFont> fonts = new HashMap<>();
 
-	public static ResourceManager instance() {
-		return INSTANCE;
-	}
-
-	private Map<String, TextureResource> textures = new HashMap<>();
-	private Map<String, Animation<TextureRegion>> animations = new HashMap<>();
-	private Map<String, BitmapFont> fonts = new HashMap<>();
-
-	public Texture getTexture(String name) {
+	public static Texture getTexture(String name) {
 		return textures.computeIfAbsent(name, TextureResource::new).get();
 	}
-	public Animation<TextureRegion> getAnimation(String name, Supplier<Animation<TextureRegion>> getter) {
+	public static Animation<TextureRegion> getAnimation(String name, Supplier<Animation<TextureRegion>> getter) {
 		return animations.computeIfAbsent(name, n -> getter.get());
 	}
-	public BitmapFont getFont(String name) {
+	public static BitmapFont getFont(String name) {
 		return fonts.computeIfAbsent(name, n -> {
 			if ("".equals(n)) {
 				return new BitmapFont();
@@ -38,7 +32,7 @@ public class ResourceManager {
 		});
 	}
 
-	public void unloadAll() {
+	public static void unloadAll() {
 		textures.forEach((k, v) -> v.unload());
 		fonts.forEach((k, v) -> v.dispose());
 	}

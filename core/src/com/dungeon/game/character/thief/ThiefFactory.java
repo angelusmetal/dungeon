@@ -13,13 +13,10 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CharactersSheet32;
 import com.dungeon.game.tileset.ProjectileSheet;
 import com.moandjiezana.toml.Toml;
-
-import java.util.function.Function;
 
 public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 
@@ -37,9 +34,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 	final Light bulletLight;
 	final Light bulletTrailLight;
 
-	final Function<Vector2, Entity> tombstoneSpawner;
-
-	public ThiefFactory(TombstoneFactory tombstoneFactory) {
+	public ThiefFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("THIEF");
 		int health = config.getLong("health", 60L).intValue();
 		float speed = config.getLong("speed", 96L).floatValue();
@@ -47,11 +42,11 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();
 		float bulletDamage = config.getLong("bulletDamage", 25L).floatValue();
 
-		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_IDLE, CharactersSheet32::thiefIdle);
-		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
-		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_ATTACK, CharactersSheet32::thiefAttack);
-		bulletFlyAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.THIEF_FLY, ProjectileSheet::thiefFly);
-		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.THIEF_EXPLODE, ProjectileSheet::thiefExplode);
+		idleAnimation = ResourceManager.getAnimation(CharactersSheet32.THIEF_IDLE, CharactersSheet32::thiefIdle);
+		walkAnimation = ResourceManager.getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
+		attackAnimation = ResourceManager.getAnimation(CharactersSheet32.THIEF_ATTACK, CharactersSheet32::thiefAttack);
+		bulletFlyAnimation = ResourceManager.getAnimation(ProjectileSheet.THIEF_FLY, ProjectileSheet::thiefFly);
+		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.THIEF_EXPLODE, ProjectileSheet::thiefExplode);
 
 		Vector2 characterBoundingBox = new Vector2(14, 21);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
@@ -94,8 +89,6 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.with(Traits.fadeOut(0.3f))
 				.with(Traits.fadeOutLight())
 				.zSpeed(0);
-
-		tombstoneSpawner = tombstoneFactory::build;
 	}
 
 	public Thief build(Vector2 origin) {

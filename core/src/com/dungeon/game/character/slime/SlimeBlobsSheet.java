@@ -36,7 +36,7 @@ public class SlimeBlobsSheet extends TileSheet {
 	public static final String SPLAT = "slime_splat";
 
 	public SlimeBlobsSheet() {
-		super(ResourceManager.instance().getTexture("slime_blobs.png"), 16);
+		super(ResourceManager.getTexture("slime_blobs.png"), 16);
 	}
 
 	public static Animation<TextureRegion> poolFlood() {

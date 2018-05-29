@@ -32,7 +32,7 @@ public class SlimeSheet extends TileSheet {
 	public static final String DIE = "slime_die";
 
 	public SlimeSheet() {
-		super(ResourceManager.instance().getTexture("slime.png"), 32);
+		super(ResourceManager.getTexture("slime.png"), 32);
 	}
 
 	public static Animation<TextureRegion> idle() {

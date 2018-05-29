@@ -46,7 +46,7 @@ public class AcidSlimeSheet extends TileSheet {
 	public static final String DIE = "slime_acid_die";
 
 	public AcidSlimeSheet() {
-		super(ResourceManager.instance().getTexture("acid_slime.png"), 32);
+		super(ResourceManager.getTexture("acid_slime.png"), 32);
 	}
 
 	public static Animation<TextureRegion> idle() {

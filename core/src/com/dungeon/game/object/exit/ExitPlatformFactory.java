@@ -25,11 +25,11 @@ public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype cloud;
 
 	public ExitPlatformFactory() {
-		Animation<TextureRegion> animation = ResourceManager.instance().getAnimation(ExitPlatformSheet.IDLE, ExitPlatformSheet::idle);
-		Animation<TextureRegion> specAnimation = ResourceManager.instance().getAnimation(CloudSheet.IDLE, CloudSheet::idle);
+		Animation<TextureRegion> animation = ResourceManager.getAnimation(ExitPlatformSheet.IDLE, ExitPlatformSheet::idle);
+		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(CloudSheet.IDLE, CloudSheet::idle);
 
 		Light light = new Light(300, Color.BLUE, Light.RAYS_TEXTURE, Light::torchlight, Light::rotateSlow);
-		Texture cloudTexture = ResourceManager.instance().getTexture("cloud.png");
+		Texture cloudTexture = ResourceManager.getTexture("cloud.png");
 
 		cloud = new EntityPrototype()
 				.animation(specAnimation)

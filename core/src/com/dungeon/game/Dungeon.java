@@ -24,21 +24,6 @@ import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.viewport.ViewPortInputProcessor;
-import com.dungeon.game.character.acidslime.AcidSlimeFactory;
-import com.dungeon.game.character.assassin.AssassinFactory;
-import com.dungeon.game.character.fireslime.FireSlimeFactory;
-import com.dungeon.game.character.ghost.GhostFactory;
-import com.dungeon.game.character.slime.SlimeFactory;
-import com.dungeon.game.character.thief.ThiefFactory;
-import com.dungeon.game.character.witch.WitchFactory;
-import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.object.door.HorizontalDoorFactory;
-import com.dungeon.game.object.door.VerticalDoorFactory;
-import com.dungeon.game.object.exit.ExitPlatformFactory;
-import com.dungeon.game.object.powerups.HealthPowerupFactory;
-import com.dungeon.game.object.tombstone.TombstoneFactory;
-import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
@@ -59,7 +44,6 @@ public class Dungeon extends ApplicationAdapter {
 	private CharacterViewPortTracker characterViewPortTracker;
 	private ViewPortRenderer viewPortRenderer;
 	private CharacterSelection characterSelection;
-	private EntityFactory entityFactory;
 
 	private boolean fading = false;
 
@@ -88,27 +72,7 @@ public class Dungeon extends ApplicationAdapter {
 			controller.addListener(analogControl);
 		}
 
-		entityFactory = new EntityFactory();
-		GameState.initialize(entityFactory, configuration);
-
-		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
-
-		TombstoneFactory tombstoneFactory = new TombstoneFactory();
-		entityFactory.registerFactory(EntityType.TORCH, new TorchFactory());
-		entityFactory.registerFactory(EntityType.TOMBSTONE, tombstoneFactory);
-		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, new VerticalDoorFactory());
-		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, new HorizontalDoorFactory());
-
-		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
-		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());
-		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory());
-		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory());
-
-		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
-
-		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory(tombstoneFactory));
-		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory(tombstoneFactory));
-		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory(tombstoneFactory));
+		GameState.initialize(configuration);
 
 		viewPortRenderer = new ViewPortRenderer(viewPort);
 		viewPortRenderer.initialize();
@@ -223,6 +187,6 @@ public class Dungeon extends ApplicationAdapter {
 		viewPortRenderer.dispose();
 		characterSelection.dispose();
 		GameState.getTilesetManager().dispose();
-		ResourceManager.instance().unloadAll();
+		ResourceManager.unloadAll();
 	}
 }

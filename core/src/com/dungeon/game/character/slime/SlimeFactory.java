@@ -55,16 +55,16 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		float friction = config.getLong("friction", 1L).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.instance().getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
-		blinkAnimation = ResourceManager.instance().getAnimation(SlimeSheet.BLINK, SlimeSheet::blink);
-		dieAnimation = ResourceManager.instance().getAnimation(SlimeSheet.DIE, SlimeSheet::die);
+		idleAnimation = ResourceManager.getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
+		blinkAnimation = ResourceManager.getAnimation(SlimeSheet.BLINK, SlimeSheet::blink);
+		dieAnimation = ResourceManager.getAnimation(SlimeSheet.DIE, SlimeSheet::die);
 		// Spawn animations
-		spawnIdleAnimation = ResourceManager.instance().getAnimation(SlimeSpawnSheet.IDLE, SlimeSpawnSheet::idle);
-		spawnBlinkAnimation = ResourceManager.instance().getAnimation(SlimeSpawnSheet.BLINK, SlimeSpawnSheet::blink);
-		spawnDieAnimation = ResourceManager.instance().getAnimation(SlimeSpawnSheet.DIE, SlimeSpawnSheet::die);
+		spawnIdleAnimation = ResourceManager.getAnimation(SlimeSpawnSheet.IDLE, SlimeSpawnSheet::idle);
+		spawnBlinkAnimation = ResourceManager.getAnimation(SlimeSpawnSheet.BLINK, SlimeSpawnSheet::blink);
+		spawnDieAnimation = ResourceManager.getAnimation(SlimeSpawnSheet.DIE, SlimeSpawnSheet::die);
 		// Blob animations
-		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
-		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
+		blobAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
+		splatAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
 		Supplier<Color> color = () -> Util.hsvaToColor(
 				Rand.between(0f, 1f),

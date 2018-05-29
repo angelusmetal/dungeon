@@ -54,15 +54,15 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		float poolDuration = config.getDouble("poolDuration", 5d).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.IDLE, AcidSlimeSheet::idle);
-		attackAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.ATTACK, AcidSlimeSheet::attack);
-		dieAnimation = ResourceManager.instance().getAnimation(AcidSlimeSheet.DIE, AcidSlimeSheet::die);
+		idleAnimation = ResourceManager.getAnimation(AcidSlimeSheet.IDLE, AcidSlimeSheet::idle);
+		attackAnimation = ResourceManager.getAnimation(AcidSlimeSheet.ATTACK, AcidSlimeSheet::attack);
+		dieAnimation = ResourceManager.getAnimation(AcidSlimeSheet.DIE, AcidSlimeSheet::die);
 		// Pool animations
-		poolFloodAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.POOL_FLOOD, SlimeBlobsSheet::poolFlood);
-		poolDryAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.POOL_DRY, SlimeBlobsSheet::poolDry);
+		poolFloodAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.POOL_FLOOD, SlimeBlobsSheet::poolFlood);
+		poolDryAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.POOL_DRY, SlimeBlobsSheet::poolDry);
 		// Blob animations
-		blobAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
-		splatAnimation = ResourceManager.instance().getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
+		blobAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
+		splatAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
 
 		Color color = new Color(0, 1, 0, 0.5f);
 		Color lightColor = new Color(0, 1, 0, 0.5f);

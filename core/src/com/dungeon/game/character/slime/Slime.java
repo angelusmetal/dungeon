@@ -69,14 +69,10 @@ public class Slime extends Character {
 	protected void onExpire() {
 		GameState.addEntity(factory.createDeath(this));
 		// Create a bunch of blobs
-		int splats = Rand.between(factory.blobsOnDeath / 2, factory.blobsOnDeath);
-		for (int i = 0; i <= splats; ++i) {
-			GameState.addEntity(factory.createBlob(this));
-		}
-		int spawns = Rand.between(0, 1);
-		for (int i = 0; i <= spawns; ++i) {
-			GameState.addEntity(factory.createSpawn(this));
-		}
+		Rand.doBetween(factory.blobsOnDeath / 2, factory.blobsOnDeath, () ->
+				GameState.addEntity(factory.createBlob(this)));
+		Rand.doBetween(0, 1, () ->
+				GameState.addEntity(factory.createSpawn(this)));
 	}
 
 	@Override

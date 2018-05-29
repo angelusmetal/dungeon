@@ -13,14 +13,11 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
-import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.tileset.CatProjectileSheet;
 import com.dungeon.game.tileset.CharactersSheet32;
 import com.dungeon.game.tileset.ProjectileSheet;
 import com.moandjiezana.toml.Toml;
-
-import java.util.function.Function;
 
 public class WitchFactory implements EntityFactory.EntityTypeFactory {
 
@@ -37,9 +34,7 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype bulletExplosion;
 	private final EntityPrototype bulletTrail;
 
-	final Function<Vector2, Entity> tombstoneSpawner;
-
-	public WitchFactory(TombstoneFactory tombstoneFactory) {
+	public WitchFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("WITCH");
 		int health = config.getLong("health", 90L).intValue();
 		float speed = config.getLong("speed", 60L).floatValue();
@@ -47,13 +42,13 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();
 		float bulletDamage = config.getLong("bulletDamage", 25L).floatValue();
 
-		idleAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_IDLE, CharactersSheet32::witchIdle);
-		walkAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
-		attackAnimation = ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_ATTACK, CharactersSheet32::witchAttack);
-		bulletFlySideAnimation = ResourceManager.instance().getAnimation(CatProjectileSheet.FLY_RIGHT, CatProjectileSheet::flyRight);
-		bulletFlyNorthAnimation = ResourceManager.instance().getAnimation(CatProjectileSheet.FLY_UP, CatProjectileSheet::flyUp);
-		bulletFlySouthAnimation = ResourceManager.instance().getAnimation(CatProjectileSheet.FLY_DOWN, CatProjectileSheet::flyDown);
-		bulletExplodeAnimation = ResourceManager.instance().getAnimation(ProjectileSheet.WITCH_EXPLODE, ProjectileSheet::witchExplode);
+		idleAnimation = ResourceManager.getAnimation(CharactersSheet32.WITCH_IDLE, CharactersSheet32::witchIdle);
+		walkAnimation = ResourceManager.getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
+		attackAnimation = ResourceManager.getAnimation(CharactersSheet32.WITCH_ATTACK, CharactersSheet32::witchAttack);
+		bulletFlySideAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_RIGHT, CatProjectileSheet::flyRight);
+		bulletFlyNorthAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_UP, CatProjectileSheet::flyUp);
+		bulletFlySouthAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_DOWN, CatProjectileSheet::flyDown);
+		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.WITCH_EXPLODE, ProjectileSheet::witchExplode);
 
 		Vector2 characterBoundingBox = new Vector2(14, 22);
 		Vector2 characterDrawOffset = new Vector2(16, 13);
@@ -94,8 +89,6 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.with(Traits.fadeOut(0.7f))
 				.with(Traits.fadeOutLight())
 				.with(Traits.zAccel(100f));
-
-		tombstoneSpawner = tombstoneFactory::build;
 	}
 
 	public Witch build(Vector2 origin) {

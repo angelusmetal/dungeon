@@ -24,7 +24,7 @@ public class TombstoneSheet extends TileSheet {
 	public static final String SPAWN = "tombstone_spawn";
 
 	TombstoneSheet() {
-		super(ResourceManager.instance().getTexture("tombstone.png"), 32);
+		super(ResourceManager.getTexture("tombstone.png"), 32);
 	}
 
 	public static Animation<TextureRegion> spawn() {

@@ -16,7 +16,7 @@ public class PowerupsSheet extends TileSheet {
 	public static final String DAMAGE = "powerup_damage";
 
 	PowerupsSheet() {
-		super(ResourceManager.instance().getTexture("powerups.png"), 20);
+		super(ResourceManager.getTexture("powerups.png"), 20);
 	}
 
 	public static Animation<TextureRegion> health() {

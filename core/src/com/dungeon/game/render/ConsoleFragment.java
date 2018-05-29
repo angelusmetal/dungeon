@@ -3,7 +3,6 @@ package com.dungeon.game.render;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.Console;
@@ -22,7 +21,7 @@ public class ConsoleFragment implements RenderFragment {
 	public ConsoleFragment(ViewPort viewPort, SpriteBatch batch) {
 		this.viewPort = viewPort;
 		this.batch = batch;
-		this.font = ResourceManager.instance().getFont("alegreya-sans-sc-black-15");
+		this.font = ResourceManager.getFont("alegreya-sans-sc-black-15");
 	}
 
 	@Override

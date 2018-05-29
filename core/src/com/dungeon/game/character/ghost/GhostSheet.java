@@ -21,7 +21,7 @@ public class GhostSheet extends TileSheet {
 	public static final String HOVER = "ghost_hover";
 
 	public GhostSheet() {
-		super(ResourceManager.instance().getTexture("ghost_animation.png"), 32);
+		super(ResourceManager.getTexture("ghost_animation.png"), 32);
 	}
 
 	public static Animation<TextureRegion> hover() {

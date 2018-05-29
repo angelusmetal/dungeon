@@ -26,7 +26,7 @@ public class OverlayText {
     }
 
     public OverlayText(Vector2 origin, String text, Color color) {
-        this(origin, text, color, ResourceManager.instance().getFont("alegreya-sans-sc-9"));
+        this(origin, text, color, ResourceManager.getFont("alegreya-sans-sc-9"));
     }
 
     public OverlayText(Vector2 origin, String text, Color color, BitmapFont font) {

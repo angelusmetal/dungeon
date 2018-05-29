@@ -9,6 +9,6 @@ public class HudSheet extends TileSheet {
 	public final TextureRegion HEALTH_BAR = getTile(0, 0, 2, 2);
 
 	public HudSheet() {
-		super(ResourceManager.instance().getTexture("hud.png"), 1);
+		super(ResourceManager.getTexture("hud.png"), 1);
 	}
 }

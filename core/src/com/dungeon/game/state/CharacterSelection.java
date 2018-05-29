@@ -37,7 +37,7 @@ public class CharacterSelection {
 
 	public void initialize() {
 		batch = new SpriteBatch();
-		playerCharacterScreen = ResourceManager.instance().getTexture("character_selection.png");
+		playerCharacterScreen = ResourceManager.getTexture("character_selection.png");
 	}
 
 	public void dispose() {
@@ -81,11 +81,11 @@ public class CharacterSelection {
 
 	private Animation<TextureRegion> getAnimation(int characterId) {
 		if (characterId == 0) {
-			return ResourceManager.instance().getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
+			return ResourceManager.getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
 		} else if (characterId == 1) {
-			return ResourceManager.instance().getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
+			return ResourceManager.getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
 		} else {
-			return ResourceManager.instance().getAnimation(CharactersSheet32.ASSASSIN_WALK, CharactersSheet32::assassinWalk);
+			return ResourceManager.getAnimation(CharactersSheet32.ASSASSIN_WALK, CharactersSheet32::assassinWalk);
 		}
 	}
 

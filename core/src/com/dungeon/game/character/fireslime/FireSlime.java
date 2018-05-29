@@ -1,7 +1,5 @@
 package com.dungeon.game.character.fireslime;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Character;
 import com.dungeon.engine.entity.Entity;

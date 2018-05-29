@@ -3,7 +3,6 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
-import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 

@@ -28,7 +28,7 @@ public class CatProjectileSheet extends TileSheet {
 	public static final String FLY_DOWN = "projectile_cat_down";
 
 	CatProjectileSheet() {
-		super(ResourceManager.instance().getTexture("cat_projectile.png"), 24);
+		super(ResourceManager.getTexture("cat_projectile.png"), 24);
 	}
 
 	public static Animation<TextureRegion> flyRight() {

@@ -19,7 +19,7 @@ public class TorchFactory implements EntityFactory.EntityTypeFactory {
 
 	public TorchFactory() {
 		Light light = new Light(80, new Color(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
-		Animation<TextureRegion> animation = ResourceManager.instance().getAnimation(TorchSheet.IDLE, TorchSheet::idle);
+		Animation<TextureRegion> animation = ResourceManager.getAnimation(TorchSheet.IDLE, TorchSheet::idle);
 		prototype = new EntityPrototype()
 				.animation(animation)
 				.boundingBox(BOUNDING_BOX)

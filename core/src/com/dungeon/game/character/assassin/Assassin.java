@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;
 
 public class Assassin extends PlayerCharacter {
@@ -37,7 +38,7 @@ public class Assassin extends PlayerCharacter {
 	@Override
 	protected void onExpire() {
 		super.onExpire();
-		GameState.addEntity(factory.tombstoneSpawner.apply(getPos()));
+		GameState.addEntity(GameState.build(EntityType.TOMBSTONE, getPos()));
 	}
 
 }

@@ -42,7 +42,7 @@ public class ProjectileSheet extends TileSheet {
 	public static final String WITCH_EXPLODE = "projectile_witch_explode";
 
 	ProjectileSheet() {
-		super(ResourceManager.instance().getTexture("projectile.png"), 16);
+		super(ResourceManager.getTexture("projectile.png"), 16);
 	}
 
 	public static Animation<TextureRegion> assasinFly() {

@@ -19,6 +19,13 @@ public class Rand {
         return min + random.nextInt(max - min);
     }
 
+    public static void doBetween(int min, int max, Runnable runnable) {
+        int times = between(min, max);
+        for (int i = 0; i < times; ++i) {
+            runnable.run();
+        }
+    }
+
     public static float nextFloat(float bound) {
         return random.nextFloat() * bound;
     }

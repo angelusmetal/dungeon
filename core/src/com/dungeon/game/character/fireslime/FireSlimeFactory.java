@@ -51,9 +51,9 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		float bulletDamage = config.getLong("bulletDamage", 5L).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.instance().getAnimation(FireSlimeSheet.IDLE, FireSlimeSheet::idle);
-		projectileAnimation = ResourceManager.instance().getAnimation(FireSlimeSheet.PROJECTILE, FireSlimeSheet::projectile);
-		explosionAnimation = ResourceManager.instance().getAnimation(FireSlimeSheet.EXPLOSION, FireSlimeSheet::explosion);
+		idleAnimation = ResourceManager.getAnimation(FireSlimeSheet.IDLE, FireSlimeSheet::idle);
+		projectileAnimation = ResourceManager.getAnimation(FireSlimeSheet.PROJECTILE, FireSlimeSheet::projectile);
+		explosionAnimation = ResourceManager.getAnimation(FireSlimeSheet.EXPLOSION, FireSlimeSheet::explosion);
 
 		characterLight = new Light(100, new Color(1, 0.5f, 0, 0.8f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 		bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);

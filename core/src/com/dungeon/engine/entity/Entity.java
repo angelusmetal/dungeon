@@ -155,6 +155,14 @@ public class Entity implements Drawable, Movable {
 		this.z = z;
 	}
 
+	public float getZSpeed() {
+		return zSpeed;
+	}
+
+	public void setZSpeed(float zSpeed) {
+		this.zSpeed = zSpeed;
+	}
+
 	public Vector2 getMovement() {
 		return movement;
 	}
@@ -189,6 +197,10 @@ public class Entity implements Drawable, Movable {
 
 	public void impulse(float x, float y) {
 		movement.add(x, y);
+	}
+
+	public void stop() {
+		movement.set(Vector2.Zero);
 	}
 
 	public void setColor(Color color) {

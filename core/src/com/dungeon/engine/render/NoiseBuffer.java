@@ -32,7 +32,7 @@ public class NoiseBuffer {
 	}
 
 	public void renderNoise() {
-		Texture texture = ResourceManager.instance().getTexture("fill.png");
+		Texture texture = ResourceManager.getTexture("fill.png");
 		frameBuffer.begin();
 		batch.begin();
 		for (int x = 0; x < width; ++x) {

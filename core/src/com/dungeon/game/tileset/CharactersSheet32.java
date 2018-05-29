@@ -95,7 +95,7 @@ public class CharactersSheet32 extends TileSheet {
 	public static final String WITCH_IDLE = "witch_idle";
 
 	public CharactersSheet32() {
-		super(ResourceManager.instance().getTexture("characters_32b.png"), 32);
+		super(ResourceManager.getTexture("characters_32b.png"), 32);
 	}
 
 	public static Animation<TextureRegion> witchWalk() {

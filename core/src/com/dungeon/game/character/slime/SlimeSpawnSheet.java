@@ -32,7 +32,7 @@ public class SlimeSpawnSheet extends TileSheet {
 	public static final String DIE = "slime_mini_die";
 
 	public SlimeSpawnSheet() {
-		super(ResourceManager.instance().getTexture("slime_mini.png"), 16);
+		super(ResourceManager.getTexture("slime_mini.png"), 16);
 	}
 
 	public static Animation<TextureRegion> idle() {

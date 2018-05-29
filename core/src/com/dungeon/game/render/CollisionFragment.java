@@ -1,7 +1,6 @@
 package com.dungeon.game.render;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.ViewPortBuffer;
@@ -20,7 +19,7 @@ public class CollisionFragment implements RenderFragment {
 	public CollisionFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
-		this.fill = new TextureRegion(ResourceManager.instance().getTexture("fill.png"));
+		this.fill = new TextureRegion(ResourceManager.getTexture("fill.png"));
 	}
 
 	@Override

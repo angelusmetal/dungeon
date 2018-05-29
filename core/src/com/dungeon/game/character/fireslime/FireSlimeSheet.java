@@ -29,7 +29,7 @@ public class FireSlimeSheet extends TileSheet {
 	public static final String EXPLOSION = "slime_fire_explosion";
 
 	public FireSlimeSheet() {
-		super(ResourceManager.instance().getTexture("fire_slime.png"), 32);
+		super(ResourceManager.getTexture("fire_slime.png"), 32);
 	}
 
 	public static Animation<TextureRegion> idle() {

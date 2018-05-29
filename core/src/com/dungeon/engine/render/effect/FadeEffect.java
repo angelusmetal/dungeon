@@ -28,7 +28,7 @@ public class FadeEffect implements RenderEffect {
 		this.startTime = startTime;
 		this.duration = duration;
 		this.endAction = endAction;
-		this.fill = ResourceManager.instance().getTexture("fill.png");
+		this.fill = ResourceManager.getTexture("fill.png");
 	}
 
 	@Override

@@ -9,10 +9,10 @@ import java.util.function.Supplier;
 
 public class Light {
 
-	public static Texture NORMAL_TEXTURE = ResourceManager.instance().getTexture("light_1.png");
-	public static Texture RAYS_TEXTURE = ResourceManager.instance().getTexture("light_2.png");
-	public static Texture FLARE_TEXTURE = ResourceManager.instance().getTexture("light_3.png");
-	public static Texture POSTERIZED_TEXTURE = ResourceManager.instance().getTexture("light_cellshaded.png");
+	public static Texture NORMAL_TEXTURE = ResourceManager.getTexture("light_1.png");
+	public static Texture RAYS_TEXTURE = ResourceManager.getTexture("light_2.png");
+	public static Texture FLARE_TEXTURE = ResourceManager.getTexture("light_3.png");
+	public static Texture POSTERIZED_TEXTURE = ResourceManager.getTexture("light_cellshaded.png");
 
 	private static final float thinkInterval = 0.05f;
 	private static float nextThink = 0;

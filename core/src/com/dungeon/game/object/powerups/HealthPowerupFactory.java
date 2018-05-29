@@ -25,8 +25,8 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype vanishPrototype;
 
 	public HealthPowerupFactory() {
-		Animation<TextureRegion> animation = ResourceManager.instance().getAnimation(PowerupsSheet.HEALTH, PowerupsSheet::health);
-		Animation<TextureRegion> specAnimation = ResourceManager.instance().getAnimation(FillSheet.FILL, FillSheet::fill);
+		Animation<TextureRegion> animation = ResourceManager.getAnimation(PowerupsSheet.HEALTH, PowerupsSheet::health);
+		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(FillSheet.FILL, FillSheet::fill);
 
 		Light light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
 		Light vanishLight = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::torchlight, Light::rotateFast);

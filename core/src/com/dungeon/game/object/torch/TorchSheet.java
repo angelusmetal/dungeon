@@ -20,7 +20,7 @@ public class TorchSheet extends TileSheet {
 	public static final String IDLE = "torch_idle";
 
 	TorchSheet() {
-		super(ResourceManager.instance().getTexture("torch.png"), 32);
+		super(ResourceManager.getTexture("torch.png"), 32);
 	}
 
 	public static Animation<TextureRegion> idle() {

@@ -13,7 +13,7 @@ public class CloudSheet extends TileSheet {
 	public static final String IDLE = "cloud";
 
 	CloudSheet() {
-		super(ResourceManager.instance().getTexture("cloud.png"), 64);
+		super(ResourceManager.getTexture("cloud.png"), 64);
 	}
 
 	public static Animation<TextureRegion> idle() {

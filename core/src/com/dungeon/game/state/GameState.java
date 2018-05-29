@@ -6,12 +6,25 @@ import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.game.character.acidslime.AcidSlimeFactory;
+import com.dungeon.game.character.assassin.AssassinFactory;
+import com.dungeon.game.character.fireslime.FireSlimeFactory;
+import com.dungeon.game.character.ghost.GhostFactory;
+import com.dungeon.game.character.slime.SlimeFactory;
+import com.dungeon.game.character.thief.ThiefFactory;
+import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.object.door.DoorFactory;
+import com.dungeon.game.object.exit.ExitPlatformFactory;
+import com.dungeon.game.object.particle.ParticleFactory;
+import com.dungeon.game.object.powerups.HealthPowerupFactory;
+import com.dungeon.game.object.tombstone.TombstoneFactory;
+import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.tileset.LevelTileset;
 import com.dungeon.game.tileset.TilesetManager;
 import com.moandjiezana.toml.Toml;
@@ -58,10 +71,40 @@ public class GameState {
 
 	private static Runnable motionBlur;
 
-	public static void initialize(EntityFactory entityFactory, Toml configuration) {
-		GameState.entityFactory = entityFactory;
+	public static void initialize(Toml configuration) {
+		GameState.entityFactory = new EntityFactory();
 		GameState.configuration = configuration;
 		console = new Console(10, 3f); // TODO get size from config
+		initEntityFactories(entityFactory);
+	}
+
+	private static void initEntityFactories(EntityFactory entityFactory) {
+		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
+
+		entityFactory.registerFactory(EntityType.TORCH, new TorchFactory());
+		entityFactory.registerFactory(EntityType.TOMBSTONE, new TombstoneFactory());
+		DoorFactory doorFactory = new DoorFactory();
+		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, doorFactory::buildVertical);
+		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, doorFactory::buildHorizontal);
+
+		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
+		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());
+		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory());
+		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory());
+
+		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
+
+		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory());
+		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory());
+		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory());
+
+		ParticleFactory particleFactory = new ParticleFactory();
+		entityFactory.registerFactory(EntityType.WOOD_PARTICLE, particleFactory::buildWoodParticle);
+		entityFactory.registerFactory(EntityType.STONE_PARTICLE, particleFactory::buildStoneParticle);
+		entityFactory.registerFactory(EntityType.DROPLET_PARTICLE, particleFactory::buildDroplet);
+		entityFactory.registerFactory(EntityType.FIREBALL_PARTICLE, particleFactory::buildFireball);
+		entityFactory.registerFactory(EntityType.FLAME_PARTICLE, particleFactory::buildFlame);
+		entityFactory.registerFactory(EntityType.CANDLE_PARTICLE, particleFactory::buildCandle);
 	}
 
 	public static float time() {
@@ -80,8 +123,8 @@ public class GameState {
 		return console;
 	}
 
-	public static EntityFactory getEntityFactory() {
-		return entityFactory;
+	public static Entity build(EntityType type, Vector2 position) {
+		return entityFactory.build(type, position);
 	}
 
 	public static void addTime(float frameTime) {
