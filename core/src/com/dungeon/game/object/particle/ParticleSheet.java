@@ -47,14 +47,14 @@ public class ParticleSheet extends TileSheet {
 	private final TextureRegion FLAME_6 = getTile(5, 4);
 	private final TextureRegion FLAME_7 = getTile(6, 4);
 	private final TextureRegion FLAME_8 = getTile(7, 4);
-	private final TextureRegion CANDLE_1 = getTile(0, 4);
-	private final TextureRegion CANDLE_2 = getTile(1, 4);
-	private final TextureRegion CANDLE_3 = getTile(2, 4);
-	private final TextureRegion CANDLE_4 = getTile(3, 4);
-	private final TextureRegion CANDLE_5 = getTile(4, 4);
-	private final TextureRegion CANDLE_6 = getTile(5, 4);
-	private final TextureRegion CANDLE_7 = getTile(6, 4);
-	private final TextureRegion CANDLE_8 = getTile(7, 4);
+	private final TextureRegion CANDLE_1 = getTile(0, 5);
+	private final TextureRegion CANDLE_2 = getTile(1, 5);
+	private final TextureRegion CANDLE_3 = getTile(2, 5);
+	private final TextureRegion CANDLE_4 = getTile(3, 5);
+	private final TextureRegion CANDLE_5 = getTile(4, 5);
+	private final TextureRegion CANDLE_6 = getTile(5, 5);
+	private final TextureRegion CANDLE_7 = getTile(6, 5);
+	private final TextureRegion CANDLE_8 = getTile(7, 5);
 
 	private final Animation<TextureRegion> WOOD_ANIMATION_1 = new Animation<>(0.25f, WOOD_1);
 	private final Animation<TextureRegion> WOOD_ANIMATION_2 = new Animation<>(0.25f, WOOD_2);
@@ -72,12 +72,12 @@ public class ParticleSheet extends TileSheet {
 	private final Animation<TextureRegion> STONE_ANIMATION_6 = new Animation<>(0.25f, STONE_6);
 	private final Animation<TextureRegion> STONE_ANIMATION_7 = new Animation<>(0.25f, STONE_7);
 	private final Animation<TextureRegion> STONE_ANIMATION_8 = new Animation<>(0.25f, STONE_8);
-	private final Animation<TextureRegion> DROPLET_START_ANIMATION = new Animation<>(0.25f, DROPLET_1, DROPLET_2, DROPLET_3, DROPLET_4);
-	private final Animation<TextureRegion> DROPLET_FALL_ANIMATION = new Animation<>(0.25f,  DROPLET_5);
-	private final Animation<TextureRegion> DROPLET_END_ANIMATION = new Animation<>(0.25f, DROPLET_6, DROPLET_7, DROPLET_8);
-	private final Animation<TextureRegion> FIREBALL_ANIMATION = loop(0.25f, FIREBALL_1, FIREBALL_2, FIREBALL_3, FIREBALL_4, FIREBALL_5, FIREBALL_6, FIREBALL_7, FIREBALL_8);
-	private final Animation<TextureRegion> FLAME_ANIMATION = loop(0.25f, FLAME_1, FLAME_2, FLAME_3, FLAME_4, FLAME_5, FLAME_6, FLAME_7, FLAME_8);
-	private final Animation<TextureRegion> CANDLE_ANIMATION = loop(0.25f, CANDLE_1, CANDLE_2, CANDLE_3, CANDLE_4, CANDLE_5, CANDLE_6, CANDLE_7, CANDLE_8);
+	private final Animation<TextureRegion> DROPLET_START_ANIMATION = new Animation<>(0.05f, DROPLET_1, DROPLET_2, DROPLET_3, DROPLET_4);
+	private final Animation<TextureRegion> DROPLET_FALL_ANIMATION = new Animation<>(0.05f,  DROPLET_5);
+	private final Animation<TextureRegion> DROPLET_END_ANIMATION = new Animation<>(0.05f, DROPLET_6, DROPLET_7, DROPLET_8);
+	private final Animation<TextureRegion> FIREBALL_ANIMATION = loop(0.05f, FIREBALL_1, FIREBALL_2, FIREBALL_3, FIREBALL_4, FIREBALL_5, FIREBALL_6, FIREBALL_7, FIREBALL_8);
+	private final Animation<TextureRegion> FLAME_ANIMATION = loop(0.05f, FLAME_1, FLAME_2, FLAME_3, FLAME_4, FLAME_5, FLAME_6, FLAME_7, FLAME_8);
+	private final Animation<TextureRegion> CANDLE_ANIMATION = loop(0.05f, CANDLE_1, CANDLE_2, CANDLE_3, CANDLE_4, CANDLE_5, CANDLE_6, CANDLE_7, CANDLE_8);
 
 	public static final String WOOD_PARTICLE_1 = "wood_particle_1";
 	public static final String WOOD_PARTICLE_2 = "wood_particle_2";
