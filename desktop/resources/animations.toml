@@ -1,0 +1,611 @@
+#
+# Witch
+#
+[[animation]]
+  texture = "characters_32b.png"
+  name = "witch_walk"
+  tilesize = 32
+  frameDuration = 0.05
+  loop = [
+    [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]
+  ]
+
+[[animation]]
+  texture = "characters_32b.png"
+  name = "witch_attack"
+  tilesize = 32
+  frameDuration = 0.05
+  sequence = [
+    [9, 0], [10, 0], [11, 0], [12, 0], [13, 0], [14, 0], [15, 0], [16, 0]
+  ]
+
+[[animation]]
+  texture = "characters_32b.png"
+  name = "witch_idle"
+  tilesize = 32
+  frameDuration = 0.5
+  loop = [
+    [20, 0], [21, 0]
+  ]
+
+#
+# Thief
+#
+[[animation]]
+  texture = "characters_32b.png"
+  name = "thief_walk"
+  tilesize = 32
+  frameDuration = 0.05
+  loop = [
+    [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2]
+  ]
+
+[[animation]]
+  texture = "characters_32b.png"
+  name = "thief_attack"
+  tilesize = 32
+  frameDuration = 0.05
+  sequence = [
+    [9, 2], [10, 2], [11, 2], [12, 2], [13, 2], [14, 2], [15, 2], [16, 2]
+  ]
+
+[[animation]]
+  texture = "characters_32b.png"
+  name = "thief_idle"
+  tilesize = 32
+  frameDuration = 0.5
+  loop = [
+    [20, 2], [21, 2]
+  ]
+
+#
+# Assasin
+#
+[[animation]]
+  texture = "characters_32b.png"
+  name = "assassin_walk"
+  tilesize = 32
+  frameDuration = 0.05
+  loop = [
+    [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1]
+  ]
+
+[[animation]]
+  texture = "characters_32b.png"
+  name = "assassin_attack"
+  tilesize = 32
+  frameDuration = 0.05
+  sequence = [
+    [9, 1], [10, 1], [11, 1], [12, 1], [13, 1], [14, 1], [15, 1], [16, 1], [17, 1], [18, 1]
+  ]
+
+[[animation]]
+  texture = "characters_32b.png"
+  name = "assassin_idle"
+  tilesize = 32
+  frameDuration = 0.5
+  loop = [
+    [20, 1], [21, 1], [22, 1]
+  ]
+
+#
+# Creatures
+#
+
+# Acid slime
+[[animation]]
+  texture = "acid_slime.png"
+  name = "slime_acid_idle"
+  tilesize = 32
+  frameDuration = 0.1
+  loop = [
+    [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]
+  ]
+
+[[animation]]
+  texture = "acid_slime.png"
+  name = "slime_acid_attack"
+  tilesize = 32
+  frameDuration = 0.1
+  loop = [
+    [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [0, 2], [1, 2]
+  ]
+
+[[animation]]
+  texture = "acid_slime.png"
+  name = "slime_acid_die"
+  tilesize = 32
+  frameDuration = 0.07
+  sequence = [
+    [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [0, 3], [1, 3], [2, 3]
+  ]
+
+# Fire slime
+[[animation]]
+  texture = "fire_slime.png"
+  name = "slime_fire_idle"
+  tilesize = 32
+  frameDuration = 0.1
+  loop = [
+    [0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1]
+  ]
+
+[[animation]]
+  texture = "fire_slime.png"
+  name = "slime_fire_projectile"
+  tilesize = 32
+  frameDuration = 0.1
+  loop = [
+    [3.0, 1.0, 0.5, 0.5], [3.5, 1.0, 0.5, 0.5]
+  ]
+
+[[animation]]
+  texture = "fire_slime.png"
+  name = "slime_fire_explosion"
+  tilesize = 32
+  frameDuration = 0.25
+  sequence = [
+    [3.0, 1.5, 0.5, 0.5], [3.5, 1.5, 0.5, 0.5]
+  ]
+
+# Slime
+[[animation]]
+  texture = "slime.png"
+  name = "slime_idle"
+  tilesize = 32
+  frameDuration = 0.25
+  loop = [
+    [0, 0], # idle 1
+    [1, 0], # idle 2
+    [2, 0], # idle 3
+    [1, 0]  # idle 2
+  ]
+
+[[animation]]
+  texture = "slime.png"
+  name = "slime_blink"
+  tilesize = 32
+  frameDuration = 0.1
+  loop = [
+    [2, 0], # idle 3
+    [3, 0], # blink 1
+    [0, 1], # blink 2
+    [0, 1], # blink 2
+    [0, 1], # blink 2
+    [3, 0], # blink 1
+    [2, 0], # idle 3
+    [2, 0], # idle 3
+    [2, 0], # idle 3
+    [2, 0]  # idle 3
+  ]
+
+[[animation]]
+  texture = "slime.png"
+  name = "slime_die"
+  tilesize = 32
+  frameDuration = 0.07
+  sequence = [
+    [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3]
+  ]
+
+# Slime spawn
+[[animation]]
+  texture = "slime_mini.png"
+  name = "slime_mini_idle"
+  tilesize = 16
+  frameDuration = 0.25
+  loop = [
+    [0, 0], # idle 1
+    [1, 0], # idle 2
+    [2, 0], # idle 3
+    [1, 0]  # idle 2
+  ]
+
+[[animation]]
+  texture = "slime_mini.png"
+  name = "slime_mini_blink"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [2, 0], # idle 3
+    [3, 0], # blink 1
+    [0, 1], # blink 2
+    [0, 1], # blink 2
+    [0, 1], # blink 2
+    [3, 0], # blink 1
+    [2, 0], # idle 3
+    [2, 0], # idle 3
+    [2, 0], # idle 3
+    [2, 0]  # idle 3
+  ]
+
+[[animation]]
+  texture = "slime_mini.png"
+  name = "slime_mini_die"
+  tilesize = 16
+  frameDuration = 0.07
+  sequence = [
+    [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3]
+  ]
+
+# Slime blobs
+[[animation]]
+  texture = "slime_blobs.png"
+  name = "slime_pool_flood"
+  tilesize = 16
+  frameDuration = 0.1
+  sequence = [
+    [0, 0, 2, 1],
+    [2, 0, 2, 1],
+    [4, 0, 2, 1],
+    [6, 0, 2, 1],
+    [8, 0, 2, 1]
+  ]
+
+[[animation]]
+  texture = "slime_blobs.png"
+  name = "slime_pool_dry"
+  tilesize = 16
+  frameDuration = 0.1
+  sequence = [
+    [8, 0, 2, 1],
+    [6, 0, 2, 1],
+    [4, 0, 2, 1],
+    [2, 0, 2, 1],
+    [0, 0, 2, 1]
+  ]
+
+[[animation]]
+  texture = "slime_blobs.png"
+  name = "slime_blob"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [0, 1, 1, 1],
+    [1, 1, 1, 1],
+    [2, 1, 1, 1],
+    [3, 1, 1, 1]
+  ]
+
+[[animation]]
+  texture = "slime_blobs.png"
+  name = "slime_splat"
+  tilesize = 16
+  frameDuration = 0.1
+  sequence = [
+    [4, 1, 1, 1],
+    [5, 1, 1, 1],
+    [6, 1, 1, 1],
+    [7, 1, 1, 1],
+    [8, 1, 1, 1],
+    [9, 1, 1, 1]
+  ]
+
+
+# Ghost
+[[animation]]
+  texture = "ghost_animation.png"
+  name = "ghost_hover"
+  tilesize = 32
+  frameDuration = 0.1
+  loop = [
+    [0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2]
+  ]
+
+# Cloud
+[[animation]]
+  texture = "cloud.png"
+  name = "cloud"
+  tilesize = 64
+  frameDuration = 1.0
+  sequence = [
+    [0, 0]
+  ]
+
+# Exit Platform
+[[animation]]
+  texture = "exit_altar.png"
+  name = "exit_platform_idle"
+  tilesize = 64
+  frameDuration = 1.0
+  sequence = [
+    [0, 0]
+  ]
+
+#
+# Particles
+#
+
+# Wood chips
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_1"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [0, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_2"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [1, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_3"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [2, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_4"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [3, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_5"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [4, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_6"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [5, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_7"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [6, 0]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "wood_particle_8"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [7, 0]
+  ]
+
+# Stone chips
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_1"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [0, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_2"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [1, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_3"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [2, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_4"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [3, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_5"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [4, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_6"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [5, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_7"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [6, 1]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "stone_particle_8"
+  tilesize = 8
+  frameDuration = 1.0
+  sequence = [
+    [7, 1]
+  ]
+
+# Droplets
+[[animation]]
+  texture = "particles.png"
+  name = "droplet_start"
+  tilesize = 8
+  frameDuration = 0.05
+  sequence = [
+    [0, 2], [1, 2], [2, 2], [3, 2]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "droplet_fall"
+  tilesize = 8
+  frameDuration = 0.05
+  sequence = [
+    [4, 2]
+  ]
+[[animation]]
+  texture = "particles.png"
+  name = "droplet_end"
+  tilesize = 8
+  frameDuration = 0.05
+  sequence = [
+    [5, 2], [6, 2], [7, 2]
+  ]
+
+# Fireball
+[[animation]]
+  texture = "particles.png"
+  name = "fireball"
+  tilesize = 8
+  frameDuration = 0.05
+  loop = [
+    [0, 3], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3]
+  ]
+
+# Flame
+[[animation]]
+  texture = "particles.png"
+  name = "flame"
+  tilesize = 8
+  frameDuration = 0.05
+  loop = [
+    [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4]
+  ]
+
+# Candle
+[[animation]]
+  texture = "particles.png"
+  name = "candle"
+  tilesize = 8
+  frameDuration = 0.05
+  loop = [
+    [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5]
+  ]
+
+# Health powerup
+[[animation]]
+  texture = "powerups.png"
+  name = "powerup_health"
+  tilesize = 20
+  frameDuration = 1
+  loop = [
+    [0, 0]
+  ]
+
+# Tombstone
+[[animation]]
+  texture = "tombstone.png"
+  name = "tombstone_spawn"
+  tilesize = 32
+  frameDuration = 0.05
+  sequence = [
+    [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1]
+  ]
+
+# Torch
+[[animation]]
+  texture = "torch.png"
+  name = "torch_idle"
+  tilesize = 32
+  frameDuration = 0.05
+  loop = [
+    [0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1]
+  ]
+
+# Cat projectile
+[[animation]]
+  texture = "cat_projectile.png"
+  name = "projectile_cat_right"
+  tilesize = 24
+  frameDuration = 0.25
+  loop = [
+    [0, 0], [1, 0], [2, 0], [3, 0]
+  ]
+[[animation]]
+  texture = "cat_projectile.png"
+  name = "projectile_cat_up"
+  tilesize = 24
+  frameDuration = 0.25
+  loop = [
+    [0, 1], [1, 1], [2, 1], [3, 1]
+  ]
+[[animation]]
+  texture = "cat_projectile.png"
+  name = "projectile_cat_down"
+  tilesize = 24
+  frameDuration = 0.25
+  loop = [
+    [0, 2], [1, 2], [2, 2], [3, 2]
+  ]
+
+# Projectiles
+[[animation]]
+  texture = "projectile.png"
+  name = "projectile_assassin_fly"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [0, 0]
+  ]
+[[animation]]
+  texture = "projectile.png"
+  name = "projectile_assassin_explode"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [1, 0], [2, 0], [3, 0], [4, 0], [5, 0]
+  ]
+[[animation]]
+  texture = "projectile.png"
+  name = "projectile_thief_fly"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [0, 1]
+  ]
+[[animation]]
+  texture = "projectile.png"
+  name = "projectile_thief_explode"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [1, 1], [2, 1], [3, 1], [4, 1], [5, 1]
+  ]
+[[animation]]
+  texture = "projectile.png"
+  name = "projectile_witch_fly"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [0, 2]
+  ]
+[[animation]]
+  texture = "projectile.png"
+  name = "projectile_witch_explode"
+  tilesize = 16
+  frameDuration = 0.1
+  loop = [
+    [1, 2], [2, 2], [3, 2], [4, 2], [5, 2]
+  ]

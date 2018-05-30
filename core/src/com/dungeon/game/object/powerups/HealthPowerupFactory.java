@@ -17,6 +17,8 @@ import com.dungeon.game.tileset.FillSheet;
 
 public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 
+	public static final String HEALTH = "powerup_health";
+
 	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
 	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
 
@@ -25,7 +27,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype vanishPrototype;
 
 	public HealthPowerupFactory() {
-		Animation<TextureRegion> animation = ResourceManager.getAnimation(PowerupsSheet.HEALTH, PowerupsSheet::health);
+		Animation<TextureRegion> animation = ResourceManager.getAnimation(HEALTH);
 		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(FillSheet.FILL, FillSheet::fill);
 
 		Light light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);

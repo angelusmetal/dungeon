@@ -18,6 +18,9 @@ import com.dungeon.game.state.GameState;
 
 public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 
+	public static final String CLOUD = "cloud";
+	public static final String PLATFORM = "exit_platform_idle";
+
 	private static final Vector2 BOUNDING_BOX = new Vector2(64, 64);
 	private static final Vector2 DRAW_OFFSET = new Vector2(32, 32);
 
@@ -25,8 +28,8 @@ public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype cloud;
 
 	public ExitPlatformFactory() {
-		Animation<TextureRegion> animation = ResourceManager.getAnimation(ExitPlatformSheet.IDLE, ExitPlatformSheet::idle);
-		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(CloudSheet.IDLE, CloudSheet::idle);
+		Animation<TextureRegion> animation = ResourceManager.getAnimation(PLATFORM);
+		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(CLOUD);
 
 		Light light = new Light(300, Color.BLUE, Light.RAYS_TEXTURE, Light::torchlight, Light::rotateSlow);
 		Texture cloudTexture = ResourceManager.getTexture("cloud.png");

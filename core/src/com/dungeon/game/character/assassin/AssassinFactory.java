@@ -14,11 +14,16 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.CharactersSheet32;
-import com.dungeon.game.tileset.ProjectileSheet;
 import com.moandjiezana.toml.Toml;
 
 public class AssassinFactory implements EntityFactory.EntityTypeFactory {
+
+	public static final String ASSASSIN_WALK = "assassin_walk";
+	public static final String ASSASSIN_ATTACK = "assassin_attack";
+	public static final String ASSASSIN_IDLE = "assassin_idle";
+
+	public static final String PROJECTILE_FLY = "projectile_assassin_fly";
+	public static final String PROJECTILE_EXPLODE = "projectile_assassin_explode";
 
 	final Animation<TextureRegion> attackAnimation;
 	final Animation<TextureRegion> idleAnimation;
@@ -39,11 +44,11 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 		float bulletSpeed = config.getLong("bulletSpeed", 180L).floatValue();
 		float bulletDamage = config.getLong("bulletDamage", 35L).floatValue();
 
-		attackAnimation = ResourceManager.getAnimation(CharactersSheet32.ASSASSIN_ATTACK, CharactersSheet32::assassinAttack);
-		idleAnimation = ResourceManager.getAnimation(CharactersSheet32.ASSASSIN_IDLE, CharactersSheet32::assassinIdle);
-		walkAnimation = ResourceManager.getAnimation(CharactersSheet32.ASSASSIN_WALK, CharactersSheet32::assassinWalk);
-		bulletFlyAnimation = ResourceManager.getAnimation(ProjectileSheet.ASSASSIN_FLY, ProjectileSheet::assasinFly);
-		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.ASSASSIN_EXPLODE, ProjectileSheet::assasinExplode);
+		attackAnimation = ResourceManager.getAnimation(ASSASSIN_ATTACK);
+		idleAnimation = ResourceManager.getAnimation(ASSASSIN_IDLE);
+		walkAnimation = ResourceManager.getAnimation(ASSASSIN_WALK);
+		bulletFlyAnimation = ResourceManager.getAnimation(PROJECTILE_FLY);
+		bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
 
 		Vector2 characterBoundingBox = new Vector2(14, 22);
 		Vector2 characterDrawOffset = new Vector2(16, 13);

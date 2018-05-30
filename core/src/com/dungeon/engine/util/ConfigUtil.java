@@ -4,6 +4,7 @@ import com.moandjiezana.toml.Toml;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConfigUtil {
@@ -44,6 +45,7 @@ public class ConfigUtil {
 				for (Field field : targetType.getDeclaredFields()) {
 					String name = field.getName();
 					Class<?> type = field.getType();
+					field.setAccessible(true);
 					if (type == Long.class || type == long.class) {
 						Long value = getLong(item, name);
 						if (value != null) {
@@ -66,7 +68,28 @@ public class ConfigUtil {
 						}
 					} else if (type == String.class) {
 						field.set(pojo, item.getString(name));
+					} else if (type.isArray()) {
+						if (type.getName().equals("[[F")) {
+							List<List<Number>> list = item.getList(name);
+							if (list != null) {
+								float[][] values = new float[list.size()][];
+								int o = 0;
+								for (List<Number> inner : list) {
+									int i = 0;
+									float[] innerValues = new float[inner.size()];
+									for (Number number : inner) {
+										innerValues[i++] = number.floatValue();
+									}
+									values[o++] = innerValues;
+								}
+								field.set(pojo, values);
+							}
+						}
+					} else {
+						System.out.println("->>" + type.getName());
+//						System.err.println("Found unknown type for field " + field.getName() + ": " + type);
 					}
+					field.setAccessible(false);
 				}
 			} catch (IllegalAccessException e) {
 				System.err.println("Could not instantiate POJO of type " + targetType.getSimpleName() + " for keys " + item);

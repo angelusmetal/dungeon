@@ -12,12 +12,16 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-import com.dungeon.game.character.slime.SlimeBlobsSheet;
+import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
 public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
+
+	public static final String IDLE = "slime_acid_idle";
+	public static final String ATTACK = "slime_acid_attack";
+	public static final String DIE = "slime_acid_die";
 
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> attackAnimation;
@@ -54,15 +58,15 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		float poolDuration = config.getDouble("poolDuration", 5d).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.getAnimation(AcidSlimeSheet.IDLE, AcidSlimeSheet::idle);
-		attackAnimation = ResourceManager.getAnimation(AcidSlimeSheet.ATTACK, AcidSlimeSheet::attack);
-		dieAnimation = ResourceManager.getAnimation(AcidSlimeSheet.DIE, AcidSlimeSheet::die);
+		idleAnimation = ResourceManager.getAnimation(IDLE);
+		attackAnimation = ResourceManager.getAnimation(ATTACK);
+		dieAnimation = ResourceManager.getAnimation(DIE);
 		// Pool animations
-		poolFloodAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.POOL_FLOOD, SlimeBlobsSheet::poolFlood);
-		poolDryAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.POOL_DRY, SlimeBlobsSheet::poolDry);
+		poolFloodAnimation = ResourceManager.getAnimation(SlimeFactory.POOL_FLOOD);
+		poolDryAnimation = ResourceManager.getAnimation(SlimeFactory.POOL_DRY);
 		// Blob animations
-		blobAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
-		splatAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
+		blobAnimation = ResourceManager.getAnimation(SlimeFactory.BLOB);
+		splatAnimation = ResourceManager.getAnimation(SlimeFactory.SPLAT);
 
 		Color color = new Color(0, 1, 0, 0.5f);
 		Color lightColor = new Color(0, 1, 0, 0.5f);

@@ -19,6 +19,10 @@ import com.moandjiezana.toml.Toml;
 
 public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 
+	public static final String IDLE = "slime_fire_idle";
+	public static final String PROJECTILE = "slime_fire_projectile";
+	public static final String EXPLOSION = "slime_fire_explosion";
+
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> projectileAnimation;
 	final Animation<TextureRegion> explosionAnimation;
@@ -51,9 +55,9 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		float bulletDamage = config.getLong("bulletDamage", 5L).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.getAnimation(FireSlimeSheet.IDLE, FireSlimeSheet::idle);
-		projectileAnimation = ResourceManager.getAnimation(FireSlimeSheet.PROJECTILE, FireSlimeSheet::projectile);
-		explosionAnimation = ResourceManager.getAnimation(FireSlimeSheet.EXPLOSION, FireSlimeSheet::explosion);
+		idleAnimation = ResourceManager.getAnimation(IDLE);
+		projectileAnimation = ResourceManager.getAnimation(PROJECTILE);
+		explosionAnimation = ResourceManager.getAnimation(EXPLOSION);
 
 		characterLight = new Light(100, new Color(1, 0.5f, 0, 0.8f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 		bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);

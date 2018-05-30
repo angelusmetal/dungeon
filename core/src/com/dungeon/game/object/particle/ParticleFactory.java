@@ -15,6 +15,29 @@ import java.util.List;
 
 public class ParticleFactory {
 
+	public static final String WOOD_PARTICLE_1 = "wood_particle_1";
+	public static final String WOOD_PARTICLE_2 = "wood_particle_2";
+	public static final String WOOD_PARTICLE_3 = "wood_particle_3";
+	public static final String WOOD_PARTICLE_4 = "wood_particle_4";
+	public static final String WOOD_PARTICLE_5 = "wood_particle_5";
+	public static final String WOOD_PARTICLE_6 = "wood_particle_6";
+	public static final String WOOD_PARTICLE_7 = "wood_particle_7";
+	public static final String WOOD_PARTICLE_8 = "wood_particle_8";
+	public static final String STONE_PARTICLE_1 = "stone_particle_1";
+	public static final String STONE_PARTICLE_2 = "stone_particle_2";
+	public static final String STONE_PARTICLE_3 = "stone_particle_3";
+	public static final String STONE_PARTICLE_4 = "stone_particle_4";
+	public static final String STONE_PARTICLE_5 = "stone_particle_5";
+	public static final String STONE_PARTICLE_6 = "stone_particle_6";
+	public static final String STONE_PARTICLE_7 = "stone_particle_7";
+	public static final String STONE_PARTICLE_8 = "stone_particle_8";
+	public static final String DROPLET_START = "droplet_start";
+	public static final String DROPLET_FALL = "droplet_fall";
+	public static final String DROPLET_END = "droplet_end";
+	public static final String FIREBALL = "fireball";
+	public static final String FLAME = "flame";
+	public static final String CANDLE = "candle";
+
 	private static final Vector2 BOUNDING_BOX = new Vector2(1, 1);
 	private static final Vector2 DRAW_OFFSET = new Vector2(4, 4);
 
@@ -29,31 +52,31 @@ public class ParticleFactory {
 
 	public ParticleFactory() {
 		List<Animation<TextureRegion>> woodParticleAnimations = Arrays.asList(
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_1, ParticleSheet::wood1),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_2, ParticleSheet::wood2),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_3, ParticleSheet::wood3),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_4, ParticleSheet::wood4),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_5, ParticleSheet::wood5),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_6, ParticleSheet::wood6),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_7, ParticleSheet::wood7),
-				ResourceManager.getAnimation(ParticleSheet.WOOD_PARTICLE_8, ParticleSheet::wood8)
+				ResourceManager.getAnimation(WOOD_PARTICLE_1),
+				ResourceManager.getAnimation(WOOD_PARTICLE_2),
+				ResourceManager.getAnimation(WOOD_PARTICLE_3),
+				ResourceManager.getAnimation(WOOD_PARTICLE_4),
+				ResourceManager.getAnimation(WOOD_PARTICLE_5),
+				ResourceManager.getAnimation(WOOD_PARTICLE_6),
+				ResourceManager.getAnimation(WOOD_PARTICLE_7),
+				ResourceManager.getAnimation(WOOD_PARTICLE_8)
 		);
 		List<Animation<TextureRegion>> stoneParticleAnimations = Arrays.asList(
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_1, ParticleSheet::stone1),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_2, ParticleSheet::stone2),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_3, ParticleSheet::stone3),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_4, ParticleSheet::stone4),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_5, ParticleSheet::stone5),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_6, ParticleSheet::stone6),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_7, ParticleSheet::stone7),
-				ResourceManager.getAnimation(ParticleSheet.STONE_PARTICLE_8, ParticleSheet::stone8)
+				ResourceManager.getAnimation(STONE_PARTICLE_1),
+				ResourceManager.getAnimation(STONE_PARTICLE_2),
+				ResourceManager.getAnimation(STONE_PARTICLE_3),
+				ResourceManager.getAnimation(STONE_PARTICLE_4),
+				ResourceManager.getAnimation(STONE_PARTICLE_5),
+				ResourceManager.getAnimation(STONE_PARTICLE_6),
+				ResourceManager.getAnimation(STONE_PARTICLE_7),
+				ResourceManager.getAnimation(STONE_PARTICLE_8)
 		);
-		Animation<TextureRegion> dropletStartAnimation = ResourceManager.getAnimation(ParticleSheet.DROPLET_START, ParticleSheet::dropletStart);
-		Animation<TextureRegion> dropletFallAnimation = ResourceManager.getAnimation(ParticleSheet.DROPLET_FALL, ParticleSheet::dropletFall);
-		Animation<TextureRegion> dropletEndAnimation = ResourceManager.getAnimation(ParticleSheet.DROPLET_END, ParticleSheet::dropletEnd);
-		Animation<TextureRegion> fireballAnimation = ResourceManager.getAnimation(ParticleSheet.FIREBALL, ParticleSheet::fireball);
-		Animation<TextureRegion> flameAnimation = ResourceManager.getAnimation(ParticleSheet.FLAME, ParticleSheet::flame);
-		Animation<TextureRegion> candleAnimation = ResourceManager.getAnimation(ParticleSheet.CANDLE, ParticleSheet::candle);
+		Animation<TextureRegion> dropletStartAnimation = ResourceManager.getAnimation(DROPLET_START);
+		Animation<TextureRegion> dropletFallAnimation = ResourceManager.getAnimation(DROPLET_FALL);
+		Animation<TextureRegion> dropletEndAnimation = ResourceManager.getAnimation(DROPLET_END);
+		Animation<TextureRegion> fireballAnimation = ResourceManager.getAnimation(FIREBALL);
+		Animation<TextureRegion> flameAnimation = ResourceManager.getAnimation(FLAME);
+		Animation<TextureRegion> candleAnimation = ResourceManager.getAnimation(CANDLE);
 
 		woodParticlePrototype = new EntityPrototype()
 				.animation(() -> Rand.pick(woodParticleAnimations))

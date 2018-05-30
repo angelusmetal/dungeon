@@ -14,11 +14,15 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.CharactersSheet32;
-import com.dungeon.game.tileset.ProjectileSheet;
 import com.moandjiezana.toml.Toml;
 
 public class ThiefFactory implements EntityFactory.EntityTypeFactory {
+
+	public static final String THIEF_WALK = "thief_walk";
+	public static final String THIEF_ATTACK = "thief_attack";
+	public static final String THIEF_IDLE = "thief_idle";
+	public static final String PROJECTILE_FLY = "projectile_thief_fly";
+	public static final String PROJECTILE_EXPLODE = "projectile_thief_explode";
 
 	final Animation<TextureRegion> attackAnimation;
 	final Animation<TextureRegion> idleAnimation;
@@ -42,11 +46,11 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();
 		float bulletDamage = config.getLong("bulletDamage", 25L).floatValue();
 
-		idleAnimation = ResourceManager.getAnimation(CharactersSheet32.THIEF_IDLE, CharactersSheet32::thiefIdle);
-		walkAnimation = ResourceManager.getAnimation(CharactersSheet32.THIEF_WALK, CharactersSheet32::thiefWalk);
-		attackAnimation = ResourceManager.getAnimation(CharactersSheet32.THIEF_ATTACK, CharactersSheet32::thiefAttack);
-		bulletFlyAnimation = ResourceManager.getAnimation(ProjectileSheet.THIEF_FLY, ProjectileSheet::thiefFly);
-		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.THIEF_EXPLODE, ProjectileSheet::thiefExplode);
+		idleAnimation = ResourceManager.getAnimation(THIEF_IDLE);
+		walkAnimation = ResourceManager.getAnimation(THIEF_WALK);
+		attackAnimation = ResourceManager.getAnimation(THIEF_ATTACK);
+		bulletFlyAnimation = ResourceManager.getAnimation(PROJECTILE_FLY);
+		bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
 
 		Vector2 characterBoundingBox = new Vector2(14, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 6);

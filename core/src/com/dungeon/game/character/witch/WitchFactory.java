@@ -14,12 +14,19 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.CatProjectileSheet;
-import com.dungeon.game.tileset.CharactersSheet32;
-import com.dungeon.game.tileset.ProjectileSheet;
 import com.moandjiezana.toml.Toml;
 
 public class WitchFactory implements EntityFactory.EntityTypeFactory {
+
+	public static final String WITCH_WALK = "witch_walk";
+	public static final String WITCH_ATTACK = "witch_attack";
+	public static final String WITCH_IDLE = "witch_idle";
+
+	public static final String PROJECTILE_RIGHT = "projectile_cat_right";
+	public static final String PROJECTILE_UP = "projectile_cat_up";
+	public static final String PROJECTILE_DOWN = "projectile_cat_down";
+	//public static final String WITCH_FLY = "projectile_witch_fly";
+	public static final String PROJECTILE_EXPLODE = "projectile_witch_explode";
 
 	final Animation<TextureRegion> attackAnimation;
 	final Animation<TextureRegion> idleAnimation;
@@ -42,13 +49,13 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();
 		float bulletDamage = config.getLong("bulletDamage", 25L).floatValue();
 
-		idleAnimation = ResourceManager.getAnimation(CharactersSheet32.WITCH_IDLE, CharactersSheet32::witchIdle);
-		walkAnimation = ResourceManager.getAnimation(CharactersSheet32.WITCH_WALK, CharactersSheet32::witchWalk);
-		attackAnimation = ResourceManager.getAnimation(CharactersSheet32.WITCH_ATTACK, CharactersSheet32::witchAttack);
-		bulletFlySideAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_RIGHT, CatProjectileSheet::flyRight);
-		bulletFlyNorthAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_UP, CatProjectileSheet::flyUp);
-		bulletFlySouthAnimation = ResourceManager.getAnimation(CatProjectileSheet.FLY_DOWN, CatProjectileSheet::flyDown);
-		bulletExplodeAnimation = ResourceManager.getAnimation(ProjectileSheet.WITCH_EXPLODE, ProjectileSheet::witchExplode);
+		idleAnimation = ResourceManager.getAnimation(WITCH_IDLE);
+		walkAnimation = ResourceManager.getAnimation(WITCH_WALK);
+		attackAnimation = ResourceManager.getAnimation(WITCH_ATTACK);
+		bulletFlySideAnimation = ResourceManager.getAnimation(PROJECTILE_RIGHT);
+		bulletFlyNorthAnimation = ResourceManager.getAnimation(PROJECTILE_UP);
+		bulletFlySouthAnimation = ResourceManager.getAnimation(PROJECTILE_DOWN);
+		bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
 
 		Vector2 characterBoundingBox = new Vector2(14, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 6);

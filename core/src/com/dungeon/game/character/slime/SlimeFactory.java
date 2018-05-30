@@ -20,6 +20,19 @@ import java.util.function.Supplier;
 
 public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 
+	public static final String IDLE = "slime_idle";
+	public static final String BLINK = "slime_blink";
+	public static final String DIE = "slime_die";
+
+	public static final String SPAWN_IDLE = "slime_mini_idle";
+	public static final String SPAWN_BLINK = "slime_mini_blink";
+	public static final String SPAWN_DIE = "slime_mini_die";
+
+	public static final String POOL_FLOOD = "slime_pool_flood";
+	public static final String POOL_DRY = "slime_pool_dry";
+	public static final String BLOB = "slime_blob";
+	public static final String SPLAT = "slime_splat";
+
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> blinkAnimation;
 	final Animation<TextureRegion> dieAnimation;
@@ -55,16 +68,16 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		float friction = config.getLong("friction", 1L).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.getAnimation(SlimeSheet.IDLE, SlimeSheet::idle);
-		blinkAnimation = ResourceManager.getAnimation(SlimeSheet.BLINK, SlimeSheet::blink);
-		dieAnimation = ResourceManager.getAnimation(SlimeSheet.DIE, SlimeSheet::die);
+		idleAnimation = ResourceManager.getAnimation(IDLE);
+		blinkAnimation = ResourceManager.getAnimation(BLINK);
+		dieAnimation = ResourceManager.getAnimation(DIE);
 		// Spawn animations
-		spawnIdleAnimation = ResourceManager.getAnimation(SlimeSpawnSheet.IDLE, SlimeSpawnSheet::idle);
-		spawnBlinkAnimation = ResourceManager.getAnimation(SlimeSpawnSheet.BLINK, SlimeSpawnSheet::blink);
-		spawnDieAnimation = ResourceManager.getAnimation(SlimeSpawnSheet.DIE, SlimeSpawnSheet::die);
+		spawnIdleAnimation = ResourceManager.getAnimation(SPAWN_IDLE);
+		spawnBlinkAnimation = ResourceManager.getAnimation(SPAWN_BLINK);
+		spawnDieAnimation = ResourceManager.getAnimation(SPAWN_DIE);
 		// Blob animations
-		blobAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.BLOB, SlimeBlobsSheet::blob);
-		splatAnimation = ResourceManager.getAnimation(SlimeBlobsSheet.SPLAT, SlimeBlobsSheet::splat);
+		blobAnimation = ResourceManager.getAnimation(BLOB);
+		splatAnimation = ResourceManager.getAnimation(SPLAT);
 
 		Supplier<Color> color = () -> Util.hsvaToColor(
 				Rand.between(0f, 1f),

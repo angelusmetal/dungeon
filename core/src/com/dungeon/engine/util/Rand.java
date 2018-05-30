@@ -21,7 +21,7 @@ public class Rand {
 
     public static void doBetween(int min, int max, Runnable runnable) {
         int times = between(min, max);
-        for (int i = 0; i < times; ++i) {
+        for (int i = 0; i <= times; ++i) {
             runnable.run();
         }
     }

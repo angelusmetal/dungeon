@@ -13,6 +13,8 @@ import com.dungeon.game.state.GameState;
 
 public class TombstoneFactory implements EntityFactory.EntityTypeFactory {
 
+	public static final String SPAWN = "tombstone_spawn";
+
 	final Animation<TextureRegion> animation;
 	private final EntityPrototype object;
 
@@ -20,7 +22,7 @@ public class TombstoneFactory implements EntityFactory.EntityTypeFactory {
 		Vector2 boundingBox = new Vector2(10, 10);
 		Vector2 drawOffset = new Vector2(16, 16);
 
-		animation = ResourceManager.getAnimation(TombstoneSheet.SPAWN, TombstoneSheet::spawn);
+		animation = ResourceManager.getAnimation(SPAWN);
 		object = new EntityPrototype()
 				.animation(animation)
 				.boundingBox(boundingBox)

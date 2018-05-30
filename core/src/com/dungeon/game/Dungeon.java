@@ -55,6 +55,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+		ResourceManager.init();
 		initViewPort();
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(viewPortInputProcessor);

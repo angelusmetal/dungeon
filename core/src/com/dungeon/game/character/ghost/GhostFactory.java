@@ -17,6 +17,8 @@ import com.moandjiezana.toml.Toml;
 
 public class GhostFactory implements EntityFactory.EntityTypeFactory {
 
+	public static final String HOVER = "ghost_hover";
+
 	final Animation<TextureRegion> idleAnimation;
 	final EntityPrototype character;
 	final EntityPrototype death;
@@ -37,7 +39,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 		int health = config.getLong("health", 100L).intValue();
 		float speed = config.getLong("speed", 20L).floatValue();
 
-		idleAnimation = ResourceManager.getAnimation(GhostSheet.HOVER, GhostSheet::hover);
+		idleAnimation = ResourceManager.getAnimation(HOVER);
 
 		Vector2 boundingBox = new Vector2(16, 26);
 		Vector2 drawOffset = new Vector2(16, 16);

@@ -14,7 +14,7 @@ public class TextureResource implements Resource<Texture> {
 	@Override
 	public void load() {
 		if (texture == null) {
-			System.out.println("Loading " + filename + "...");
+			System.out.println("Loading texture " + filename + "...");
 			texture = new Texture(filename);
 		}
 	}
@@ -22,7 +22,7 @@ public class TextureResource implements Resource<Texture> {
 	@Override
 	public void unload() {
 		if (texture != null) {
-			System.out.println("Unloading " + filename + "...");
+			System.out.println("Unloading texture " + filename + "...");
 			texture.dispose();
 		}
 	}
