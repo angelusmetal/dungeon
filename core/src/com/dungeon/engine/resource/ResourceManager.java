@@ -21,7 +21,7 @@ public class ResourceManager {
 
 	public static void init() {
 		Toml toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("animations.toml"));
-		Map<String, AnimationDef> pojoMap = ConfigUtil.getPojoMap(toml, "animation", "name", AnimationDef.class);
+		Map<String, AnimationDef> pojoMap = ConfigUtil.getPojoMap(toml, "animation", AnimationDef::getName, AnimationDef.class);
 		pojoMap.forEach((animation, def) -> def.load());
 	}
 

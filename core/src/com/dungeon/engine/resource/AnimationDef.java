@@ -15,6 +15,10 @@ public class AnimationDef {
 	float[][] loop;
 	float[][] sequence;
 
+	public String getName() {
+		return name;
+	}
+
 	public void load() {
 		if (loop != null && sequence != null) {
 			throw new RuntimeException("Error while loading animation '" + name + "': cannot have both 'loop' AND 'sequence'");

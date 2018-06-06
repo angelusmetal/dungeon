@@ -62,7 +62,7 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getPojoMap(configuration, "controllers", "id", ControllerConfig.class);
+		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getPojoMap(configuration, "controllers", ControllerConfig::getId, ControllerConfig.class);
 
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println("Found controller: " + controller.getName());
