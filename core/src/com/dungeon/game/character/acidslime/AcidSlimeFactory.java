@@ -44,6 +44,8 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	final float attackFrequency;
 	final float damagePerSecond;
 
+	final Color lightColor = new Color(0xA3D957FF);
+
 	public AcidSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("SLIME_ACID");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
@@ -68,8 +70,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		blobAnimation = ResourceManager.getAnimation(SlimeFactory.BLOB);
 		splatAnimation = ResourceManager.getAnimation(SlimeFactory.SPLAT);
 
-		Color color = new Color(0, 1, 0, 0.5f);
-		Color lightColor = new Color(0, 1, 0, 0.5f);
+		Color color = new Color(1, 1, 1, 0.7f);
 
 		Light characterLight = new Light(100, lightColor, Light.RAYS_TEXTURE, () -> 1f, Light::rotateMedium);
 		Light deathLight = new Light(150, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
@@ -101,7 +102,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.animation(poolFloodAnimation)
 				.boundingBox(poolBoundingBox)
 				.drawOffset(poolDrawOffset)
-				.color(color)
+				.color(lightColor)
 				.light(poolLight)
 				.timeToLive(poolDuration)
 				.with(Traits.fadeOutLight())
@@ -136,7 +137,6 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	Entity createPool(Entity dying) {
 		Entity entity = new AcidPool(dying.getPos(), this);
 		entity.setZPos(dying.getZPos());
-		entity.setColor(dying.getColor());
 		return entity;
 	}
 
@@ -155,7 +155,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		};
 		entity.setZPos(8);
 		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
-		entity.setColor(dying.getColor());
+		entity.setColor(lightColor);
 		return entity;
 	}
 

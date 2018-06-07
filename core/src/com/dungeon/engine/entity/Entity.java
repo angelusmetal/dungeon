@@ -14,6 +14,8 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.character.acidslime.AcidSlime;
+import com.dungeon.game.character.acidslime.AcidSlimeFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
@@ -40,7 +42,7 @@ public class Entity implements Drawable, Movable {
 	 * Max allowed self movement (per second). It cannot self accelerate over this, but other forces can make this
 	 * entity beyond this.
 	 */
-	protected float speed = 3;
+	protected float speed;
 	/**
 	 * Reduces speed
 	 */
@@ -48,14 +50,14 @@ public class Entity implements Drawable, Movable {
 	/**
 	 * Bounciness ratio (0...1)
 	 */
-	protected float bounciness = 0;
+	protected float bounciness;
 	private boolean invertX = false;
 
 	protected boolean expired;
-	protected float health = 100;
-	protected int maxHealth = 100;
+	protected float health;
+	protected int maxHealth;
 
-	protected Light light = null;
+	protected Light light;
 	protected DrawContext drawContext;
 	private final Vector2 drawOffset;
 
@@ -73,7 +75,7 @@ public class Entity implements Drawable, Movable {
 	/** Particle color */
 	protected final Color color;
 	/** zIndex for ordering sprites */
-	private float zIndex = 0;
+	private float zIndex;
 
 	private DrawFunction drawFunction;
 
@@ -401,9 +403,7 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		drawContext.set(batch);
-		drawFunction.draw(viewPort, batch, this);
-		drawContext.unset(batch);
+		drawContext.run(batch, () -> drawFunction.draw(viewPort, batch, this));
 	}
 
 	public void drawLight(SpriteBatch batch, ViewPort viewPort) {
@@ -411,7 +411,7 @@ public class Entity implements Drawable, Movable {
 			float dim = light.dimmer.get();
 			batch.setColor(light.color.r, light.color.g, light.color.b, light.color.a * dim);
 			viewPort.draw(batch, light.texture, getPos().x, getPos().y + z, light.diameter * dim, light.rotator.get());
-			batch.setColor(1, 1, 1, 1);
+//			batch.setColor(1, 1, 1, 1);
 		}
 	}
 
