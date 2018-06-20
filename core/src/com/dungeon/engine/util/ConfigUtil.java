@@ -69,6 +69,17 @@ public class ConfigUtil {
 					} else if (type == String.class) {
 						field.set(pojo, item.getString(name));
 					} else if (type.isArray()) {
+						if (type.getName().equals("[I")) {
+							List<Number> list = item.getList(name);
+							if (list != null) {
+								int i = 0;
+								int[] values = new int[list.size()];
+								for (Number number : list) {
+									values[i++] = number.intValue();
+								}
+								field.set(pojo, values);
+							}
+						}
 						if (type.getName().equals("[[F")) {
 							List<List<Number>> list = item.getList(name);
 							if (list != null) {

@@ -12,8 +12,10 @@ public class AnimationDef {
 	String name;
 	int tilesize;
 	float frameDuration;
-	float[][] loop;
-	float[][] sequence;
+	int[] loop;
+	int[] sequence;
+
+	private int columns;
 
 	public void load() {
 		if (loop != null && sequence != null) {
@@ -24,6 +26,10 @@ public class AnimationDef {
 		}
 
 		Texture tex = ResourceManager.getTexture(this.texture);
+		if (tex.getHeight() % tilesize != 0 || tex.getWidth() % tilesize != 0) {
+			throw new RuntimeException("Error while loading animation '" + name + "': texture dimensions must be an exact multiple of the tilesize");
+		}
+		columns = tex.getWidth() / tilesize;
 		if (loop != null) {
 			List<TextureRegion> frames = getFrames(tex, loop);
 			ResourceManager.loadAnimation(name, loop(frameDuration, frames));
@@ -31,21 +37,27 @@ public class AnimationDef {
 			List<TextureRegion> frames = getFrames(tex, sequence);
 			ResourceManager.loadAnimation(name, sequence(frameDuration, frames));
 		}
-
+		System.out.println("Loaded animation " + name);
 	}
 
-	private List<TextureRegion> getFrames(Texture tex, float[][] regions) {
+	private List<TextureRegion> getFrames(Texture tex, int[] regions) {
 		List<TextureRegion> frames = new ArrayList<>();
-		for (float[] regionDef : regions) {
-			if (regionDef.length == 2) {
-				frames.add(getTile(tex, regionDef[0], regionDef[1]));
-			} else if (regionDef.length == 4) {
-				frames.add(getTile(tex, regionDef[0], regionDef[1], regionDef[2], regionDef[3]));
-			} else {
-				throw new RuntimeException("Error while loading animation '" + name + "': each region must have either 2 or 4 parameters.");
-			}
+		for (int frame : regions) {
+			frames.add(getFrame(tex, frame));
+//			if (regionDef.length == 2) {
+//				frames.add(getTile(tex, regionDef[0], regionDef[1]));
+//			} else if (regionDef.length == 4) {
+//				frames.add(getTile(tex, regionDef[0], regionDef[1], regionDef[2], regionDef[3]));
+//			} else {
+//				throw new RuntimeException("Error while loading animation '" + name + "': each region must have either 2 or 4 parameters.");
+//			}
 		}
 		return frames;
+	}
+
+	private TextureRegion getFrame(Texture tex, int frame) {
+		System.out.println("    Getting frame " + frame + " - " + (tilesize * (frame % columns)) + ", " + (tilesize * (frame / columns)));
+		return new TextureRegion(tex, tilesize * (frame % columns), tilesize * (frame / columns), tilesize, tilesize);
 	}
 
 	private TextureRegion getTile(Texture tex, float x, float y) {
