@@ -11,7 +11,9 @@ import com.moandjiezana.toml.Toml;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class ResourceManager {
 
@@ -21,8 +23,8 @@ public class ResourceManager {
 
 	public static void init() {
 		Toml toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("animations.toml"));
-		Map<String, AnimationDef> pojoMap = ConfigUtil.getPojoMap(toml, "animation", "name", AnimationDef.class);
-		pojoMap.forEach((animation, def) -> def.load());
+		Map<String, AnimationDef> pojoMap = ConfigUtil.getMapOf(toml, AnimationDef.class);
+		pojoMap.forEach((name, def) -> def.load(name));
 	}
 
 	public static Texture getTexture(String name) {

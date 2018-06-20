@@ -65,7 +65,7 @@ public class LightFragment implements RenderFragment {
 	}
 
 	public void randomizeBaseLight() {
-		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.3f, 1f, 1f));
+		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.5f, 1f, 1f));
 	}
 
 	@Override

@@ -17,7 +17,8 @@ public class AnimationDef {
 
 	private int columns;
 
-	public void load() {
+	public void load(String name) {
+		this.name = name;
 		if (loop != null && sequence != null) {
 			throw new RuntimeException("Error while loading animation '" + name + "': cannot have both 'loop' AND 'sequence'");
 		}
@@ -37,35 +38,18 @@ public class AnimationDef {
 			List<TextureRegion> frames = getFrames(tex, sequence);
 			ResourceManager.loadAnimation(name, sequence(frameDuration, frames));
 		}
-		System.out.println("Loaded animation " + name);
 	}
 
 	private List<TextureRegion> getFrames(Texture tex, int[] regions) {
 		List<TextureRegion> frames = new ArrayList<>();
 		for (int frame : regions) {
 			frames.add(getFrame(tex, frame));
-//			if (regionDef.length == 2) {
-//				frames.add(getTile(tex, regionDef[0], regionDef[1]));
-//			} else if (regionDef.length == 4) {
-//				frames.add(getTile(tex, regionDef[0], regionDef[1], regionDef[2], regionDef[3]));
-//			} else {
-//				throw new RuntimeException("Error while loading animation '" + name + "': each region must have either 2 or 4 parameters.");
-//			}
 		}
 		return frames;
 	}
 
 	private TextureRegion getFrame(Texture tex, int frame) {
-		System.out.println("    Getting frame " + frame + " - " + (tilesize * (frame % columns)) + ", " + (tilesize * (frame / columns)));
 		return new TextureRegion(tex, tilesize * (frame % columns), tilesize * (frame / columns), tilesize, tilesize);
-	}
-
-	private TextureRegion getTile(Texture tex, float x, float y) {
-		return new TextureRegion(tex, (int) (tilesize * x), (int) (tilesize * y), tilesize, tilesize);
-	}
-
-	private TextureRegion getTile(Texture tex, float x, float y, float x_tiles, float y_tiles) {
-		return new TextureRegion(tex, (int) (tilesize * x), (int) (tilesize * y), (int) (tilesize * x_tiles), (int) (tilesize * y_tiles));
 	}
 
 	public static Animation<TextureRegion> loop(float frameDuration, List<TextureRegion> frames) {

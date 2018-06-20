@@ -16,4 +16,8 @@ public class ControllerConfig {
 		this.analogControlX = analogControlX;
 		this.analogControlY = analogControlY;
 	}
+
+	public String getId() {
+		return id;
+	}
 }

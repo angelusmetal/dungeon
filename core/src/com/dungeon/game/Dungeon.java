@@ -19,6 +19,7 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerCharacter;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.engine.resource.AnimationDef;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
@@ -34,6 +35,8 @@ import com.moandjiezana.toml.Toml;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Dungeon extends ApplicationAdapter {
 	private static final double DEFAULT_SCALE = 3;
@@ -62,7 +65,9 @@ public class Dungeon extends ApplicationAdapter {
 		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
-		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getPojoMap(configuration, "controllers", "id", ControllerConfig.class);
+		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getListOf(configuration, "controllers", ControllerConfig.class)
+				.stream()
+				.collect(Collectors.toMap(ControllerConfig::getId, Function.identity()));
 
 		for (Controller controller : Controllers.getControllers()) {
 			System.out.println("Found controller: " + controller.getName());
