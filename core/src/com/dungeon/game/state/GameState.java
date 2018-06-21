@@ -1,11 +1,16 @@
 package com.dungeon.game.state;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
+import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.character.acidslime.AcidSlimeFactory;
 import com.dungeon.game.character.assassin.AssassinFactory;
 import com.dungeon.game.character.fireslime.FireSlimeFactory;
@@ -26,6 +31,8 @@ import com.dungeon.game.object.powerups.HealthPowerupFactory;
 import com.dungeon.game.object.props.FurnitureFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.object.torch.TorchFactory;
+import com.dungeon.game.player.Player;
+import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.tileset.LevelTileset;
 import com.dungeon.game.tileset.TilesetManager;
 import com.moandjiezana.toml.Toml;
@@ -33,6 +40,7 @@ import com.moandjiezana.toml.Toml;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 public class GameState {
 
@@ -53,13 +61,13 @@ public class GameState {
 	private static State currentState = State.MENU;
 	private static Console console;
 
-	private static List<PlayerCharacter> playerCharacters = new LinkedList<>();
-	private static List<PlayerCharacter> newPlayerCharacters = new LinkedList<>();
+	private static List<PlayerEntity> playerCharacters = new LinkedList<>();
+	private static List<PlayerEntity> newPlayerCharacters = new LinkedList<>();
 
 	private static List<Entity> entities = new LinkedList<>();
 	private static List<Entity> newEntities = new LinkedList<>();
 
-	private static List<CharacterSelection.Slot> slots;
+	private static List<Player> players;
 
 	private static int playerCount;
 	private static int levelCount;
@@ -70,7 +78,8 @@ public class GameState {
 	private static List<OverlayText> overlayTexts = new ArrayList<>();
 	private static List<OverlayText> newOverelayTexts = new ArrayList<>();
 
-	private static Runnable motionBlur;
+	// FIXME Does this belong here?
+	private static Color baseLight = Color.WHITE.cpy();
 
 	public static void initialize(Toml configuration) {
 		GameState.entityFactory = new EntityFactory();
@@ -154,6 +163,10 @@ public class GameState {
 		currentState = newState;
 	}
 
+	public static List<Player> getPlayers() {
+		return players;
+	}
+
 	public static int getPlayerCount() {
 		return playerCount;
 	}
@@ -162,8 +175,8 @@ public class GameState {
 		return levelCount;
 	}
 
-	public static void startNewGame(List<CharacterSelection.Slot> slots) {
-		GameState.slots = slots;
+	public static void startNewGame(List<Player> players) {
+		GameState.players = players;
 		levelCount = 0;
 		startNewLevel();
 	}
@@ -182,14 +195,16 @@ public class GameState {
 		// Get starting room and spawn players there
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
-		for (CharacterSelection.Slot slot : slots) {
-			PlayerCharacter character = createCharacter(slot.characterId, startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(getLevelTileset().tile_size));
-			addPlayerCharacter(character);
-			slot.control.setCharacter(character);
+		for (Player player : players) {
+			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(getLevelTileset().tile_size);
+			player.spawn(origin);
 		}
 		// Update player count
-		playerCount = slots.size();
+		playerCount = players.size();
 		levelCount++;
+
+		initViewPorts();
+		randomizeBaseLight();
 
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
@@ -201,15 +216,40 @@ public class GameState {
 		addRenderEffect(FadeEffect.fadeIn(time()));
 	}
 
-	private static PlayerCharacter createCharacter(int characterId, Vector2 origin) {
-		if (characterId == 0) {
-			return (PlayerCharacter) entityFactory.build(EntityType.WITCH, origin);
-		} else if (characterId == 1) {
-			return (PlayerCharacter) entityFactory.build(EntityType.THIEF, origin);
-		} else {
-			return (PlayerCharacter) entityFactory.build(EntityType.ASSASIN, origin);
+	private static final double DEFAULT_SCALE = 3;
+
+	/**
+	 * Creates a viewport and viewport renderer for each player (in split screen fashion).
+	 */
+	public static void initViewPorts() {
+		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
+		if (GameState.getPlayerCount() > 1) {
+			scale /= 2;
 		}
+
+		Stack<ViewPort> viewPorts = new Stack<>();
+		if (GameState.getPlayerCount() == 1) {
+			viewPorts.push(new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), scale));
+		} else if (GameState.getPlayerCount() == 2) {
+			int width = Gdx.graphics.getWidth() / 2;
+			int height = Gdx.graphics.getHeight();
+			viewPorts.add(new ViewPort(width, 0, width, height, scale));
+			viewPorts.add(new ViewPort(0, 0, width, height, scale));
+		} else  {
+			int width = Gdx.graphics.getWidth() / 2;
+			int height = Gdx.graphics.getHeight() / 2;
+			viewPorts.add(new ViewPort(width, 0, width, height, scale));
+			viewPorts.add(new ViewPort(0, 0, width, height, scale));
+			viewPorts.add(new ViewPort(width, height, width, height, scale));
+			viewPorts.add(new ViewPort(0, height, width, height, scale));
+		}
+		getPlayers().forEach(p -> {
+			p.setViewPort(viewPorts.pop());
+			p.setRenderer(new ViewPortRenderer(p.getViewPort()));
+			p.getRenderer().initialize();
+		});
 	}
+
 
 	public static LevelTileset getLevelTileset() {
 		return tilesetManager.getDungeonVioletTileset();
@@ -226,7 +266,7 @@ public class GameState {
 		newEntities.add(entity);
 	}
 
-	public static void addPlayerCharacter(PlayerCharacter character) {
+	public static void addPlayerCharacter(PlayerEntity character) {
 		newPlayerCharacters.add(character);
 		newEntities.add(character);
 	}
@@ -239,7 +279,7 @@ public class GameState {
 		return entities;
 	}
 
-	public static List<PlayerCharacter> getPlayerCharacters() {
+	public static List<PlayerEntity> getPlayerCharacters() {
 		return playerCharacters;
 	}
 
@@ -274,11 +314,12 @@ public class GameState {
 		return playerCharacters.size() + newPlayerCharacters.size();
 	}
 
-	public static void setMotionBlur(Runnable runnable) {
-		GameState.motionBlur = runnable;
+	public static Color getBaseLight() {
+		return baseLight;
 	}
 
-	public static void doMotionBlur() {
-		motionBlur.run();
+	public static void randomizeBaseLight() {
+		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.5f, 1f, 1f));
 	}
+
 }

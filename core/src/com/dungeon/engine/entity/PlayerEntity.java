@@ -9,19 +9,29 @@ import com.dungeon.game.state.GameState;
 
 import java.util.function.Predicate;
 
-public abstract class PlayerCharacter extends Character {
+public abstract class PlayerEntity extends CreatureEntity {
 
 	static private Light TORCH_LIGHT = new Light(160, new Color(0.25f, 0.2f, 0.1f, 0.2f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 
-	protected PlayerCharacter(Vector2 origin, EntityPrototype prototype) {
+	private int playerId;
+
+	protected PlayerEntity(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
 		light = TORCH_LIGHT;
 	}
 
-	public static final Predicate<Entity> TARGET_PLAYER_CHARACTERS = entity -> entity instanceof PlayerCharacter;
-	public static final Predicate<Entity> HIT_PLAYERS = entity -> entity instanceof PlayerCharacter || !(entity instanceof Character);
-	public static final Predicate<Entity> TARGET_NON_PLAYER_CHARACTERS = entity -> entity instanceof Character && !(entity instanceof PlayerCharacter);
-	public static final Predicate<Entity> HIT_NON_PLAYERS = entity -> !(entity instanceof PlayerCharacter);
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
+	}
+
+	public int getPlayerId() {
+		return playerId;
+	}
+
+	public static final Predicate<Entity> TARGET_PLAYER_CHARACTERS = entity -> entity instanceof PlayerEntity;
+	public static final Predicate<Entity> HIT_PLAYERS = entity -> entity instanceof PlayerEntity || !(entity instanceof CreatureEntity);
+	public static final Predicate<Entity> TARGET_NON_PLAYER_CHARACTERS = entity -> entity instanceof CreatureEntity && !(entity instanceof PlayerEntity);
+	public static final Predicate<Entity> HIT_NON_PLAYERS = entity -> !(entity instanceof PlayerEntity);
 
 	@Override
 	public void think() {

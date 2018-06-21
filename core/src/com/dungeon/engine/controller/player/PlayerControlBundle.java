@@ -2,7 +2,7 @@ package com.dungeon.engine.controller.player;
 
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.game.state.GameState;
 
 import java.util.EnumMap;
@@ -46,7 +46,7 @@ public abstract class PlayerControlBundle {
 	};
 
 	private final EnumMap<GameState.State, Listener> listeners;
-	private PlayerCharacter character;
+	private PlayerEntity entity;
 
 	public PlayerControlBundle() {
 		this.listeners = new EnumMap<>(GameState.State.class);
@@ -55,12 +55,12 @@ public abstract class PlayerControlBundle {
 		}
 	}
 
-	public void setCharacter(PlayerCharacter character) {
-		this.character = character;
+	public void setEntity(PlayerEntity entity) {
+		this.entity = entity;
 	}
 
-	public PlayerCharacter getCharacter() {
-		return character;
+	public PlayerEntity getEntity() {
+		return entity;
 	}
 
 	public void addStateListener(GameState.State state, Listener listener) {

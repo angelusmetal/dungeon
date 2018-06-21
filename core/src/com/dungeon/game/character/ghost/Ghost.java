@@ -1,15 +1,15 @@
 package com.dungeon.game.character.ghost;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.entity.Character;
+import com.dungeon.engine.entity.CreatureEntity;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.state.GameState;
 
-public class Ghost extends Character {
+public class Ghost extends CreatureEntity {
 
 	private final GhostFactory factory;
 	private float visibleUntil = 0;
@@ -38,7 +38,7 @@ public class Ghost extends Character {
 
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
-		if (entity instanceof PlayerCharacter) {
+		if (entity instanceof PlayerEntity) {
 			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {

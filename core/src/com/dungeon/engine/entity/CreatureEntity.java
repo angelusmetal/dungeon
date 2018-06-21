@@ -7,13 +7,13 @@ import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
-public abstract class Character extends Entity implements Movable, Drawable {
+public abstract class CreatureEntity extends Entity implements Movable, Drawable {
 
 	private Vector2 aim = new Vector2(1, 0);
 
 	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.25f); // Default is fire every 0.25 seconds
 
-	public Character(Vector2 origin, EntityPrototype prototype) {
+	public CreatureEntity(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
 	}
 

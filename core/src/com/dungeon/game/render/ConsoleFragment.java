@@ -28,8 +28,8 @@ public class ConsoleFragment implements RenderFragment {
 	public void render() {
 		if (enabled) {
 			batch.begin();
-			int x = 10;
-			int y = viewPort.height - 10;
+			int x = viewPort.posX + 10;
+			int y = viewPort.posY + viewPort.height - 10;
 			for (Console.LogLine log : GameState.console().getLog()) {
 				log.color.a = Math.max((log.expiration - GameState.time()) / GameState.console().getMessageExpiration(), 0);
 				font.setColor(log.color);
@@ -39,8 +39,8 @@ public class ConsoleFragment implements RenderFragment {
 
 			font.setColor(Color.WHITE);
 
-			x = viewPort.width - 200;
-			y = viewPort.height - 10;
+			x = viewPort.posX + viewPort.width - 200;
+			y = viewPort.posY + viewPort.height - 10;
 			for (Map.Entry<String, Supplier<String>> watch : GameState.console().getWatches().entrySet()) {
 				font.draw(batch, watch.getKey() + ": " + watch.getValue().get(), x, y);
 				y -= 16;

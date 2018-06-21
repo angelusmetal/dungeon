@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
@@ -75,7 +75,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.speed(bulletSpeed)
 				.timeToLive(3)
 				.bounciness(1)
-				.hitPredicate(PlayerCharacter.HIT_NON_PLAYERS)
+				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS)
 				.damage(bulletDamage)
 				.with(Traits.generator(0.052f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()

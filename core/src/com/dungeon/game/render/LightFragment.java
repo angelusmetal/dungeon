@@ -21,7 +21,6 @@ public class LightFragment implements RenderFragment {
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
 	private final Predicate<? super Entity> lightInCamera;
-	private final Color baseLight = Color.WHITE.cpy();
 	private final float gamma;
 	private boolean enabled = true;
 
@@ -52,7 +51,7 @@ public class LightFragment implements RenderFragment {
 			}));
 			// Draw lighting on top of scene
 			viewportBuffer.render((batch) -> {
-				batch.setColor(baseLight);
+				batch.setColor(GameState.getBaseLight());
 				blendLights.run(batch, () -> lightBuffer.draw(batch));
 				batch.setColor(Color.WHITE);
 			});
@@ -62,10 +61,6 @@ public class LightFragment implements RenderFragment {
 	@Override
 	public void toggle() {
 		enabled = !enabled;
-	}
-
-	public void randomizeBaseLight() {
-		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.5f, 1f, 1f));
 	}
 
 	@Override

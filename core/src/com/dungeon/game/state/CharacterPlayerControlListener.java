@@ -3,7 +3,7 @@ package com.dungeon.game.state;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 
 public class CharacterPlayerControlListener implements PlayerControlBundle.Listener {
 
@@ -15,7 +15,7 @@ public class CharacterPlayerControlListener implements PlayerControlBundle.Liste
 
 	@Override
 	public void updateDirection(Vector2 vector) {
-		PlayerCharacter character = control.getCharacter();
+		PlayerEntity character = control.getEntity();
 		if (character != null) {
 			character.setSelfImpulse(vector);
 		}
@@ -48,7 +48,7 @@ public class CharacterPlayerControlListener implements PlayerControlBundle.Liste
 
 	@Override
 	public void trigger1() {
-		PlayerCharacter character = control.getCharacter();
+		PlayerEntity character = control.getEntity();
 		if (character != null) {
 			character.fire();
 		}

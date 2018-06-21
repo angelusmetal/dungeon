@@ -1,14 +1,14 @@
 package com.dungeon.game.character.slime;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.entity.Character;
+import com.dungeon.engine.entity.CreatureEntity;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 
-public class Slime extends Character {
+public class Slime extends CreatureEntity {
 
 	private final SlimeFactory factory;
 	private float nextThink;
@@ -57,7 +57,7 @@ public class Slime extends Character {
 
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
-		if (entity instanceof PlayerCharacter) {
+		if (entity instanceof PlayerEntity) {
 			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {

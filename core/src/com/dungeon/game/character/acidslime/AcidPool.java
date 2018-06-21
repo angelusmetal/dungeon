@@ -2,7 +2,7 @@ package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.game.state.GameState;
 
 public class AcidPool extends Entity {
@@ -24,7 +24,7 @@ public class AcidPool extends Entity {
 
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
-		if (entity instanceof PlayerCharacter) {
+		if (entity instanceof PlayerEntity) {
 			entity.hit(factory.poolDamage * GameState.frameTime());
 			return true;
 		} else {

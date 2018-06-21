@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
@@ -75,13 +75,13 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 
 			@Override
 			protected boolean onEntityCollision(Entity entity) {
-				if (!expired && entity instanceof PlayerCharacter) {
-					PlayerCharacter character = (PlayerCharacter) entity;
+				if (!expired && entity instanceof PlayerEntity) {
+					PlayerEntity character = (PlayerEntity) entity;
 					int amount = 25;
 					character.heal(amount);
 					expire();
 					GameState.console().log("Healed for " + amount, Color.GOLD);
-					GameState.doMotionBlur();
+					GameState.getPlayers().get(character.getPlayerId()).getRenderer().beginMotionBlur();
 					return true;
 				} else {
 					return false;

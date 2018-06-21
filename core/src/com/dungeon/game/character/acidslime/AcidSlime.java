@@ -1,14 +1,14 @@
 package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.entity.Character;
+import com.dungeon.engine.entity.CreatureEntity;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
 
-public class AcidSlime extends Character {
+public class AcidSlime extends CreatureEntity {
 
 	private final AcidSlimeFactory factory;
 	private final Vector2 lastPool = new Vector2(0,0);
@@ -81,7 +81,7 @@ public class AcidSlime extends Character {
 
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
-		if (entity instanceof PlayerCharacter) {
+		if (entity instanceof PlayerEntity) {
 			entity.hit(factory.damagePerSecond * GameState.frameTime());
 			return true;
 		} else {

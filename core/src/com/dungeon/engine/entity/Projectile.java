@@ -11,7 +11,7 @@ import java.util.function.Function;
  */
 public abstract class Projectile extends Entity implements Movable, Drawable {
 
-	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerCharacter) && entity.isSolid();
+	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerEntity) && entity.isSolid();
 
 	/** Damage to inflict upon hitting a target */
 	protected float damage;

@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Light;
@@ -64,7 +64,7 @@ public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 			boolean exited = false;
 			@Override
 			protected boolean onEntityCollision(Entity entity) {
-				if (!exited && entity instanceof PlayerCharacter) {
+				if (!exited && entity instanceof PlayerEntity) {
 					exited = true;
 					GameState.exitLevel();
 				}

@@ -62,15 +62,10 @@ public class ViewPortRenderer implements Disposable {
 
 	public void initialize() {
 		resetBuffers();
-		randomizeBaseLight();
 	}
 
 	private void resetBuffers() {
 		viewportBuffer.reset();
-	}
-
-	public void randomizeBaseLight() {
-		lightFragment.randomizeBaseLight();
 	}
 
 	public void render () {

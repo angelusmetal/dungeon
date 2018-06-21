@@ -6,7 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.controller.ControllerConfig;
 import com.dungeon.engine.controller.analog.DpadAnalogControl;
 import com.dungeon.engine.controller.analog.StickAnalogControl;
@@ -16,15 +16,13 @@ import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
-import com.dungeon.engine.resource.AnimationDef;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
-import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.engine.viewport.ViewPortInputProcessor;
+import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
@@ -39,13 +37,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Dungeon extends ApplicationAdapter {
-	private static final double DEFAULT_SCALE = 3;
 	private final Toml configuration;
-	private ViewPort viewPort;
 	private InputMultiplexer inputMultiplexer;
-	private ViewPortInputProcessor viewPortInputProcessor;
 	private CharacterViewPortTracker characterViewPortTracker;
-	private ViewPortRenderer viewPortRenderer;
 	private CharacterSelection characterSelection;
 
 	private boolean fading = false;
@@ -59,10 +53,9 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void create () {
 		ResourceManager.init();
-		initViewPort();
 		inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(viewPortInputProcessor);
-		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
+//		inputMultiplexer.addProcessor(viewPortInputProcessor);
+//		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getListOf(configuration, "controllers", ControllerConfig.class)
@@ -80,8 +73,6 @@ public class Dungeon extends ApplicationAdapter {
 
 		GameState.initialize(configuration);
 
-		viewPortRenderer = new ViewPortRenderer(viewPort);
-		viewPortRenderer.initialize();
 		characterSelection = new CharacterSelection();
 		characterSelection.initialize();
 
@@ -100,36 +91,25 @@ public class Dungeon extends ApplicationAdapter {
 		// Add developer hotkeys
 		addDeveloperHotkeys();
 
-		characterViewPortTracker = new CharacterViewPortTracker(GameState.getPlayerCharacters());
+		characterViewPortTracker = new CharacterViewPortTracker();
 
 		// Add watches
 		GameState.console().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
 //		GameState.console().watch("Time", () -> Float.toString(GameState.time()));
 		GameState.console().watch("Level", () -> Integer.toString(GameState.getLevelCount()));
-		GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
-		GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
+		//TODO Fix
+//		GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
+//		GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
 
-		// Register effects
-		GameState.setMotionBlur(viewPortRenderer::beginMotionBlur);
-	}
-
-	private void initViewPort() {
-		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
-		int posX = configuration.getLong("viewport.posx", 0L).intValue();
-		int posY = configuration.getLong("viewport.posy", 0L).intValue();
-		int width = configuration.getLong("viewport.width", (long) Gdx.graphics.getWidth()).intValue();
-		int height = configuration.getLong("viewport.height", (long) Gdx.graphics.getHeight()).intValue();
-		viewPort = new ViewPort(posX, posY, width, height, scale);
-		viewPortInputProcessor = new ViewPortInputProcessor(viewPort);
 	}
 
 	private void addDeveloperHotkeys() {
-		addDeveloperHotkey(Input.Keys.F1, viewPortRenderer::toggleLighting);
-		addDeveloperHotkey(Input.Keys.F2, viewPortRenderer::toggleScene);
-		addDeveloperHotkey(Input.Keys.F3, viewPortRenderer::randomizeBaseLight);
-		addDeveloperHotkey(Input.Keys.F4, viewPortRenderer::toggleHealthbars);
-		addDeveloperHotkey(Input.Keys.F5, viewPortRenderer::toggleBoundingBox);
-		addDeveloperHotkey(Input.Keys.F6, viewPortRenderer::toggleNoise);
+		addDeveloperHotkey(Input.Keys.F1, () -> GameState.getPlayers().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleLighting));
+		addDeveloperHotkey(Input.Keys.F2, () -> GameState.getPlayers().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleScene));
+		addDeveloperHotkey(Input.Keys.F3, GameState::randomizeBaseLight);
+		addDeveloperHotkey(Input.Keys.F4, () -> GameState.getPlayers().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleHealthbars));
+		addDeveloperHotkey(Input.Keys.F5, () -> GameState.getPlayers().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleBoundingBox));
+		addDeveloperHotkey(Input.Keys.F6, () -> GameState.getPlayers().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleNoise));
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {
@@ -142,7 +122,6 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void render() {
 		GameState.addTime(Gdx.graphics.getDeltaTime());
-		characterViewPortTracker.refresh(viewPort);
 
 		// Game loop
 		for (Iterator<Entity> e = GameState.getEntities().iterator(); e.hasNext();) {
@@ -151,7 +130,7 @@ public class Dungeon extends ApplicationAdapter {
 			entity.move();
 			if (entity.isExpired()) {
 				e.remove();
-				if (entity instanceof PlayerCharacter) {
+				if (entity instanceof PlayerEntity) {
 					GameState.getPlayerCharacters().remove(entity);
 				}
 			}
@@ -168,7 +147,10 @@ public class Dungeon extends ApplicationAdapter {
 		if (GameState.getCurrentState() == GameState.State.MENU) {
 			characterSelection.render();
 		} else if (GameState.getCurrentState() == GameState.State.INGAME) {
-			viewPortRenderer.render();
+			GameState.getPlayers().forEach(player -> {
+				characterViewPortTracker.refresh(player.getViewPort(), player.getAvatar());
+				player.getRenderer().render();
+			});
 		}
 
 		// Render effects on top
@@ -190,8 +172,8 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void dispose () {
-		viewPortRenderer.dispose();
 		characterSelection.dispose();
+		GameState.getPlayers().forEach(Disposable::dispose);
 		GameState.getTilesetManager().dispose();
 		ResourceManager.unloadAll();
 	}

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.PlayerCharacter;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
@@ -77,9 +77,9 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.light(bulletLight)
 				.speed(bulletSpeed)
 				.timeToLive(10)
-				.hitPredicate(PlayerCharacter.HIT_NON_PLAYERS)
+				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS)
 				.damage(bulletDamage)
-				.with(Traits.autoSeek(0.1f, 60, () -> GameState.getEntities().stream().filter(PlayerCharacter.TARGET_NON_PLAYER_CHARACTERS)))
+				.with(Traits.autoSeek(0.1f, 60, () -> GameState.getEntities().stream().filter(PlayerEntity.TARGET_NON_PLAYER_CHARACTERS)))
 				.with(Traits.animationByVector(Entity::getMovement, bulletFlySideAnimation, bulletFlyNorthAnimation, bulletFlySouthAnimation))
 				.with(Traits.generator(0.05f, this::createBulletTrail));
 		bulletExplosion = new EntityPrototype()

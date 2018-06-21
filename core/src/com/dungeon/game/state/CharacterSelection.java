@@ -12,10 +12,12 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.character.assassin.AssassinFactory;
 import com.dungeon.game.character.thief.ThiefFactory;
 import com.dungeon.game.character.witch.WitchFactory;
+import com.dungeon.game.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CharacterSelection {
 
@@ -23,11 +25,15 @@ public class CharacterSelection {
 	private int currentPlayer = 0;
 	private List<Slot> slots = new ArrayList<>(4);
 
+	/**
+	 * Each slot in the character selection with a unique player id, the selected character, and the associated
+	 * control bundle.
+	 */
 	public static class Slot {
 		public PlayerControlBundle control;
-		public int playerId;
-		public int characterId = 0;
-		public Slot(PlayerControlBundle control, int playerId) {
+		int playerId;
+		int characterId = 0;
+		Slot(PlayerControlBundle control, int playerId) {
 			this.control = control;
 			this.playerId = playerId;
 		}
@@ -43,12 +49,12 @@ public class CharacterSelection {
 	}
 
 	public void dispose() {
-		playerCharacterScreen.dispose();
+		batch.dispose();
 	}
 
 	public boolean addControl(PlayerControlBundle control) {
 		if (slots.size() < 4) {
-			slots.add(new Slot(control, ++currentPlayer));
+			slots.add(new Slot(control, currentPlayer++));
 			return true;
 		} else {
 			return false;
@@ -56,20 +62,17 @@ public class CharacterSelection {
 	}
 
 	public void selectNextCharacter(PlayerControlBundle control) {
-		getSlot(control).ifPresent(s -> {
-			s.characterId = (s.characterId + 1) % CHARACTER_COUNT;
-		});
+		getSlot(control).ifPresent(s -> s.characterId = (s.characterId + 1) % CHARACTER_COUNT);
 	}
 
 	public void selectPrevCharacter(PlayerControlBundle control) {
-		getSlot(control).ifPresent(s -> {
-			s.characterId = (s.characterId - 1 + CHARACTER_COUNT) % CHARACTER_COUNT;
-		});
+		getSlot(control).ifPresent(s -> s.characterId = (s.characterId - 1 + CHARACTER_COUNT) % CHARACTER_COUNT);
 	}
 
 	public void confirmSelection(PlayerControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
-		GameState.addRenderEffect(FadeEffect.fadeOut(GameState.time(), () -> GameState.startNewGame(slots)));
+		List<Player> players = slots.stream().map(slot -> new Player(slot.playerId, slot.characterId, slot.control)).collect(Collectors.toList());
+		GameState.addRenderEffect(FadeEffect.fadeOut(GameState.time(), () -> GameState.startNewGame(players)));
 	}
 
 	private Optional<Slot> getSlot(PlayerControlBundle control) {
