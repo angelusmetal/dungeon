@@ -22,7 +22,7 @@
     width = 40
     height = 40
     growth = 10
-    #creatures = ["SLIME_ACID"]
+    #creatures = ["SLIME_FIRE"]
     creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
     itemchance = 1.0
 [rendering]
@@ -35,21 +35,21 @@
 # Characters
 [[creatures]]
     id = "ASSASSIN"
-    health = 100
+    health = 150
     speed = 60
     friction = 10
     bulletSpeed = 180
     bulletDamage = 35
 [[creatures]]
     id = "THIEF"
-    health = 60
+    health = 100
     speed = 96
     friction = 10
     bulletSpeed = 200
     bulletDamage = 25
 [[creatures]]
     id = "WITCH"
-    health = 90
+    health = 100
     speed = 60
     friction = 10
     bulletSpeed = 200

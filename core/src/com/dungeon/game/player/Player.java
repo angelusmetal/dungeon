@@ -1,5 +1,6 @@
 package com.dungeon.game.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
@@ -9,9 +10,10 @@ import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.state.GameState;
 
-import javax.swing.text.View;
-
 public class Player implements Disposable {
+
+	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
+
 	private int playerId;
 	private int characterId;
 	private String name;
@@ -20,12 +22,14 @@ public class Player implements Disposable {
 	private ViewPortRenderer renderer;
 	private PlayerEntity avatar;
 	private PlayerStats stats;
+	private Color color;
 
 	public Player(int playerId, int characterId, PlayerControlBundle control) {
 		this.playerId = playerId;
 		this.characterId = characterId;
 		this.control = control;
 		this.stats = new PlayerStats();
+		this.color = PLAYER_COLORS[playerId];
 	}
 
 	/**
@@ -67,6 +71,10 @@ public class Player implements Disposable {
 
 	public ViewPortRenderer getRenderer() {
 		return renderer;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 
 	@Override

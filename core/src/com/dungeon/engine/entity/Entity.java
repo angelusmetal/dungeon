@@ -14,8 +14,6 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.character.acidslime.AcidSlime;
-import com.dungeon.game.character.acidslime.AcidSlimeFactory;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
@@ -211,6 +209,14 @@ public class Entity implements Drawable, Movable {
 
 	public Color getColor() {
 		return color;
+	}
+
+	public float getHealth() {
+		return health;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
 	}
 
 	private static final Vector2 frameMovement = new Vector2();

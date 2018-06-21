@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,13 @@ public class ViewPortRenderer implements Disposable {
 	private final NoiseFragment noiseFragment;
 	private final MotionBlurFragment motionBlurFragment;
 	private final OverlayTextFragment overlayTextFragment;
+	private final PlayerArrowsFragment playerArrowsFragment;
+	private final HudFragment hudFragment;
 	private final ScaleFragment scaleFragment;
 	private final ConsoleFragment consoleFragment;
 	private final List<RenderFragment> pipeline = new ArrayList<>();
 
-	public ViewPortRenderer(ViewPort viewPort) {
+	public ViewPortRenderer(ViewPort viewPort, Player player) {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.batch = new SpriteBatch();
 
@@ -43,6 +46,8 @@ public class ViewPortRenderer implements Disposable {
 		scaleFragment = new ScaleFragment(viewPort, viewportBuffer, batch);
 		consoleFragment = new ConsoleFragment(viewPort, batch);
 		overlayTextFragment = new OverlayTextFragment(viewPort, viewportBuffer);
+		playerArrowsFragment = new PlayerArrowsFragment(viewPort, viewportBuffer);
+		hudFragment = new HudFragment(viewPort, viewportBuffer, player);
 
 		pipeline.add(mapFragment);
 		pipeline.add(entitiesFragment);
@@ -52,6 +57,8 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.add(noiseFragment);
 		pipeline.add(motionBlurFragment);
 		pipeline.add(overlayTextFragment);
+		pipeline.add(playerArrowsFragment);
+		pipeline.add(hudFragment);
 		pipeline.add(scaleFragment);
 		pipeline.add(consoleFragment);
 

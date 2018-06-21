@@ -40,7 +40,7 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 
 	public ThiefFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("THIEF");
-		int health = config.getLong("health", 60L).intValue();
+		int health = config.getLong("health", 100L).intValue();
 		float speed = config.getLong("speed", 96L).floatValue();
 		float friction = config.getLong("friction", 10L).floatValue();
 		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();

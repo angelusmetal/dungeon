@@ -365,3 +365,10 @@
   tilesize = 16
   frameDuration = 0.1
   loop = [13, 14, 15, 16, 17]
+
+# Heart containers
+[heart_container]
+  texture = "heart_containers.png"
+  tilesize = 12
+  frameDuration = 0.25
+  sequence = [0, 1, 2, 3, 4]

@@ -43,7 +43,7 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 
 	public WitchFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("WITCH");
-		int health = config.getLong("health", 90L).intValue();
+		int health = config.getLong("health", 100L).intValue();
 		float speed = config.getLong("speed", 60L).floatValue();
 		float friction = config.getLong("friction", 10L).floatValue();
 		float bulletSpeed = config.getLong("bulletSpeed", 200L).floatValue();

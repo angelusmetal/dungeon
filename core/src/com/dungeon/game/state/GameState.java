@@ -223,19 +223,18 @@ public class GameState {
 	 */
 	public static void initViewPorts() {
 		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
-		if (GameState.getPlayerCount() > 1) {
-			scale /= 2;
-		}
 
 		Stack<ViewPort> viewPorts = new Stack<>();
 		if (GameState.getPlayerCount() == 1) {
 			viewPorts.push(new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), scale));
 		} else if (GameState.getPlayerCount() == 2) {
+			scale -= 1;
 			int width = Gdx.graphics.getWidth() / 2;
 			int height = Gdx.graphics.getHeight();
 			viewPorts.add(new ViewPort(width, 0, width, height, scale));
 			viewPorts.add(new ViewPort(0, 0, width, height, scale));
 		} else  {
+			scale -= 2;
 			int width = Gdx.graphics.getWidth() / 2;
 			int height = Gdx.graphics.getHeight() / 2;
 			viewPorts.add(new ViewPort(width, 0, width, height, scale));
@@ -245,7 +244,7 @@ public class GameState {
 		}
 		getPlayers().forEach(p -> {
 			p.setViewPort(viewPorts.pop());
-			p.setRenderer(new ViewPortRenderer(p.getViewPort()));
+			p.setRenderer(new ViewPortRenderer(p.getViewPort(), p));
 			p.getRenderer().initialize();
 		});
 	}

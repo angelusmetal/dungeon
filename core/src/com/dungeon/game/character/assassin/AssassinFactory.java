@@ -38,7 +38,7 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 
 	public AssassinFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("ASSASSIN");
-		int health = config.getLong("health", 100L).intValue();
+		int health = config.getLong("health", 150L).intValue();
 		float speed = config.getLong("speed", 60L).floatValue();
 		float friction = config.getLong("friction", 10L).floatValue();
 		float bulletSpeed = config.getLong("bulletSpeed", 180L).floatValue();
