@@ -53,7 +53,8 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public void fire() {
 		if (!expired) {
 			fireCooldown.attempt(GameState.time(), () -> {
-				Entity projectile = createProjectile(getPos().cpy().mulAdd(getAim(), 2));
+				// TODO Take separation from attack
+				Entity projectile = createProjectile(getPos().cpy().mulAdd(getAim(), 20));
 				if (projectile != null) {
 					projectile.impulse(getAim().cpy().setLength(projectile.speed));
 					// Extra offset to make projectiles appear in the character's hands

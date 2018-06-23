@@ -55,6 +55,24 @@ public class ViewPort {
 				height);
 	}
 
+	public void drawRotated(SpriteBatch batch, TextureRegion region, float x, float y, float rotation, boolean clockwise) {
+//		float scaleX, float scaleY, float rotation, boolean clockwise) {
+		float originX = region.getRegionWidth() / 2;
+		float originY = region.getRegionHeight() / 2;
+		batch.draw(
+				region,
+				(x - cameraX) - originX,
+				(y - cameraY) - originY,
+				originX,
+				originY,
+				region.getRegionWidth(),
+				region.getRegionHeight(),
+				1,
+				1,
+				rotation,
+				clockwise);
+	}
+
 	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter, float rotation) {
 		float radius = diameter / 2f;
 		batch.draw(

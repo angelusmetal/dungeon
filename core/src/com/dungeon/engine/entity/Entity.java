@@ -176,6 +176,10 @@ public class Entity implements Drawable, Movable {
 		return body;
 	}
 
+	public void setDrawFunction(DrawFunction drawFunction) {
+		this.drawFunction = drawFunction;
+	}
+
 	@Override
 	public void setSelfImpulse(Vector2 vector) {
 		selfImpulse.set(vector);
@@ -223,6 +227,18 @@ public class Entity implements Drawable, Movable {
 	private static final Vector2 stepX = new Vector2();
 	private static final Vector2 stepY = new Vector2();
 
+	public void spawn() {
+		// Detect collision against other entities upon spawning
+		for (Entity entity : GameState.getEntities()) {
+			if (entity != this && collides(entity)) {
+				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
+				if (!onEntityCollision(entity)) {
+					entity.onEntityCollision(this);
+				}
+			}
+		}
+	}
+
 	@Override
 	public void move() {
 
@@ -255,20 +271,20 @@ public class Entity implements Drawable, Movable {
 			// do step
 			if (!collidedX) {
 				body.move(stepX);
-				collidedX = detectTileCollision(stepX);
+				collidedX = detectEntityCollision(stepX);
 			}
 			if (!collidedX) {
-				collidedX = detectEntityCollision(stepX);
+				collidedX = detectTileCollision(stepX);
 			}
 			if (collidedX) {
 				movement.x *= -bounciness;
 			}
 			if (!collidedY) {
 				body.move(stepY);
-				collidedY = detectTileCollision(stepY);
+				collidedY = detectEntityCollision(stepY);
 			}
 			if (!collidedY) {
-				collidedY = detectEntityCollision(stepY);
+				collidedY = detectTileCollision(stepY);
 			}
 			if (collidedY) {
 				movement.y *= -bounciness;
@@ -350,6 +366,7 @@ public class Entity implements Drawable, Movable {
 		for (int x = left; x <= right; ++x) {
 			for (int y = bottom; y <= top; ++y) {
 				if (!GameState.getLevel().walkableTiles[x][y].isFloor() && body.intersectsTile(x, y, tile_size)) {
+					// TODO we may want to enable/disable collision & pushback against solid tiles
 					body.move(step.scl(-1));
 					onTileCollision(Math.abs(step.x) > Math.abs(step.y));
 					return true;

@@ -366,6 +366,18 @@
   frameDuration = 0.1
   loop = [13, 14, 15, 16, 17]
 
+# Melee slash
+[melee_slash]
+  texture = "slash.png"
+  tilesize = 32
+  frameDuration = 0.025
+  sequence = [0, 1, 2, 3, 4, 5, 6]
+[invisible]
+  texture = "void.png"
+  tilesize = 1
+  frameDuration = 1
+  sequence = [0]
+
 # Heart containers
 [heart_container]
   texture = "heart_containers.png"

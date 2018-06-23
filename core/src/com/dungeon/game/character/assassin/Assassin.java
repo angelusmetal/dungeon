@@ -20,7 +20,7 @@ public class Assassin extends PlayerEntity {
 
 	@Override
 	protected Entity createProjectile(Vector2 origin) {
-		return factory.createBullet(origin);
+		return factory.createHit(origin, getAim());
 	}
 
 	@Override protected Animation<TextureRegion> getAttackAnimation() {

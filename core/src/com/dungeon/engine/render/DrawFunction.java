@@ -2,6 +2,7 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
@@ -26,6 +27,10 @@ public interface DrawFunction {
 			float actualSpeed = Rand.between(-speed, speed);
 			return (vp, b, e) -> vp.draw(b, texture, e.getPos().x, e.getPos().y + e.getZPos(), texture.getWidth(), GameState.time() * actualSpeed);
 		};
+	}
+
+	static Supplier<DrawFunction> rotateVector(Vector2 rotateVector) {
+		return () -> (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getPos().x, e.getPos().y + e.getZPos(), rotateVector.angle() + 90, true);
 	}
 
 }

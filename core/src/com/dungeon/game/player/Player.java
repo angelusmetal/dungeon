@@ -50,7 +50,7 @@ public class Player implements Disposable {
 		} else if (characterId == 1) {
 			return (PlayerEntity) GameState.build(EntityType.THIEF, origin);
 		} else {
-			return (PlayerEntity) GameState.build(EntityType.ASSASIN, origin);
+			return (PlayerEntity) GameState.build(EntityType.ASSASSIN, origin);
 		}
 	}
 

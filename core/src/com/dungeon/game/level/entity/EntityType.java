@@ -6,7 +6,7 @@ public enum EntityType {
 	// Player characters
 	WITCH,
 	THIEF,
-	ASSASIN,
+	ASSASSIN,
 	// Creatures
 	GHOST,
 	SLIME,

@@ -109,7 +109,7 @@ public class GameState {
 
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
 
-		entityFactory.registerFactory(EntityType.ASSASIN, new AssassinFactory());
+		entityFactory.registerFactory(EntityType.ASSASSIN, new AssassinFactory());
 		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory());
 		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory());
 
@@ -298,7 +298,9 @@ public class GameState {
 		playerCharacters.addAll(newPlayerCharacters);
 		newPlayerCharacters.clear();
 		entities.addAll(newEntities);
+		List<Entity> spawning = new ArrayList<>(newEntities);
 		newEntities.clear();
+		spawning.forEach(Entity::spawn);
 		overlayTexts.addAll(newOverelayTexts);
 		newOverelayTexts.clear();
 
