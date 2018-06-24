@@ -8,21 +8,11 @@ import java.util.function.Supplier;
 
 public abstract class ProjectileWeapon extends Weapon {
 
-//	private final EntityPrototype projectile;
-//	private final EntityPrototype impact;
-//	private final EntityPrototype trail;
-
-	public ProjectileWeapon(Supplier<Float> damage, DamageType damageType, float knockback) {
-		super(damage, damageType, knockback);
-//		projectile = getProjectile();
-//		impact = getImpact();
-//		trail = getTrail();
+	public ProjectileWeapon(String name, Supplier<Float> damage, DamageType damageType, float knockback) {
+		super(name, damage, damageType, knockback);
 	}
 
 	protected abstract float getSpawnDistance();
-//	protected abstract EntityPrototype getProjectile();
-//	protected abstract EntityPrototype getImpact();
-//	protected abstract EntityPrototype getTrail();
 
 	@Override
 	public void spawnEntities(Vector2 origin, Vector2 aim) {

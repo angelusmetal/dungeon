@@ -14,7 +14,7 @@ public class SwordWeapon extends MeleeWeapon {
 	private static final String SLASH_ANIMATION = "melee_slash";
 
 	public SwordWeapon() {
-		super(() -> 50f, DamageType.NORMAL, 1f);
+		super("Sword", () -> 50f, DamageType.NORMAL, 1f);
 	}
 
 	@Override

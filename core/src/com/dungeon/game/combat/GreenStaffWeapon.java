@@ -23,7 +23,7 @@ public class GreenStaffWeapon extends ProjectileWeapon {
 	private final EntityPrototype trail;
 
 	public GreenStaffWeapon() {
-		super(() -> 35f, DamageType.ELEMENTAL, 0);
+		super("Green staff", () -> 35f, DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> bulletFlyAnimation = ResourceManager.getAnimation(PROJECTILE_FLY);
 		Animation<TextureRegion> bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);

@@ -20,8 +20,8 @@ public abstract class MeleeWeapon extends Weapon {
 	private final EntityPrototype hit;
 	private final EntityPrototype slash;
 
-	public MeleeWeapon(Supplier<Float> damage, DamageType damageType, float knockback) {
-		super(damage, damageType, knockback);
+	public MeleeWeapon(String name, Supplier<Float> damage, DamageType damageType, float knockback) {
+		super(name, damage, damageType, knockback);
 		Animation<TextureRegion> hitAnimation = ResourceManager.getAnimation(HIT_ANIMATION);
 		Animation<TextureRegion> slashAnimation = getAttackAnimation();
 		Vector2 hitBoundingBox = getHitBox();

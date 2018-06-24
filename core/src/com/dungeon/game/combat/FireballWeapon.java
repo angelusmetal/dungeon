@@ -23,7 +23,7 @@ public class FireballWeapon extends ProjectileWeapon {
 	private final EntityPrototype trail;
 
 	public FireballWeapon() {
-		super(() -> 5f * (GameState.getPlayerCount() + GameState.getLevelCount()), DamageType.ELEMENTAL, 0);
+		super("Fireball", () -> 5f * (GameState.getPlayerCount() + GameState.getLevelCount()), DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> projectileAnimation = ResourceManager.getAnimation(PROJECTILE);
 		Animation<TextureRegion> explosionAnimation = ResourceManager.getAnimation(EXPLOSION);

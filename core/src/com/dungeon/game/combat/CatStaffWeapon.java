@@ -15,17 +15,17 @@ import com.dungeon.game.state.GameState;
 
 public class CatStaffWeapon extends ProjectileWeapon {
 
-	public static final String PROJECTILE_RIGHT = "projectile_cat_right";
-	public static final String PROJECTILE_UP = "projectile_cat_up";
-	public static final String PROJECTILE_DOWN = "projectile_cat_down";
-	public static final String PROJECTILE_EXPLODE = "projectile_witch_explode";
+	private static final String PROJECTILE_RIGHT = "projectile_cat_right";
+	private static final String PROJECTILE_UP = "projectile_cat_up";
+	private static final String PROJECTILE_DOWN = "projectile_cat_down";
+	private static final String PROJECTILE_EXPLODE = "projectile_witch_explode";
 
 	private final EntityPrototype projectile;
 	private final EntityPrototype impact;
 	private final EntityPrototype trail;
 
 	public CatStaffWeapon() {
-		super(() -> 35f, DamageType.ELEMENTAL, 0);
+		super("Cat staff", () -> 35f, DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> bulletFlySideAnimation = ResourceManager.getAnimation(PROJECTILE_RIGHT);
 		Animation<TextureRegion> bulletFlyNorthAnimation = ResourceManager.getAnimation(PROJECTILE_UP);
@@ -82,6 +82,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 	private Entity createTrail(Entity generator) {
 		Entity entity = new Entity(generator.getPos(), trail);
 		entity.setCurrentAnimation(generator.getCurrentAnimation());
+		entity.setInvertX(generator.invertX());
 		return entity;
 	}
 

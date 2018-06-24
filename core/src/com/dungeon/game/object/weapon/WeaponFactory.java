@@ -25,6 +25,10 @@ public class WeaponFactory {
 	private static final Vector2 BOUNDING_BOX = new Vector2(20, 20);
 	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
 
+	private Animation<TextureRegion> swordAnimation;
+	private Animation<TextureRegion> catStaffAnimation;
+	private Animation<TextureRegion> greenStaffAnimation;
+
 	private final EntityPrototype sword;
 	private final EntityPrototype catStaff;
 	private final EntityPrototype greenStaff;
@@ -32,9 +36,9 @@ public class WeaponFactory {
 	private final Light light = new Light(96, new Color(0.1f, 0.8f, 0.7f, 1), Light.RAYS_TEXTURE, Light::torchlight, Light::rotateFast);
 
 	public WeaponFactory() {
-		Animation<TextureRegion> swordAnimation = ResourceManager.getAnimation(SWORD);
-		Animation<TextureRegion> catStaffAnimation = ResourceManager.getAnimation(CAT_STAFF);
-		Animation<TextureRegion> greenStaffAnimation = ResourceManager.getAnimation(GREEN_STAFF);
+		swordAnimation = ResourceManager.getAnimation(SWORD);
+		catStaffAnimation = ResourceManager.getAnimation(CAT_STAFF);
+		greenStaffAnimation = ResourceManager.getAnimation(GREEN_STAFF);
 
 		sword = weaponPrototype().animation(swordAnimation);
 		catStaff = weaponPrototype().animation(catStaffAnimation);
@@ -49,13 +53,14 @@ public class WeaponFactory {
 				.with(Traits.zOscillate(3, 8f));
 	}
 
-	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Weapon weapon) {
+	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Weapon weapon, Animation<TextureRegion> animation) {
+		weapon.setAnimation(animation);
 		return new Entity(origin, prototype) {
 			@Override public boolean onEntityCollision(Entity other) {
 				if (!expired && other instanceof PlayerEntity) {
 					((PlayerEntity) other).getPlayer().setWeapon(weapon);
 					expire();
-					GameState.console().log("Picked up " + weapon.getClass().getSimpleName(), Color.GOLD);
+					GameState.console().log("Picked up " + weapon.getName() + "!", Color.GOLD);
 					return true;
 				}
 				return false;
@@ -64,15 +69,15 @@ public class WeaponFactory {
 	}
 
 	public Entity buildSword(Vector2 origin) {
-		return buildWeaponEntity(origin, sword, new SwordWeapon());
+		return buildWeaponEntity(origin, sword, new SwordWeapon(), swordAnimation);
 	}
 
 	public Entity buildCatStaff(Vector2 origin) {
-		return buildWeaponEntity(origin, catStaff, new CatStaffWeapon());
+		return buildWeaponEntity(origin, catStaff, new CatStaffWeapon(), catStaffAnimation);
 	}
 
 	public Entity buildGreenStaff(Vector2 origin) {
-		return buildWeaponEntity(origin, greenStaff, new GreenStaffWeapon());
+		return buildWeaponEntity(origin, greenStaff, new GreenStaffWeapon(), greenStaffAnimation);
 	}
 
 }
