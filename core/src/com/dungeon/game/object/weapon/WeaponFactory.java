@@ -58,9 +58,10 @@ public class WeaponFactory {
 		return new Entity(origin, prototype) {
 			@Override public boolean onEntityCollision(Entity other) {
 				if (!expired && other instanceof PlayerEntity) {
-					((PlayerEntity) other).getPlayer().setWeapon(weapon);
+					PlayerEntity character = (PlayerEntity) other;
+					character.getPlayer().setWeapon(weapon);
+					character.getPlayer().getConsole().log("Picked up " + weapon.getName() + "!", Color.GOLD);
 					expire();
-					GameState.console().log("Picked up " + weapon.getName() + "!", Color.GOLD);
 					return true;
 				}
 				return false;

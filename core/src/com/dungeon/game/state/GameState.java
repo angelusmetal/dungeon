@@ -60,7 +60,6 @@ public class GameState {
 	private static Level level;
 	private static TilesetManager tilesetManager = new TilesetManager();
 	private static State currentState = State.MENU;
-	private static Console console;
 
 	private static List<PlayerEntity> playerCharacters = new LinkedList<>();
 	private static List<PlayerEntity> newPlayerCharacters = new LinkedList<>();
@@ -85,7 +84,6 @@ public class GameState {
 	public static void initialize(Toml configuration) {
 		GameState.entityFactory = new EntityFactory();
 		GameState.configuration = configuration;
-		console = new Console(10, 3f); // TODO get size from config
 		initEntityFactories(entityFactory);
 	}
 
@@ -137,10 +135,6 @@ public class GameState {
 
 	public static Toml getConfiguration() {
 		return configuration;
-	}
-
-	public static Console console() {
-		return console;
 	}
 
 	public static Entity build(EntityType type, Vector2 position) {
@@ -219,6 +213,16 @@ public class GameState {
 		setCurrentState(GameState.State.INGAME);
 
 		addRenderEffect(FadeEffect.fadeIn(time()));
+
+		// Add watches
+		getPlayers().forEach(player -> {
+			player.getConsole().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
+//			GameState.console().watch("Time", () -> Float.toString(GameState.time()));
+			player.getConsole().watch("Level", () -> Integer.toString(GameState.getLevelCount()));
+			//TODO Fix
+//			GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
+//			GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
+		});
 	}
 
 	private static final double DEFAULT_SCALE = 3;

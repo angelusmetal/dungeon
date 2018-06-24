@@ -48,7 +48,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	@Override
 	protected void onExpire() {
-		GameState.console().log("You have died", Color.GOLD);
+		getPlayer().getConsole().log("You have died", Color.GOLD);
 	}
 
 	public void fire() {

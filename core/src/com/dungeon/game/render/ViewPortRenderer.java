@@ -44,7 +44,7 @@ public class ViewPortRenderer implements Disposable {
 		noiseFragment = new NoiseFragment(viewPort, viewportBuffer);
 		motionBlurFragment = new MotionBlurFragment(viewPort, viewportBuffer);
 		scaleFragment = new ScaleFragment(viewPort, viewportBuffer, batch);
-		consoleFragment = new ConsoleFragment(viewPort, batch);
+		consoleFragment = new ConsoleFragment(viewPort, batch, player.getConsole());
 		overlayTextFragment = new OverlayTextFragment(viewPort, viewportBuffer);
 		playerArrowsFragment = new PlayerArrowsFragment(viewPort, viewportBuffer);
 		hudFragment = new HudFragment(viewPort, viewportBuffer, player);

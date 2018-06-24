@@ -12,6 +12,7 @@ import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.render.ViewPortRenderer;
+import com.dungeon.game.state.Console;
 import com.dungeon.game.state.GameState;
 
 public class Player implements Disposable {
@@ -29,6 +30,7 @@ public class Player implements Disposable {
 	private PlayerStats stats;
 	private Color color;
 	private Weapon weapon;
+	private Console console;
 
 	public Player(int playerId, int characterId, PlayerControlBundle control) {
 		this.playerId = playerId;
@@ -37,6 +39,7 @@ public class Player implements Disposable {
 		this.stats = new PlayerStats();
 		this.color = PLAYER_COLORS[playerId];
 		this.weapon = PLAYER_WEAPONS[characterId];
+		this.console = new Console(10, 3f);
 	}
 
 	/**
@@ -101,5 +104,9 @@ public class Player implements Disposable {
 
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
+	}
+
+	public Console getConsole() {
+		return console;
 	}
 }

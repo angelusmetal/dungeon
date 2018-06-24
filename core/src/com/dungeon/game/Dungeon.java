@@ -93,14 +93,6 @@ public class Dungeon extends ApplicationAdapter {
 
 		characterViewPortTracker = new CharacterViewPortTracker();
 
-		// Add watches
-		GameState.console().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
-//		GameState.console().watch("Time", () -> Float.toString(GameState.time()));
-		GameState.console().watch("Level", () -> Integer.toString(GameState.getLevelCount()));
-		//TODO Fix
-//		GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
-//		GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
-
 	}
 
 	private void addDeveloperHotkeys() {
