@@ -12,7 +12,7 @@ import com.dungeon.game.level.entity.EntityFactory;
 
 public class TorchFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String IDLE = "torch_idle";
+	private static final String IDLE = "torch_idle";
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
 	private static final Vector2 DRAW_OFFSET = new Vector2(16, 16);

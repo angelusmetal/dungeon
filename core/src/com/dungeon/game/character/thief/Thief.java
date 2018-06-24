@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.CooldownTrigger;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;

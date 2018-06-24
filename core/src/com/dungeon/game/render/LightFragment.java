@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 

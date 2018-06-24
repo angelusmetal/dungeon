@@ -19,9 +19,9 @@ import com.moandjiezana.toml.Toml;
 
 public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String IDLE = "slime_acid_idle";
-	public static final String ATTACK = "slime_acid_attack";
-	public static final String DIE = "slime_acid_die";
+	private static final String IDLE = "slime_acid_idle";
+	private static final String ATTACK = "slime_acid_attack";
+	private static final String DIE = "slime_acid_die";
 
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> attackAnimation;
@@ -110,6 +110,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		blob = new EntityPrototype()
 				.animation(blobAnimation)
 				.boundingBox(blobBouncingBox)
+				.color(lightColor)
 				.drawOffset(blobDrawOffset)
 				.speed(50)
 				.zSpeed(() -> Rand.between(50f, 100f))
@@ -118,6 +119,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		splat = new EntityPrototype()
 				.animation(splatAnimation)
 				.boundingBox(blobBouncingBox)
+				.color(lightColor)
 				.drawOffset(blobDrawOffset)
 				.timeToLive(splatAnimation.getAnimationDuration());
 	}
@@ -145,7 +147,6 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 			@Override
 			protected void onExpire() {
 				Entity splatEntity = new Entity(getPos(), splat);
-				splatEntity.setColor(dying.getColor());
 				GameState.addEntity(splatEntity);
 			}
 			@Override
@@ -155,7 +156,6 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		};
 		entity.setZPos(8);
 		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
-		entity.setColor(lightColor);
 		return entity;
 	}
 

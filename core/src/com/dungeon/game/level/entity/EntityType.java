@@ -14,6 +14,9 @@ public enum EntityType {
 	SLIME_FIRE,
 	// Items
 	HEALTH_POWERUP,
+	WEAPON_SWORD,
+	WEAPON_CAT_STAFF,
+	WEAPON_GREEN_STAFF,
 	// Props
 	TOMBSTONE,
 	TORCH,

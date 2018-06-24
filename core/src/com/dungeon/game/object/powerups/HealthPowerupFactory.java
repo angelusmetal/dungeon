@@ -17,7 +17,7 @@ import com.dungeon.game.tileset.FillSheet;
 
 public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String HEALTH = "powerup_health";
+	private static final String HEALTH = "powerup_health";
 
 	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
 	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
@@ -81,7 +81,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 					character.heal(amount);
 					expire();
 					GameState.console().log("Healed for " + amount, Color.GOLD);
-					GameState.getPlayers().get(character.getPlayerId()).getRenderer().beginMotionBlur();
+					character.getPlayer().getRenderer().beginMotionBlur();
 					return true;
 				} else {
 					return false;

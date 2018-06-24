@@ -9,9 +9,6 @@ import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.state.OverlayText;
-
-import java.util.Comparator;
 
 public class PlayerArrowsFragment implements RenderFragment {
 

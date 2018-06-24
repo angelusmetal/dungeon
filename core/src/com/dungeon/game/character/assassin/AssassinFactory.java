@@ -13,8 +13,8 @@ import com.moandjiezana.toml.Toml;
 public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 
 	public static final String ASSASSIN_WALK = "assassin_walk";
-	public static final String ASSASSIN_ATTACK = "assassin_attack";
-	public static final String ASSASSIN_IDLE = "assassin_idle";
+	private static final String ASSASSIN_ATTACK = "assassin_attack";
+	private static final String ASSASSIN_IDLE = "assassin_idle";
 
 	final Animation<TextureRegion> attackAnimation;
 	final Animation<TextureRegion> idleAnimation;

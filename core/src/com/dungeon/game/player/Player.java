@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.combat.FlyingCatWeapon;
+import com.dungeon.game.combat.CatStaffWeapon;
+import com.dungeon.game.combat.GreenStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
-import com.dungeon.game.combat.ThrowableDaggerWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.render.ViewPortRenderer;
@@ -17,7 +17,7 @@ import com.dungeon.game.state.GameState;
 public class Player implements Disposable {
 
 	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
-	private static Weapon[] PLAYER_WEAPONS = {new FlyingCatWeapon(), new ThrowableDaggerWeapon(), new SwordWeapon()};
+	private static Weapon[] PLAYER_WEAPONS = {new CatStaffWeapon(), new GreenStaffWeapon(), new SwordWeapon()};
 
 	private int playerId;
 	private int characterId;
@@ -97,5 +97,9 @@ public class Player implements Disposable {
 
 	public Weapon getWeapon() {
 		return weapon;
+	}
+
+	public void setWeapon(Weapon weapon) {
+		this.weapon = weapon;
 	}
 }

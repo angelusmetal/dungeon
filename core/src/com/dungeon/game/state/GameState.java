@@ -24,13 +24,14 @@ import com.dungeon.game.level.Room;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.object.props.DoorFactory;
 import com.dungeon.game.object.exit.ExitPlatformFactory;
 import com.dungeon.game.object.particle.ParticleFactory;
 import com.dungeon.game.object.powerups.HealthPowerupFactory;
+import com.dungeon.game.object.props.DoorFactory;
 import com.dungeon.game.object.props.FurnitureFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.object.torch.TorchFactory;
+import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.tileset.LevelTileset;
@@ -108,6 +109,10 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory());
 
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
+		WeaponFactory weaponFactory = new WeaponFactory();
+		entityFactory.registerFactory(EntityType.WEAPON_SWORD, weaponFactory::buildSword);
+		entityFactory.registerFactory(EntityType.WEAPON_CAT_STAFF, weaponFactory::buildCatStaff);
+		entityFactory.registerFactory(EntityType.WEAPON_GREEN_STAFF, weaponFactory::buildGreenStaff);
 
 		entityFactory.registerFactory(EntityType.ASSASSIN, new AssassinFactory());
 		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory());

@@ -1,15 +1,9 @@
 package com.dungeon.game.combat;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.TraitSupplier;
-import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.game.state.GameState;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public abstract class ProjectileWeapon extends Weapon {

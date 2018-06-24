@@ -6,15 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.entity.Projectile;
-import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.FireballWeapon;
-import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
@@ -22,7 +18,7 @@ import com.moandjiezana.toml.Toml;
 
 public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String IDLE = "slime_fire_idle";
+	private static final String IDLE = "slime_fire_idle";
 
 	final Animation<TextureRegion> idleAnimation;
 

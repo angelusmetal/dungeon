@@ -20,13 +20,13 @@ import java.util.function.Supplier;
 
 public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String IDLE = "slime_idle";
-	public static final String BLINK = "slime_blink";
-	public static final String DIE = "slime_die";
+	private static final String IDLE = "slime_idle";
+	private static final String BLINK = "slime_blink";
+	private static final String DIE = "slime_die";
 
-	public static final String SPAWN_IDLE = "slime_mini_idle";
-	public static final String SPAWN_BLINK = "slime_mini_blink";
-	public static final String SPAWN_DIE = "slime_mini_die";
+	private static final String SPAWN_IDLE = "slime_mini_idle";
+	private static final String SPAWN_BLINK = "slime_mini_blink";
+	private static final String SPAWN_DIE = "slime_mini_die";
 
 	public static final String POOL_FLOOD = "slime_pool_flood";
 	public static final String POOL_DRY = "slime_pool_dry";

@@ -17,7 +17,7 @@ import com.moandjiezana.toml.Toml;
 
 public class GhostFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String HOVER = "ghost_hover";
+	private static final String HOVER = "ghost_hover";
 
 	final Animation<TextureRegion> idleAnimation;
 	final EntityPrototype character;

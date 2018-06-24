@@ -13,7 +13,7 @@ import com.dungeon.game.state.GameState;
 
 public class TombstoneFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String SPAWN = "tombstone_spawn";
+	private static final String SPAWN = "tombstone_spawn";
 
 	final Animation<TextureRegion> animation;
 	private final EntityPrototype object;

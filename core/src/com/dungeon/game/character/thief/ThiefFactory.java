@@ -13,8 +13,8 @@ import com.moandjiezana.toml.Toml;
 public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 
 	public static final String THIEF_WALK = "thief_walk";
-	public static final String THIEF_ATTACK = "thief_attack";
-	public static final String THIEF_IDLE = "thief_idle";
+	private static final String THIEF_ATTACK = "thief_attack";
+	private static final String THIEF_IDLE = "thief_idle";
 
 	final Animation<TextureRegion> attackAnimation;
 	final Animation<TextureRegion> idleAnimation;

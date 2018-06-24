@@ -13,7 +13,7 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.state.GameState;
 
-public class FlyingCatWeapon extends ProjectileWeapon {
+public class CatStaffWeapon extends ProjectileWeapon {
 
 	public static final String PROJECTILE_RIGHT = "projectile_cat_right";
 	public static final String PROJECTILE_UP = "projectile_cat_up";
@@ -24,7 +24,7 @@ public class FlyingCatWeapon extends ProjectileWeapon {
 	private final EntityPrototype impact;
 	private final EntityPrototype trail;
 
-	public FlyingCatWeapon() {
+	public CatStaffWeapon() {
 		super(() -> 35f, DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> bulletFlySideAnimation = ResourceManager.getAnimation(PROJECTILE_RIGHT);

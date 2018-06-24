@@ -24,6 +24,7 @@
     growth = 10
     #creatures = ["SLIME_FIRE"]
     creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
+    items = ["HEALTH_POWERUP", "WEAPON_SWORD", "WEAPON_CAT_STAFF", "WEAPON_GREEN_STAFF"]
     itemchance = 1.0
 [rendering]
     noiseHidth = 128

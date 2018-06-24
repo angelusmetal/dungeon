@@ -13,8 +13,8 @@ import com.moandjiezana.toml.Toml;
 public class WitchFactory implements EntityFactory.EntityTypeFactory {
 
 	public static final String WITCH_WALK = "witch_walk";
-	public static final String WITCH_ATTACK = "witch_attack";
-	public static final String WITCH_IDLE = "witch_idle";
+	private static final String WITCH_ATTACK = "witch_attack";
+	private static final String WITCH_IDLE = "witch_idle";
 
 	final Animation<TextureRegion> attackAnimation;
 	final Animation<TextureRegion> idleAnimation;

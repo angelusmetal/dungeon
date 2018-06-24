@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class ProceduralLevelGenerator {
 
 	public static final List<String> DEFAULT_MONSTER_TYPES = Arrays.asList("GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE");
+	public static final List<String> DEFAULT_ITEM_TYPES = Arrays.asList("HEALTH_POWERUP", "WEAPON_SWORD", "WEAPON_CAT_STAFF", "WEAPON_GREEN_STAFF");
 
 	private int width;
 	private int height;
@@ -139,6 +140,7 @@ public class ProceduralLevelGenerator {
 
 	private List<EntityPlaceholder> generateEntities() {
 		List<EntityType> monsterTypes = configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		List<EntityType> itemTypes = configuration.getList("map.items", DEFAULT_ITEM_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
 		float itemChance = configuration.getDouble("map.itemchance", 0.4d).floatValue();
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 
@@ -148,6 +150,10 @@ public class ProceduralLevelGenerator {
 		spawnTypes.add(EntityType.TABLE);
 		spawnTypes.add(EntityType.TABLE2);
 		spawnTypes.add(EntityType.CAGE);
+//		spawnTypes.add(EntityType.FLAME_PARTICLE);
+		spawnTypes.add(EntityType.CANDLE_PARTICLE);
+//		spawnTypes.add(EntityType.DROPLET_PARTICLE);
+//		spawnTypes.add(EntityType.FIREBALL_PARTICLE);
 
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
@@ -158,10 +164,10 @@ public class ProceduralLevelGenerator {
 //			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
 			room.spawnPoints.stream().forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(spawnTypes), pos)));
 
-			// A 40% chance of spawning one powerup
+			// A chance of spawning one item
 			if (Rand.chance(itemChance)) {
 				Vector2 pos = Rand.pick(room.spawnPoints);
-				placeholders.add(new EntityPlaceholder(EntityType.HEALTH_POWERUP, pos));
+				placeholders.add(new EntityPlaceholder(Rand.pick(itemTypes), pos));
 			}
 		}
 		// Add placeholders

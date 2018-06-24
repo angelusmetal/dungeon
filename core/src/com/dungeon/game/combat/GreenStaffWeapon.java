@@ -13,7 +13,7 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.state.GameState;
 
-public class ThrowableDaggerWeapon extends ProjectileWeapon {
+public class GreenStaffWeapon extends ProjectileWeapon {
 
 	private static final String PROJECTILE_FLY = "projectile_thief_fly";
 	private static final String PROJECTILE_EXPLODE = "projectile_thief_explode";
@@ -22,7 +22,7 @@ public class ThrowableDaggerWeapon extends ProjectileWeapon {
 	private final EntityPrototype impact;
 	private final EntityPrototype trail;
 
-	public ThrowableDaggerWeapon() {
+	public GreenStaffWeapon() {
 		super(() -> 35f, DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> bulletFlyAnimation = ResourceManager.getAnimation(PROJECTILE_FLY);

@@ -366,6 +366,23 @@
   frameDuration = 0.1
   loop = [13, 14, 15, 16, 17]
 
+# Weapons
+[weapon_sword]
+  texture = "weapons.png"
+  tilesize = 20
+  frameDuration = 1
+  sequence = [0]
+[weapon_cat_staff]
+  texture = "weapons.png"
+  tilesize = 20
+  frameDuration = 1
+  sequence = [1]
+[weapon_green_staff]
+  texture = "weapons.png"
+  tilesize = 20
+  frameDuration = 1
+  sequence = [2]
+
 # Melee slash
 [melee_slash]
   texture = "slash.png"
