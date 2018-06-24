@@ -18,11 +18,6 @@ public class Assassin extends PlayerEntity {
 		setCurrentAnimation(factory.idleAnimation);
 	}
 
-	@Override
-	protected Entity createProjectile(Vector2 origin) {
-		return factory.createHit(origin, getAim());
-	}
-
 	@Override protected Animation<TextureRegion> getAttackAnimation() {
 		return factory.attackAnimation;
 	}

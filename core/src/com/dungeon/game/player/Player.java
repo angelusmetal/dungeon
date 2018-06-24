@@ -6,6 +6,10 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.combat.FlyingCatWeapon;
+import com.dungeon.game.combat.SwordWeapon;
+import com.dungeon.game.combat.ThrowableDaggerWeapon;
+import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.render.ViewPortRenderer;
 import com.dungeon.game.state.GameState;
@@ -13,6 +17,7 @@ import com.dungeon.game.state.GameState;
 public class Player implements Disposable {
 
 	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
+	private static Weapon[] PLAYER_WEAPONS = {new FlyingCatWeapon(), new ThrowableDaggerWeapon(), new SwordWeapon()};
 
 	private int playerId;
 	private int characterId;
@@ -23,6 +28,7 @@ public class Player implements Disposable {
 	private PlayerEntity avatar;
 	private PlayerStats stats;
 	private Color color;
+	private Weapon weapon;
 
 	public Player(int playerId, int characterId, PlayerControlBundle control) {
 		this.playerId = playerId;
@@ -30,6 +36,7 @@ public class Player implements Disposable {
 		this.control = control;
 		this.stats = new PlayerStats();
 		this.color = PLAYER_COLORS[playerId];
+		this.weapon = PLAYER_WEAPONS[characterId];
 	}
 
 	/**
@@ -86,5 +93,9 @@ public class Player implements Disposable {
 
 	public PlayerEntity getAvatar() {
 		return avatar;
+	}
+
+	public Weapon getWeapon() {
+		return weapon;
 	}
 }

@@ -167,6 +167,10 @@ public class Entity implements Drawable, Movable {
 		return movement;
 	}
 
+	public float getSpeed() {
+		return speed;
+	}
+
 	@Override
  	public Vector2 getDrawOffset() {
 		return drawOffset;

@@ -20,11 +20,6 @@ public class Thief extends PlayerEntity {
 		fireCooldown = new CooldownTrigger(0.2f);
 	}
 
-	@Override
-	protected Entity createProjectile(Vector2 origin) {
-		return factory.createBullet(origin);
-	}
-
 	@Override protected Animation<TextureRegion> getAttackAnimation() {
 		return factory.attackAnimation;
 	}

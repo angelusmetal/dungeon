@@ -18,11 +18,6 @@ public class Witch extends PlayerEntity {
 		setCurrentAnimation(factory.idleAnimation);
 	}
 
-	@Override
-	protected Entity createProjectile(Vector2 origin) {
-		return factory.createBullet(origin);
-	}
-
 	@Override protected Animation<TextureRegion> getAttackAnimation() {
 		return factory.attackAnimation;
 	}

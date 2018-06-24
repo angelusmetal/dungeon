@@ -38,22 +38,16 @@
     health = 150
     speed = 60
     friction = 10
-    bulletSpeed = 180
-    bulletDamage = 35
 [[creatures]]
     id = "THIEF"
     health = 100
     speed = 96
     friction = 10
-    bulletSpeed = 200
-    bulletDamage = 25
 [[creatures]]
     id = "WITCH"
     health = 100
     speed = 60
     friction = 10
-    bulletSpeed = 200
-    bulletDamage = 25
 
 # Creatures
 [[creatures]]
@@ -96,8 +90,6 @@
     attackFrequency = 1.5   # Frequency of attacks, in seconds
     attackSpeed = 10        # Movement speed while attacking
     idleSpeed = 5           # Movement speed while idle
-    bulletSpeed = 100       # Bullet speed
-    bulletDamage = 5        # Bullet damage
     damagePerSecond = 10    # Damage dealth per second upon contact
 
 #

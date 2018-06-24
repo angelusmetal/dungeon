@@ -1,10 +1,12 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Light;
+import com.dungeon.game.player.Player;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Predicate;
@@ -53,26 +55,19 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public void fire() {
 		if (!expired) {
 			fireCooldown.attempt(GameState.time(), () -> {
-				// TODO Take separation from attack
-				Entity projectile = createProjectile(getPos().cpy().mulAdd(getAim(), 20));
-				if (projectile != null) {
-					projectile.impulse(getAim().cpy().setLength(projectile.speed));
-					// Extra offset to make projectiles appear in the character's hands
-					//projectile.getPos().y -= 8;
-					GameState.addEntity(projectile);
-					updateCurrentAnimation(getAttackAnimation());
-				}
+				getPlayer().getWeapon().spawnEntities(getPos(), getAim());
+				updateCurrentAnimation(getAttackAnimation());
 			});
 		}
-	}
-
-	protected Entity createProjectile(Vector2 pos) {
-		return null;
 	}
 
 	abstract protected Animation<TextureRegion> getAttackAnimation();
 	abstract protected Animation<TextureRegion> getIdleAnimation();
 	abstract protected Animation<TextureRegion> getWalkAnimation();
+
+	public Player getPlayer() {
+		return GameState.getPlayers().get(playerId);
+	}
 
 	public void heal(int amount) {
 		health += amount;

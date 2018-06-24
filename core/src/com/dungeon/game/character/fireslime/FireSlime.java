@@ -31,9 +31,8 @@ public class FireSlime extends CreatureEntity {
 				speed = factory.attackSpeed;
 				moveStrictlyTowards(closest.getEntity().getPos());
 				// Fire a projectile
-				Entity bullet = factory.createBullet(getPos());
-				bullet.moveStrictlyTowards(closest.getEntity().getPos());
-				GameState.addEntity(bullet);
+				Vector2 aim = closest.getEntity().getPos().cpy().sub(getPos()).setLength(1);
+				factory.getWeapon().spawnEntities(getPos(), aim);
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
 				speed = factory.idleSpeed;
@@ -55,11 +54,10 @@ public class FireSlime extends CreatureEntity {
 	@Override
 	protected void onExpire() {
 		int bullets = (GameState.getPlayerCount() + GameState.getLevelCount()) * 2;
+		Vector2 aim = new Vector2(0, 1);
 		for (int i = 0; i < bullets; ++i) {
-			Entity bullet = factory.createBullet(getPos());
-			bullet.setSelfImpulse(0, 1);
-			bullet.getSelfImpulse().rotate(360 / bullets * i);
-			GameState.addEntity(bullet);
+			factory.getWeapon().spawnEntities(getPos(), aim);
+			aim.rotate(360 / bullets);
 		}
 	}
 

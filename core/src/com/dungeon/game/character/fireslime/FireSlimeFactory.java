@@ -13,6 +13,9 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.combat.FireballWeapon;
+import com.dungeon.game.combat.SwordWeapon;
+import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
@@ -20,27 +23,20 @@ import com.moandjiezana.toml.Toml;
 public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 
 	public static final String IDLE = "slime_fire_idle";
-	public static final String PROJECTILE = "slime_fire_projectile";
-	public static final String EXPLOSION = "slime_fire_explosion";
 
 	final Animation<TextureRegion> idleAnimation;
-	final Animation<TextureRegion> projectileAnimation;
-	final Animation<TextureRegion> explosionAnimation;
 
 	final EntityPrototype character;
-	final EntityPrototype bullet;
-	final EntityPrototype bulletExplosion;
-	final EntityPrototype bulletTrail;
 
 	final Light characterLight;
-	final Light bulletLight;
-	final Light bulletTrailLight;
 
 	final float maxTargetDistance;
 	final float attackFrequency;
 	final float attackSpeed;
 	final float idleSpeed;
 	final float damagePerSecond;
+
+	final Weapon weapon;
 
 	public FireSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("SLIME_FIRE");
@@ -51,23 +47,14 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();
 		int health = config.getLong("health", 50L).intValue();
 		float speed = config.getLong("speed", 20L).floatValue();
-		float bulletSpeed = config.getLong("bulletSpeed", 100L).floatValue();
-		float bulletDamage = config.getLong("bulletDamage", 5L).floatValue();
 
 		// Character animations
 		idleAnimation = ResourceManager.getAnimation(IDLE);
-		projectileAnimation = ResourceManager.getAnimation(PROJECTILE);
-		explosionAnimation = ResourceManager.getAnimation(EXPLOSION);
 
 		characterLight = new Light(100, new Color(1, 0.5f, 0, 0.8f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
-		bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
-		bulletTrailLight = new Light(20, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);
-
-		Vector2 bulletBoundingBox = new Vector2(6, 6);
-		Vector2 bulletDrawOffset = new Vector2(8, 8);
 
 		character = new EntityPrototype()
 				.animation(idleAnimation)
@@ -77,30 +64,8 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.light(characterLight)
 				.speed(speed)
 				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
-		bullet = new EntityPrototype()
-				.animation(projectileAnimation)
-				.boundingBox(bulletBoundingBox)
-				.drawOffset(bulletDrawOffset)
-				.light(bulletLight)
-				.speed(bulletSpeed)
-				.timeToLive(10)
-				.hitPredicate(PlayerEntity.HIT_PLAYERS)
-				.damage(() -> bulletDamage * (GameState.getPlayerCount() + GameState.getLevelCount()))
-				.with(Traits.generator(0.1f, this::createBulletTrail));
-		bulletExplosion = new EntityPrototype()
-				.animation(explosionAnimation)
-				.boundingBox(bulletBoundingBox)
-				.drawOffset(bulletDrawOffset)
-				.light(bulletLight)
-				.timeToLive(explosionAnimation.getAnimationDuration());
-		bulletTrail = new EntityPrototype()
-				.animation(explosionAnimation)
-				.boundingBox(bulletBoundingBox)
-				.drawOffset(bulletDrawOffset)
-				.light(bulletTrailLight)
-				.timeToLive(explosionAnimation.getAnimationDuration())
-				.with(Traits.fadeOut(1f))
-				.zSpeed(10);
+
+		weapon = new FireballWeapon();
 	}
 
 	@Override
@@ -108,21 +73,8 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		return new FireSlime(origin, this);
 	}
 
-	Entity createBullet(Vector2 origin) {
-		return new Projectile(origin, bullet) {
-			@Override
-			protected void onExpire() {
-				GameState.addEntity(createBulletExplosion(getPos()));
-			}
-		};
-	}
-
-	private Entity createBulletTrail(Entity entity) {
-		return new Entity(entity.getPos(), bulletTrail);
-	}
-
-	private Entity createBulletExplosion(Vector2 origin) {
-		return new Entity(origin, bulletExplosion);
+	public Weapon getWeapon() {
+		return weapon;
 	}
 
 }
