@@ -18,6 +18,7 @@ public class EntityPrototype {
 	float bounciness = 0;
 	Supplier<Color> color = Color.WHITE::cpy;
 	Supplier<Float> damage;
+	Supplier<Float> knockback = () -> 0f;
 	Supplier<Float> friction = () -> 0f;
 	Light light = null;
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
@@ -89,6 +90,16 @@ public class EntityPrototype {
 
 	public EntityPrototype drawFunction(Supplier<DrawFunction> drawFunction) {
 		this.drawFunction = drawFunction;
+		return this;
+	}
+
+	public EntityPrototype knockback(float knockback) {
+		this.knockback = () -> knockback;
+		return this;
+	}
+
+	public EntityPrototype knockback(Supplier<Float> knockback) {
+		this.knockback = knockback;
 		return this;
 	}
 

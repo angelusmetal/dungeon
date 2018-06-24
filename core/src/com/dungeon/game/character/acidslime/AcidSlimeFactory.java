@@ -89,6 +89,7 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.color(color)
 				.light(characterLight)
 				.speed(speed)
+				.knockback(1f)
 				.friction(friction)
 				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		death = new EntityPrototype()

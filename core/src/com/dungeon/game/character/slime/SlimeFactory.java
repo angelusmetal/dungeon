@@ -106,6 +106,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.speed(speed)
 				.zSpeed(0)
 				.with(Traits.zAccel(-200))
+				.knockback(1f)
 				.friction(friction)
 				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		spawn = new EntityPrototype()
@@ -116,6 +117,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.speed(speed)
 				.zSpeed(0)
 				.with(Traits.zAccel(-200))
+				.knockback(1f)
 				.friction(friction)
 				.health(() -> spawnHealth * (GameState.getPlayerCount() + GameState.getLevelCount()));
 		death = new EntityPrototype()

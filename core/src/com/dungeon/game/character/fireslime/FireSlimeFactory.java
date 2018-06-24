@@ -59,6 +59,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 				.color(new Color(1, 1, 1, 0.8f))
 				.light(characterLight)
 				.speed(speed)
+				.knockback(1f)
 				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
 
 		weapon = new FireballWeapon();

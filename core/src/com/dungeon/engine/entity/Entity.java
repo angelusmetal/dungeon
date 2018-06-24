@@ -14,6 +14,7 @@ import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.combat.Attack;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
@@ -45,6 +46,10 @@ public class Entity implements Drawable, Movable {
 	 * Reduces speed
 	 */
 	protected float friction;
+	/**
+	 * How susceptible this entity is to knockback
+	 */
+	protected float knockback;
 	/**
 	 * Bounciness ratio (0...1)
 	 */
@@ -85,6 +90,7 @@ public class Entity implements Drawable, Movable {
 		this.startTime = GameState.time();
 		this.speed = builder.speed.get();
 		this.zSpeed = builder.zSpeed.get();
+		this.knockback = builder.friction.get();
 		this.friction = builder.friction.get();
 		this.bounciness = builder.bounciness;
 		this.hitPredicate = builder.hitPredicate;
@@ -410,15 +416,20 @@ public class Entity implements Drawable, Movable {
 		return this.body.intersects(entity.body);
 	}
 
-	public void hit(float dmg) {
+	public void hit(Attack attack) {
 		if (canBeHurt()) {
-			health -= dmg;
+			health -= attack.getDamage();
 			onHit();
-			if (dmg > 1) {
-				GameState.addOverlayText(new OverlayText(getPos(), "" + (int) dmg, new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
+			if (attack.getDamage() > 1) {
+				GameState.addOverlayText(new OverlayText(getPos(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
 			}
 			if (health <= 0) {
 				expire();
+			}
+			if (attack.getKnockback() > 0) {
+				Vector2 knockback = getPos().cpy().sub(attack.getEmitter().getPos()).setLength(attack.getKnockback() * this.knockback);
+				impulse(knockback);
+				System.out.println("KNOCKBACK! " + knockback);
 			}
 		}
 	}

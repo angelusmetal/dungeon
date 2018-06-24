@@ -7,6 +7,8 @@ import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.combat.Attack;
+import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.state.GameState;
 
 public class Ghost extends CreatureEntity {
@@ -39,7 +41,8 @@ public class Ghost extends CreatureEntity {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerEntity) {
-			entity.hit(factory.damagePerSecond * GameState.frameTime());
+			Attack attack = new Attack(this, factory.damagePerSecond * GameState.frameTime(), DamageType.NORMAL, 0);
+			entity.hit(attack);
 			return true;
 		} else {
 			return false;
@@ -47,8 +50,8 @@ public class Ghost extends CreatureEntity {
 	}
 
 	@Override
-	public void hit(float dmg) {
-		super.hit(dmg);
+	public void hit(Attack attack) {
+		super.hit(attack);
 		visibleUntil = GameState.time() + factory.visibleTime;
 	}
 

@@ -6,6 +6,8 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.combat.Attack;
+import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.state.GameState;
 
 public class Slime extends CreatureEntity {
@@ -58,7 +60,8 @@ public class Slime extends CreatureEntity {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerEntity) {
-			entity.hit(factory.damagePerSecond * GameState.frameTime());
+			Attack attack = new Attack(this, factory.damagePerSecond * GameState.frameTime(), DamageType.NORMAL, 0);
+			entity.hit(attack);
 			return true;
 		} else {
 			return false;

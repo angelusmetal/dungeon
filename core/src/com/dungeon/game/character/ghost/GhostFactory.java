@@ -49,6 +49,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 				.boundingBox(boundingBox)
 				.drawOffset(drawOffset)
 				.color(new Color(1, 1, 1, 0.5f))
+				.knockback(1f)
 				.light(characterLight)
 				.speed(speed)
 				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));

@@ -3,6 +3,8 @@ package com.dungeon.game.character.acidslime;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
+import com.dungeon.game.combat.Attack;
+import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.state.GameState;
 
 public class AcidPool extends Entity {
@@ -25,7 +27,8 @@ public class AcidPool extends Entity {
 	@Override
 	protected boolean onEntityCollision(Entity entity) {
 		if (entity instanceof PlayerEntity) {
-			entity.hit(factory.poolDamage * GameState.frameTime());
+			Attack attack = new Attack(this, factory.damagePerSecond * GameState.frameTime(), DamageType.ELEMENTAL, 0);
+			entity.hit(attack);
 			return true;
 		} else {
 			return false;

@@ -39,6 +39,7 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.boundingBox(characterBoundingBox)
 				.drawOffset(characterDrawOffset)
 				.health(health)
+				.knockback(0.5f)
 				.speed(speed)
 				.friction(friction);
 	}

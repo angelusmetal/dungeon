@@ -40,6 +40,7 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 				.drawOffset(characterDrawOffset)
 				.health(health)
 				.speed(speed)
+				.knockback(0.5f)
 				.friction(friction);
 	}
 

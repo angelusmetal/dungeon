@@ -6,7 +6,6 @@ import com.dungeon.engine.render.Drawable;
 import com.dungeon.game.combat.Attack;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Base class for all projectiles
@@ -16,9 +15,9 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 	public static final Function<Entity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerEntity) && entity.isSolid();
 
 	/** Damage to inflict upon hitting a target */
-	protected Supplier<Attack> attackSupplier;
+	protected Function<Entity, Attack> attackSupplier;
 
-	public Projectile(Vector2 origin, EntityPrototype prototype, Supplier<Attack> attackSupplier) {
+	public Projectile(Vector2 origin, EntityPrototype prototype, Function<Entity, Attack> attackSupplier) {
 		super(origin, prototype);
 		this.attackSupplier = attackSupplier;
 	}
@@ -34,8 +33,7 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 	protected boolean onEntityCollision(Entity entity) {
 		if (!expired && hitPredicate.test(entity) && entity.canBeHit()) {
 			expire();
-			Attack attack = attackSupplier.get();
-			entity.hit(attack.getDamage());
+			entity.hit(attackSupplier.apply(this));
 			return true;
 		} else {
 			return false;

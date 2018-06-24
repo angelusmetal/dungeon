@@ -30,8 +30,8 @@ public abstract class Weapon {
 	/**
 	 * @return A newly created {@link Attack} instance
 	 */
-	public Attack createAttack() {
-		return new Attack(damage.get(), damageType, knockback);
+	public Attack createAttack(Entity emitter) {
+		return new Attack(emitter, damage.get(), damageType, knockback);
 	}
 
 	protected Vector2 shift(Vector2 origin, Vector2 direction, float distance) {
