@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Align;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -15,7 +14,7 @@ import java.util.function.Consumer;
 
 public class OverlayText {
 
-    private static final String FONT = "alegreya-sans-sc-outline-9";
+    private static final String DEFAULT_FONT = "alegreya-sans-sc-outline-9";
     private final String text;
     private final Vector2 origin;
     private final Color color;
@@ -30,7 +29,7 @@ public class OverlayText {
     }
 
     public OverlayText(Vector2 origin, String text, Color color) {
-        this(origin, text, color, ResourceManager.getFont(FONT));
+        this(origin, text, color, ResourceManager.getFont(DEFAULT_FONT));
     }
 
     public OverlayText(Vector2 origin, String text, Color color, BitmapFont font) {
@@ -38,7 +37,6 @@ public class OverlayText {
         this.text = text;
         this.color = color.cpy();
         this.font = font;
-        font.setColor(this.color);
         this.layout = new GlyphLayout(font, text);
         this.length = text.length();
     }
@@ -101,11 +99,15 @@ public class OverlayText {
         return origin;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
     public void draw(SpriteBatch batch, ViewPort viewPort) {
-        font.setColor(color);
-        font.draw(batch, text, origin.x - viewPort.cameraX - layout.width / 2, origin.y - viewPort.cameraY - layout.height / 2,
-                0, length, 0, Align.left, false, null);
-        // TODO We should be able to draw the layout directly, to improve performance, but I'm unable to update the color of the layout
-//        font.draw(batch, layout, origin.x - viewPort.cameraX - layout.width / 2, origin.y - viewPort.cameraY - layout.height / 2);
+        // Only create a new layout if we're chopping the texts
+        GlyphLayout local = (length < text.length())
+                ? new GlyphLayout(font, text.substring(0, length))
+                : layout;
+        font.draw(batch, local, origin.x - viewPort.cameraX - layout.width / 2, origin.y - viewPort.cameraY - layout.height / 2);
     }
 }

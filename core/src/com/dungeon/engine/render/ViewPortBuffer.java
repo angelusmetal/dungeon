@@ -11,6 +11,7 @@ import com.dungeon.engine.viewport.ViewPort;
 import java.util.function.Consumer;
 
 public class ViewPortBuffer implements Disposable {
+	private final Pixmap.Format format;
 	private FrameBuffer frameBuffer;
 	private TextureRegion textureRegion;
 	private ViewPort viewPort;
@@ -20,13 +21,20 @@ public class ViewPortBuffer implements Disposable {
 	public ViewPortBuffer(ViewPort viewPort) {
 		this.viewPort = viewPort;
 		this.batch = new SpriteBatch();
+		this.format = Pixmap.Format.RGB888;
+	}
+
+	public ViewPortBuffer(ViewPort viewPort, Pixmap.Format format) {
+		this.viewPort = viewPort;
+		this.batch = new SpriteBatch();
+		this.format = format;
 	}
 
 	public void reset() {
 		if (frameBuffer != null) {
 			frameBuffer.dispose();
 		}
-		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, viewPort.cameraWidth, viewPort.cameraHeight, false);
+		frameBuffer = new FrameBuffer(format, viewPort.cameraWidth, viewPort.cameraHeight, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
 		textureRegion.flip(false, true);
 		textureRegion.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
