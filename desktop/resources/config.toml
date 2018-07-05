@@ -36,7 +36,7 @@
 # Characters
 [[creatures]]
     id = "ASSASSIN"
-    health = 150
+    health = 100
     speed = 60
     friction = 10
 [[creatures]]
@@ -53,27 +53,27 @@
 # Creatures
 [[creatures]]
     id = "GHOST"
-    health = 100
+    health = 10
     speed = 20
     maxTargetDistance = 300 # Targeting distance
     visibleTime = 2.0       # Visible time, in seconds
     visibleSpeed = 20       # Speed while visible
     stealthSpeed = 40       # Speed while stealth
-    damagePerSecond = 20    # Damage dealth per second upon contact
+    damagePerSecond = 2     # Damage dealth per second upon contact
 [[creatures]]
     id = "SLIME"
-    health = 75
-    spawnHealth = 25        # Health of spawns
+    health = 7
+    spawnHealth = 3         # Health of spawns
     speed = 100
     friction = 1
     maxTargetDistance = 300 # Targeting distance
     jumpDistance = 50       # Jump distance
-    damagePerSecond = 10    # Damage dealth per second upon contact
+    damagePerSecond = 1     # Damage dealth per second upon contact
     blobsOnDeath = 16       # Max amount of blobs spawned upon death
     attackFrequency = 3.0   # Frequency of attacks, in seconds
 [[creatures]]
     id = "SLIME_ACID"
-    health = 100
+    health = 10
     speed = 100
     friction = 2
     maxTargetDistance = 300 # Targeting distance
@@ -82,16 +82,16 @@
     poolDuration = 5.0      # Duration of acid pools, in seconds
     poolDamage = 5          # Damage per second caused by the acid pool
     attackFrequency = 3.0   # Frequency of attacks, in seconds
-    damagePerSecond = 10    # Damage dealth per second upon contact
+    damagePerSecond = 1     # Damage dealth per second upon contact
 [[creatures]]
     id = "SLIME_FIRE"
-    health = 50
+    health = 5
     speed = 20
     maxTargetDistance = 300 # Targeting distance
     attackFrequency = 1.5   # Frequency of attacks, in seconds
     attackSpeed = 10        # Movement speed while attacking
     idleSpeed = 5           # Movement speed while idle
-    damagePerSecond = 10    # Damage dealth per second upon contact
+    damagePerSecond = 1     # Damage dealth per second upon contact
 
 #
 # Configuration for controllers

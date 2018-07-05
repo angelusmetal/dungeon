@@ -11,7 +11,10 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
+
+import java.util.function.Supplier;
 
 public class FireballWeapon extends ProjectileWeapon {
 
@@ -23,7 +26,7 @@ public class FireballWeapon extends ProjectileWeapon {
 	private final EntityPrototype trail;
 
 	public FireballWeapon() {
-		super("Fireball", () -> 5f * (GameState.getPlayerCount() + GameState.getLevelCount()), DamageType.ELEMENTAL, 0);
+		super("Fireball", damageSupplier(), DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> projectileAnimation = ResourceManager.getAnimation(PROJECTILE);
 		Animation<TextureRegion> explosionAnimation = ResourceManager.getAnimation(EXPLOSION);
@@ -80,5 +83,10 @@ public class FireballWeapon extends ProjectileWeapon {
 
 	private Entity createImpact(Vector2 origin) {
 		return new Entity(origin, impact);
+	}
+
+	private static Supplier<Float> damageSupplier() {
+		float tier = GameState.getDifficultyTier();
+		return () -> tier * Rand.between(2f, 5f);
 	}
 }

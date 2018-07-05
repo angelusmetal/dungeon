@@ -174,6 +174,12 @@ public class GameState {
 		return levelCount;
 	}
 
+	public static float getDifficultyTier() {
+		double playerMultiplier = Math.pow(1.5, Math.max(getPlayerCount(), 1) - 1);
+		double levelMultiplier = Math.pow(1.5, Math.max(getLevelCount(), 1) - 1);
+		return (float) (playerMultiplier * levelMultiplier);
+	}
+
 	public static void startNewGame(List<Player> players) {
 		GameState.players = players;
 		levelCount = 0;
@@ -191,16 +197,19 @@ public class GameState {
 
 		generateNewLevel();
 
+		// Update player count
+		playerCount = players.size();
+		levelCount++;
+
 		// Get starting room and spawn players there
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
 		for (Player player : players) {
 			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(getLevelTileset().tile_size);
 			player.spawn(origin);
+			origin.y += 30;
+			addOverlayText(new OverlayText(origin, getWelcomeMessage()).spell(1, 1).fadeout(1, 4));
 		}
-		// Update player count
-		playerCount = players.size();
-		levelCount++;
 
 		initViewPorts();
 		randomizeBaseLight();
@@ -223,6 +232,25 @@ public class GameState {
 //			GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
 //			GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
 		});
+	}
+
+	private static String getWelcomeMessage() {
+		switch (levelCount) {
+			case 1:
+				return "Welcome to the dungeon";
+			case 2:
+				return "Well done";
+			case 3:
+				return "You're getting the vibe";
+			case 4:
+				return "Things will get harder now";
+			case 5:
+				return "Don't get too confident";
+			case 6:
+				return "This is as far as you get";
+			default:
+				return "Good luck. You'll need it";
+		}
 	}
 
 	private static final double DEFAULT_SCALE = 3;

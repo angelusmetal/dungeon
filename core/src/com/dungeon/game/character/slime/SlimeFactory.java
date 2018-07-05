@@ -108,7 +108,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.with(Traits.zAccel(-200))
 				.knockback(1f)
 				.friction(friction)
-				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
+				.health(() -> (int) (health * GameState.getDifficultyTier()));
 		spawn = new EntityPrototype()
 				.boundingBox(spawnBoundingBox)
 				.drawOffset(spawnDrawOffset)
@@ -119,7 +119,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				.with(Traits.zAccel(-200))
 				.knockback(1f)
 				.friction(friction)
-				.health(() -> spawnHealth * (GameState.getPlayerCount() + GameState.getLevelCount()));
+				.health(() -> (int) (spawnHealth * GameState.getDifficultyTier()));
 		death = new EntityPrototype()
 				.animation(dieAnimation)
 				.boundingBox(characterBoundingBox)

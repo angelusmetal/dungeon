@@ -6,15 +6,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
+import com.dungeon.game.state.GameState;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class SwordWeapon extends MeleeWeapon {
 
 	private static final String SLASH_ANIMATION = "melee_slash";
 
 	public SwordWeapon() {
-		super("Sword", () -> 50f, DamageType.NORMAL, 150f);
+		super("Sword", damageSupplier(), DamageType.NORMAL, 150f);
 	}
 
 	@Override
@@ -35,6 +38,11 @@ public class SwordWeapon extends MeleeWeapon {
 	@Override
 	protected float getSpawnDistance() {
 		return 20;
+	}
+
+	private static Supplier<Float> damageSupplier() {
+		float tier = GameState.getDifficultyTier();
+		return () -> tier * Rand.between(2f, 5f);
 	}
 
 }

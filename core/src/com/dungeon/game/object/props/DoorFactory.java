@@ -23,7 +23,8 @@ public class DoorFactory {
 		horizontalClosed = new EntityPrototype()
 				.animation(() -> GameState.getLevelTileset().doorHorizontal().animation)
 				.boundingBox(HORIZONTAL_BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET);
+				.drawOffset(DRAW_OFFSET)
+				.health(10);
 		horizontalOpening = new EntityPrototype()
 				.animation(() -> GameState.getLevelTileset().doorHorizontal().animation)
 				.boundingBox(HORIZONTAL_BOUNDING_BOX)
@@ -34,7 +35,8 @@ public class DoorFactory {
 		verticalClosed = new EntityPrototype()
 				.animation(() -> GameState.getLevelTileset().doorVertical().animation)
 				.boundingBox(VERTICAL_BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET);
+				.drawOffset(DRAW_OFFSET)
+				.health(10);
 		verticalOpening = new EntityPrototype()
 				.animation(() -> GameState.getLevelTileset().doorVertical().animation)
 				.boundingBox(VERTICAL_BOUNDING_BOX)

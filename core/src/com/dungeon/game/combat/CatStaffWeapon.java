@@ -11,7 +11,10 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
+
+import java.util.function.Supplier;
 
 public class CatStaffWeapon extends ProjectileWeapon {
 
@@ -25,7 +28,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 	private final EntityPrototype trail;
 
 	public CatStaffWeapon() {
-		super("Cat staff", () -> 35f, DamageType.ELEMENTAL, 0);
+		super("Cat staff", damageSupplier(), DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> bulletFlySideAnimation = ResourceManager.getAnimation(PROJECTILE_RIGHT);
 		Animation<TextureRegion> bulletFlyNorthAnimation = ResourceManager.getAnimation(PROJECTILE_UP);
@@ -88,5 +91,10 @@ public class CatStaffWeapon extends ProjectileWeapon {
 
 	private Entity createImpact(Vector2 origin) {
 		return new Entity(origin, impact);
+	}
+
+	private static Supplier<Float> damageSupplier() {
+		float tier = GameState.getDifficultyTier();
+		return () -> tier * Rand.between(2f, 3f);
 	}
 }

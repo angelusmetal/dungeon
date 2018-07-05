@@ -52,7 +52,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 				.knockback(1f)
 				.light(characterLight)
 				.speed(speed)
-				.health(() -> health * (GameState.getPlayerCount() + GameState.getLevelCount()));
+				.health(() -> (int) (health * GameState.getDifficultyTier()));
 		death = new EntityPrototype()
 				.animation(idleAnimation)
 				.boundingBox(boundingBox)

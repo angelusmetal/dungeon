@@ -11,7 +11,10 @@ import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.state.GameState;
+
+import java.util.function.Supplier;
 
 public class GreenStaffWeapon extends ProjectileWeapon {
 
@@ -23,7 +26,7 @@ public class GreenStaffWeapon extends ProjectileWeapon {
 	private final EntityPrototype trail;
 
 	public GreenStaffWeapon() {
-		super("Green staff", () -> 35f, DamageType.ELEMENTAL, 0);
+		super("Green staff", damageSupplier(), DamageType.ELEMENTAL, 0);
 
 		Animation<TextureRegion> bulletFlyAnimation = ResourceManager.getAnimation(PROJECTILE_FLY);
 		Animation<TextureRegion> bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
@@ -85,5 +88,10 @@ public class GreenStaffWeapon extends ProjectileWeapon {
 
 	private Entity createImpact(Vector2 origin) {
 		return new Entity(origin, impact);
+	}
+
+	private static Supplier<Float> damageSupplier() {
+		float tier = GameState.getDifficultyTier();
+		return () -> tier * Rand.between(2f, 5f);
 	}
 }
