@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class OverlayText {
 
-    private static final String DEFAULT_FONT = "alegreya-sans-sc-outline-9";
+    private static final String DEFAULT_FONT = "alegreya-sans-sc-9";
     private final String text;
     private final Vector2 origin;
     private final Color color;
@@ -23,6 +23,7 @@ public class OverlayText {
     private final List<Runnable> traits = new ArrayList<>();
     private boolean expired;
     private int length;
+    private float outline;
 
     public OverlayText(Vector2 origin, String text) {
         this(origin, text, Color.WHITE);
@@ -86,6 +87,11 @@ public class OverlayText {
         });
         return this;
     }
+    
+    public OverlayText outline(float thickness) {
+        this.outline = thickness;
+        return this;
+    }
 
     public void think() {
         traits.forEach(Runnable::run);
@@ -99,8 +105,16 @@ public class OverlayText {
         return origin;
     }
 
+    public GlyphLayout getLayout() {
+        return layout;
+    }
+
     public Color getColor() {
         return color;
+    }
+
+    public float getOutline() {
+        return outline;
     }
 
     public void draw(SpriteBatch batch, ViewPort viewPort) {

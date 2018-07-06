@@ -4,6 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
@@ -22,12 +27,23 @@ public class OverlayTextFragment implements RenderFragment {
 			e1.getOrigin().x < e2.getOrigin().x ? -1 :
 			e1.getOrigin().x > e2.getOrigin().x ? 1 : 0;
 	private boolean enabled = true;
+	private ShaderProgram shaderOutline;
 
 	public OverlayTextFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		this.labelBuffer = new ViewPortBuffer(viewPort, Pixmap.Format.RGBA8888);
 		labelBuffer.reset();
+		loadShader();
+	}
+
+	private void loadShader() {
+		String vertexShader;
+		String fragmentShader;
+		vertexShader = Gdx.files.internal("df_vertex.glsl").readString();
+		fragmentShader = Gdx.files.internal("outline_border_fragment.glsl").readString();
+		shaderOutline = new ShaderProgram(vertexShader, fragmentShader);
+		if (!shaderOutline.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shaderOutline.getLog());
 	}
 
 	@Override
@@ -43,9 +59,27 @@ public class OverlayTextFragment implements RenderFragment {
 					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 					text.draw(batch, viewPort);
 				});
-				// And the buffer is then blended into the main scene
 				viewportBuffer.render((batch) -> {
 					Gdx.gl.glBlendFunc( GL20.GL_ONE,  GL20.GL_ONE_MINUS_SRC_ALPHA);
+					if (text.getOutline() > 0) {
+						// If outline is enabled, draw the text first using the outline shader
+						batch.end();
+						float width = viewPort.width;
+						float height = viewPort.height;
+						shaderOutline.begin();
+						shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / width, 1f / height));
+						shaderOutline.setUniformf("u_offset", 3);
+						shaderOutline.setUniformf("u_step", Math.min(1f, width / 70f));
+						shaderOutline.setUniformf("u_color", new Color(0f, 0f, 0f, text.getColor().a));
+						shaderOutline.end();
+						batch.setShader(shaderOutline);
+						batch.begin();
+						labelBuffer.draw(batch);
+						batch.end();
+						batch.setShader(null);
+						batch.begin();
+					}
+					// And the buffer is then blended into the main scene
 					batch.setColor(text.getColor());
 					labelBuffer.draw(batch);
 					batch.setColor(Color.WHITE);
