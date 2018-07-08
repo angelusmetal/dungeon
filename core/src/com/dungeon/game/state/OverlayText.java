@@ -23,7 +23,7 @@ public class OverlayText {
     private final List<Runnable> traits = new ArrayList<>();
     private boolean expired;
     private int length;
-    private float outline;
+    private boolean outline;
 
     public OverlayText(Vector2 origin, String text) {
         this(origin, text, Color.WHITE);
@@ -40,6 +40,7 @@ public class OverlayText {
         this.font = font;
         this.layout = new GlyphLayout(font, text);
         this.length = text.length();
+        this.outline = true;
     }
 
     public OverlayText spell(float time) {
@@ -88,8 +89,8 @@ public class OverlayText {
         return this;
     }
     
-    public OverlayText outline(float thickness) {
-        this.outline = thickness;
+    public OverlayText outline(boolean overlay) {
+        this.outline = overlay;
         return this;
     }
 
@@ -113,7 +114,7 @@ public class OverlayText {
         return color;
     }
 
-    public float getOutline() {
+    public boolean hasOutline() {
         return outline;
     }
 

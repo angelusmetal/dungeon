@@ -61,14 +61,15 @@ public class OverlayTextFragment implements RenderFragment {
 				});
 				viewportBuffer.render((batch) -> {
 					Gdx.gl.glBlendFunc( GL20.GL_ONE,  GL20.GL_ONE_MINUS_SRC_ALPHA);
-					if (text.getOutline() > 0) {
+					if (text.hasOutline()) {
 						// If outline is enabled, draw the text first using the outline shader
 						batch.end();
 						float width = viewPort.width;
 						float height = viewPort.height;
 						shaderOutline.begin();
 						shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / width, 1f / height));
-						shaderOutline.setUniformf("u_offset", 3);
+						// TODO Not sure why but these are the values that seem to work - need to find out why
+						shaderOutline.setUniformf("u_offset", viewPort.getScale() + 0.5f);
 						shaderOutline.setUniformf("u_step", Math.min(1f, width / 70f));
 						shaderOutline.setUniformf("u_color", new Color(0f, 0f, 0f, text.getColor().a));
 						shaderOutline.end();
