@@ -28,38 +28,18 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 
 	public HealthPowerupFactory() {
 		Animation<TextureRegion> animation = ResourceManager.getAnimation(HEALTH);
-		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(FillSheet.FILL, FillSheet::fill);
 
 		Light light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
 		Light vanishLight = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::torchlight, Light::rotateFast);
 
-		specPrototype = new EntityPrototype()
-				.animation(specAnimation)
-				.boundingBox(new Vector2(1, 1))
-				.drawOffset(new Vector2(1, 1))
-				.zSpeed(50)
-				.timeToLive(1f)
-				.color(Color.RED)
-				.with(Traits.fadeOut(0.8f))
-				.with(Traits.zAccel(100))
-				.with(Traits.hOscillate(10, 5f));
+		specPrototype = ResourceManager.getPrototype("particle_health_spec");
+		vanishPrototype = ResourceManager.getPrototype("health_powerup_fade")
+				// TODO Add these to prototypes.yaml
+				.light(vanishLight);
 
-		vanishPrototype = new EntityPrototype()
-				.animation(animation)
-				.boundingBox(BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
-				.timeToLive(1.5f)
-				.light(vanishLight)
-				.with(Traits.fadeOut(0.5f))
-				.with(Traits.fadeOutLight())
-				.with(Traits.zAccel(10));
-
-		powerupPrototype = new EntityPrototype()
-				.animation(animation)
-				.boundingBox(BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
+		powerupPrototype = ResourceManager.getPrototype("health_powerup")
+				// TODO Add these to prototypes.yaml
 				.light(light)
-				.with(Traits.zOscillate(3, 8f))
 				.with(Traits.generator(0.05f, (powerup) -> {
 					Entity spec = new Entity(powerup.getPos(), specPrototype);
 					spec.getPos().x += Rand.between(-8, 8);

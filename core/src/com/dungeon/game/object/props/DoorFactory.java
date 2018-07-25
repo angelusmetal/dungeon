@@ -4,15 +4,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;
 
 public class DoorFactory {
 
-	private static final Vector2 HORIZONTAL_BOUNDING_BOX = new Vector2(7, 96);
-	private static final Vector2 VERTICAL_BOUNDING_BOX = new Vector2(48, 48);
-	private static final Vector2 DRAW_OFFSET = new Vector2(24, 24);
+	private static final String HORIZONTAL_DOOR = "door_horizontal";
+	private static final String HORIZONTAL_DOOR_OPENING = "door_horizontal_opening";
+	private static final String VERTICAL_DOOR = "door_vertical";
+	private static final String VERTICAL_DOOR_OPENING = "door_vertical_opening";
 
 	private final EntityPrototype verticalClosed;
 	private final EntityPrototype verticalOpening;
@@ -20,30 +22,10 @@ public class DoorFactory {
 	private final EntityPrototype horizontalOpening;
 
 	public DoorFactory() {
-		horizontalClosed = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().doorHorizontal().animation)
-				.boundingBox(HORIZONTAL_BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
-				.health(10);
-		horizontalOpening = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().doorHorizontal().animation)
-				.boundingBox(HORIZONTAL_BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
-				.timeToLive(1f)
-				.zSpeed(40f)
-				.with(Traits.fadeOut(1f));
-		verticalClosed = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().doorVertical().animation)
-				.boundingBox(VERTICAL_BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
-				.health(10);
-		verticalOpening = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().doorVertical().animation)
-				.boundingBox(VERTICAL_BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
-				.timeToLive(1f)
-				.zSpeed(40f)
-				.with(Traits.fadeOut(1f));
+		horizontalClosed = ResourceManager.getPrototype(HORIZONTAL_DOOR);
+		horizontalOpening = ResourceManager.getPrototype(HORIZONTAL_DOOR_OPENING);
+		verticalClosed = ResourceManager.getPrototype(VERTICAL_DOOR);
+		verticalOpening = ResourceManager.getPrototype(VERTICAL_DOOR_OPENING);
 	}
 
 	public Entity buildHorizontal(Vector2 origin) {

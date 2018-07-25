@@ -3,11 +3,17 @@ package com.dungeon.game.object.props;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;
 
 public class FurnitureFactory {
+
+	private static final String BOOKSHELF = "prop_bookshelf";
+	private static final String TABLE_1 = "prop_table_1";
+	private static final String TABLE_2 = "prop_table_2";
+	private static final String CAGE = "prop_cage";
 
 	private final EntityPrototype bookshelfProtoype;
 	private final EntityPrototype tablePrototype;
@@ -15,26 +21,10 @@ public class FurnitureFactory {
 	private final EntityPrototype cagePrototype;
 
 	public FurnitureFactory() {
-		bookshelfProtoype = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().bookshelf().animation)
-				.boundingBox(new Vector2(48, 38))
-				.drawOffset(new Vector2(24, 24))
-				.health(500);
-		tablePrototype = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().table().animation)
-				.boundingBox(new Vector2(42, 20))
-				.drawOffset(new Vector2(24, 28))
-				.health(500);
-		table2Prototype = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().table2().animation)
-				.boundingBox(new Vector2(42, 20))
-				.drawOffset(new Vector2(24, 28))
-				.health(500);
-		cagePrototype = new EntityPrototype()
-				.animation(() -> GameState.getLevelTileset().cage().animation)
-				.boundingBox(new Vector2(20, 36))
-				.drawOffset(new Vector2(24, 24))
-				.health(1000);
+		bookshelfProtoype = ResourceManager.getPrototype(BOOKSHELF);
+		tablePrototype = ResourceManager.getPrototype(TABLE_1);
+		table2Prototype = ResourceManager.getPrototype(TABLE_2);
+		cagePrototype = ResourceManager.getPrototype(CAGE);
 	}
 
 	public Entity buildBookshelf(Vector2 origin) {

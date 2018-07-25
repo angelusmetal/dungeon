@@ -18,43 +18,27 @@ import com.dungeon.game.state.GameState;
 
 public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 
-	public static final String CLOUD = "cloud";
-	public static final String PLATFORM = "exit_platform_idle";
-
-	private static final Vector2 BOUNDING_BOX = new Vector2(64, 64);
-	private static final Vector2 DRAW_OFFSET = new Vector2(32, 32);
-
 	private final EntityPrototype prototype;
 	private final EntityPrototype cloud;
 
 	public ExitPlatformFactory() {
-		Animation<TextureRegion> animation = ResourceManager.getAnimation(PLATFORM);
-		Animation<TextureRegion> specAnimation = ResourceManager.getAnimation(CLOUD);
-
 		Light light = new Light(300, Color.BLUE, Light.RAYS_TEXTURE, Light::torchlight, Light::rotateSlow);
 		Texture cloudTexture = ResourceManager.getTexture("cloud.png");
 
-		cloud = new EntityPrototype()
-				.animation(specAnimation)
-				.boundingBox(new Vector2(1, 1))
-				.drawOffset(new Vector2(32, 32))
-				.timeToLive(5f)
-				.color(Color.WHITE)
-				.with(Traits.fadeOut(0.5f))
+		cloud = ResourceManager.getPrototype("smoke")
+				// TODO Add these to prototypes.yaml
 				.drawFunction(DrawFunction.rotateRandom(cloudTexture, 50f))
 		;
 
-		prototype = new EntityPrototype()
-				.animation(animation)
-				.boundingBox(BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
+		prototype = ResourceManager.getPrototype("exit_platform")
+				// TODO Add these to prototypes.yaml
 				.light(light)
 				.with(Traits.generator(0.1f, (generator) -> {
 					Entity particle = new Entity(generator.getPos(), cloud);
 					particle.impulse(Rand.between(-30, 30), Rand.between(-30, 30));
 					return particle;
 				}))
-				.zIndex(-1);
+		;
 
 	}
 

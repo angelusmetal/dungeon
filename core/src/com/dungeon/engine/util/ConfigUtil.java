@@ -80,6 +80,17 @@ public class ConfigUtil {
 							field.set(pojo, values);
 						}
 					}
+					if (type.getName().equals("[F")) {
+						List<Number> list = item.getList(name);
+						if (list != null) {
+							int i = 0;
+							float[] values = new float[list.size()];
+							for (Number number : list) {
+								values[i++] = number.floatValue();
+							}
+							field.set(pojo, values);
+						}
+					}
 					if (type.getName().equals("[[F")) {
 						List<List<Number>> list = item.getList(name);
 						if (list != null) {

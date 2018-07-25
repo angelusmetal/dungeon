@@ -1,0 +1,91 @@
+[prop_bookshelf]
+    animation = "prop_bookshelf"
+    boundingBox = [48, 38]
+    drawOffset = [24, 24]
+    health = 500
+[prop_table_1]
+    animation = "prop_table_1"
+    boundingBox = [42, 20]
+    drawOffset = [24, 24]
+    health = 500
+[prop_table_2]
+    animation = "prop_table_2"
+    boundingBox = [42, 20]
+    drawOffset = [24, 24]
+    health = 500
+[prop_cage]
+    animation = "prop_cage"
+    boundingBox = [20, 36]
+    drawOffset = [24, 24]
+    health = 1000
+
+[door_horizontal]
+    animation = "door_horizontal"
+    boundingBox = [7, 96]
+    drawOffset = [48, 32]
+    health = 10
+[door_horizontal_opening]
+    animation = "door_horizontal"
+    boundingBox = [7, 96]
+    drawOffset = [48, 32]
+    health = 10
+    timeToLive = 1
+    zSpeed = 40
+    fadeOut = 1
+[door_vertical]
+    animation = "door_vertical"
+    boundingBox = [48, 48]
+    drawOffset = [48, 48]
+    health = 10
+[door_vertical_opening]
+    animation = "door_vertical"
+    boundingBox = [48, 48]
+    drawOffset = [48, 48]
+    health = 10
+    timeToLive = 1
+    zSpeed = 40
+    fadeOut = 1
+
+[particle_health_spec]
+    animation = "pixel"
+    boundingBox = [1, 1]
+    drawOffset = [1, 1]
+    color = "ff0000"
+    hOscillate = [10, 5]
+    timeToLive = 1
+    fadeOut = 0.8
+    zSpeed = 50
+    zAccel = 100
+[health_powerup_fade]
+    animation = "powerup_health"
+    boundingBox = [10, 10]
+    drawOffset = [10, 10]
+    timeToLive = 1.5
+    #light = vanishLight
+    fadeOut = 0.5
+    fadeOutLight = true
+    zAccel = 10
+[health_powerup]
+    animation = "powerup_health"
+    boundingBox = [10, 10]
+    drawOffset = [10, 10]
+	#light = light
+	zOscillate = [3, 8]
+
+
+[smoke]
+    animation = "cloud"
+    boundingBox = [1, 1]
+    drawOffset = [32, 32]
+    timeToLive = 5
+    color = "ffffff"
+    fadeOut = 0.5
+[exit_platform]
+    animation = "exit_platform_idle"
+    boundingBox = [20, 20]
+    drawOffset = [32, 32]
+    zIndex = -1
+[tombstone]
+    animation = "tombstone_spawn"
+    boundingBox = [10, 10]
+    drawOffset = [16, 16]

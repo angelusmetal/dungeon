@@ -317,6 +317,122 @@
   frameDuration = 0.05
   loop = [0, 1, 2, 3, 4, 5, 6, 7]
 
+#
+# Furniture
+#
+
+# Doors
+[door_horizontal]
+  texture = "door.png"
+  tilesize = 96
+  frameDuration = 1
+  loop = [1]
+[door_vertical]
+  texture = "door.png"
+  tilesize = 96
+  frameDuration = 1
+  loop = [0]
+# Bookcase
+[prop_bookshelf]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [0]
+# Tables
+[prop_table_1]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [1]
+[prop_table_2]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [2]
+# Cage
+[prop_cage]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [3]
+# Bushes
+[prop_bush_green_large]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [4]
+[prop_bush_green_small]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [5]
+[prop_bush_gold_large]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [6]
+[prop_bush_gold_small]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [7]
+[prop_bush_red_large]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [8]
+[prop_bush_red_small]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [9]
+[prop_bush_cyan_large]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [10]
+[prop_bush_cyan_small]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [11]
+[prop_bush_purple_large]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [12]
+[prop_bush_purple_small]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [13]
+
+#
+# Vegetation
+#
+
+[prop_grass_1]
+  texture = "grass.png"
+  tilesize = 24
+  frameDuration = 0.5
+  loop = [0, 1, 2, 1]
+[prop_grass_2]
+  texture = "grass.png"
+  tilesize = 24
+  frameDuration = 0.8
+  loop = [3, 4]
+[prop_grass_3]
+  texture = "grass.png"
+  tilesize = 24
+  frameDuration = 0.8
+  loop = [5, 6, 7, 6]
+[prop_flower_1]
+  texture = "grass.png"
+  tilesize = 24
+  frameDuration = 0.5
+  loop = [8, 8, 9, 10, 10, 9]
+
+
 # Cat projectile
 [projectile_cat_right]
   texture = "cat_projectile.png"
@@ -401,3 +517,10 @@
   tilesize = 12
   frameDuration = 0.25
   sequence = [0, 1, 2, 3, 4]
+
+# Pixel
+[pixel]
+    texture = "fill.png"
+    tilesize = 1
+    frameDuration = 1
+    loop = [0]
