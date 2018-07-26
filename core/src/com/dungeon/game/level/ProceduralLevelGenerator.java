@@ -150,8 +150,22 @@ public class ProceduralLevelGenerator {
 		spawnTypes.add(EntityType.TABLE);
 		spawnTypes.add(EntityType.TABLE2);
 		spawnTypes.add(EntityType.CAGE);
+		spawnTypes.add(EntityType.BUSH_CYAN);
+		spawnTypes.add(EntityType.BUSH_CYAN_SMALL);
+		spawnTypes.add(EntityType.BUSH_GOLD);
+		spawnTypes.add(EntityType.BUSH_GOLD_SMALL);
+		spawnTypes.add(EntityType.BUSH_GREEN);
+		spawnTypes.add(EntityType.BUSH_GREEN_SMALL);
+		spawnTypes.add(EntityType.BUSH_PURPLE);
+		spawnTypes.add(EntityType.BUSH_PURPLE_SMALL);
+		spawnTypes.add(EntityType.BUSH_RED);
+		spawnTypes.add(EntityType.BUSH_RED_SMALL);
+		spawnTypes.add(EntityType.GRASS_1);
+		spawnTypes.add(EntityType.GRASS_2);
+		spawnTypes.add(EntityType.GRASS_3);
+		spawnTypes.add(EntityType.FLOWER_1);
 //		spawnTypes.add(EntityType.FLAME_PARTICLE);
-		spawnTypes.add(EntityType.CANDLE_PARTICLE);
+//		spawnTypes.add(EntityType.CANDLE_PARTICLE);
 //		spawnTypes.add(EntityType.DROPLET_PARTICLE);
 //		spawnTypes.add(EntityType.FIREBALL_PARTICLE);
 

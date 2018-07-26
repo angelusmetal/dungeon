@@ -17,7 +17,6 @@ public class EntityPrototype {
 	Supplier<Animation<TextureRegion>> animation = () -> null;
 	float bounciness = 0;
 	Supplier<Color> color = Color.WHITE::cpy;
-	Supplier<Float> damage;
 	Supplier<Float> knockback = () -> 0f;
 	Supplier<Float> friction = () -> 0f;
 	Light light = null;
@@ -32,6 +31,27 @@ public class EntityPrototype {
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
+
+	public EntityPrototype() {}
+
+	public EntityPrototype(EntityPrototype other) {
+		this.animation = other.animation;
+		this.bounciness = other.bounciness;
+		this.color = other.color;
+		this.knockback = other.knockback;
+		this.friction = other.friction;
+		this.light = other.light;
+		this.traits = new ArrayList<>(other.traits);
+		this.speed = other.speed;
+		this.zSpeed = other.zSpeed;
+		this.zIndex = other.zIndex;
+		this.hitPredicate = other.hitPredicate;
+		this.timeToLive = other.timeToLive;
+		this.drawFunction = other.drawFunction;
+		this.health = other.health;
+		this.boundingBox = other.boundingBox.cpy();
+		this.drawOffset = other.drawOffset.cpy();
+	}
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
 		this.animation = () -> animation;
@@ -60,16 +80,6 @@ public class EntityPrototype {
 
 	public EntityPrototype color(Supplier<Color> color) {
 		this.color = color;
-		return this;
-	}
-
-	public EntityPrototype damage(float damage) {
-		this.damage = () -> damage;
-		return this;
-	}
-
-	public EntityPrototype damage(Supplier<Float> damage) {
-		this.damage = damage;
 		return this;
 	}
 

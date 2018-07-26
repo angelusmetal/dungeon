@@ -100,6 +100,20 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.TABLE, furnitureFactory::buildTable);
 		entityFactory.registerFactory(EntityType.TABLE2, furnitureFactory::buildTable2);
 		entityFactory.registerFactory(EntityType.CAGE, furnitureFactory::buildCage);
+		entityFactory.registerFactory(EntityType.BUSH_GREEN, furnitureFactory::buildBushGreen);
+		entityFactory.registerFactory(EntityType.BUSH_GOLD, furnitureFactory::buildBushGold);
+		entityFactory.registerFactory(EntityType.BUSH_RED, furnitureFactory::buildBushRed);
+		entityFactory.registerFactory(EntityType.BUSH_CYAN, furnitureFactory::buildBushCyan);
+		entityFactory.registerFactory(EntityType.BUSH_PURPLE, furnitureFactory::buildBushPurple);
+		entityFactory.registerFactory(EntityType.BUSH_GREEN_SMALL, furnitureFactory::buildBushGreenSmall);
+		entityFactory.registerFactory(EntityType.BUSH_GOLD_SMALL, furnitureFactory::buildBushGoldSmall);
+		entityFactory.registerFactory(EntityType.BUSH_RED_SMALL, furnitureFactory::buildBushRedSmall);
+		entityFactory.registerFactory(EntityType.BUSH_CYAN_SMALL, furnitureFactory::buildBushCyanSmall);
+		entityFactory.registerFactory(EntityType.BUSH_PURPLE_SMALL, furnitureFactory::buildBushPurpleSmall);
+		entityFactory.registerFactory(EntityType.GRASS_1, furnitureFactory::buildGrass1);
+		entityFactory.registerFactory(EntityType.GRASS_2, furnitureFactory::buildGrass2);
+		entityFactory.registerFactory(EntityType.GRASS_3, furnitureFactory::buildGrass3);
+		entityFactory.registerFactory(EntityType.FLOWER_1, furnitureFactory::buildFlower1);
 
 		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
 		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());
@@ -123,6 +137,7 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.FIREBALL_PARTICLE, particleFactory::buildFireball);
 		entityFactory.registerFactory(EntityType.FLAME_PARTICLE, particleFactory::buildFlame);
 		entityFactory.registerFactory(EntityType.CANDLE_PARTICLE, particleFactory::buildCandle);
+		entityFactory.registerFactory(EntityType.LEAVE_PARTICLE, particleFactory::buildLeave);
 	}
 
 	public static float time() {

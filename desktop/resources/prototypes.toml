@@ -18,6 +18,78 @@
     boundingBox = [20, 36]
     drawOffset = [24, 24]
     health = 1000
+[prop_bush_green]
+    animation = "prop_bush_green"
+    boundingBox = [30, 30]
+    drawOffset = [24, 23]
+    health = 200
+[prop_bush_gold]
+    animation = "prop_bush_gold"
+    boundingBox = [30, 30]
+    drawOffset = [24, 23]
+    health = 200
+[prop_bush_red]
+    animation = "prop_bush_red"
+    boundingBox = [30, 30]
+    drawOffset = [24, 23]
+    health = 200
+[prop_bush_cyan]
+    animation = "prop_bush_cyan"
+    boundingBox = [30, 30]
+    drawOffset = [24, 23]
+    health = 200
+[prop_bush_purple]
+    animation = "prop_bush_purple"
+    boundingBox = [30, 30]
+    drawOffset = [24, 23]
+    health = 200
+[prop_bush_green_small]
+    animation = "prop_bush_green_small"
+    boundingBox = [19, 20]
+    drawOffset = [24, 24]
+    health = 100
+[prop_bush_gold_small]
+    animation = "prop_bush_gold_small"
+    boundingBox = [19, 20]
+    drawOffset = [24, 24]
+    health = 100
+[prop_bush_red_small]
+    animation = "prop_bush_red_small"
+    boundingBox = [19, 20]
+    drawOffset = [24, 24]
+    health = 100
+[prop_bush_cyan_small]
+    animation = "prop_bush_cyan_small"
+    boundingBox = [19, 20]
+    drawOffset = [24, 24]
+    health = 100
+[prop_bush_purple_small]
+    animation = "prop_bush_purple_small"
+    boundingBox = [19, 20]
+    drawOffset = [24, 24]
+    health = 100
+[prop_grass_1]
+    animation = "prop_grass_1"
+    boundingBox = [16, 18]
+    drawOffset = [12, 10]
+    health = 1
+[prop_grass_2]
+    animation = "prop_grass_2"
+    boundingBox = [5, 4]
+    drawOffset = [12, 3]
+    health = 1
+[prop_grass_3]
+    animation = "prop_grass_3"
+    boundingBox = [6, 6]
+    drawOffset = [12, 4]
+    health = 1
+[prop_flower_1]
+    animation = "prop_flower_1"
+    boundingBox = [10, 16]
+    drawOffset = [12, 15]
+    health = 1
+
+
 
 [door_horizontal]
     animation = "door_horizontal"

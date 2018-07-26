@@ -49,6 +49,7 @@ public class ParticleFactory {
 	private final EntityPrototype fireballPrototype;
 	private final EntityPrototype flamePrototype;
 	private final EntityPrototype candlePrototype;
+	private final EntityPrototype leavePrototype;
 
 	public ParticleFactory() {
 		List<Animation<TextureRegion>> woodParticleAnimations = Arrays.asList(
@@ -127,6 +128,19 @@ public class ParticleFactory {
 				.animation(candleAnimation)
 				.boundingBox(BOUNDING_BOX)
 				.drawOffset(DRAW_OFFSET);
+		leavePrototype = new EntityPrototype()
+				.animation(ResourceManager.getAnimation("leave_particle"))
+				.boundingBox(BOUNDING_BOX)
+				.drawOffset(DRAW_OFFSET)
+				.timeToLive(3f)
+				.zSpeed(20)
+				.with(Traits.fadeOut(1f))
+				.with(Traits.zAccel(-50))
+				.zSpeed(() -> Rand.between(25f, 50f))
+				//.with(Traits.zAccel(-5))
+				.with(Traits.hOscillate(4, 0.5f))
+				.zIndex(1)
+		;
 	}
 
 	public Entity buildWoodParticle(Vector2 origin) {
@@ -177,4 +191,13 @@ public class ParticleFactory {
 		return new Entity(origin, candlePrototype);
 	}
 
+	public Entity buildLeave(Vector2 origin) {
+		Entity particle = new Entity(origin, leavePrototype) {
+			@Override public void onGroundRest() {
+				expire();
+			}
+		};
+//		particle.impulse(Rand.between(-5, 5), Rand.between(-5, 5));
+		return particle;
+	}
 }

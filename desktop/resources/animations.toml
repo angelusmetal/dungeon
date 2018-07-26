@@ -257,6 +257,11 @@
   tilesize = 8
   frameDuration = 1.0
   sequence = [15]
+[leave_particle]
+  texture = "particles.png"
+  tilesize = 8
+  frameDuration = 0.05
+  loop = [48, 48, 48, 49, 50, 51, 52, 53, 54, 55, 56, 56, 56, 55, 54, 53, 52, 51, 50, 49]
 
 # Droplets
 [droplet_start]
@@ -356,7 +361,7 @@
   frameDuration = 1
   loop = [3]
 # Bushes
-[prop_bush_green_large]
+[prop_bush_green]
   texture = "furniture.png"
   tilesize = 48
   frameDuration = 1
@@ -366,7 +371,7 @@
   tilesize = 48
   frameDuration = 1
   loop = [5]
-[prop_bush_gold_large]
+[prop_bush_gold]
   texture = "furniture.png"
   tilesize = 48
   frameDuration = 1
@@ -376,7 +381,7 @@
   tilesize = 48
   frameDuration = 1
   loop = [7]
-[prop_bush_red_large]
+[prop_bush_red]
   texture = "furniture.png"
   tilesize = 48
   frameDuration = 1
@@ -386,7 +391,7 @@
   tilesize = 48
   frameDuration = 1
   loop = [9]
-[prop_bush_cyan_large]
+[prop_bush_cyan]
   texture = "furniture.png"
   tilesize = 48
   frameDuration = 1
@@ -396,7 +401,7 @@
   tilesize = 48
   frameDuration = 1
   loop = [11]
-[prop_bush_purple_large]
+[prop_bush_purple]
   texture = "furniture.png"
   tilesize = 48
   frameDuration = 1
