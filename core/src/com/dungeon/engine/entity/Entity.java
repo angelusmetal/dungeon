@@ -13,6 +13,7 @@ import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.state.GameState;
@@ -446,9 +447,12 @@ public class Entity implements Drawable, Movable {
 
 	public void drawLight(SpriteBatch batch, ViewPort viewPort) {
 		if (light != null) {
-			float dim = light.dimmer.get();
-			batch.setColor(light.color.r, light.color.g, light.color.b, light.color.a * dim);
-			viewPort.draw(batch, light.texture, getPos().x, getPos().y + z, light.diameter * dim, light.rotator.get());
+			batch.setColor(
+					Util.clamp(light.color.r * light.dim),
+					Util.clamp(light.color.g * light.dim),
+					Util.clamp(light.color.b * light.dim),
+					Util.clamp(light.color.a * light.dim));
+			viewPort.draw(batch, light.texture, getPos().x, getPos().y + z, light.diameter * light.dim, light.angle);
 //			batch.setColor(1, 1, 1, 1);
 		}
 	}
@@ -490,6 +494,10 @@ public class Entity implements Drawable, Movable {
 		think();
 		// Apply traits
 		traits.forEach(m -> m.accept(this));
+		// Update light
+		if (light != null) {
+			light.update();
+		}
 	}
 
 	protected void think() {}

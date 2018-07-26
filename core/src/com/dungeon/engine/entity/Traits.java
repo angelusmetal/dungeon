@@ -87,9 +87,8 @@ public class Traits {
 
     public static <T extends Entity> TraitSupplier<T> fadeOutLight() {
         return (e) -> {
-            float diameter = e.light.diameter;
             float ttl = e.getExpirationTime() - e.getStartTime();
-            return (entity) -> entity.light.diameter = (1 - (GameState.time() - entity.getStartTime()) / ttl) * diameter;
+            return (entity) -> entity.light.dim = 1 - (GameState.time() - entity.getStartTime()) / ttl;
         };
     }
 

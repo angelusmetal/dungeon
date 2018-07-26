@@ -47,7 +47,7 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		// Character animations
 		idleAnimation = ResourceManager.getAnimation(IDLE);
 
-		characterLight = new Light(100, new Color(1, 0.5f, 0, 0.8f), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+		characterLight = new Light(100, new Color(1, 0.5f, 0, 0.8f), Light.NORMAL_TEXTURE, Light.torchlight());
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);

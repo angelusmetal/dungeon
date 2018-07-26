@@ -20,7 +20,7 @@ public class TorchFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype prototype;
 
 	public TorchFactory() {
-		Light light = new Light(80, new Color(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light::torchlight, Light::noRotate);
+		Light light = new Light(80, new Color(1, 0.7f, 0.2f, 1), Light.NORMAL_TEXTURE, Light.torchlight());
 		Animation<TextureRegion> animation = ResourceManager.getAnimation(IDLE);
 		prototype = new EntityPrototype()
 				.animation(animation)

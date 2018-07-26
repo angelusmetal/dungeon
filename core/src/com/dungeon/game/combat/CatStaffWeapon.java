@@ -39,7 +39,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 		Vector2 bulletDrawOffset = new Vector2(12, 10);
 
 		float bulletSpeed = 200f;
-		Light bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE, () -> 1f, Light::noRotate);
+		Light bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Light.FLARE_TEXTURE);
 
 		projectile = new EntityPrototype()
 				.boundingBox(bulletBoundingBox)

@@ -22,7 +22,7 @@ public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype cloud;
 
 	public ExitPlatformFactory() {
-		Light light = new Light(300, Color.BLUE, Light.RAYS_TEXTURE, Light::torchlight, Light::rotateSlow);
+		Light light = new Light(300, Color.BLUE, Light.RAYS_TEXTURE, Light.torchlight(), Light.rotateSlow());
 		Texture cloudTexture = ResourceManager.getTexture("cloud.png");
 
 		cloud = ResourceManager.getPrototype("smoke")

@@ -29,8 +29,8 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 	public HealthPowerupFactory() {
 		Animation<TextureRegion> animation = ResourceManager.getAnimation(HEALTH);
 
-		Light light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::oscillating, Light::rotateFast);
-		Light vanishLight = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light::torchlight, Light::rotateFast);
+		Light light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light.oscillate(), Light.rotateFast());
+		Light vanishLight = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light.torchlight(), Light.rotateFast());
 
 		specPrototype = ResourceManager.getPrototype("particle_health_spec");
 		vanishPrototype = ResourceManager.getPrototype("health_powerup_fade")

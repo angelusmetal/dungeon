@@ -87,9 +87,9 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 
 		Color lightColor = new Color(1, 1, 1, 0.5f);
 
-		Light characterLight = new Light(50, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
-		Light spawnLight = new Light(25, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
-		Light deathLight = new Light(100, lightColor, Light.NORMAL_TEXTURE, () -> 1f, Light::noRotate);
+		Light characterLight = new Light(50, lightColor, Light.NORMAL_TEXTURE);
+		Light spawnLight = new Light(25, lightColor, Light.NORMAL_TEXTURE);
+		Light deathLight = new Light(100, lightColor, Light.NORMAL_TEXTURE);
 
 		Vector2 characterBoundingBox = new Vector2(22, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 11);

@@ -159,7 +159,6 @@ public class GameState {
 	public static void addTime(float frameTime) {
 		stateTime += frameTime;
 		GameState.frameTime = frameTime;
-		Light.updateDimmers(frameTime);
 	}
 
 	public static Level getLevel() {

@@ -44,7 +44,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 		Vector2 boundingBox = new Vector2(16, 26);
 		Vector2 drawOffset = new Vector2(16, 16);
 
-		Light characterLight = new Light(200, new Color(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, () -> 1f, Light::rotateSlow);
+		Light characterLight = new Light(200, new Color(0.2f, 0.4f, 1, 0.5f), Light.RAYS_TEXTURE, Light.rotateSlow());
 		character = new EntityPrototype()
 				.boundingBox(boundingBox)
 				.drawOffset(drawOffset)
