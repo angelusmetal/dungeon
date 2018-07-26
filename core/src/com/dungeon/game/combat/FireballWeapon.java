@@ -35,8 +35,8 @@ public class FireballWeapon extends ProjectileWeapon {
 		Vector2 bulletDrawOffset = new Vector2(8, 8);
 
 		float bulletSpeed = 100f;
-		Light bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light.torchlight());
-		Light bulletTrailLight = new Light(20, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL_TEXTURE, Light.torchlight());
+		Light bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL, Light.torchlight());
+		Light bulletTrailLight = new Light(20, new Color(1, 0.5f, 0, 0.5f), Light.NORMAL, Light.torchlight());
 
 		projectile = new EntityPrototype()
 				.animation(projectileAnimation)

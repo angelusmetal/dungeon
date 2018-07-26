@@ -14,7 +14,6 @@ import com.dungeon.game.combat.CatStaffWeapon;
 import com.dungeon.game.combat.GreenStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
-import com.dungeon.game.state.GameState;
 
 public class WeaponFactory {
 
@@ -33,7 +32,7 @@ public class WeaponFactory {
 	private final EntityPrototype catStaff;
 	private final EntityPrototype greenStaff;
 
-	private final Light light = new Light(96, new Color(0.1f, 0.8f, 0.7f, 1), Light.RAYS_TEXTURE, Light.torchlight(), Light.rotateFast());
+	private final Light light = new Light(96, new Color(0.1f, 0.8f, 0.7f, 1), Light.RAYS, Light.torchlight(), Light.rotateFast());
 
 	public WeaponFactory() {
 		swordAnimation = ResourceManager.getAnimation(SWORD);

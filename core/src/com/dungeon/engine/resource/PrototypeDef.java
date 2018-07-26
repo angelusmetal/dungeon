@@ -1,9 +1,15 @@
 package com.dungeon.engine.resource;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.render.Light;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class PrototypeDef {
 	String name;
@@ -11,7 +17,10 @@ public class PrototypeDef {
 	int[] boundingBox;
 	String color;
 	int[] drawOffset;
+	Float friction;
 	int health;
+	Float knockback;
+	String[] light;
 	float timeToLive;
 	float zAccel;
 	float zSpeed;
@@ -36,8 +45,27 @@ public class PrototypeDef {
 		if (drawOffset != null) {
 			prototype.drawOffset(new Vector2(drawOffset[0], drawOffset[1]));
 		}
+		if (friction != null) {
+			prototype.friction(friction);
+		}
 		if (health != 0) {
 			prototype.health(health);
+		}
+		if (knockback != null) {
+			prototype.knockback(knockback);
+		}
+		if (light != null) {
+			if (light.length < 3) {
+				throw new RuntimeException("light must have at least 3 parameters");
+			}
+			float diameter = Float.parseFloat(light[0]);
+			Color c = Color.valueOf(light[1]);
+			Texture t = getLightTexture(light[2]);
+			List<Consumer<Light>> traits = new ArrayList<>();
+			for (int i = 3; i < light.length; ++i) {
+				traits.add(getLightTrait(light[i]));
+			}
+			prototype.light(new Light(diameter, c, t, traits));
 		}
 		if (timeToLive != 0) {
 			prototype.timeToLive(timeToLive);
@@ -64,6 +92,34 @@ public class PrototypeDef {
 			prototype.with(Traits.zOscillate(zOscillate[0], zOscillate[1]));
 		}
 		ResourceManager.loadPrototype(name, prototype);
+	}
+
+	private Texture getLightTexture(String name) {
+		if ("NORMAL".equals(name)) {
+			return Light.NORMAL;
+		} else if ("RAYS".equals(name)) {
+			return Light.RAYS;
+		} else if ("FLARE".equals(name)) {
+			return Light.FLARE;
+		} else {
+			throw new RuntimeException("light texture '" + name + "' not recognized");
+		}
+	}
+
+	private Consumer<Light> getLightTrait(String name) {
+		if ("torchlight".equals(name)) {
+			return Light.torchlight();
+		} else if ("rotateSlow".equals(name)) {
+			return Light.rotateSlow();
+		} else if ("rotateMedium".equals(name)) {
+			return Light.rotateMedium();
+		} else if ("rotateFast".equals(name)) {
+			return Light.rotateFast();
+		} else if ("oscillate".equals(name)) {
+			return Light.oscillate();
+		} else {
+			throw new RuntimeException("light trait '" + name + "' not recognized");
+		}
 	}
 
 }

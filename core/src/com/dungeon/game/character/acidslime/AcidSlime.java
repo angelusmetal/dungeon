@@ -23,8 +23,7 @@ public class AcidSlime extends CreatureEntity {
 	AcidSlime(Vector2 origin, AcidSlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
-
-		setCurrentAnimation(factory.idleAnimation);
+		this.health = this.maxHealth *= GameState.getDifficultyTier();
 	}
 
 	@Override

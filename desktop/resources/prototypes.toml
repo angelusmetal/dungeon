@@ -133,7 +133,7 @@
     boundingBox = [10, 10]
     drawOffset = [10, 10]
     timeToLive = 1.5
-    #light = vanishLight
+	light = ["192", "ff1932", "RAYS", "torchlight", "rotateFast"]
     fadeOut = 0.5
     fadeOutLight = true
     zAccel = 10
@@ -141,7 +141,7 @@
     animation = "powerup_health"
     boundingBox = [10, 10]
     drawOffset = [10, 10]
-	#light = light
+	light = ["192", "ff1932", "RAYS", "oscillate", "rotateFast"]
 	zOscillate = [3, 8]
 
 
@@ -157,7 +157,142 @@
     boundingBox = [20, 20]
     drawOffset = [32, 32]
     zIndex = -1
+    light = ["300", "0000ff", "RAYS", "torchlight", "rotateSlow"]
 [tombstone]
     animation = "tombstone_spawn"
     boundingBox = [10, 10]
     drawOffset = [16, 16]
+[torch]
+    animation = "torch_idle"
+    boundingBox = [10, 10]
+	drawOffset = [16, 16]
+    light = ["80", "ffb232", "NORMAL", "torchlight"]
+
+
+
+
+
+[creature_slime_acid]
+    animation = "slime_acid_idle"
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    color = "ffffffb2"
+    light = ["100", "a3d957ff", "RAYS", "rotateMedium"]
+    speed = 100
+    knockback = 1
+    friction = 2
+    health = 10
+[creature_slime_acid_death]
+    animation = "slime_acid_die"
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    timeToLive = 1.7
+    fadeOutLight = true
+    light = ["150", "a3d957ff", "NORMAL"]
+[creature_slime_acid_pool]
+    animation = "slime_pool_flood"
+    boundingBox = [22, 12]
+    drawOffset = [16, 8]
+    color = "a3d957ff"
+    light = ["100", "a3d957ff", "NORMAL"]
+    timeToLive = 5
+    fadeOutLight = true
+    zIndex = -1
+[creature_slime_acid_blob]
+    animation = "slime_blob"
+    boundingBox = [6, 6]
+    drawOffset = [8, 8]
+    color = "a3d957ff"
+    speed = 50
+    timeToLive = 10
+    zSpeed = 75 #(() -> Rand.between(50f, 100f))
+    zAccel = -200
+[creature_slime_acid_splat]
+    animation = "slime_splat"
+    boundingBox = [6, 6]
+    drawOffset = [8, 8]
+    color = "a3d957ff"
+    timeToLive = 0.6
+
+[creature_slime_fire]
+    animation = "slime_fire_idle"
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    color = "ffffffCC"
+    light = ["100", "ff8800CC", "NORMAL", "torchlight"]
+    speed = 20
+    knockback = 1
+    health = 5
+
+[creature_ghost]
+    animation = "ghost_hover"
+    boundingBox = [16, 26]
+    drawOffset = [16, 16]
+    color = "ffffff88"
+    knockback = 1
+    light = ["200", "4a66ff88", "RAYS", "rotateSlow"]
+    health = 10
+    speed = 20
+[creature_ghost_death]
+    animation = "ghost_hover"
+    boundingBox = [16, 26]
+    drawOffset = [16, 16]
+    color = "ff000088"
+    light = ["200", "4a66ff88", "RAYS", "rotateSlow"]
+    fadeOut = 0.5
+    fadeOutLight = true
+    timeToLive = 1
+    zSpeed = 50
+
+[creature_slime]
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    # No color; gets assigned at random at the factory
+    light = ["50", "ffffff88", "NORMAL"]
+    speed = 100
+    zSpeed = 0
+    zAccel = -200
+    knockback = 1
+    friction = 1
+    health = 7
+[creature_slime_death]
+    animation = "slime_die"
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    color = "ffffff88"
+    light = ["100", "ffffff88", "NORMAL"]
+    fadeOutLight = true
+    timeToLive = 1.6
+[creature_slime_spawn]
+    animation = "slime_mini_idle"
+    boundingBox = [11, 6]
+    drawOffset = [8, 6]
+    light = ["25", "ffffff88", "NORMAL"]
+    speed = 100
+    zSpeed = 0
+    zAccel = -200
+    knockback = 1
+    friction = 1
+    health = 3
+[creature_slime_spawn_death]
+    animation = "slime_mini_die"
+    boundingBox = [11, 6]
+    drawOffset = [8, 6]
+    color = "ffffff88"
+    light = ["100", "ffffff88", "NORMAL"]
+    fadeOutLight = true
+    timeToLive = 1.6
+[creature_slime_blob]
+    animation = "slime_blob"
+    boundingBox = [6, 6]
+    drawOffset = [8, 8]
+    speed = 50
+    zSpeed = 75 #(() -> Rand.between(50f, 100f))
+    zAccel = -200
+    timeToLive = 10
+[creature_slime_splat]
+    animation = "slime_splat"
+    boundingBox = [6, 6]
+    drawOffset = [8, 8]
+    timeToLive = 0.6
+

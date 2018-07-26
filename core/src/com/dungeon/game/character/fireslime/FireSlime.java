@@ -18,6 +18,7 @@ public class FireSlime extends CreatureEntity {
 	FireSlime(Vector2 origin, FireSlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
+		this.health = this.maxHealth *= GameState.getDifficultyTier();
 	}
 
 	@Override

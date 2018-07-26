@@ -20,6 +20,7 @@ public class Ghost extends CreatureEntity {
 	Ghost(Vector2 origin, GhostFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
+		this.health = this.maxHealth *= GameState.getDifficultyTier();
 		setCurrentAnimation(factory.idleAnimation);
 	}
 

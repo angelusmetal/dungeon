@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 
 public class Light {
 
-	public static Texture NORMAL_TEXTURE = ResourceManager.getTexture("light_1.png");
-	public static Texture RAYS_TEXTURE = ResourceManager.getTexture("light_2.png");
-	public static Texture FLARE_TEXTURE = ResourceManager.getTexture("light_3.png");
+	public static Texture NORMAL = ResourceManager.getTexture("light_1.png");
+	public static Texture RAYS = ResourceManager.getTexture("light_2.png");
+	public static Texture FLARE = ResourceManager.getTexture("light_3.png");
 	public static Texture POSTERIZED_TEXTURE = ResourceManager.getTexture("light_cellshaded.png");
 
 	/** Light texture to use */
@@ -80,11 +80,11 @@ public class Light {
 	}
 
 	public static Consumer<Light> oscillate() {
-		return oscillate(0.5f);
+		return oscillate(0.5f, 1.5f);
 	}
 
-	public static Consumer<Light> oscillate(float delta) {
-		return light -> light.dim = 1 + (float) Math.sin(light.angle) * delta ;
+	public static Consumer<Light> oscillate(float delta, float frequency) {
+		return light -> light.dim = 1 + (float) Math.sin(GameState.time() * frequency) * delta ;
 	}
 
 	public static Consumer<Light> rotateSlow() {

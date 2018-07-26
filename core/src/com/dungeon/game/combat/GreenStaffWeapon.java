@@ -32,11 +32,11 @@ public class GreenStaffWeapon extends ProjectileWeapon {
 		Animation<TextureRegion> bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
-		Vector2 bulletDrawOffset = new Vector2(4, 4);
+		Vector2 bulletDrawOffset = new Vector2(8, 8);
 
 		float bulletSpeed = 200f;
-		Light bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL_TEXTURE);
-		Light bulletTrailLight = new Light(20, new Color(0.3f, 0.9f, 0.2f, 0.1f), Light.NORMAL_TEXTURE);
+		Light bulletLight = new Light(60, new Color(0.3f, 0.9f, 0.2f, 0.5f), Light.NORMAL);
+		Light bulletTrailLight = new Light(20, new Color(0.3f, 0.9f, 0.2f, 0.1f), Light.NORMAL);
 
 		projectile = new EntityPrototype()
 				.animation(bulletFlyAnimation)

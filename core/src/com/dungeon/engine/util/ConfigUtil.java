@@ -66,6 +66,9 @@ public class ConfigUtil {
 					if (value != null) {
 						field.set(pojo, value);
 					}
+				} else if (type == Boolean.class || type == boolean.class) {
+					Boolean value = getBoolean(item, name);
+					field.set(pojo, value);
 				} else if (type == String.class) {
 					field.set(pojo, item.getString(name));
 				} else if (type.isArray()) {
@@ -80,7 +83,7 @@ public class ConfigUtil {
 							field.set(pojo, values);
 						}
 					}
-					if (type.getName().equals("[F")) {
+					else if (type.getName().equals("[F")) {
 						List<Number> list = item.getList(name);
 						if (list != null) {
 							int i = 0;
@@ -91,7 +94,18 @@ public class ConfigUtil {
 							field.set(pojo, values);
 						}
 					}
-					if (type.getName().equals("[[F")) {
+					else if (type.getName().equals("[Ljava.lang.String;")) {
+						List<String> list = item.getList(name);
+						if (list != null) {
+							int i = 0;
+							String[] values = new String[list.size()];
+							for (String string : list) {
+								values[i++] = string;
+							}
+							field.set(pojo, values);
+						}
+					}
+					else if (type.getName().equals("[[F")) {
 						List<List<Number>> list = item.getList(name);
 						if (list != null) {
 							float[][] values = new float[list.size()][];
@@ -106,6 +120,9 @@ public class ConfigUtil {
 							}
 							field.set(pojo, values);
 						}
+					}
+					else {
+						System.out.println("->>" + type.getName());
 					}
 				} else {
 					System.out.println("->>" + type.getName());
@@ -170,6 +187,14 @@ public class ConfigUtil {
 		} catch (ClassCastException e) {
 			// No need to take default into account, because it already found a value (and failed)
 			return configuration.getLong(key).floatValue();
+		}
+	}
+
+	public static boolean getBoolean(Toml configuration, String key) {
+		try {
+			return configuration.contains(key) ? configuration.getBoolean(key) : false;
+		} catch (ClassCastException e) {
+			return Boolean.getBoolean(configuration.getString(key));
 		}
 	}
 

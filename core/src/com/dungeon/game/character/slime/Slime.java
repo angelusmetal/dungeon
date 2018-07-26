@@ -17,6 +17,7 @@ public class Slime extends CreatureEntity {
 	Slime(Vector2 origin, SlimeFactory factory) {
 		super(origin, factory.character);
 		this.factory = factory;
+		this.health = this.maxHealth *= GameState.getDifficultyTier();
 		setCurrentAnimation(factory.blinkAnimation);
 	}
 

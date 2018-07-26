@@ -53,8 +53,6 @@
 # Creatures
 [[creatures]]
     id = "GHOST"
-    health = 10
-    speed = 20
     maxTargetDistance = 300 # Targeting distance
     visibleTime = 2.0       # Visible time, in seconds
     visibleSpeed = 20       # Speed while visible
@@ -62,10 +60,6 @@
     damagePerSecond = 2     # Damage dealth per second upon contact
 [[creatures]]
     id = "SLIME"
-    health = 7
-    spawnHealth = 3         # Health of spawns
-    speed = 100
-    friction = 1
     maxTargetDistance = 300 # Targeting distance
     jumpDistance = 50       # Jump distance
     damagePerSecond = 1     # Damage dealth per second upon contact
@@ -73,20 +67,14 @@
     attackFrequency = 3.0   # Frequency of attacks, in seconds
 [[creatures]]
     id = "SLIME_ACID"
-    health = 10
-    speed = 100
-    friction = 2
     maxTargetDistance = 300 # Targeting distance
     dashDistance = 150      # Dashing distance
     poolSeparation = 15     # Separation between acid pools
-    poolDuration = 5.0      # Duration of acid pools, in seconds
     poolDamage = 5          # Damage per second caused by the acid pool
     attackFrequency = 3.0   # Frequency of attacks, in seconds
     damagePerSecond = 1     # Damage dealth per second upon contact
 [[creatures]]
     id = "SLIME_FIRE"
-    health = 5
-    speed = 20
     maxTargetDistance = 300 # Targeting distance
     attackFrequency = 1.5   # Frequency of attacks, in seconds
     attackSpeed = 10        # Movement speed while attacking

@@ -13,33 +13,18 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.state.GameState;
-import com.dungeon.game.tileset.FillSheet;
 
 public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
-
-	private static final String HEALTH = "powerup_health";
-
-	private static final Vector2 BOUNDING_BOX = new Vector2(10, 10);
-	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
 
 	private final EntityPrototype powerupPrototype;
 	private final EntityPrototype specPrototype;
 	private final EntityPrototype vanishPrototype;
 
 	public HealthPowerupFactory() {
-		Animation<TextureRegion> animation = ResourceManager.getAnimation(HEALTH);
-
-		Light light = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light.oscillate(), Light.rotateFast());
-		Light vanishLight = new Light(192, new Color(1, 0.1f, 0.2f, 1), Light.RAYS_TEXTURE, Light.torchlight(), Light.rotateFast());
-
 		specPrototype = ResourceManager.getPrototype("particle_health_spec");
-		vanishPrototype = ResourceManager.getPrototype("health_powerup_fade")
-				// TODO Add these to prototypes.yaml
-				.light(vanishLight);
-
+		vanishPrototype = ResourceManager.getPrototype("health_powerup_fade");
 		powerupPrototype = ResourceManager.getPrototype("health_powerup")
 				// TODO Add these to prototypes.yaml
-				.light(light)
 				.with(Traits.generator(0.05f, (powerup) -> {
 					Entity spec = new Entity(powerup.getPos(), specPrototype);
 					spec.getPos().x += Rand.between(-8, 8);

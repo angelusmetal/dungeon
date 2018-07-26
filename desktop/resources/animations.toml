@@ -108,7 +108,7 @@
   texture = "slime.png"
   tilesize = 32
   frameDuration = 0.07
-  sequence = [5, 6, 7, 8, 9, 10, 11, 12]
+  sequence = [5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 # Slime spawn
 [slime_mini_idle]
@@ -125,7 +125,7 @@
   texture = "slime_mini.png"
   tilesize = 16
   frameDuration = 0.07
-  sequence = [5, 6, 7, 8, 9, 10, 11, 12]
+  sequence = [5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 # Slime blobs
 [slime_pool_flood]
