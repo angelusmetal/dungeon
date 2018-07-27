@@ -1,0 +1,36 @@
+[room]
+	tiles = [
+		["VOID", "VOID", "VOID", "VOID", "VOID", "VOID", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "VOID", "VOID", "VOID", "VOID", "VOID", "VOID"]
+	]
+	connections = [
+		{x = 0, y = 3, type = "LEFT"},
+		{x = 6, y = 3, type = "RIGHT"},
+		{x = 3, y = 6, type = "UP"},
+		{x = 3, y = 0, type = "DOWN"}
+	]
+	spawns = [
+		{x = 2, y = 2},
+		{x = 2, y = 3},
+		{x = 2, y = 4},
+		{x = 3, y = 2},
+		{x = 3, y = 3},
+		{x = 3, y = 4},
+		{x = 4, y = 2},
+		{x = 4, y = 3},
+		{x = 4, y = 4}
+	]
+	placeholders = [
+		# Torches
+		{x = 3.5, y = 6.5, type = "TORCH"},
+		{x = 4.5, y = 6.5, type = "TORCH"},
+		{x = 1, y = 4.5, type = "TORCH"},
+		{x = 1, y = 3.5, type = "TORCH"},
+		{x = 6, y = 4.5, type = "TORCH"},
+		{x = 6, y = 3.5, type = "TORCH"}
+	]

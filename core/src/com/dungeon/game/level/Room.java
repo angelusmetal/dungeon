@@ -1,6 +1,7 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 
 import java.util.ArrayList;
@@ -25,6 +26,24 @@ public class Room {
 		this.width = width;
 		this.height = height;
 		this.generation = generation;
+	}
+
+	public Room(int left, int bottom, int generation, RoomPrototype prototype) {
+		this.tiles = prototype.getTiles();
+		this.left = left;
+		this.bottom = bottom;
+		this.width = prototype.getTiles()[0].length;
+		this.height = prototype.getTiles().length;
+		this.generation = generation;
+		for (Vector2 spawn : prototype.getSpawnPoints()) {
+			spawnPoints.add(new Vector2(spawn.x + left, spawn.y + bottom));
+		}
+		for (EntityPlaceholder placeholder : prototype.getPlaceholders()) {
+			placeholders.add(EntityPlaceholder.of(placeholder.getType(), placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom));
+		}
+		for (ProceduralLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
+			connectionPoints.add(new ProceduralLevelGenerator.ConnectionPoint(connection.coords.x + left, connection.coords.y + bottom, connection.direction));
+		}
 	}
 
 	@Override
