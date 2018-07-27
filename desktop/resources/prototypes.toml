@@ -3,91 +3,131 @@
     boundingBox = [48, 38]
     drawOffset = [24, 24]
     health = 500
+    solid = true
 [prop_table_1]
     animation = "prop_table_1"
     boundingBox = [42, 20]
     drawOffset = [24, 24]
     health = 500
+    solid = true
 [prop_table_2]
     animation = "prop_table_2"
     boundingBox = [42, 20]
     drawOffset = [24, 24]
     health = 500
+    solid = true
 [prop_cage]
     animation = "prop_cage"
     boundingBox = [20, 36]
     drawOffset = [24, 24]
     health = 1000
+    solid = true
 [prop_bush_green]
     animation = "prop_bush_green"
     boundingBox = [30, 30]
     drawOffset = [24, 23]
     health = 200
+    solid = true
 [prop_bush_gold]
     animation = "prop_bush_gold"
     boundingBox = [30, 30]
     drawOffset = [24, 23]
     health = 200
+    solid = true
 [prop_bush_red]
     animation = "prop_bush_red"
     boundingBox = [30, 30]
     drawOffset = [24, 23]
     health = 200
+    solid = true
 [prop_bush_cyan]
     animation = "prop_bush_cyan"
     boundingBox = [30, 30]
     drawOffset = [24, 23]
     health = 200
+    solid = true
 [prop_bush_purple]
     animation = "prop_bush_purple"
     boundingBox = [30, 30]
     drawOffset = [24, 23]
     health = 200
+    solid = true
 [prop_bush_green_small]
     animation = "prop_bush_green_small"
     boundingBox = [19, 20]
     drawOffset = [24, 24]
     health = 100
+    solid = true
 [prop_bush_gold_small]
     animation = "prop_bush_gold_small"
     boundingBox = [19, 20]
     drawOffset = [24, 24]
     health = 100
+    solid = true
 [prop_bush_red_small]
     animation = "prop_bush_red_small"
     boundingBox = [19, 20]
     drawOffset = [24, 24]
     health = 100
+    solid = true
 [prop_bush_cyan_small]
     animation = "prop_bush_cyan_small"
     boundingBox = [19, 20]
     drawOffset = [24, 24]
     health = 100
+    solid = true
 [prop_bush_purple_small]
     animation = "prop_bush_purple_small"
     boundingBox = [19, 20]
     drawOffset = [24, 24]
     health = 100
+    solid = true
+[prop_painting_1]
+    animation = "prop_painting_1"
+    boundingBox = [24, 28]
+    drawOffset = [24, 24]
+    health = 100
+    solid = true
+[prop_painting_2]
+    animation = "prop_painting_2"
+    boundingBox = [24, 28]
+    drawOffset = [24, 24]
+    health = 100
+    solid = true
+[prop_painting_3]
+    animation = "prop_painting_3"
+    boundingBox = [24, 28]
+    drawOffset = [24, 24]
+    health = 100
+    solid = true
 [prop_grass_1]
     animation = "prop_grass_1"
     boundingBox = [16, 18]
     drawOffset = [12, 10]
     health = 1
+    solid = false
+    canBeHit = true
 [prop_grass_2]
     animation = "prop_grass_2"
     boundingBox = [5, 4]
     drawOffset = [12, 3]
     health = 1
+    solid = false
+    canBeHit = true
 [prop_grass_3]
     animation = "prop_grass_3"
     boundingBox = [6, 6]
     drawOffset = [12, 4]
     health = 1
+    solid = false
+    canBeHit = true
 [prop_flower_1]
     animation = "prop_flower_1"
     boundingBox = [10, 16]
     drawOffset = [12, 15]
     health = 1
+    solid = false
+    canBeHit = true
 
 
 
@@ -96,6 +136,7 @@
     boundingBox = [7, 96]
     drawOffset = [48, 32]
     health = 10
+    solid = true
 [door_horizontal_opening]
     animation = "door_horizontal"
     boundingBox = [7, 96]
@@ -104,11 +145,14 @@
     timeToLive = 1
     zSpeed = 40
     fadeOut = 1
+    solid = true
+    canBeHurt = false
 [door_vertical]
     animation = "door_vertical"
     boundingBox = [48, 48]
     drawOffset = [48, 48]
     health = 10
+    solid = true
 [door_vertical_opening]
     animation = "door_vertical"
     boundingBox = [48, 48]
@@ -117,6 +161,8 @@
     timeToLive = 1
     zSpeed = 40
     fadeOut = 1
+    solid = true
+    canBeHurt = false
 
 [particle_health_spec]
     animation = "pixel"
@@ -158,21 +204,24 @@
     drawOffset = [32, 32]
     zIndex = -1
     light = ["300", "0000ff", "RAYS", "torchlight", "rotateSlow"]
+    solid = false
 [tombstone]
     animation = "tombstone_spawn"
     boundingBox = [10, 10]
     drawOffset = [16, 16]
+    solid = true
 [torch]
     animation = "torch_idle"
     boundingBox = [10, 10]
 	drawOffset = [16, 16]
     light = ["80", "ffb232", "NORMAL", "torchlight"]
+    solid = false
 [chest]
     animation = "chest_closed"
     boundingBox = [22, 6]
 	drawOffset = [24, 12]
     health = 50
-
+    solid = true
 
 [creature_slime_acid]
     animation = "slime_acid_idle"

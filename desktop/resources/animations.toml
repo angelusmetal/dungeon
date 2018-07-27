@@ -423,6 +423,21 @@
   tilesize = 48
   frameDuration = 1
   loop = [13]
+[prop_painting_1]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [28]
+[prop_painting_2]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [29]
+[prop_painting_3]
+  texture = "furniture.png"
+  tilesize = 48
+  frameDuration = 1
+  loop = [30]
 
 #
 # Vegetation

@@ -9,7 +9,6 @@ import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;
 
 public class Chest extends Entity {
-	private boolean canBeHit = true;
 	public Chest(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
 	}
@@ -25,11 +24,5 @@ public class Chest extends Entity {
 			loot.setZPos(15);
 			GameState.addEntity(loot);
 		}
-	}
-	@Override public boolean isSolid() {
-		return true;
-	}
-	@Override public boolean canBeHit() {
-		return canBeHit;
 	}
 }

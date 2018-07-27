@@ -29,6 +29,9 @@ public class FurnitureFactory {
 	private final EntityPrototype grass3Prototype;
 	private final EntityPrototype flower1Prototype;
 	private final EntityPrototype chestPrototype;
+	private final EntityPrototype painting1Prototype;
+	private final EntityPrototype painting2Prototype;
+	private final EntityPrototype painting3Prototype;
 
 	public FurnitureFactory() {
 		bookshelfProtoype = ResourceManager.getPrototype("prop_bookshelf");
@@ -50,6 +53,9 @@ public class FurnitureFactory {
 		grass3Prototype = ResourceManager.getPrototype("prop_grass_3");
 		flower1Prototype = ResourceManager.getPrototype("prop_flower_1");
 		chestPrototype = ResourceManager.getPrototype("chest");
+		painting1Prototype = ResourceManager.getPrototype("prop_painting_1");
+		painting2Prototype = ResourceManager.getPrototype("prop_painting_2");
+		painting3Prototype = ResourceManager.getPrototype("prop_painting_3");
 	}
 
 	public Entity buildBookshelf(Vector2 origin) {
@@ -129,15 +135,24 @@ public class FurnitureFactory {
 		return new Chest(origin, chestPrototype);
 	}
 
+	public Entity buildPainting1(Vector2 origin) {
+		return new Entity(origin, painting1Prototype);
+	}
+
+	public Entity buildPainting2(Vector2 origin) {
+		return new Entity(origin, painting2Prototype);
+	}
+
+	public Entity buildPainting3(Vector2 origin) {
+		return new Entity(origin, painting3Prototype);
+	}
+
 	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle) {
 		return buildProp(origin, prototype, particle, 6);
 	}
 
 	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle, int count) {
 		return new Entity(origin, prototype) {
-			@Override public boolean isSolid() {
-				return true;
-			}
 			@Override public void onHit() {
 				Rand.doBetween(count / 2, count, () ->
 						GameState.addEntity(GameState.build(particle, getPos()))

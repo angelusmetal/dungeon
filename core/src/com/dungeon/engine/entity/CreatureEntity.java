@@ -15,11 +15,9 @@ public abstract class CreatureEntity extends Entity implements Movable, Drawable
 
 	public CreatureEntity(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
-	}
-
-	@Override
-	public boolean isSolid() {
-		return true;
+		solid = true;
+		canBeHit = true;
+		canBeHurt = true;
 	}
 
 	@Override

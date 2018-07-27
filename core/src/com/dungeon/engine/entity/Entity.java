@@ -81,6 +81,10 @@ public class Entity implements Drawable, Movable {
 	/** zIndex for ordering sprites */
 	private float zIndex;
 
+	protected boolean solid = false;
+	protected boolean canBeHit;
+	protected boolean canBeHurt;
+
 	private DrawFunction drawFunction;
 
 	public Entity(Vector2 origin, EntityPrototype builder) {
@@ -107,6 +111,9 @@ public class Entity implements Drawable, Movable {
 		}
 		this.maxHealth = builder.health.get();
 		this.health = maxHealth;
+		this.solid = builder.solid;
+		this.canBeHit = builder.canBeHit;
+		this.canBeHurt = builder.canBeHurt;
 	}
 
 	@Override
@@ -473,13 +480,13 @@ public class Entity implements Drawable, Movable {
 	}
 
 	public boolean isSolid() {
-		return false;
+		return solid;
 	}
 	public boolean canBeHit() {
-		return isSolid();
+		return canBeHit;
 	}
 	public boolean canBeHurt() {
-		return canBeHit();
+		return canBeHurt;
 	}
 
 	/** Handle entity collision; true if handled; false otherwise */

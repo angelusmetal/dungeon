@@ -25,10 +25,6 @@ public class TombstoneFactory implements EntityFactory.EntityTypeFactory {
 				Rand.doBetween(2, 5, () ->
 						GameState.addEntity(GameState.build(EntityType.STONE_PARTICLE, getPos())));
 			}
-			@Override
-			public boolean isSolid() {
-				return true;
-			}
 		};
 	}
 }

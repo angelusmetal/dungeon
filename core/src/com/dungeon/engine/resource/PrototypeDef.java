@@ -28,7 +28,10 @@ public class PrototypeDef {
 	float[] hOscillate;
 	float[] zOscillate;
 	float fadeOut;
-	boolean fadeOutLight;
+	Boolean fadeOutLight;
+	Boolean solid;
+	Boolean canBeHit;
+	Boolean canBeHurt;
 
 	public void load(String name) {
 		this.name = name;
@@ -82,7 +85,7 @@ public class PrototypeDef {
 		if (fadeOut != 0) {
 			prototype.with(Traits.fadeOut(fadeOut));
 		}
-		if (fadeOutLight) {
+		if (fadeOutLight != null && fadeOutLight) {
 			prototype.with(Traits.fadeOutLight());
 		}
 		if (hOscillate != null) {
@@ -90,6 +93,18 @@ public class PrototypeDef {
 		}
 		if (zOscillate != null) {
 			prototype.with(Traits.zOscillate(zOscillate[0], zOscillate[1]));
+		}
+		if (solid != null) {
+			prototype.solid(solid);
+			prototype.canBeHit(solid);
+			prototype.canBeHurt(solid);
+		}
+		if (canBeHit != null) {
+			prototype.canBeHit(canBeHit);
+			prototype.canBeHurt(canBeHit);
+		}
+		if (canBeHurt != null) {
+			prototype.canBeHurt(canBeHurt);
 		}
 		ResourceManager.loadPrototype(name, prototype);
 	}

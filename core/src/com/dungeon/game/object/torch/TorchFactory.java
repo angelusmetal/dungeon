@@ -16,12 +16,6 @@ public class TorchFactory implements EntityFactory.EntityTypeFactory {
 
 	@Override
 	public Entity build(Vector2 origin) {
-		return new Entity(origin, prototype) {
-			@Override
-			// TODO Make this a property
-			public boolean isSolid() {
-				return false;
-			}
-		};
+		return new Entity(origin, prototype);
 	}
 }

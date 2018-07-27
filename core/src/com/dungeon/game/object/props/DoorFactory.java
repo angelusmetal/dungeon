@@ -38,20 +38,13 @@ public class DoorFactory {
 
 	private Entity buildDoor(Vector2 origin, EntityPrototype closed, EntityPrototype opening) {
 		return new Entity(origin, closed) {
-			@Override public boolean isSolid() {
-				return true;
-			}
 			@Override public void onHit() {
 				Rand.doBetween(2, 5, () ->
 						GameState.addEntity(GameState.build(EntityType.WOOD_PARTICLE, getPos()))
 				);
 			}
 			@Override public void onExpire() {
-				Entity openingDoor = new Entity(getPos(), opening) {
-					@Override public boolean canBeHurt() {
-						return false;
-					}
-				};
+				Entity openingDoor = new Entity(getPos(), opening);
 				GameState.addEntity(openingDoor);
 			}
 // TODO Re-enable this once we can interact some other way with the props

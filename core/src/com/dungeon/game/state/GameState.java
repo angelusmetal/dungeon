@@ -107,6 +107,9 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.TABLE2, furnitureFactory::buildTable2);
 		entityFactory.registerFactory(EntityType.CAGE, furnitureFactory::buildCage);
 		entityFactory.registerFactory(EntityType.CHEST, furnitureFactory::buildChest);
+		entityFactory.registerFactory(EntityType.PAINTING_1, furnitureFactory::buildPainting1);
+		entityFactory.registerFactory(EntityType.PAINTING_2, furnitureFactory::buildPainting2);
+		entityFactory.registerFactory(EntityType.PAINTING_3, furnitureFactory::buildPainting3);
 		entityFactory.registerFactory(EntityType.BUSH_GREEN, furnitureFactory::buildBushGreen);
 		entityFactory.registerFactory(EntityType.BUSH_GOLD, furnitureFactory::buildBushGold);
 		entityFactory.registerFactory(EntityType.BUSH_RED, furnitureFactory::buildBushRed);

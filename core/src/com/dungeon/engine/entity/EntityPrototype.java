@@ -28,6 +28,9 @@ public class EntityPrototype {
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
 	Supplier<Integer> health = () -> 100;
+	boolean solid = false;
+	boolean canBeHit = false;
+	boolean canBeHurt = false;
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
@@ -51,6 +54,9 @@ public class EntityPrototype {
 		this.health = other.health;
 		this.boundingBox = other.boundingBox.cpy();
 		this.drawOffset = other.drawOffset.cpy();
+		this.solid = other.solid;
+		this.canBeHit = other.canBeHit;
+		this.canBeHurt = other.canBeHurt;
 	}
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
@@ -170,6 +176,21 @@ public class EntityPrototype {
 
 	public EntityPrototype zSpeed(Supplier<Float> zSpeed) {
 		this.zSpeed = zSpeed;
+		return this;
+	}
+
+	public EntityPrototype solid(boolean solid) {
+		this.solid = solid;
+		return this;
+	}
+
+	public EntityPrototype canBeHit(boolean canBeHit) {
+		this.canBeHit = canBeHit;
+		return this;
+	}
+
+	public EntityPrototype canBeHurt(boolean canBeHurt) {
+		this.canBeHurt = canBeHurt;
 		return this;
 	}
 

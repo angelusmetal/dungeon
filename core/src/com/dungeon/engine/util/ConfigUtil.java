@@ -68,7 +68,9 @@ public class ConfigUtil {
 					}
 				} else if (type == Boolean.class || type == boolean.class) {
 					Boolean value = getBoolean(item, name);
-					field.set(pojo, value);
+					if (value != null) {
+						field.set(pojo, value);
+					}
 				} else if (type == String.class) {
 					field.set(pojo, item.getString(name));
 				} else if (type.isArray()) {
@@ -190,9 +192,9 @@ public class ConfigUtil {
 		}
 	}
 
-	public static boolean getBoolean(Toml configuration, String key) {
+	public static Boolean getBoolean(Toml configuration, String key) {
 		try {
-			return configuration.contains(key) ? configuration.getBoolean(key) : false;
+			return configuration.contains(key) ? configuration.getBoolean(key) : null;
 		} catch (ClassCastException e) {
 			return Boolean.getBoolean(configuration.getString(key));
 		}
