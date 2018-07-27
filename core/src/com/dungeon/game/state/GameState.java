@@ -39,9 +39,11 @@ import com.dungeon.game.tileset.TilesetManager;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class GameState {
 
@@ -51,6 +53,7 @@ public class GameState {
 
 	private static final int BASE_MAP_WIDTH = 40;
 	private static final int BASE_MAP_HEIGHT = 40;
+	public static final List<String> DEFAULT_ITEM_TYPES = Arrays.asList("HEALTH_POWERUP", "WEAPON_SWORD", "WEAPON_CAT_STAFF", "WEAPON_GREEN_STAFF");
 
 	private static EntityFactory entityFactory;
 	private static Toml configuration;
@@ -78,12 +81,15 @@ public class GameState {
 	private static List<OverlayText> overlayTexts = new ArrayList<>();
 	private static List<OverlayText> newOverelayTexts = new ArrayList<>();
 
+	private static List<EntityType> lootSet;
+
 	// FIXME Does this belong here?
 	private static Color baseLight = Color.WHITE.cpy();
 
 	public static void initialize(Toml configuration) {
 		GameState.entityFactory = new EntityFactory();
 		GameState.configuration = configuration;
+		GameState.lootSet = configuration.getList("map.items", DEFAULT_ITEM_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
 		initEntityFactories(entityFactory);
 	}
 
@@ -100,6 +106,7 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.TABLE, furnitureFactory::buildTable);
 		entityFactory.registerFactory(EntityType.TABLE2, furnitureFactory::buildTable2);
 		entityFactory.registerFactory(EntityType.CAGE, furnitureFactory::buildCage);
+		entityFactory.registerFactory(EntityType.CHEST, furnitureFactory::buildChest);
 		entityFactory.registerFactory(EntityType.BUSH_GREEN, furnitureFactory::buildBushGreen);
 		entityFactory.registerFactory(EntityType.BUSH_GOLD, furnitureFactory::buildBushGold);
 		entityFactory.registerFactory(EntityType.BUSH_RED, furnitureFactory::buildBushRed);
@@ -372,6 +379,10 @@ public class GameState {
 
 	public static void randomizeBaseLight() {
 		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.5f, 1f, 1f));
+	}
+
+	public static EntityType createLoot() {
+		return Rand.pick(lootSet);
 	}
 
 }

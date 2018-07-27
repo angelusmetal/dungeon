@@ -91,7 +91,7 @@ public class DungeonVioletTileset extends LevelTileset {
 	private final Tile VOID_TILE = new Tile(VOID);
 
 	public DungeonVioletTileset() {
-		super(ResourceManager.getTexture("prairie_tileset.png"), 48);
+		super(ResourceManager.getTexture("dungeon_violet.png"), 48);
 	}
 
 	@Override

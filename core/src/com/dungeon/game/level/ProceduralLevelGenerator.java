@@ -2,6 +2,7 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Tile;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ public class ProceduralLevelGenerator {
 	private List<Room> rooms = new ArrayList<>();
 	private List<Coords> doors = new ArrayList<>();
 
-	private List<RoomGenerator> roomGenerators;
+	private List<RoomPrototype> roomPrototypes = new ArrayList<>();
 
 	public enum Type {
 		HEART,
@@ -53,6 +55,18 @@ public class ProceduralLevelGenerator {
 		}
 		private final int x;
 		private final int y;
+		public Direction opposite() {
+			switch (this) {
+				case UP:
+					return DOWN;
+				case DOWN:
+					return UP;
+				case LEFT:
+					return RIGHT;
+				default:
+					return LEFT;
+			}
+		}
 	}
 
 	public static class Coords {
@@ -94,13 +108,11 @@ public class ProceduralLevelGenerator {
 				tiles[x][y] = TileType.VOID;
 			}
 		}
-		this.roomGenerators = Arrays.asList(
-				new RectangleRoomGenerator(),
-				new CornersRoomGenerator(),
-				new ColumnsRoomGenerator(),
-				new DiamondRoomGenerator(),
-				new ORoomGenerator()
-		);
+		Toml toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("rooms.toml"));
+		toml.entrySet().forEach(entry -> {
+			roomPrototypes.add(RoomPrototype.fromToml(toml.getTable(entry.getKey())));
+		});
+
 	}
 
 	public Level generateLevel(LevelTileset tileset) {
@@ -140,49 +152,16 @@ public class ProceduralLevelGenerator {
 
 	private List<EntityPlaceholder> generateEntities() {
 		List<EntityType> monsterTypes = configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
-		List<EntityType> itemTypes = configuration.getList("map.items", DEFAULT_ITEM_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
-		float itemChance = configuration.getDouble("map.itemchance", 0.4d).floatValue();
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
-
-		// TODO Away with this awful hack!
-		List<EntityType> spawnTypes = new ArrayList<>(monsterTypes);
-		spawnTypes.add(EntityType.BOOKSHELF);
-		spawnTypes.add(EntityType.TABLE);
-		spawnTypes.add(EntityType.TABLE2);
-		spawnTypes.add(EntityType.CAGE);
-		spawnTypes.add(EntityType.BUSH_CYAN);
-		spawnTypes.add(EntityType.BUSH_CYAN_SMALL);
-		spawnTypes.add(EntityType.BUSH_GOLD);
-		spawnTypes.add(EntityType.BUSH_GOLD_SMALL);
-		spawnTypes.add(EntityType.BUSH_GREEN);
-		spawnTypes.add(EntityType.BUSH_GREEN_SMALL);
-		spawnTypes.add(EntityType.BUSH_PURPLE);
-		spawnTypes.add(EntityType.BUSH_PURPLE_SMALL);
-		spawnTypes.add(EntityType.BUSH_RED);
-		spawnTypes.add(EntityType.BUSH_RED_SMALL);
-		spawnTypes.add(EntityType.GRASS_1);
-		spawnTypes.add(EntityType.GRASS_2);
-		spawnTypes.add(EntityType.GRASS_3);
-		spawnTypes.add(EntityType.FLOWER_1);
-//		spawnTypes.add(EntityType.FLAME_PARTICLE);
-//		spawnTypes.add(EntityType.CANDLE_PARTICLE);
-//		spawnTypes.add(EntityType.DROPLET_PARTICLE);
-//		spawnTypes.add(EntityType.FIREBALL_PARTICLE);
 
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
 			Room room = rooms.get(r);
-//			// Create a random amount of monsters in each room
-//			final int skip = Rand.nextInt(room.spawnPoints.size());
-//
-//			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
-			room.spawnPoints.stream().forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(spawnTypes), pos)));
+			// Create a random amount of monsters in each room
+			final int skip = Rand.nextInt(room.spawnPoints.size());
 
-			// A chance of spawning one item
-			if (Rand.chance(itemChance)) {
-				Vector2 pos = Rand.pick(room.spawnPoints);
-				placeholders.add(new EntityPlaceholder(Rand.pick(itemTypes), pos));
-			}
+			room.spawnPoints.forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
+
 		}
 		// Add placeholders
 		for (Room room : rooms) {
@@ -326,43 +305,18 @@ public class ProceduralLevelGenerator {
 			return null;
 		}
 
-		Collections.shuffle(roomGenerators);
-		RoomGenerator generator = roomGenerators.get(0);
-		int roomWidth = Rand.nextInt((generator.maxWidth() - generator.minWidth()) / 2) * 2 + generator.minWidth();
-		int roomHeight = Rand.nextInt((generator.maxHeight() - generator.minHeight()) / 2) * 2 + generator.minHeight();
-		for (int rWidth = roomWidth; rWidth >= generator.minWidth(); rWidth-=2) {
-			for (int rHeight = roomHeight; rHeight >= generator.minHeight(); rHeight-=2) {
-				Room room = generateRooms(generator, x, y, roomWidth, roomHeight, generation + 1, direction);
-				if (canPlaceRoom(room)) {
-					placeRoom(room);
-					addConnectionPoints(room, direction);
-					return room;
-				}
+		RoomPrototype prototype = Rand.pick(roomPrototypes);
+		Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
+		if (entryPoint.isPresent()) {
+			ConnectionPoint p = entryPoint.get();
+			Room room = new Room(x - p.coords.x, y - p.coords.y, generation + 1, prototype);
+			if (canPlaceRoom(room)) {
+				placeRoom(room);
+				return room;
 			}
 		}
 		// Could not generate a room
 		return null;
-	}
-
-	private Room generateRooms(RoomGenerator generator, int x, int y, int width, int height, int generation, Direction direction) {
-		int left, bottom;
-		if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-			bottom = y - height / 2;
-			if (direction == Direction.LEFT) {
-				left = x - width + 1;
-			} else {
-				left = x;
-			}
-		} else {
-			left = x - width / 2;
-			if (direction == Direction.UP) {
-				bottom = y;
-			} else {
-				bottom = y - height + 1;
-			}
-		}
-
-		return generator.generate(left, bottom, width, height, generation);
 	}
 
 	private boolean canPlaceRoom(Room room) {
@@ -381,6 +335,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private void placeRoom(Room room) {
+		System.out.println("Placing room " + room);
 		rooms.add(room);
 		for (int x = 0; x < room.width; ++x) {
 			for (int y = 0; y < room.height; ++y) {
@@ -389,40 +344,4 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public void addConnectionPoints(Room room, final Direction enterDirection) {
-		System.out.println("Adding connection points to room " + room + "...");
-		int middleX = room.left + room.width / 2;
-		int middleY = room.bottom + room.height / 2;
-		room.connectionPoints = new ArrayList<>(4);
-		// Top connection point
-		ConnectionPoint point = new ConnectionPoint(middleX, room.bottom + room.height - 1, Direction.UP);
-		if (enterDirection == Direction.DOWN) {
-			point.visited = true;
-		}
-		System.out.println("  -> " + point);
-		room.connectionPoints.add(point);
-		// Bottom connection point
-		point = new ConnectionPoint(middleX, room.bottom, Direction.DOWN);
-		if (enterDirection == Direction.UP) {
-			point.visited = true;
-		}
-		System.out.println("  -> " + point);
-		room.connectionPoints.add(point);
-		// Left connection point
-		point = new ConnectionPoint(room.left, middleY, Direction.LEFT);
-		if (enterDirection == Direction.RIGHT) {
-			point.visited = true;
-		}
-		System.out.println("  -> " + point);
-		room.connectionPoints.add(point);
-		// Right connection point
-		point = new ConnectionPoint(room.left + room.width - 1, middleY, Direction.RIGHT);
-		if (enterDirection == Direction.LEFT) {
-			point.visited = true;
-		}
-		System.out.println("  -> " + point);
-		room.connectionPoints.add(point);
-		// Shuffle connection points so they are not always navigated in the same order
-		Collections.shuffle(room.connectionPoints);
-	}
 }

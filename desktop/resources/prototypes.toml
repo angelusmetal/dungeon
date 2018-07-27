@@ -167,9 +167,11 @@
     boundingBox = [10, 10]
 	drawOffset = [16, 16]
     light = ["80", "ffb232", "NORMAL", "torchlight"]
-
-
-
+[chest]
+    animation = "chest_closed"
+    boundingBox = [22, 6]
+	drawOffset = [24, 12]
+    health = 50
 
 
 [creature_slime_acid]

@@ -26,6 +26,7 @@ public enum EntityType {
 	TABLE,
 	TABLE2,
 	CAGE,
+	CHEST,
 	BUSH_GREEN,
 	BUSH_GREEN_SMALL,
 	BUSH_GOLD,

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
-	List<ProceduralLevelGenerator.ConnectionPoint> connectionPoints;
 	public final int left;
 	public final int bottom;
 	public final int width;
@@ -16,6 +15,7 @@ public class Room {
 	public final int generation;
 	public final List<Vector2> spawnPoints = new ArrayList<>();
 	public final List<EntityPlaceholder> placeholders = new ArrayList<>();
+	public final List<ProceduralLevelGenerator.ConnectionPoint> connectionPoints = new ArrayList<>();
 
 	public final TileType[][] tiles;
 
@@ -32,8 +32,8 @@ public class Room {
 		this.tiles = prototype.getTiles();
 		this.left = left;
 		this.bottom = bottom;
-		this.width = prototype.getTiles()[0].length;
-		this.height = prototype.getTiles().length;
+		this.width = prototype.getTiles().length;
+		this.height = prototype.getTiles()[0].length;
 		this.generation = generation;
 		for (Vector2 spawn : prototype.getSpawnPoints()) {
 			spawnPoints.add(new Vector2(spawn.x + left, spawn.y + bottom));

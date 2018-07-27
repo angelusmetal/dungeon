@@ -47,16 +47,20 @@ public class RoomPrototype {
 		if (tiles.size() == 0) {
 			throw new RuntimeException("'tiles' cannot be empty");
 		}
+		int height = tiles.size();
 		int width = tiles.get(0).size();
 		for (int i = 0; i < tiles.size(); ++i) {
 			if (tiles.get(i).size() != width) {
 				throw new RuntimeException("all 'tiles' rows must have the same amount of elements (" + width + "), but row " + i + " has " + (tiles.get(i).size() + " instead"));
 			}
 		}
-
-		TileType[][] array = new TileType[tiles.size()][];
-		for (int i = 0; i < tiles.size(); ++i) {
-			array[i] = tiles.get(i).stream().map(TileType::valueOf).toArray(TileType[]::new);
+		// Invert coordinates
+		TileType[][] array = new TileType[width][];
+		for (int x = 0; x < width; ++x) {
+			array[x] = new TileType[height];
+			for (int y = 0; y < height; ++y) {
+				array[x][height - y - 1] = TileType.valueOf(tiles.get(y).get(x));
+			}
 		}
 		return array;
 	}

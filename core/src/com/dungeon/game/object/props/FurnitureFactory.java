@@ -28,6 +28,7 @@ public class FurnitureFactory {
 	private final EntityPrototype grass2Prototype;
 	private final EntityPrototype grass3Prototype;
 	private final EntityPrototype flower1Prototype;
+	private final EntityPrototype chestPrototype;
 
 	public FurnitureFactory() {
 		bookshelfProtoype = ResourceManager.getPrototype("prop_bookshelf");
@@ -48,6 +49,7 @@ public class FurnitureFactory {
 		grass2Prototype = ResourceManager.getPrototype("prop_grass_2");
 		grass3Prototype = ResourceManager.getPrototype("prop_grass_3");
 		flower1Prototype = ResourceManager.getPrototype("prop_flower_1");
+		chestPrototype = ResourceManager.getPrototype("chest");
 	}
 
 	public Entity buildBookshelf(Vector2 origin) {
@@ -123,12 +125,16 @@ public class FurnitureFactory {
 		return buildProp(origin, flower1Prototype, EntityType.LEAVE_PARTICLE, 1);
 	}
 
+	public Entity buildChest(Vector2 origin) {
+		return new Chest(origin, chestPrototype);
+	}
+
 	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle) {
 		return buildProp(origin, prototype, particle, 6);
 	}
 
 	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle, int count) {
-		Entity entity = new Entity(origin, prototype) {
+		return new Entity(origin, prototype) {
 			@Override public boolean isSolid() {
 				return true;
 			}
@@ -143,6 +149,5 @@ public class FurnitureFactory {
 				);
 			}
 		};
-		return entity;
 	}
 }
