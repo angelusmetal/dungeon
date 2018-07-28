@@ -439,6 +439,12 @@
   frameDuration = 1
   loop = [30]
 
+[coin]
+  texture = "coin.png"
+  tilesize = 8
+  frameDuration = 0.12
+  loop = [0, 1, 2, 3]
+
 #
 # Vegetation
 #

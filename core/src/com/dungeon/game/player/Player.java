@@ -31,6 +31,7 @@ public class Player implements Disposable {
 	private Color color;
 	private Weapon weapon;
 	private Console console;
+	private int gold;
 
 	public Player(int playerId, int characterId, PlayerControlBundle control) {
 		this.playerId = playerId;
@@ -108,5 +109,13 @@ public class Player implements Disposable {
 
 	public Console getConsole() {
 		return console;
+	}
+
+	public void addGold(int amount) {
+		gold += amount;
+	}
+
+	public int getGold() {
+		return gold;
 	}
 }

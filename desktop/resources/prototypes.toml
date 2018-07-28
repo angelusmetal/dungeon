@@ -222,6 +222,14 @@
 	drawOffset = [24, 12]
     health = 50
     solid = true
+[coin]
+    animation = "coin"
+    boundingBox = [8, 8]
+    drawOffset = [4, 4]
+    solid = false
+    zSpeed = 100
+    zAccel = -200
+    friction = 1
 
 [creature_slime_acid]
     animation = "slime_acid_idle"

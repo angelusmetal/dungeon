@@ -8,6 +8,7 @@ import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
+import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;
 
 public class Slime extends CreatureEntity {
@@ -77,6 +78,10 @@ public class Slime extends CreatureEntity {
 				GameState.addEntity(factory.createBlob(this)));
 		Rand.doBetween(0, 1, () ->
 				GameState.addEntity(factory.createSpawn(this)));
+		// Create loot
+		if (Rand.chance(0.5f)) {
+			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getPos())));
+		}
 	}
 
 	@Override

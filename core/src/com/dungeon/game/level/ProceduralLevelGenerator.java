@@ -6,18 +6,11 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.level.room.ColumnsRoomGenerator;
-import com.dungeon.game.level.room.CornersRoomGenerator;
-import com.dungeon.game.level.room.DiamondRoomGenerator;
-import com.dungeon.game.level.room.ORoomGenerator;
-import com.dungeon.game.level.room.RectangleRoomGenerator;
-import com.dungeon.game.level.room.RoomGenerator;
 import com.dungeon.game.tileset.LevelTileset;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
@@ -26,7 +19,6 @@ import java.util.stream.Collectors;
 public class ProceduralLevelGenerator {
 
 	public static final List<String> DEFAULT_MONSTER_TYPES = Arrays.asList("GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE");
-	public static final List<String> DEFAULT_ITEM_TYPES = Arrays.asList("HEALTH_POWERUP", "WEAPON_SWORD", "WEAPON_CAT_STAFF", "WEAPON_GREEN_STAFF");
 
 	private int width;
 	private int height;

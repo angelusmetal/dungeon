@@ -1,8 +1,10 @@
 package com.dungeon.game.object.props;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityType;
@@ -32,6 +34,7 @@ public class FurnitureFactory {
 	private final EntityPrototype painting1Prototype;
 	private final EntityPrototype painting2Prototype;
 	private final EntityPrototype painting3Prototype;
+	private final EntityPrototype coinPrototype;
 
 	public FurnitureFactory() {
 		bookshelfProtoype = ResourceManager.getPrototype("prop_bookshelf");
@@ -56,6 +59,7 @@ public class FurnitureFactory {
 		painting1Prototype = ResourceManager.getPrototype("prop_painting_1");
 		painting2Prototype = ResourceManager.getPrototype("prop_painting_2");
 		painting3Prototype = ResourceManager.getPrototype("prop_painting_3");
+		coinPrototype = ResourceManager.getPrototype("coin");
 	}
 
 	public Entity buildBookshelf(Vector2 origin) {
@@ -132,7 +136,21 @@ public class FurnitureFactory {
 	}
 
 	public Entity buildChest(Vector2 origin) {
-		return new Chest(origin, chestPrototype);
+		return new Entity(origin, chestPrototype) {
+			@Override public void onHit() {
+				Rand.doBetween(1, 2, () ->
+						GameState.addEntity(GameState.build(EntityType.WOOD_PARTICLE, getPos()))
+				);
+				if (health < 1) {
+					health = 1;
+					canBeHit = false;
+					setCurrentAnimation(ResourceManager.getAnimation("chest_opening"));
+					Entity loot = GameState.build(GameState.createLoot(), getPos());
+					loot.setZPos(15);
+					GameState.addEntity(loot);
+				}
+			}
+		};
 	}
 
 	public Entity buildPainting1(Vector2 origin) {
@@ -145,6 +163,23 @@ public class FurnitureFactory {
 
 	public Entity buildPainting3(Vector2 origin) {
 		return new Entity(origin, painting3Prototype);
+	}
+
+	public Entity buildCoin(Vector2 origin) {
+		Entity coin = new Entity(origin, coinPrototype) {
+			@Override public boolean onEntityCollision(Entity entity) {
+				if (!expired && entity instanceof PlayerEntity) {
+					PlayerEntity character = (PlayerEntity) entity;
+					character.getPlayer().addGold(1);
+					character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
+					expire();
+					return true;
+				}
+				return false;
+			}
+		};
+		coin.impulse(Rand.between(-20, 20), Rand.between(-20, 20));
+		return coin;
 	}
 
 	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle) {

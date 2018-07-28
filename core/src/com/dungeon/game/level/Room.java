@@ -39,7 +39,7 @@ public class Room {
 			spawnPoints.add(new Vector2(spawn.x + left, spawn.y + bottom));
 		}
 		for (EntityPlaceholder placeholder : prototype.getPlaceholders()) {
-			placeholders.add(EntityPlaceholder.of(placeholder.getType(), placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom));
+			placeholders.add(new EntityPlaceholder(placeholder.getType(), new Vector2(placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom), placeholder.getChance()));
 		}
 		for (ProceduralLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
 			connectionPoints.add(new ProceduralLevelGenerator.ConnectionPoint(connection.coords.x + left, connection.coords.y + bottom, connection.direction));

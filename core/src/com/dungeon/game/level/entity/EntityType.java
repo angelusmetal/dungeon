@@ -27,6 +27,7 @@ public enum EntityType {
 	TABLE2,
 	CAGE,
 	CHEST,
+	COIN,
 	PAINTING_1,
 	PAINTING_2,
 	PAINTING_3,

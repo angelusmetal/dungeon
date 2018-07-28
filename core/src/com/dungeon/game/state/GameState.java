@@ -107,6 +107,7 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.TABLE2, furnitureFactory::buildTable2);
 		entityFactory.registerFactory(EntityType.CAGE, furnitureFactory::buildCage);
 		entityFactory.registerFactory(EntityType.CHEST, furnitureFactory::buildChest);
+		entityFactory.registerFactory(EntityType.COIN, furnitureFactory::buildCoin);
 		entityFactory.registerFactory(EntityType.PAINTING_1, furnitureFactory::buildPainting1);
 		entityFactory.registerFactory(EntityType.PAINTING_2, furnitureFactory::buildPainting2);
 		entityFactory.registerFactory(EntityType.PAINTING_3, furnitureFactory::buildPainting3);
@@ -240,7 +241,9 @@ public class GameState {
 
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
-			addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(getLevelTileset().tile_size)));
+			if (Rand.chance(placeholder.getChance())) {
+				addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(getLevelTileset().tile_size)));
+			}
 		}
 
 		setCurrentState(GameState.State.INGAME);

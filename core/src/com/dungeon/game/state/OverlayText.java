@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class OverlayText {
 
-    private static final String DEFAULT_FONT = "alegreya-sans-sc-9";
+    public static final String DEFAULT_FONT = "alegreya-sans-sc-9";
     private final String text;
     private final Vector2 origin;
     private final Color color;

@@ -102,6 +102,7 @@ public class RoomPrototype {
 		return toml.<HashMap>getList("placeholders").stream().map(t -> {
 			Number x = (Number) t.get("x");
 			Number y = (Number) t.get("y");
+			Number chance = (Number) t.get("chance");
 			String type = (String) t.get("type");
 			if (x == null) {
 				throw new RuntimeException("'x' cannot be null in room placeholder definition: " + t);
@@ -112,7 +113,8 @@ public class RoomPrototype {
 			if (type == null) {
 				throw new RuntimeException("'type' cannot be null in room placeholder definition: " + t);
 			}
-			return new EntityPlaceholder(EntityType.valueOf(type), new Vector2(x.floatValue(), y.floatValue()));
+			float ch = chance == null ? 1 : chance.floatValue();
+			return new EntityPlaceholder(EntityType.valueOf(type), new Vector2(x.floatValue(), y.floatValue()), ch);
 		}).collect(Collectors.toList());
 	}
 }
