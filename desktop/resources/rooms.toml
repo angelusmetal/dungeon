@@ -69,7 +69,7 @@
 		{x = 5, y = 5, type = "TABLE"},
 		{x = 4, y = 5, type = "TABLE"},
 		{x = 5, y = 3.5, type = "TABLE2"},
-		{x = 4, y = 3.5, type = "TABLE"}
+		{x = 4, y = 3.5, type = "TABLE"},
 		{x = 2, y = 2, type = "HEALTH_POWERUP", chance = 0.2},
 	]
 
@@ -293,9 +293,10 @@
 		{x = 6.5, y = 4.4, type = "PAINTING_2"},
 		{x = 11, y = 4.4, type = "PAINTING_3"},
 	]
+
 [vertical_hallway]
 	tiles = [
-		["VOID", "VOID", "VOID", "VOID", "VOID"],
+		["VOID", "VOID", "WALL_DECORATION_3", "VOID", "VOID"],
 		["VOID", "FLOOR", "FLOOR", "FLOOR", "VOID"],
 		["VOID", "FLOOR", "FLOOR", "FLOOR", "VOID"],
 		["VOID", "FLOOR", "FLOOR", "FLOOR", "VOID"],
@@ -337,6 +338,7 @@
 		{x = 3.5, y = 12.5, type = "TORCH"},
 		{x = 1.5, y = 12.5, type = "TORCH"},
 	]
+
 [chest_room]
 	tiles = [
 		["VOID", "VOID", "VOID", "VOID", "VOID"],

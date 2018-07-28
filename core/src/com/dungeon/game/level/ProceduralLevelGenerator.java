@@ -11,6 +11,7 @@ import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
@@ -297,17 +298,20 @@ public class ProceduralLevelGenerator {
 			return null;
 		}
 
-		RoomPrototype prototype = Rand.pick(roomPrototypes);
-		Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
-		if (entryPoint.isPresent()) {
-			ConnectionPoint p = entryPoint.get();
-			Room room = new Room(x - p.coords.x, y - p.coords.y, generation + 1, prototype);
-			if (canPlaceRoom(room)) {
-				placeRoom(room);
-				return room;
+		// Attempt to place each room (in random order) until one succeeds
+		Collections.shuffle(roomPrototypes);
+		for (RoomPrototype prototype : roomPrototypes) {
+			Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
+			if (entryPoint.isPresent()) {
+				ConnectionPoint p = entryPoint.get();
+				Room room = new Room(x - p.coords.x, y - p.coords.y, generation + 1, prototype);
+				if (canPlaceRoom(room)) {
+					placeRoom(room);
+					return room;
+				}
 			}
 		}
-		// Could not generate a room
+		// Could not place any of the known rooms
 		return null;
 	}
 
