@@ -19,11 +19,11 @@ public class TombstoneFactory implements EntityFactory.EntityTypeFactory {
 
 	@Override
 	public Entity build(Vector2 origin) {
-		return new Entity(origin, prototype) {
+		return new Entity(prototype, origin) {
 			@Override
 			public void onHit() {
 				Rand.doBetween(2, 5, () ->
-						GameState.addEntity(GameState.build(EntityType.STONE_PARTICLE, getPos())));
+						GameState.addEntity(GameState.build(EntityType.STONE_PARTICLE, getOrigin())));
 			}
 		};
 	}

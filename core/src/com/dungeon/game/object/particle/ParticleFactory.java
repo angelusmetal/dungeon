@@ -144,7 +144,7 @@ public class ParticleFactory {
 	}
 
 	public Entity buildWoodParticle(Vector2 origin) {
-		Entity particle = new Entity(origin, woodParticlePrototype) {
+		Entity particle = new Entity(woodParticlePrototype, origin) {
 			@Override public void onGroundRest() {
 				stop();
 			}
@@ -154,7 +154,7 @@ public class ParticleFactory {
 	}
 
 	public Entity buildStoneParticle(Vector2 origin) {
-		Entity particle = new Entity(origin, stoneParticlePrototype) {
+		Entity particle = new Entity(stoneParticlePrototype, origin) {
 			@Override public void onGroundRest() {
 				stop();
 			}
@@ -164,14 +164,14 @@ public class ParticleFactory {
 	}
 
 	public Entity buildDroplet(Vector2 origin) {
-		return new Entity(origin, dropletStartPrototype) {
+		return new Entity(dropletStartPrototype, origin) {
 			@Override public void onExpire() {
-				Entity fall = new Entity(getPos(), dropletFallPrototype) {
+				Entity fall = new Entity(dropletFallPrototype, getOrigin()) {
 					@Override public void onGroundRest() {
 						expire();
 					}
 					@Override public void onExpire() {
-						GameState.addEntity(new Entity(getPos(), dropletEndPrototype));
+						GameState.addEntity(new Entity(dropletEndPrototype, getOrigin()));
 					}
 				};
 				GameState.addEntity(fall);
@@ -180,19 +180,19 @@ public class ParticleFactory {
 	}
 
 	public Entity buildFireball(Vector2 origin) {
-		return new Entity(origin, fireballPrototype);
+		return new Entity(fireballPrototype, origin);
 	}
 
 	public Entity buildFlame(Vector2 origin) {
-		return new Entity(origin, flamePrototype);
+		return new Entity(flamePrototype, origin);
 	}
 
 	public Entity buildCandle(Vector2 origin) {
-		return new Entity(origin, candlePrototype);
+		return new Entity(candlePrototype, origin);
 	}
 
 	public Entity buildLeave(Vector2 origin) {
-		Entity particle = new Entity(origin, leavePrototype) {
+		Entity particle = new Entity(leavePrototype, origin) {
 			@Override public void onGroundRest() {
 				expire();
 			}

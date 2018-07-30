@@ -101,10 +101,10 @@ public class ViewPort {
 
 	public boolean isInViewPort(Entity e) {
 		return
-				e.getPos().x - e.getDrawOffset().x < cameraX + cameraWidth &&
-				e.getPos().x - e.getDrawOffset().x + e.getFrame().getRegionWidth() > cameraX &&
-				e.getPos().y - e.getDrawOffset().y + e.getZPos() < cameraY + cameraHeight &&
-				e.getPos().y - e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
+				e.getOrigin().x - e.getDrawOffset().x < cameraX + cameraWidth &&
+				e.getOrigin().x - e.getDrawOffset().x + e.getFrame().getRegionWidth() > cameraX &&
+				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() < cameraY + cameraHeight &&
+				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
 	}
 
 	@Override

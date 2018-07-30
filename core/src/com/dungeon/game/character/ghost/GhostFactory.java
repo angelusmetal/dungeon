@@ -46,7 +46,7 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 	}
 
 	public Entity createDeath(Vector2 origin, boolean invertX) {
-		Entity entity = new Entity(origin, death);
+		Entity entity = new Entity(death, origin);
 		entity.setInvertX(invertX);
 		return entity;
 	}

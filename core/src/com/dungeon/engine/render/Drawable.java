@@ -10,7 +10,7 @@ public interface Drawable {
 	TextureRegion getFrame();
 	boolean invertX();
 
-	Vector2 getPos();
+	Vector2 getOrigin();
 	Vector2 getDrawOffset();
 	float getZIndex();
 

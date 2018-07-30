@@ -18,7 +18,7 @@ public abstract class Projectile extends Entity implements Movable, Drawable {
 	protected Function<Entity, Attack> attackSupplier;
 
 	public Projectile(Vector2 origin, EntityPrototype prototype, Function<Entity, Attack> attackSupplier) {
-		super(origin, prototype);
+		super(prototype, origin);
 		this.attackSupplier = attackSupplier;
 	}
 

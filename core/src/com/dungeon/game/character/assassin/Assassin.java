@@ -32,7 +32,7 @@ public class Assassin extends PlayerEntity {
 	@Override
 	protected void onExpire() {
 		super.onExpire();
-		GameState.addEntity(GameState.build(EntityType.TOMBSTONE, getPos()));
+		GameState.addEntity(GameState.build(EntityType.TOMBSTONE, getOrigin()));
 	}
 
 }

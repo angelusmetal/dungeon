@@ -77,20 +77,20 @@ public class CatStaffWeapon extends ProjectileWeapon {
 		return new Projectile(origin, projectile, this::createAttack) {
 			@Override
 			protected void onExpire() {
-				GameState.addEntity(createImpact(getPos()));
+				GameState.addEntity(createImpact(getOrigin()));
 			}
 		};
 	}
 
 	private Entity createTrail(Entity generator) {
-		Entity entity = new Entity(generator.getPos(), trail);
+		Entity entity = new Entity(trail, generator.getOrigin());
 		entity.setCurrentAnimation(generator.getCurrentAnimation());
 		entity.setInvertX(generator.invertX());
 		return entity;
 	}
 
 	private Entity createImpact(Vector2 origin) {
-		return new Entity(origin, impact);
+		return new Entity(impact, origin);
 	}
 
 	private static Supplier<Float> damageSupplier() {

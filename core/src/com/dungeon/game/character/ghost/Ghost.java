@@ -33,7 +33,7 @@ public class Ghost extends CreatureEntity {
 		targettingTimer.doAtInterval(() -> {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < factory.maxTargetDistance) {
-				moveStrictlyTowards(closest.getEntity().getPos());
+				moveStrictlyTowards(closest.getEntity().getOrigin());
 			}
 		});
 		// Set transparency based on invulnerability
@@ -60,10 +60,10 @@ public class Ghost extends CreatureEntity {
 
 	@Override
 	public void onExpire() {
-		GameState.addEntity(factory.createDeath(getPos(), invertX())) ;
+		GameState.addEntity(factory.createDeath(getOrigin(), invertX())) ;
 		// Create loot
 		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getPos())));
+			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getOrigin())));
 		}
 	}
 

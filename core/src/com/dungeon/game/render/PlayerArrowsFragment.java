@@ -29,8 +29,8 @@ public class PlayerArrowsFragment implements RenderFragment {
 			viewportBuffer.render((batch) -> {
 				for (Player player : GameState.getPlayers()) {
 					if (!viewPort.isInViewPort(player.getAvatar())) {
-						float x = Util.clamp(player.getAvatar().getPos().x - viewPort.cameraX, 0, viewPort.cameraWidth - 16);
-						float y = Util.clamp(player.getAvatar().getPos().y - viewPort.cameraY, 0, viewPort.cameraHeight - 16);
+						float x = Util.clamp(player.getAvatar().getOrigin().x - viewPort.cameraX, 0, viewPort.cameraWidth - 16);
+						float y = Util.clamp(player.getAvatar().getOrigin().y - viewPort.cameraY, 0, viewPort.cameraHeight - 16);
 						Vector2 origin = new Vector2(
 							x - viewPort.cameraWidth / 2,
 							y - viewPort.cameraHeight / 2

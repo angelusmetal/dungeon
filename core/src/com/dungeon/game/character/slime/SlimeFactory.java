@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
@@ -84,7 +82,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	}
 
 	Entity createSpawn(Entity dying) {
-		Entity entity = new SlimeSpawn(dying.getPos(), this);
+		Entity entity = new SlimeSpawn(dying.getOrigin(), this);
 		entity.setZPos(dying.getZPos());
 		entity.setColor(dying.getColor());
 		entity.getLight().color.set(dying.getColor());
@@ -93,7 +91,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	}
 
 	Entity createDeath(Entity dying) {
-		Entity entity = new Entity(dying.getPos(), death);
+		Entity entity = new Entity(death, dying.getOrigin());
 		entity.setZPos(dying.getZPos());
 		entity.setColor(dying.getColor());
 		entity.getLight().color.set(dying.getColor());
@@ -101,7 +99,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	}
 
 	Entity createSpawnDeath(Entity dying) {
-		Entity entity = new Entity(dying.getPos(), spawnDeath);
+		Entity entity = new Entity(spawnDeath, dying.getOrigin());
 		entity.setZPos(dying.getZPos());
 		entity.setColor(dying.getColor());
 		entity.getLight().color.set(dying.getColor());
@@ -109,10 +107,10 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 	}
 
 	Entity createBlob(Entity dying) {
-		Entity entity = new Entity(dying.getPos(), blob) {
+		Entity entity = new Entity(blob, dying.getOrigin()) {
 			@Override
 			protected void onExpire() {
-				Entity splatEntity = new Entity(getPos(), splat);
+				Entity splatEntity = new Entity(splat, getOrigin());
 				splatEntity.setColor(dying.getColor());
 				GameState.addEntity(splatEntity);
 			}

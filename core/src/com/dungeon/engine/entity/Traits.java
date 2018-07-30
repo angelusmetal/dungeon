@@ -65,7 +65,7 @@ public class Traits {
 //                targetingTimer.doAtInterval(() -> {
                     ClosestEntity closest = targetSupplier.get().collect(() -> new ClosestEntity(source), ClosestEntity::accept, ClosestEntity::combine);
                     if (closest.getDst2() < range2) {
-                        Vector2 seek = closest.getEntity().getPos().cpy().sub(source.getPos());
+                        Vector2 seek = closest.getEntity().getOrigin().cpy().sub(source.getOrigin());
                         seek.setLength(seekClamp);
                         source.impulse(seek);
                         source.getMovement().setLength(source.speed);

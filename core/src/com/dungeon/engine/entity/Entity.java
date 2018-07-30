@@ -73,7 +73,7 @@ public class Entity implements Drawable, Movable {
 	/** Time upon which this projectile was spawned */
 	protected final float startTime;
 	/** Expiration time of entity */
-	protected final float expirationTime;
+	protected float expirationTime;
 	/** Vertical speed */
 	protected float zSpeed;
 	/** Particle color */
@@ -81,39 +81,73 @@ public class Entity implements Drawable, Movable {
 	/** zIndex for ordering sprites */
 	private float zIndex;
 
-	protected boolean solid = false;
+	protected boolean solid;
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
 
 	private DrawFunction drawFunction;
 
-	public Entity(Vector2 origin, EntityPrototype builder) {
-		this.setCurrentAnimation(builder.animation.get());
-		this.body = new Body(origin, builder.boundingBox);
-		this.drawOffset = builder.drawOffset;
-		this.drawFunction = builder.drawFunction.get();
+	/**
+	 * Create an entity at origin, from the specified prototype
+	 * @param prototype Prototype to build entity from
+	 * @param origin Origin to build entity at
+	 */
+	public Entity(EntityPrototype prototype, Vector2 origin) {
+		this.setCurrentAnimation(prototype.animation.get());
+		this.body = new Body(origin, prototype.boundingBox);
+		this.drawOffset = prototype.drawOffset;
+		this.drawFunction = prototype.drawFunction.get();
 		this.startTime = GameState.time();
-		this.speed = builder.speed.get();
-		this.zSpeed = builder.zSpeed.get();
-		this.knockback = builder.friction.get();
-		this.friction = builder.friction.get();
-		this.bounciness = builder.bounciness;
-		this.hitPredicate = builder.hitPredicate;
-		this.color = builder.color.get();
-		this.light = builder.light != null ? builder.light.cpy() : null; // TODO Check this null...
+		this.speed = prototype.speed.get();
+		this.zSpeed = prototype.zSpeed.get();
+		this.knockback = prototype.friction.get();
+		this.friction = prototype.friction.get();
+		this.bounciness = prototype.bounciness;
+		this.hitPredicate = prototype.hitPredicate;
+		this.color = prototype.color.get();
+		this.light = prototype.light != null ? prototype.light.cpy() : null; // TODO Check this null...
 		this.drawContext = new ColorContext(this.color);
-		this.zIndex = builder.zIndex;
-		Float timeToLive = builder.timeToLive.get();
+		this.zIndex = prototype.zIndex;
+		Float timeToLive = prototype.timeToLive.get();
 		this.expirationTime = timeToLive == null ? Float.MAX_VALUE : GameState.time() + timeToLive;
-		this.traits = builder.traits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
+		this.traits = prototype.traits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		if (timeToLive != null) {
 			traits.add(Traits.expireByTime().get(this));
 		}
-		this.maxHealth = builder.health.get();
+		this.maxHealth = prototype.health.get();
 		this.health = maxHealth;
-		this.solid = builder.solid;
-		this.canBeHit = builder.canBeHit;
-		this.canBeHurt = builder.canBeHurt;
+		this.solid = prototype.solid;
+		this.canBeHit = prototype.canBeHit;
+		this.canBeHurt = prototype.canBeHurt;
+	}
+
+	/**
+	 * Copy constructor. Creates a copy of the provided entity at the same origin
+	 * @param other Original entity to copy from
+	 */
+	public Entity (Entity other) {
+		this.setCurrentAnimation(other.currentAnimation);
+		this.body = new Body(other.getOrigin(), other.getBoundingBox());
+		this.drawOffset = other.drawOffset;
+		this.drawFunction = other.drawFunction;
+		this.startTime = other.getStartTime();
+		this.speed = other.getSpeed();
+		this.zSpeed = other.getZSpeed();
+		this.knockback = other.knockback;
+		this.friction = other.friction;
+		this.bounciness = other.bounciness;
+		this.hitPredicate = other.hitPredicate;
+		this.color = other.color;
+		this.light = other.light.cpy();
+		this.drawContext = other.drawContext;
+		this.zIndex = other.zIndex;
+		this.expirationTime = other.expirationTime;
+		this.traits = other.traits;
+		this.maxHealth = other.getMaxHealth();
+		this.health = other.health;
+		this.solid = other.solid;
+		this.canBeHit = other.canBeHit;
+		this.canBeHurt = other.canBeHurt;
 	}
 
 	@Override
@@ -157,7 +191,7 @@ public class Entity implements Drawable, Movable {
 	}
 
 	@Override
-	public Vector2 getPos() {
+	public Vector2 getOrigin() {
 		return body.getOrigin();
 	}
 
@@ -362,7 +396,7 @@ public class Entity implements Drawable, Movable {
 	 */
 	public void moveStrictlyTowards(Vector2 destination) {
 		getMovement().set(Vector2.Zero);
-		setSelfImpulse(destination.x - getPos().x, destination.y - getPos().y);
+		setSelfImpulse(destination.x - getOrigin().x, destination.y - getOrigin().y);
 		getSelfImpulse().setLength2(1);
 	}
 
@@ -372,7 +406,7 @@ public class Entity implements Drawable, Movable {
 	 * @param length2 impulse length
 	 */
 	public void impulseTowards(Vector2 destination, float length2) {
-		impulse(destination.cpy().sub(getPos()).setLength2(length2));
+		impulse(destination.cpy().sub(getOrigin()).setLength2(length2));
 	}
 
 	private boolean detectTileCollision(Vector2 step) {
@@ -429,13 +463,13 @@ public class Entity implements Drawable, Movable {
 			health -= attack.getDamage();
 			onHit();
 			if (attack.getDamage() > 1) {
-				GameState.addOverlayText(new OverlayText(getPos(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
+				GameState.addOverlayText(new OverlayText(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
 			}
 			if (health <= 0) {
 				expire();
 			}
 			if (attack.getKnockback() > 0) {
-				Vector2 knockback = getPos().cpy().sub(attack.getEmitter().getPos()).setLength(attack.getKnockback() * this.knockback);
+				Vector2 knockback = getOrigin().cpy().sub(attack.getEmitter().getOrigin()).setLength(attack.getKnockback() * this.knockback);
 				impulse(knockback);
 				System.out.println("KNOCKBACK! " + knockback);
 			}
@@ -459,7 +493,7 @@ public class Entity implements Drawable, Movable {
 					Util.clamp(light.color.g * light.dim),
 					Util.clamp(light.color.b * light.dim),
 					Util.clamp(light.color.a * light.dim));
-			viewPort.draw(batch, light.texture, getPos().x, getPos().y + z, light.diameter * light.dim, light.angle);
+			viewPort.draw(batch, light.texture, getOrigin().x, getOrigin().y + z, light.diameter * light.dim, light.angle);
 //			batch.setColor(1, 1, 1, 1);
 		}
 	}

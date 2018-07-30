@@ -3,7 +3,6 @@ package com.dungeon.game.object.props;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityType;
@@ -37,14 +36,14 @@ public class DoorFactory {
 	}
 
 	private Entity buildDoor(Vector2 origin, EntityPrototype closed, EntityPrototype opening) {
-		return new Entity(origin, closed) {
+		return new Entity(closed, origin) {
 			@Override public void onHit() {
 				Rand.doBetween(2, 5, () ->
-						GameState.addEntity(GameState.build(EntityType.WOOD_PARTICLE, getPos()))
+						GameState.addEntity(GameState.build(EntityType.WOOD_PARTICLE, getOrigin()))
 				);
 			}
 			@Override public void onExpire() {
-				Entity openingDoor = new Entity(getPos(), opening);
+				Entity openingDoor = new Entity(opening, getOrigin());
 				GameState.addEntity(openingDoor);
 			}
 // TODO Re-enable this once we can interact some other way with the props

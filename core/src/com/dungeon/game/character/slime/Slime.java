@@ -31,7 +31,7 @@ public class Slime extends CreatureEntity {
 			ClosestEntity closest = GameState.getPlayerCharacters().stream().collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				nextThink = GameState.time() + factory.attackFrequency;
-				impulseTowards(closest.getEntity().getPos(), factory.jumpDistance);
+				impulseTowards(closest.getEntity().getOrigin(), factory.jumpDistance);
 				aim(getMovement());
 				zSpeed = 100;
 				updateCurrentAnimation(factory.idleAnimation);
@@ -80,7 +80,7 @@ public class Slime extends CreatureEntity {
 				GameState.addEntity(factory.createSpawn(this)));
 		// Create loot
 		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getPos())));
+			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getOrigin())));
 		}
 	}
 

@@ -54,7 +54,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public void fire() {
 		if (!expired) {
 			fireCooldown.attempt(GameState.time(), () -> {
-				getPlayer().getWeapon().spawnEntities(getPos(), getAim());
+				getPlayer().getWeapon().spawnEntities(getOrigin(), getAim());
 				updateCurrentAnimation(getAttackAnimation());
 			});
 		}

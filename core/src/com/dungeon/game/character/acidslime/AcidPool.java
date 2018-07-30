@@ -12,9 +12,9 @@ public class AcidPool extends Entity {
 	private final AcidSlimeFactory factory;
 
 	public AcidPool(Vector2 origin, AcidSlimeFactory factory) {
-		super(origin, factory.pool);
+		super(factory.pool, origin);
 		this.factory = factory;
-		getPos().add(0, -8);
+		getOrigin().add(0, -8);
 	}
 
 	@Override

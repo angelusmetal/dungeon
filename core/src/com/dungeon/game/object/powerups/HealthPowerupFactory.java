@@ -1,14 +1,11 @@
 package com.dungeon.game.object.powerups;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityFactory;
@@ -26,8 +23,8 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 		powerupPrototype = ResourceManager.getPrototype("health_powerup")
 				// TODO Add these to prototypes.yaml
 				.with(Traits.generator(0.05f, (powerup) -> {
-					Entity spec = new Entity(powerup.getPos(), specPrototype);
-					spec.getPos().x += Rand.between(-8, 8);
+					Entity spec = new Entity(specPrototype, powerup.getOrigin());
+					spec.getOrigin().x += Rand.between(-8, 8);
 					spec.setZPos(Rand.between(2, 10));
 					spec.impulse(Rand.between(-10, 10), 0);
 					return spec;
@@ -36,7 +33,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 
 	@Override
 	public Entity build(Vector2 origin) {
-		Entity e = new Entity(origin, powerupPrototype) {
+		Entity e = new Entity(powerupPrototype, origin) {
 
 			@Override
 			protected boolean onEntityCollision(Entity entity) {
@@ -54,12 +51,12 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 			}
 
 			protected void onExpire() {
-				Entity vanish = new Entity(getPos(), vanishPrototype) {};
+				Entity vanish = new Entity(vanishPrototype, getOrigin()) {};
 				vanish.setZPos(z);
 				GameState.addEntity(vanish);
 				for (int i = 0; i < 50; ++i) {
-					Entity spec = new Entity(getPos(), specPrototype) {};
-					spec.getPos().x += Rand.between(-8, 8);
+					Entity spec = new Entity(specPrototype, getOrigin()) {};
+					spec.getOrigin().x += Rand.between(-8, 8);
 					spec.setZPos(Rand.between(2, 10));
 					spec.impulse(Rand.between(-100, 100), Rand.between(-100, 100));
 					GameState.addEntity(spec);

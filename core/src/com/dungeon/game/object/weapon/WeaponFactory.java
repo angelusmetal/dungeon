@@ -54,7 +54,7 @@ public class WeaponFactory {
 
 	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Weapon weapon, Animation<TextureRegion> animation) {
 		weapon.setAnimation(animation);
-		return new Entity(origin, prototype) {
+		return new Entity(prototype, origin) {
 			@Override public boolean onEntityCollision(Entity other) {
 				if (!expired && other instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) other;

@@ -37,7 +37,7 @@ public class AcidSlime extends CreatureEntity {
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				nextThink = GameState.time() + factory.attackFrequency;
 				// Aim towards target
-				impulseTowards(closest.getEntity().getPos(), factory.dashDistance);
+				impulseTowards(closest.getEntity().getOrigin(), factory.dashDistance);
 				aim(getMovement());
 				updateCurrentAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
@@ -58,8 +58,8 @@ public class AcidSlime extends CreatureEntity {
 			}
 		} else {
 			if (status == Status.ATTACKING) {
-				if (getPos().dst2(lastPool) > factory.poolSeparation) {
-					lastPool.set(getPos());
+				if (getOrigin().dst2(lastPool) > factory.poolSeparation) {
+					lastPool.set(getOrigin());
 					GameState.addEntity(factory.createPool(this));
 				}
 				if (GameState.time() >= nextThink - 2) {
@@ -81,7 +81,7 @@ public class AcidSlime extends CreatureEntity {
 		}
 		// Create loot
 		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getPos())));
+			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getOrigin())));
 		}
 	}
 

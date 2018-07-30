@@ -10,7 +10,7 @@ public class ClosestEntity {
 		this.source = source;
 	}
 	public void accept(Entity target) {
-		float targetDistance2 = source.getPos().dst2(target.getPos());
+		float targetDistance2 = source.getOrigin().dst2(target.getOrigin());
 		if (targetDistance2 < dst2) {
 			dst2 = targetDistance2;
 			entity = target;

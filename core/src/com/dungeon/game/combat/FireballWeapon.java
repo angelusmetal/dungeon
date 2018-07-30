@@ -72,17 +72,17 @@ public class FireballWeapon extends ProjectileWeapon {
 		return new Projectile(origin, projectile, this::createAttack) {
 			@Override
 			protected void onExpire() {
-				GameState.addEntity(createImpact(getPos()));
+				GameState.addEntity(createImpact(getOrigin()));
 			}
 		};
 	}
 
 	private Entity createTrail(Entity generator) {
-		return new Entity(generator.getPos(), trail);
+		return new Entity(trail, generator.getOrigin());
 	}
 
 	private Entity createImpact(Vector2 origin) {
-		return new Entity(origin, impact);
+		return new Entity(impact, origin);
 	}
 
 	private static Supplier<Float> damageSupplier() {

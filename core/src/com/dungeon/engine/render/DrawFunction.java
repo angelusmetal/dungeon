@@ -15,22 +15,22 @@ public interface DrawFunction {
 
 	static Supplier<DrawFunction> regular() {
 		return () -> (viewport, batch, entity) ->
-				viewport.draw(batch, entity.getFrame(), entity.getPos().x, entity.getPos().y + entity.getZPos(), entity.invertX() ? -1 : 1, entity.getDrawOffset());
+				viewport.draw(batch, entity.getFrame(), entity.getOrigin().x, entity.getOrigin().y + entity.getZPos(), entity.invertX() ? -1 : 1, entity.getDrawOffset());
 	}
 
 	static Supplier<DrawFunction> rotateFixed(Texture texture, float speed) {
-		return () -> (vp, b, e) -> vp.draw(b, texture, e.getPos().x, e.getPos().y + e.getZPos(), texture.getWidth(), GameState.time() * speed);
+		return () -> (vp, b, e) -> vp.draw(b, texture, e.getOrigin().x, e.getOrigin().y + e.getZPos(), texture.getWidth(), GameState.time() * speed);
 	}
 
 	static Supplier<DrawFunction> rotateRandom(Texture texture, float speed) {
 		return () -> {
 			float actualSpeed = Rand.between(-speed, speed);
-			return (vp, b, e) -> vp.draw(b, texture, e.getPos().x, e.getPos().y + e.getZPos(), texture.getWidth(), GameState.time() * actualSpeed);
+			return (vp, b, e) -> vp.draw(b, texture, e.getOrigin().x, e.getOrigin().y + e.getZPos(), texture.getWidth(), GameState.time() * actualSpeed);
 		};
 	}
 
 	static Supplier<DrawFunction> rotateVector(Vector2 rotateVector) {
-		return () -> (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getPos().x, e.getPos().y + e.getZPos(), rotateVector.angle() + 90, true);
+		return () -> (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), rotateVector.angle() + 90, true);
 	}
 
 }

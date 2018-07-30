@@ -65,23 +65,23 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 	}
 
 	Entity createDeath(Entity dying) {
-		Entity entity = new Entity(dying.getPos(), death);
+		Entity entity = new Entity(death, dying.getOrigin());
 		entity.setZPos(dying.getZPos());
 		entity.setColor(dying.getColor());
 		return entity;
 	}
 
 	Entity createPool(Entity dying) {
-		Entity entity = new AcidPool(dying.getPos(), this);
+		Entity entity = new AcidPool(dying.getOrigin(), this);
 		entity.setZPos(dying.getZPos());
 		return entity;
 	}
 
 	Entity createBlob(Entity dying) {
-		Entity entity = new Entity(dying.getPos(), blob) {
+		Entity entity = new Entity(blob, dying.getOrigin()) {
 			@Override
 			protected void onExpire() {
-				Entity splatEntity = new Entity(getPos(), splat);
+				Entity splatEntity = new Entity(splat, getOrigin());
 				GameState.addEntity(splatEntity);
 			}
 			@Override

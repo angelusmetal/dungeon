@@ -31,7 +31,7 @@ public class SlimeSpawn extends CreatureEntity {
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				nextThink = GameState.time() + factory.attackFrequency;
 				// Aim towards target
-				impulseTowards(closest.getEntity().getPos(), factory.jumpDistance);
+				impulseTowards(closest.getEntity().getOrigin(), factory.jumpDistance);
 				aim(getMovement());
 				zSpeed = 100;
 				updateCurrentAnimation(factory.spawnIdleAnimation);

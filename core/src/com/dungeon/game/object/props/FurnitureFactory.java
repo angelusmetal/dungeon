@@ -136,16 +136,16 @@ public class FurnitureFactory {
 	}
 
 	public Entity buildChest(Vector2 origin) {
-		return new Entity(origin, chestPrototype) {
+		return new Entity(chestPrototype, origin) {
 			@Override public void onHit() {
 				Rand.doBetween(1, 2, () ->
-						GameState.addEntity(GameState.build(EntityType.WOOD_PARTICLE, getPos()))
+						GameState.addEntity(GameState.build(EntityType.WOOD_PARTICLE, getOrigin()))
 				);
 				if (health < 1) {
 					health = 1;
 					canBeHit = false;
 					setCurrentAnimation(ResourceManager.getAnimation("chest_opening"));
-					Entity loot = GameState.build(GameState.createLoot(), getPos());
+					Entity loot = GameState.build(GameState.createLoot(), getOrigin());
 					loot.setZPos(15);
 					GameState.addEntity(loot);
 				}
@@ -154,19 +154,19 @@ public class FurnitureFactory {
 	}
 
 	public Entity buildPainting1(Vector2 origin) {
-		return new Entity(origin, painting1Prototype);
+		return new Entity(painting1Prototype, origin);
 	}
 
 	public Entity buildPainting2(Vector2 origin) {
-		return new Entity(origin, painting2Prototype);
+		return new Entity(painting2Prototype, origin);
 	}
 
 	public Entity buildPainting3(Vector2 origin) {
-		return new Entity(origin, painting3Prototype);
+		return new Entity(painting3Prototype, origin);
 	}
 
 	public Entity buildCoin(Vector2 origin) {
-		Entity coin = new Entity(origin, coinPrototype) {
+		Entity coin = new Entity(coinPrototype, origin) {
 			@Override public boolean onEntityCollision(Entity entity) {
 				if (!expired && entity instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) entity;
@@ -187,15 +187,15 @@ public class FurnitureFactory {
 	}
 
 	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle, int count) {
-		return new Entity(origin, prototype) {
+		return new Entity(prototype, origin) {
 			@Override public void onHit() {
 				Rand.doBetween(count / 2, count, () ->
-						GameState.addEntity(GameState.build(particle, getPos()))
+						GameState.addEntity(GameState.build(particle, getOrigin()))
 				);
 			}
 			@Override public void onExpire() {
 				Rand.doBetween(count * 2, count * 5, () ->
-						GameState.addEntity(GameState.build(particle, getPos()))
+						GameState.addEntity(GameState.build(particle, getOrigin()))
 				);
 			}
 		};

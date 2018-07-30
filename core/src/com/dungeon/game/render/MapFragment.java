@@ -18,10 +18,10 @@ public class MapFragment implements RenderFragment {
 	private final Comparator<? super Entity> comp = (e1, e2) ->
 			e1.getZIndex() > e2.getZIndex() ? 1 :
 			e1.getZIndex() < e2.getZIndex() ? -1 :
-			e1.getPos().y > e2.getPos().y ? -1 :
-			e1.getPos().y < e2.getPos().y ? 1 :
-			e1.getPos().x < e2.getPos().x ? -1 :
-			e1.getPos().x > e2.getPos().x ? 1 : 0;
+			e1.getOrigin().y > e2.getOrigin().y ? -1 :
+			e1.getOrigin().y < e2.getOrigin().y ? 1 :
+			e1.getOrigin().x < e2.getOrigin().x ? -1 :
+			e1.getOrigin().x > e2.getOrigin().x ? 1 : 0;
 	private boolean enabled = true;
 
 	public MapFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {

@@ -33,10 +33,10 @@ public class FireSlime extends CreatureEntity {
 				nextThink = GameState.time() + factory.attackFrequency;
 				// Move towards target
 				speed = factory.attackSpeed;
-				impulseTowards(closest.getEntity().getPos(), speed);
+				impulseTowards(closest.getEntity().getOrigin(), speed);
 				// Fire a projectile
-				Vector2 aim = closest.getEntity().getPos().cpy().sub(getPos()).setLength(1);
-				factory.getWeapon().spawnEntities(getPos(), aim);
+				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
+				factory.getWeapon().spawnEntities(getOrigin(), aim);
 			} else {
 				nextThink = GameState.time() + Rand.nextFloat(3f);
 				speed = factory.idleSpeed;
@@ -60,12 +60,12 @@ public class FireSlime extends CreatureEntity {
 		int bullets = (GameState.getPlayerCount() + GameState.getLevelCount()) * 2;
 		Vector2 aim = new Vector2(0, 1);
 		for (int i = 0; i < bullets; ++i) {
-			factory.getWeapon().spawnEntities(getPos(), aim);
+			factory.getWeapon().spawnEntities(getOrigin(), aim);
 			aim.rotate(360 / bullets);
 		}
 		// Create loot
 		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getPos())));
+			Rand.doBetween(1, 3, () -> GameState.addEntity(GameState.build(EntityType.COIN, getOrigin())));
 		}
 	}
 

@@ -16,6 +16,6 @@ public class TorchFactory implements EntityFactory.EntityTypeFactory {
 
 	@Override
 	public Entity build(Vector2 origin) {
-		return new Entity(origin, prototype);
+		return new Entity(prototype, origin);
 	}
 }

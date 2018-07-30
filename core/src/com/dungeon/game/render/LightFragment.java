@@ -32,10 +32,10 @@ public class LightFragment implements RenderFragment {
 		this.gamma = GameState.getConfiguration().getDouble("viewport.gamma", 1.0d).floatValue();
 		this.lightInCamera = (e) ->
 				e.getLight() != null &&
-				e.getPos().x - e.getLight().diameter < viewPort.cameraX + viewPort.cameraWidth &&
-				e.getPos().x + e.getLight().diameter > viewPort.cameraX &&
-				e.getPos().y - e.getLight().diameter < viewPort.cameraY + viewPort.cameraHeight &&
-				e.getPos().y + e.getLight().diameter > viewPort.cameraY;
+				e.getOrigin().x - e.getLight().diameter < viewPort.cameraX + viewPort.cameraWidth &&
+				e.getOrigin().x + e.getLight().diameter > viewPort.cameraX &&
+				e.getOrigin().y - e.getLight().diameter < viewPort.cameraY + viewPort.cameraHeight &&
+				e.getOrigin().y + e.getLight().diameter > viewPort.cameraY;
 	}
 
 	@Override

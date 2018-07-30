@@ -62,7 +62,7 @@ public abstract class MeleeWeapon extends Weapon {
 	}
 
 	private Entity createSlash(Vector2 origin, Vector2 aim) {
-		Entity entity = new Entity(origin, slash);
+		Entity entity = new Entity(slash, origin);
 		entity.setDrawFunction(DrawFunction.rotateVector(aim).get());
 		return entity;
 	}
