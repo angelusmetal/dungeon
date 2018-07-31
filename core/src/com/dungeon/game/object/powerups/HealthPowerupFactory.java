@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityFactory;
@@ -20,15 +19,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 	public HealthPowerupFactory() {
 		specPrototype = ResourceManager.getPrototype("particle_health_spec");
 		vanishPrototype = ResourceManager.getPrototype("health_powerup_fade");
-		powerupPrototype = ResourceManager.getPrototype("health_powerup")
-				// TODO Add these to prototypes.yaml
-				.with(Traits.generator(0.05f, (powerup) -> {
-					Entity spec = new Entity(specPrototype, powerup.getOrigin());
-					spec.getOrigin().x += Rand.between(-8, 8);
-					spec.setZPos(Rand.between(2, 10));
-					spec.impulse(Rand.between(-10, 10), 0);
-					return spec;
-				}));
+		powerupPrototype = ResourceManager.getPrototype("health_powerup");
 	}
 
 	@Override
@@ -54,6 +45,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 				Entity vanish = new Entity(vanishPrototype, getOrigin()) {};
 				vanish.setZPos(z);
 				GameState.addEntity(vanish);
+				// TODO Move this as well to prototypes.toml
 				for (int i = 0; i < 50; ++i) {
 					Entity spec = new Entity(specPrototype, getOrigin()) {};
 					spec.getOrigin().x += Rand.between(-8, 8);

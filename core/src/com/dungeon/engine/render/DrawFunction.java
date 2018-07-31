@@ -1,6 +1,5 @@
 package com.dungeon.engine.render;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
@@ -18,14 +17,14 @@ public interface DrawFunction {
 				viewport.draw(batch, entity.getFrame(), entity.getOrigin().x, entity.getOrigin().y + entity.getZPos(), entity.invertX() ? -1 : 1, entity.getDrawOffset());
 	}
 
-	static Supplier<DrawFunction> rotateFixed(Texture texture, float speed) {
-		return () -> (vp, b, e) -> vp.draw(b, texture, e.getOrigin().x, e.getOrigin().y + e.getZPos(), texture.getWidth(), GameState.time() * speed);
+	static Supplier<DrawFunction> rotateFixed(float speed) {
+		return () -> (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), GameState.time() * speed, true);
 	}
 
-	static Supplier<DrawFunction> rotateRandom(Texture texture, float speed) {
+	static Supplier<DrawFunction> rotateRandom(float speed) {
 		return () -> {
 			float actualSpeed = Rand.between(-speed, speed);
-			return (vp, b, e) -> vp.draw(b, texture, e.getOrigin().x, e.getOrigin().y + e.getZPos(), texture.getWidth(), GameState.time() * actualSpeed);
+			return (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), GameState.time() * actualSpeed, true);
 		};
 	}
 

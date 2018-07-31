@@ -79,7 +79,6 @@ public class FurnitureFactory {
 	}
 
 	public Entity buildBushGreen(Vector2 origin) {
-		// TODO Make leave particles
 		return buildProp(origin, bushGreenPrototype, EntityType.LEAVE_PARTICLE, 1);
 	}
 

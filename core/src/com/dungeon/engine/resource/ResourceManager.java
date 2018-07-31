@@ -20,10 +20,21 @@ public class ResourceManager {
 	private static final Map<String, BitmapFont> fonts = new HashMap<>();
 
 	public static void init() {
+		loadAnimations();
+		loadPrototypes();
+	}
+
+	private static void loadAnimations() {
 		Toml toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("animations.toml"));
 		ConfigUtil.getMapOf(toml, AnimationDef.class).forEach((name, def) -> def.load(name));
-		toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("prototypes.toml"));
-		ConfigUtil.getMapOf(toml, PrototypeDef.class).forEach((name, def) -> def.load(name));
+	}
+
+	private static void loadPrototypes() {
+		Toml toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("prototypes.toml"));
+		for (Map.Entry<String, Object> entry : toml.entrySet()) {
+			System.out.println("Loading prototype '" + entry.getKey() + "'...");
+			loadPrototype(entry.getKey(), EntityPrototypeReader.fromToml(toml.getTable(entry.getKey())));
+		}
 	}
 
 	public static Animation<TextureRegion> getAnimation(String name) {
@@ -68,7 +79,6 @@ public class ResourceManager {
 		if (prototypes.containsKey(name)) {
 			throw new RuntimeException("Duplicate prototype for key " + name);
 		}
-		System.out.println("Loading prototype '" + name + "'...");
 		prototypes.put(name, prototype);
 	}
 

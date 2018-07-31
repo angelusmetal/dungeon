@@ -189,7 +189,7 @@
     drawOffset = [10, 10]
 	light = ["192", "ff1932", "RAYS", "oscillate", "rotateFast"]
 	zOscillate = [3, 8]
-
+	generate = {frequence = 0.05, prototype = "particle_health_spec", x = [-8, 8], z = [2, 10], impulseX = [-10, 10]}
 
 [smoke]
     animation = "cloud"
@@ -198,6 +198,7 @@
     timeToLive = 5
     color = "ffffff"
     fadeOut = 0.5
+    rotateRandom = 50
 [exit_platform]
     animation = "exit_platform_idle"
     boundingBox = [20, 20]
@@ -205,6 +206,7 @@
     zIndex = -1
     light = ["300", "0000ff", "RAYS", "torchlight", "rotateSlow"]
     solid = false
+	generate = {frequence = 0.1, prototype = "smoke", impulseX = [-30, 30], impulseY = [-30, 30]}
 [tombstone]
     animation = "tombstone_spawn"
     boundingBox = [10, 10]

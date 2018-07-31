@@ -1,11 +1,14 @@
 package com.dungeon.engine.util;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.moandjiezana.toml.Toml;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ConfigUtil {
@@ -47,30 +50,15 @@ public class ConfigUtil {
 				Class<?> type = field.getType();
 				field.setAccessible(true);
 				if (type == Long.class || type == long.class) {
-					Long value = getLong(item, name);
-					if (value != null) {
-						field.set(pojo, value);
-					}
+					getLong(item, name).ifPresent(v -> set(field, pojo, v));
 				} else if (type == Integer.class || type == int.class) {
-					Integer value = getInteger(item, name);
-					if (value != null) {
-						field.set(pojo, value);
-					}
+					getInteger(item, name).ifPresent(v -> set(field, pojo, v));
 				} else if (type == Double.class || type == double.class) {
-					Double value = getDouble(item, name);
-					if (value != null) {
-						field.set(pojo, value);
-					}
+					getDouble(item, name).ifPresent(v -> set(field, pojo, v));
 				} else if (type == Float.class || type == float.class) {
-					Float value = getFloat(item, name);
-					if (value != null) {
-						field.set(pojo, value);
-					}
+					getFloat(item, name).ifPresent(v -> set(field, pojo, v));
 				} else if (type == Boolean.class || type == boolean.class) {
-					Boolean value = getBoolean(item, name);
-					if (value != null) {
-						field.set(pojo, value);
-					}
+					getBoolean(item, name).ifPresent(v -> set(field, pojo, v));
 				} else if (type == String.class) {
 					field.set(pojo, item.getString(name));
 				} else if (type.isArray()) {
@@ -139,65 +127,97 @@ public class ConfigUtil {
 		return pojo;
 	}
 
-	public static Long getLong(Toml configuration, String key) {
-		return configuration.getLong(key);
+	private static <T> void set(Field field, T obj, Object value) {
+		try {
+			field.set(obj, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Cannot set value '" + value + "' on field " + field, e);
+		}
 	}
 
-	public static long getLong(Toml configuration, String key, long def) {
-		return configuration.getLong(key, def);
+	public static Optional<Long> getLong(Toml configuration, String key) {
+		return Optional.ofNullable(configuration.getLong(key));
 	}
 
-	public static Integer getInteger(Toml configuration, String key) {
+	public static Optional<Integer> getInteger(Toml configuration, String key) {
 		Long value = configuration.getLong(key);
-		return value == null ? null : value.intValue();
+		return value == null ? Optional.empty() : Optional.of(value.intValue());
 	}
 
-	public static int getInteger(Toml configuration, String key, int def) {
-		return configuration.getLong(key, (long) def).intValue();
-	}
-
-	public static Double getDouble(Toml configuration, String key) {
+	public static Optional<Double> getDouble(Toml configuration, String key) {
 		try {
-			return configuration.getDouble(key);
+			return Optional.ofNullable(configuration.getDouble(key));
 		} catch (ClassCastException e) {
-			return configuration.getLong(key).doubleValue();
+			return Optional.of(configuration.getLong(key).doubleValue());
 		}
 	}
 
-	public static double getDouble(Toml configuration, String key, double def) {
-		try {
-			return configuration.getDouble(key, def);
-		} catch (ClassCastException e) {
-			// No need to take default into account, because it already found a value (and failed)
-			return configuration.getLong(key).doubleValue();
-		}
-	}
-
-	public static Float getFloat(Toml configuration, String key) {
+	public static Optional<Float> getFloat(Toml configuration, String key) {
 		try {
 			Double value = configuration.getDouble(key);
-			return value == null ? null : value.floatValue();
+			return value == null ? Optional.empty() : Optional.of(value.floatValue());
 		} catch (ClassCastException e) {
 			// No need to take null into account, because it already found a value (and failed)
-			return configuration.getLong(key).floatValue();
+			return Optional.of(configuration.getLong(key).floatValue());
 		}
 	}
 
-	public static float getFloat(Toml configuration, String key, float def) {
+	public static Optional<Boolean> getBoolean(Toml configuration, String key) {
 		try {
-			return configuration.getDouble(key, (double) def).floatValue();
+			return configuration.contains(key) ? Optional.of(configuration.getBoolean(key)) : Optional.empty();
 		} catch (ClassCastException e) {
-			// No need to take default into account, because it already found a value (and failed)
-			return configuration.getLong(key).floatValue();
+			return Optional.of(Boolean.getBoolean(configuration.getString(key)));
 		}
 	}
 
-	public static Boolean getBoolean(Toml configuration, String key) {
-		try {
-			return configuration.contains(key) ? configuration.getBoolean(key) : null;
-		} catch (ClassCastException e) {
-			return Boolean.getBoolean(configuration.getString(key));
+	public static Optional<String> getString(Toml toml, String key) {
+		return Optional.ofNullable(toml.getString(key));
+	}
+
+	public static Optional<Vector2> getVector2(Toml toml, String key) {
+		List<Number> vector2 = toml.getList(key);
+		if (vector2 != null) {
+			if (vector2.size() != 2) {
+				throw new RuntimeException("Expected Vector2 (2 numerical values) at key '" + key + "'");
+			}
+			return Optional.of(new Vector2(vector2.get(0).floatValue(), vector2.get(1).floatValue()));
+		} else {
+			return Optional.empty();
 		}
 	}
 
-}
+	public static Optional<Color> getColor(Toml toml, String key) {
+		// Attempt to get a hex string
+		String string = toml.getString(key);
+		if (string != null) {
+			return Optional.of(Color.valueOf(string));
+		}
+		// Otherwise, attempt to get a table
+		Toml color = toml.getTable(key);
+		if (color != null) {
+			// Attempt to get rgb/rgba
+			String r = color.getString("r");
+			String g = color.getString("g");
+			String b = color.getString("b");
+			String a = color.getString("a");
+			if (r != null && g != null && b != null) {
+				if (a != null) {
+					return Optional.of(new Color(Float.parseFloat(r), Float.parseFloat(g), Float.parseFloat(b), Float.parseFloat(a)));
+				} else {
+					return Optional.of(new Color(Float.parseFloat(r), Float.parseFloat(g), Float.parseFloat(b), 1));
+				}
+			}
+			// Attempt to get hsv/hsva
+			String h = color.getString("h");
+			String s = color.getString("s");
+			String v = color.getString("v");
+			if (h != null && s != null && v != null) {
+				if (a != null) {
+					return Optional.of(new Color(Float.parseFloat(h), Float.parseFloat(s), Float.parseFloat(v), Float.parseFloat(a)));
+				} else {
+					return Optional.of(new Color(Float.parseFloat(h), Float.parseFloat(s), Float.parseFloat(v), 1));
+				}
+			}
+		}
+		return Optional.empty();
+	}}
