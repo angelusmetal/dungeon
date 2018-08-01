@@ -10,14 +10,14 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.state.GameState;
 
-public class PlayerArrowsFragment implements RenderFragment {
+public class PlayerArrowsStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final Texture texture;
 	private boolean enabled = true;
 
-	public PlayerArrowsFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public PlayerArrowsStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		texture = ResourceManager.getTexture("player_arrow.png");

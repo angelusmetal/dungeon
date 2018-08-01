@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
@@ -16,7 +14,7 @@ import com.dungeon.game.state.OverlayText;
 
 import java.util.Comparator;
 
-public class OverlayTextFragment implements RenderFragment {
+public class OverlayTextStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -29,7 +27,7 @@ public class OverlayTextFragment implements RenderFragment {
 	private boolean enabled = true;
 	private ShaderProgram shaderOutline;
 
-	public OverlayTextFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public OverlayTextStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		this.labelBuffer = new ViewPortBuffer(viewPort, Pixmap.Format.RGBA8888);

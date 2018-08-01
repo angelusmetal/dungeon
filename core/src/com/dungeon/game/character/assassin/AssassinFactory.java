@@ -41,7 +41,8 @@ public class AssassinFactory implements EntityFactory.EntityTypeFactory {
 				.health(health)
 				.speed(speed)
 				.knockback(0.5f)
-				.friction(friction);
+				.friction(friction)
+				.castsShadow(true);
 	}
 
 

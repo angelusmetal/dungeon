@@ -18,38 +18,41 @@ public class ViewPortRenderer implements Disposable {
 	private int renderCalls = 0;
 	private float frameTime;
 
-	private final MapFragment mapFragment;
-	private final EntitiesFragment entitiesFragment;
-	private final LightFragment lightFragment;
-	private final HealthbarFragment healthbarFragment;
-	private final CollisionFragment collisionFragment;
-	private final NoiseFragment noiseFragment;
-	private final MotionBlurFragment motionBlurFragment;
-	private final OverlayTextFragment overlayTextFragment;
-	private final PlayerArrowsFragment playerArrowsFragment;
-	private final HudFragment hudFragment;
-	private final ScaleFragment scaleFragment;
-	private final ConsoleFragment consoleFragment;
-	private final List<RenderFragment> pipeline = new ArrayList<>();
+	private final MapStage mapFragment;
+	private final ShadowsStage shadowsFragment;
+	private final EntitiesStage entitiesFragment;
+	private final LightStage lightFragment;
+	private final HealthbarStage healthbarFragment;
+	private final CollisionStage collisionFragment;
+	private final NoiseStage noiseFragment;
+	private final MotionBlurStage motionBlurFragment;
+	private final OverlayTextStage overlayTextFragment;
+	private final PlayerArrowsStage playerArrowsFragment;
+	private final HudStage hudFragment;
+	private final ScaleStage scaleFragment;
+	private final ConsoleStage consoleFragment;
+	private final List<RenderStage> pipeline = new ArrayList<>();
 
 	public ViewPortRenderer(ViewPort viewPort, Player player) {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.batch = new SpriteBatch();
 
-		mapFragment = new MapFragment(viewPort, viewportBuffer);
-		entitiesFragment = new EntitiesFragment(viewPort, viewportBuffer);
-		lightFragment = new LightFragment(viewPort, viewportBuffer);
-		healthbarFragment = new HealthbarFragment(viewPort, viewportBuffer);
-		collisionFragment = new CollisionFragment(viewPort, viewportBuffer);
-		noiseFragment = new NoiseFragment(viewPort, viewportBuffer);
-		motionBlurFragment = new MotionBlurFragment(viewPort, viewportBuffer);
-		scaleFragment = new ScaleFragment(viewPort, viewportBuffer, batch);
-		consoleFragment = new ConsoleFragment(viewPort, batch, player.getConsole());
-		overlayTextFragment = new OverlayTextFragment(viewPort, viewportBuffer);
-		playerArrowsFragment = new PlayerArrowsFragment(viewPort, viewportBuffer);
-		hudFragment = new HudFragment(viewPort, viewportBuffer, player);
+		mapFragment = new MapStage(viewPort, viewportBuffer);
+		shadowsFragment = new ShadowsStage(viewPort, viewportBuffer);
+		entitiesFragment = new EntitiesStage(viewPort, viewportBuffer);
+		lightFragment = new LightStage(viewPort, viewportBuffer);
+		healthbarFragment = new HealthbarStage(viewPort, viewportBuffer);
+		collisionFragment = new CollisionStage(viewPort, viewportBuffer);
+		noiseFragment = new NoiseStage(viewPort, viewportBuffer);
+		motionBlurFragment = new MotionBlurStage(viewPort, viewportBuffer);
+		scaleFragment = new ScaleStage(viewPort, viewportBuffer, batch);
+		consoleFragment = new ConsoleStage(viewPort, batch, player.getConsole());
+		overlayTextFragment = new OverlayTextStage(viewPort, viewportBuffer);
+		playerArrowsFragment = new PlayerArrowsStage(viewPort, viewportBuffer);
+		hudFragment = new HudStage(viewPort, viewportBuffer, player);
 
 		pipeline.add(mapFragment);
+		pipeline.add(shadowsFragment);
 		pipeline.add(entitiesFragment);
 		pipeline.add(lightFragment);
 		pipeline.add(healthbarFragment);
@@ -79,7 +82,7 @@ public class ViewPortRenderer implements Disposable {
 		int currentRenderCalls = 0;
 		long start = System.nanoTime();
 
-		pipeline.forEach(RenderFragment::render);
+		pipeline.forEach(RenderStage::render);
 
 //		currentRenderCalls += lightingBuffer.getLastRenderCalls();
 //		lightingBuffer.resetLastRenderCalls();

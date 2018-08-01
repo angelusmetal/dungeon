@@ -55,7 +55,7 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 				}
 			}
 		};
-		e.setZPos(4);
+		e.setZPos(8);
 		return e;
 	}
 }

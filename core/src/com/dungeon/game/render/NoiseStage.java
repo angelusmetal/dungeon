@@ -7,7 +7,7 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
-public class NoiseFragment implements RenderFragment {
+public class NoiseStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -15,7 +15,7 @@ public class NoiseFragment implements RenderFragment {
 	private final BlendFunctionContext noiseContext;
 	private boolean enabled = true;
 
-	public NoiseFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public NoiseStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		this.noiseBuffer = new NoiseBuffer(GameState.getConfiguration());

@@ -41,7 +41,8 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 				.health(health)
 				.knockback(0.5f)
 				.speed(speed)
-				.friction(friction);
+				.friction(friction)
+				.castsShadow(true);
 	}
 
 	public Thief build(Vector2 origin) {

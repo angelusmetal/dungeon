@@ -11,7 +11,7 @@ import com.dungeon.game.state.GameState;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class ConsoleFragment implements RenderFragment {
+public class ConsoleStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final SpriteBatch batch;
@@ -19,7 +19,7 @@ public class ConsoleFragment implements RenderFragment {
 	private final Console console;
 	private boolean enabled = true;
 
-	public ConsoleFragment(ViewPort viewPort, SpriteBatch batch, Console console) {
+	public ConsoleStage(ViewPort viewPort, SpriteBatch batch, Console console) {
 		this.viewPort = viewPort;
 		this.batch = batch;
 		this.font = ResourceManager.getFont("alegreya-sans-sc-black-15");

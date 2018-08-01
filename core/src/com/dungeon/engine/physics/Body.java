@@ -23,14 +23,8 @@ public class Body {
 
 	public void move(Vector2 movement) {
 		origin.add(movement);
-
-		// Refresh boundaries
-		bottomLeft.set(origin);
-		bottomLeft.x -= boundingBox.x / 2;
-		bottomLeft.y -= boundingBox.y / 2;
-
-		topRight.set(bottomLeft);
-		topRight.add(boundingBox);
+		bottomLeft.add(movement);
+		topRight.add(movement);
 	}
 
 	public boolean intersects(Vector2 point) {

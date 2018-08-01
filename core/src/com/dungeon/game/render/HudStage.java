@@ -11,7 +11,7 @@ import com.dungeon.game.player.Player;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
-public class HudFragment implements RenderFragment {
+public class HudStage implements RenderStage {
 
 	private static float HEALTH_PER_HEART = 50f;
 	private static int MARGIN = 4;
@@ -26,7 +26,7 @@ public class HudFragment implements RenderFragment {
 	private final Animation<TextureRegion> coins;
 
 
-	public HudFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer, Player player) {
+	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, Player player) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		this.player = player;

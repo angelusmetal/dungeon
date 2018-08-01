@@ -1,27 +1,29 @@
 package com.dungeon.game.render;
 
-import com.dungeon.engine.entity.CreatureEntity;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.state.GameState;
 
-public class HealthbarFragment implements RenderFragment {
+public class ScaleStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
+	private final SpriteBatch batch;
 	private boolean enabled = true;
 
-	public HealthbarFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public ScaleStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, SpriteBatch batch) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
+		this.batch = batch;
 	}
 
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
-				GameState.getEntities().stream().filter(e -> e instanceof CreatureEntity).filter(viewPort::isInViewPort).map(e -> (CreatureEntity)e).forEach(e -> e.drawHealthbar(batch, viewPort));
-			});
+			batch.begin();
+			viewportBuffer.drawScaled(batch);
+//			currentRenderCalls += batch.renderCalls;
+			batch.end();
 		}
 	}
 

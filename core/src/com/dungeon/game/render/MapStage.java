@@ -11,7 +11,7 @@ import com.dungeon.game.state.GameState;
 
 import java.util.Comparator;
 
-public class MapFragment implements RenderFragment {
+public class MapStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -24,7 +24,7 @@ public class MapFragment implements RenderFragment {
 			e1.getOrigin().x > e2.getOrigin().x ? 1 : 0;
 	private boolean enabled = true;
 
-	public MapFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public MapStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 	}

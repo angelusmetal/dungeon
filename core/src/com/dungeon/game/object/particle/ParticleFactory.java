@@ -87,7 +87,7 @@ public class ParticleFactory {
 				.with(Traits.fadeOut(1f))
 				.with(Traits.zAccel(-200))
 				.zSpeed(() -> Rand.between(50f, 100f))
-				.bounciness(0.8f);
+				.bounciness(0.1f);
 		stoneParticlePrototype = new EntityPrototype()
 				.animation(() -> Rand.pick(stoneParticleAnimations))
 				.boundingBox(BOUNDING_BOX)

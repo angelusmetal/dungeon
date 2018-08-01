@@ -31,6 +31,7 @@ public class EntityPrototype {
 	boolean solid = false;
 	boolean canBeHit = false;
 	boolean canBeHurt = false;
+	boolean castsShadow = false;
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
@@ -57,6 +58,7 @@ public class EntityPrototype {
 		this.solid = other.solid;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
+		this.castsShadow = other.castsShadow;
 	}
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
@@ -76,6 +78,11 @@ public class EntityPrototype {
 
 	public EntityPrototype boundingBox(Vector2 boundingBox) {
 		this.boundingBox = boundingBox;
+		return this;
+	}
+
+	public EntityPrototype castsShadow(boolean castsShadow) {
+		this.castsShadow = castsShadow;
 		return this;
 	}
 

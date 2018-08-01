@@ -84,6 +84,7 @@ public class Entity implements Drawable, Movable {
 	protected boolean solid;
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
+	protected boolean castsShadow;
 
 	private DrawFunction drawFunction;
 
@@ -119,6 +120,7 @@ public class Entity implements Drawable, Movable {
 		this.solid = prototype.solid;
 		this.canBeHit = prototype.canBeHit;
 		this.canBeHurt = prototype.canBeHurt;
+		this.castsShadow = prototype.castsShadow;
 	}
 
 	/**
@@ -148,6 +150,7 @@ public class Entity implements Drawable, Movable {
 		this.solid = other.solid;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
+		this.castsShadow = other.castsShadow;
 	}
 
 	@Override
@@ -267,6 +270,10 @@ public class Entity implements Drawable, Movable {
 		return color;
 	}
 
+	public boolean castsShadow() {
+		return castsShadow;
+	}
+
 	public float getHealth() {
 		return health;
 	}
@@ -379,7 +386,7 @@ public class Entity implements Drawable, Movable {
 			z += zSpeed * GameState.frameTime();
 			if (z < 0) {
 				z = 0;
-				if (bounciness > 0 && Math.abs(zSpeed) < 10) {
+				if (bounciness > 0 && Math.abs(zSpeed) > 10) {
 					zSpeed *= -bounciness;
 				} else {
 					zSpeed = 0;

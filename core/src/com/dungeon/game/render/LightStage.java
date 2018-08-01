@@ -11,7 +11,7 @@ import com.dungeon.game.state.GameState;
 
 import java.util.function.Predicate;
 
-public class LightFragment implements RenderFragment {
+public class LightStage implements RenderStage {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -22,7 +22,7 @@ public class LightFragment implements RenderFragment {
 	private final float gamma;
 	private boolean enabled = true;
 
-	public LightFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public LightStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		this.lightBuffer = new ViewPortBuffer(viewPort);

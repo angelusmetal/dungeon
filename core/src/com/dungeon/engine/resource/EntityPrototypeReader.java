@@ -24,7 +24,9 @@ public class EntityPrototypeReader {
 	public static EntityPrototype fromToml(Toml toml) {
 		EntityPrototype prototype = new EntityPrototype();
 		ConfigUtil.getString(toml, "animation").ifPresent(a -> prototype.animation(ResourceManager.getAnimation(a)));
+		ConfigUtil.getFloat(toml, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(toml, "boundingBox").ifPresent(prototype::boundingBox);
+		ConfigUtil.getBoolean(toml, "castsShadow").ifPresent(prototype::castsShadow);
 		ConfigUtil.getColor(toml, "color").ifPresent(prototype::color);
 		getDrawFunction(toml, "drawFunction").ifPresent(prototype::drawFunction);
 		ConfigUtil.getVector2(toml, "drawOffset").ifPresent(prototype::drawOffset);

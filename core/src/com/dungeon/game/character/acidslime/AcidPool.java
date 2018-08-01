@@ -14,7 +14,6 @@ public class AcidPool extends Entity {
 	public AcidPool(Vector2 origin, AcidSlimeFactory factory) {
 		super(factory.pool, origin);
 		this.factory = factory;
-		getOrigin().add(0, -8);
 	}
 
 	@Override

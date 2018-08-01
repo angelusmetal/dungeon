@@ -41,7 +41,8 @@ public class WitchFactory implements EntityFactory.EntityTypeFactory {
 				.health(health)
 				.knockback(0.5f)
 				.speed(speed)
-				.friction(friction);
+				.friction(friction)
+				.castsShadow(true);
 	}
 
 	public Witch build(Vector2 origin) {

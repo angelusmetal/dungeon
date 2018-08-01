@@ -4,7 +4,7 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.state.GameState;
 
-public class MotionBlurFragment implements RenderFragment {
+public class MotionBlurStage implements RenderStage {
 
 	private final ViewPortBuffer viewportBuffer;
 	private final ViewPortBuffer blurBuffer;
@@ -13,7 +13,7 @@ public class MotionBlurFragment implements RenderFragment {
 	private float startTime;
 	private boolean enabled = true;
 
-	public MotionBlurFragment(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public MotionBlurStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewportBuffer = viewportBuffer;
 		this.blurBuffer = new ViewPortBuffer(viewPort);
 		this.blurBuffer.reset();
