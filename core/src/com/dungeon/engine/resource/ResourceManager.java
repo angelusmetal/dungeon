@@ -16,7 +16,7 @@ public class ResourceManager {
 
 	private static final Map<String, TextureResource> textures = new HashMap<>();
 	private static final Map<String, Animation<TextureRegion>> animations = new HashMap<>();
-	private static final Map<String,EntityPrototype> prototypes = new HashMap<>();
+	private static final Map<String, EntityPrototype> prototypes = new HashMap<>();
 	private static final Map<String, BitmapFont> fonts = new HashMap<>();
 
 	public static void init() {
