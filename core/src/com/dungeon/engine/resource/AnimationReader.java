@@ -40,8 +40,8 @@ public class AnimationReader {
 		}
 	}
 
-	private static Supplier<LoadingException> missing(String property) {
-		return () -> new LoadingException("Missing property '" + property + "'", "???");
+	private static Supplier<RuntimeException> missing(String property) {
+		return () -> new RuntimeException("Missing property '" + property + "'");
 	}
 
 	private static List<TextureRegion> getFrames(Texture tex, List<Integer> regions, int tilesize, int columns) {

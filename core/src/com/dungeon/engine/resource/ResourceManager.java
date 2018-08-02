@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.game.tileset.LevelTileset;
 import com.moandjiezana.toml.Toml;
 
 import java.io.BufferedReader;
@@ -28,6 +29,7 @@ public class ResourceManager {
 	private static final Map<String, Animation<TextureRegion>> animations = new HashMap<>();
 	private static final Map<String, EntityPrototype> prototypes = new HashMap<>();
 	private static final Map<String, BitmapFont> fonts = new HashMap<>();
+	private static final Map<String, LevelTileset> tilesets = new HashMap<>();
 
 	private static final Map<String, BiConsumer<String, Toml>> loaders = new HashMap<>();
 	public static final String ASSETS_PATH = "assets/";
@@ -35,6 +37,7 @@ public class ResourceManager {
 	public static void init() {
 		addResourceLoader("animation", animations, AnimationReader::read);
 		addResourceLoader("prototype", prototypes, EntityPrototypeReader::read);
+		addResourceLoader("tileset", tilesets, TilesetReader::read);
 
 		List<String> assetFiles = scanPath(ASSETS_PATH, ".*\\.toml");
 		/*
@@ -100,11 +103,7 @@ public class ResourceManager {
 	}
 
 	public static Animation<TextureRegion> getAnimation(String name) {
-		Animation<TextureRegion> animation = animations.get(name);
-		if (animation == null) {
-			throw new RuntimeException("No animation with key '" + name + "'");
-		}
-		return animation;
+		return getResource(name, "animation", animations);
 	}
 
 	public static BitmapFont getFont(String name) {
@@ -118,11 +117,19 @@ public class ResourceManager {
 	}
 
 	public static EntityPrototype getPrototype(String name) {
-		EntityPrototype prototype = prototypes.get(name);
-		if (prototype == null) {
-			throw new RuntimeException("No prototype with key '" + name + "'");
+		return getResource(name, "prototype", prototypes);
+	}
+
+	public static LevelTileset getLevelTileset(String name) {
+		return getResource(name, "tileset", tilesets);
+	}
+
+	private static <T> T getResource(String name, String type, Map<String, T> storage) {
+		T resource = storage.get(name);
+		if (resource == null) {
+			throw new RuntimeException("No " + type + " with key '" + name + "'");
 		}
-		return prototype;
+		return resource;
 	}
 
 	public static Texture getTexture(String name) {

@@ -8,6 +8,7 @@ import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
@@ -62,6 +63,7 @@ public class GameState {
 	private static float frameTime;
 	private static Level level;
 	private static TilesetManager tilesetManager = new TilesetManager();
+	private static LevelTileset levelTileset;
 	private static State currentState = State.MENU;
 
 	private static List<PlayerEntity> playerCharacters = new LinkedList<>();
@@ -220,6 +222,9 @@ public class GameState {
 		playerCharacters.clear();
 		entities.clear();
 
+		// TODO Remove this hardcoding
+		levelTileset = ResourceManager.getLevelTileset("dungeon");
+
 		generateNewLevel();
 
 		// Update player count
@@ -230,7 +235,7 @@ public class GameState {
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
 		for (Player player : players) {
-			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(getLevelTileset().tile_size);
+			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(levelTileset.tile_size);
 			player.spawn(origin);
 			origin.y += 30;
 			addOverlayText(new OverlayText(origin, getWelcomeMessage()).spell(1, 1).fadeout(1, 4));
@@ -315,7 +320,7 @@ public class GameState {
 
 
 	public static LevelTileset getLevelTileset() {
-		return tilesetManager.getDungeonVioletTileset();
+		return levelTileset;
 	}
 
 	public static void generateNewLevel() {
@@ -323,7 +328,7 @@ public class GameState {
 		int baseHeight = configuration.getLong("map.width", (long) BASE_MAP_HEIGHT).intValue();
 		int growth = configuration.getLong("map.growth", (long) 10).intValue();
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
-		level = generator.generateLevel(getLevelTileset());
+		level = generator.generateLevel(levelTileset);
 	}
 	public static void addEntity(Entity entity) {
 		newEntities.add(entity);

@@ -174,8 +174,6 @@ public class ProceduralLevelGenerator {
 
 		if (tiles[x][y] == TileType.FLOOR) {
 			return tileset.floor();
-		} else if (tiles[x][y] == TileType.EXIT) {
-			return tileset.exit();
 		} else if (tiles[x][y] == TileType.WALL_DECORATION_1) {
 			return tileset.wallDecoration1();
 		} else if (tiles[x][y] == TileType.WALL_DECORATION_2) {
