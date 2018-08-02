@@ -1,0 +1,78 @@
+# Weapons
+[animation.weapon_sword]
+    texture = "weapons.png"
+    tilesize = 20
+    frameDuration = 1
+    sequence = [0]
+[animation.weapon_cat_staff]
+    texture = "weapons.png"
+    tilesize = 20
+    frameDuration = 1
+    sequence = [1]
+[animation.weapon_green_staff]
+    texture = "weapons.png"
+    tilesize = 20
+    frameDuration = 1
+    sequence = [2]
+
+# Melee slash
+[animation.melee_slash]
+    texture = "slash.png"
+    tilesize = 32
+    frameDuration = 0.025
+    sequence = [0, 1, 2, 3, 4, 5, 6]
+[animation.invisible]
+    texture = "void.png"
+    tilesize = 1
+    frameDuration = 1
+    sequence = [0]
+
+# Cat projectile
+[animation.projectile_cat_right]
+    texture = "cat_projectile.png"
+    tilesize = 24
+    frameDuration = 0.25
+    loop = [0, 1, 2, 3]
+[animation.projectile_cat_up]
+    texture = "cat_projectile.png"
+    tilesize = 24
+    frameDuration = 0.25
+    loop = [4, 5, 6, 7]
+[animation.projectile_cat_down]
+    texture = "cat_projectile.png"
+    tilesize = 24
+    frameDuration = 0.25
+    loop = [8, 9, 10, 11]
+
+# Projectiles
+[animation.projectile_assassin_fly]
+    texture = "projectile.png"
+    tilesize = 16
+    frameDuration = 0.1
+    loop = [0]
+[animation.projectile_assassin_explode]
+    texture = "projectile.png"
+    tilesize = 16
+    frameDuration = 0.1
+    loop = [1, 2, 3, 4, 5]
+[animation.projectile_thief_fly]
+    texture = "projectile.png"
+    tilesize = 16
+    frameDuration = 0.1
+    loop = [6]
+[animation.projectile_thief_explode]
+    texture = "projectile.png"
+    tilesize = 16
+    frameDuration = 0.1
+    loop = [7, 8, 9, 10, 11]
+[animation.projectile_witch_fly]
+    texture = "projectile.png"
+    tilesize = 16
+    frameDuration = 0.1
+    loop = [12]
+[animation.projectile_witch_explode]
+    texture = "projectile.png"
+    tilesize = 16
+    frameDuration = 0.1
+    loop = [13, 14, 15, 16, 17]
+

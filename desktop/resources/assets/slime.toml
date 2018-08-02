@@ -1,0 +1,107 @@
+# Slime
+[animation.slime_idle]
+	texture = "slime.png"
+	tilesize = 32
+	frameDuration = 0.25
+	loop = [0, 1, 2, 1]
+[animation.slime_blink]
+	texture = "slime.png"
+	tilesize = 32
+	frameDuration = 0.1
+	loop = [2, 3, 4, 4, 4, 3, 2, 2, 2]
+[prototype.creature_slime]
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    # No color; gets assigned at random at the factory
+    light = ["50", "ffffff88", "NORMAL"]
+    speed = 100
+    zSpeed = 0
+    zAccel = -200
+    knockback = 1
+    friction = 1
+    health = 7
+    castsShadow = true
+
+# Slime death
+[animation.slime_die]
+	texture = "slime.png"
+	tilesize = 32
+	frameDuration = 0.07
+	sequence = [5, 6, 7, 8, 9, 10, 11, 12, 13]
+[prototype.creature_slime_death]
+    animation = "slime_die"
+    boundingBox = [22, 12]
+    drawOffset = [16, 11]
+    color = "ffffff88"
+    light = ["100", "ffffff88", "NORMAL"]
+    fadeOutLight = true
+    timeToLive = 1.6
+    castsShadow = true
+
+# Slime spawn
+[animation.slime_mini_idle]
+	texture = "slime_mini.png"
+	tilesize = 16
+	frameDuration = 0.25
+	loop = [0, 1, 2, 1]
+[animation.slime_mini_blink]
+	texture = "slime_mini.png"
+	tilesize = 16
+	frameDuration = 0.1
+	loop = [2, 3, 4, 4, 4, 3, 2, 2, 2]
+[prototype.creature_slime_spawn]
+    animation = "slime_mini_idle"
+    boundingBox = [11, 6]
+    drawOffset = [8, 6]
+    light = ["25", "ffffff88", "NORMAL"]
+    speed = 100
+    zSpeed = 0
+    zAccel = -200
+    knockback = 1
+    friction = 1
+    health = 3
+    castsShadow = true
+
+# Slime spawn death
+[animation.slime_mini_die]
+	texture = "slime_mini.png"
+	tilesize = 16
+	frameDuration = 0.07
+	sequence = [5, 6, 7, 8, 9, 10, 11, 12, 13]
+[prototype.creature_slime_spawn_death]
+    animation = "slime_mini_die"
+    boundingBox = [11, 6]
+    drawOffset = [8, 6]
+    color = "ffffff88"
+    light = ["100", "ffffff88", "NORMAL"]
+    fadeOutLight = true
+    timeToLive = 1.6
+    castsShadow = true
+
+# Blob
+[animation.slime_blob]
+	texture = "slime_blobs.png"
+	tilesize = 16
+	frameDuration = 0.1
+	loop = [0, 1, 2, 3]
+[prototype.creature_slime_blob]
+    animation = "slime_blob"
+    boundingBox = [6, 6]
+    drawOffset = [8, 8]
+    speed = 50
+    zSpeed = 75 #(() -> Rand.between(50f, 100f))
+    zAccel = -200
+    timeToLive = 10
+    castsShadow = true
+
+# Blob explosion
+[animation.slime_splat]
+	texture = "slime_blobs.png"
+	tilesize = 16
+	frameDuration = 0.1
+	sequence = [4, 5, 6, 7, 8, 9]
+[prototype.creature_slime_splat]
+    animation = "slime_splat"
+    boundingBox = [6, 6]
+    drawOffset = [8, 8]
+    timeToLive = 0.6

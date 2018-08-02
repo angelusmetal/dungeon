@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 public class EntityPrototypeReader {
 
-	public static EntityPrototype fromToml(Toml toml) {
+	public static EntityPrototype read(Toml toml) {
 		EntityPrototype prototype = new EntityPrototype();
 		ConfigUtil.getString(toml, "animation").ifPresent(a -> prototype.animation(ResourceManager.getAnimation(a)));
 		ConfigUtil.getFloat(toml, "bounciness").ifPresent(prototype::bounciness);

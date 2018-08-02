@@ -174,6 +174,10 @@ public class ConfigUtil {
 		return Optional.ofNullable(toml.getString(key));
 	}
 
+	public static <T> Optional<List<T>> getList(Toml toml, String key) {
+		return Optional.ofNullable(toml.getList(key));
+	}
+
 	public static Optional<Vector2> getVector2(Toml toml, String key) {
 		List<Number> vector2 = toml.getList(key);
 		if (vector2 != null) {

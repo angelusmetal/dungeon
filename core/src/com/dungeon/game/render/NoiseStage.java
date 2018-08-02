@@ -13,7 +13,7 @@ public class NoiseStage implements RenderStage {
 	private final ViewPortBuffer viewportBuffer;
 	private final NoiseBuffer noiseBuffer;
 	private final BlendFunctionContext noiseContext;
-	private boolean enabled = true;
+	private boolean enabled = false;
 
 	public NoiseStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;

@@ -1,0 +1,13 @@
+# Heart containers
+[animation.heart_container]
+	texture = "heart_containers.png"
+	tilesize = 12
+	frameDuration = 0.25
+	sequence = [0, 1, 2, 3, 4]
+
+# Pixel
+[animation.pixel]
+    texture = "fill.png"
+    tilesize = 1
+    frameDuration = 1
+    loop = [0]

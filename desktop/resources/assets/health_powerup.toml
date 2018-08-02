@@ -1,0 +1,35 @@
+# Health powerup
+[animation.powerup_health]
+	texture = "powerups.png"
+	tilesize = 20
+	frameDuration = 1
+	loop = [0]
+
+[prototype.particle_health_spec]
+    animation = "pixel"
+    boundingBox = [1, 1]
+    drawOffset = [1, 1]
+    color = "ff0000"
+    hOscillate = [10, 5]
+    timeToLive = 1
+    fadeOut = 0.8
+    zSpeed = 50
+    zAccel = 100
+[prototype.health_powerup_fade]
+    animation = "powerup_health"
+    boundingBox = [10, 10]
+    drawOffset = [10, 10]
+    timeToLive = 1.5
+	light = ["192", "ff1932", "RAYS", "torchlight", "rotateFast"]
+    fadeOut = 0.5
+    fadeOutLight = true
+    zAccel = 10
+    castsShadow = true
+[prototype.health_powerup]
+    animation = "powerup_health"
+    boundingBox = [10, 10]
+    drawOffset = [10, 10]
+	light = ["192", "ff1932", "RAYS", "oscillate", "rotateFast"]
+	zOscillate = [3, 8]
+	generate = {frequence = 0.05, prototype = "particle_health_spec", x = [-8, 8], z = [2, 10], impulseX = [-10, 10]}
+    castsShadow = true
