@@ -10,6 +10,7 @@ import com.dungeon.game.tileset.LevelTileset;
 import com.moandjiezana.toml.Toml;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +33,7 @@ public class ResourceManager {
 	private static final Map<String, LevelTileset> tilesets = new HashMap<>();
 
 	private static final Map<String, BiConsumer<String, Toml>> loaders = new HashMap<>();
-	public static final String ASSETS_PATH = "assets/";
+	public static final String ASSETS_PATH = "assets";
 
 	public static void init() {
 		addResourceLoader("animation", animations, AnimationReader::read);
@@ -44,7 +45,7 @@ public class ResourceManager {
 		 * TODO Create a dependency tree and load by dependency order
 		 */
 		loaders.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEach(entry -> {
-				assetFiles.forEach(asset -> loadFile(ASSETS_PATH + asset, entry.getKey(), entry.getValue()));
+				assetFiles.forEach(asset -> loadFile(asset, entry.getKey(), entry.getValue()));
 		});
 	}
 
@@ -59,10 +60,15 @@ public class ResourceManager {
 		try (
 				InputStream in = ResourceManager.class.getClassLoader().getResourceAsStream(path);
 				BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
-			String resource;
+			String entry;
 
-			while ((resource = br.readLine()) != null) {
-				if (matches.test(resource)) {
+			while ((entry = br.readLine()) != null) {
+				String resource = path + "/" + entry;
+				System.out.println(entry + "(" + resource + ")");
+				if (new File(ResourceManager.class.getClassLoader().getResource(resource).getFile()).isDirectory()) {
+					filenames.addAll(scanPath(resource, pattern));
+				}
+				if (matches.test(entry)) {
 					filenames.add(resource);
 				}
 			}
