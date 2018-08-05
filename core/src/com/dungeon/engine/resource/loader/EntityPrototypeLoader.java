@@ -26,6 +26,8 @@ import java.util.function.Supplier;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
+	private static final String TYPE = "prototype";
+
 	private final Map<String, EntityPrototype> repository;
 
 	public EntityPrototypeLoader(Map<String, EntityPrototype> repository) {
@@ -41,7 +43,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	public ResourceDescriptor scan(String key, Toml toml) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
 		ConfigUtil.getString(toml, "animation").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("animation", dependency)));
-		return new ResourceDescriptor(new ResourceIdentifier("prototype", key), toml, dependencies);
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, dependencies);
 	}
 
 	@Override

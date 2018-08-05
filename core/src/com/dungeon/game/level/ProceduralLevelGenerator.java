@@ -6,6 +6,7 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.tileset.LevelSpec;
 import com.dungeon.game.tileset.Tileset;
 import com.moandjiezana.toml.Toml;
 
@@ -29,8 +30,7 @@ public class ProceduralLevelGenerator {
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
 	private List<Coords> doors = new ArrayList<>();
-
-	private List<RoomPrototype> roomPrototypes = new ArrayList<>();
+	private LevelSpec levelSpec;
 
 	public enum Type {
 		HEART,
@@ -91,8 +91,9 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public ProceduralLevelGenerator(Toml configuration, int width, int height) {
+	public ProceduralLevelGenerator(Toml configuration, LevelSpec levelSpec, int width, int height) {
 		this.configuration = configuration;
+		this.levelSpec = levelSpec;
 		this.width = width;
 		this.height = height;
 		this.tiles = new TileType[width][height];
@@ -101,14 +102,9 @@ public class ProceduralLevelGenerator {
 				tiles[x][y] = TileType.VOID;
 			}
 		}
-		Toml toml = new Toml().read(ResourceManager.class.getClassLoader().getResourceAsStream("rooms.toml"));
-		toml.entrySet().forEach(entry -> {
-			roomPrototypes.add(RoomPrototype.fromToml(toml.getTable(entry.getKey())));
-		});
-
 	}
 
-	public Level generateLevel(Tileset tileset) {
+	public Level generateLevel() {
 		// Generate rooms
 		while (rooms.isEmpty()) {
 			// Pick a random position to start (excluding border rows/columns)
@@ -130,7 +126,7 @@ public class ProceduralLevelGenerator {
 		Tile[][] map = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				map[x][y] = getTile(x, y, tileset);
+				map[x][y] = getTile(x, y, levelSpec.getTileset());
 			}
 		}
 
@@ -297,8 +293,8 @@ public class ProceduralLevelGenerator {
 		}
 
 		// Attempt to place each room (in random order) until one succeeds
-		Collections.shuffle(roomPrototypes);
-		for (RoomPrototype prototype : roomPrototypes) {
+		Collections.shuffle(levelSpec.getRooms());
+		for (RoomPrototype prototype : levelSpec.getRooms()) {
 			Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
 			if (entryPoint.isPresent()) {
 				ConnectionPoint p = entryPoint.get();

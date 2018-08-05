@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 
 public class TilesetLoader implements ResourceLoader<Tileset> {
 
+	private static final String TYPE = "tileset";
+
 	private final Map<String, Tileset> repository;
 
 	public TilesetLoader(Map<String, Tileset> repository) {
@@ -34,14 +36,14 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 
 	@Override
 	public ResourceDescriptor scan(String key, Toml descriptor) {
-		return new ResourceDescriptor(new ResourceIdentifier("tileset", key), descriptor, Collections.emptyList());
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), descriptor, Collections.emptyList());
 	}
 
 	@Override
 	public Tileset read(Toml descriptor) {
-		String texture = ConfigUtil.getString(descriptor, "texture").orElseThrow(missing("texture"));
+		String texture = ConfigUtil.requireString(descriptor, "texture");
 		Texture tex = ResourceManager.getTexture(texture);
-		int tilesize = ConfigUtil.getInteger(descriptor, "tilesize").orElseThrow(missing("tilesize"));
+		int tilesize = ConfigUtil.requireInteger(descriptor, "tilesize");
 		int columns = tex.getWidth() / tilesize;
 		List<Tile> out = getFrames(descriptor, "out", tex, tilesize, columns);
 		List<Tile> floor = getFrames(descriptor, "floor", tex, tilesize, columns);
@@ -137,12 +139,8 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 
 	}
 
-	private static Supplier<RuntimeException> missing(String property) {
-		return () -> new RuntimeException("Missing property '" + property + "'");
-	}
-
 	private static List<Tile> getFrames(Toml toml, String key, Texture tex, int tilesize, int columns) {
-		List<Integer> regions = ConfigUtil.<Number>getList(toml, key).orElseThrow(missing(key)).stream().map(Number::intValue).collect(Collectors.toList());
+		List<Integer> regions = ConfigUtil.<Number>requireList(toml, key).stream().map(Number::intValue).collect(Collectors.toList());
 		List<Tile> frames = new ArrayList<>();
 		for (int frame : regions) {
 			frames.add(getFrame(tex, frame, tilesize, columns));

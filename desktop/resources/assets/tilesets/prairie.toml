@@ -1,0 +1,70 @@
+# Level
+[level.prairie]
+    tileset = "prairie"
+    light = { h = 0.12, s = 0.2, v = 1 }
+    rooms = ["prairie1"]
+    monsters = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
+
+# Tileset
+[tileset.prairie]
+	texture = "prairie_tileset.png"
+	tilesize = 48
+	out = [32]
+	floor = [22, 23, 30, 31]
+	convexDL = [16]
+	convexDR = [17]
+	convexUL = [24]
+	convexUR = [25]
+	concaveDL = [8]
+	concaveDR = [9]
+	concaveUL = [0]
+	concaveUR = [1]
+	concaveDown = [10, 11, 12, 13]
+	concaveUp = [2, 3, 4, 5]
+	concaveLeft = [18, 19, 20, 21]
+	concaveRight = [26, 27, 28, 29]
+	wallDecor1 = [34]
+	wallDecor2 = [35]
+	wallDecor3 = [36]
+	wallDecor4 = [37]
+
+# Rooms
+[room.prairie1]
+	tiles = [
+		["VOID", "VOID", "VOID", "VOID", "VOID", "VOID", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "FLOOR", "VOID"],
+		["VOID", "VOID", "VOID", "VOID", "VOID", "VOID", "VOID"]
+	]
+	connections = [
+		{x = 0, y = 3, type = "LEFT"},
+		{x = 6, y = 3, type = "RIGHT"},
+		{x = 3, y = 6, type = "UP"},
+		{x = 3, y = 0, type = "DOWN"}
+	]
+	spawns = [
+		{x = 2, y = 2},
+		{x = 2, y = 3.5},
+		{x = 2, y = 5},
+		{x = 3.5, y = 2},
+		{x = 3.5, y = 5},
+		{x = 5, y = 2},
+		{x = 5, y = 3.5},
+		{x = 5, y = 5}
+	]
+	placeholders = [
+		# Torches
+		{x = 2, y = 2, type = "BUSH_GREEN"},
+		{x = 2, y = 3, type = "BUSH_GREEN_SMALL"},
+		{x = 2, y = 4, type = "BUSH_GOLD"},
+		{x = 3, y = 2, type = "BUSH_GOLD_SMALL"},
+		{x = 3, y = 3, type = "BUSH_RED"},
+		{x = 3, y = 4, type = "BUSH_RED_SMALL"},
+		{x = 4, y = 2, type = "BUSH_CYAN"},
+		{x = 4, y = 3, type = "BUSH_CYAN_SMALL"},
+		{x = 4, y = 4, type = "BUSH_PURPLE"},
+		{x = 3.5, y = 3.5, type = "HEALTH_POWERUP", chance = 0.2},
+	]

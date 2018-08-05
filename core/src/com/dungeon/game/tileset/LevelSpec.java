@@ -1,19 +1,19 @@
 package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.entity.EntityType;
 
-import javax.xml.ws.Provider;
+import java.util.function.Supplier;
+import java.util.List;
 
 public class LevelSpec {
 	private final Tileset tileset;
-	private final Provider<Color> light;
+	private final Supplier<Color> light;
 	private final List<RoomPrototype> rooms;
 	private final List<EntityType> monsters;
 
-	public LevelSpec(Tileset tileset, Provider<Color> light, List<RoomPrototype> rooms, List<EntityType> monsters) {
+	public LevelSpec(Tileset tileset, Supplier<Color> light, List<RoomPrototype> rooms, List<EntityType> monsters) {
 		this.tileset = tileset;
 		this.light = light;
 		this.rooms = rooms;
@@ -24,7 +24,7 @@ public class LevelSpec {
 		return tileset;
 	}
 
-	public Provider<Color> getLight() {
+	public Supplier<Color> getLight() {
 		return light;
 	}
 

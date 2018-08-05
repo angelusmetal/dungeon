@@ -9,7 +9,11 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.legacy.TextureResource;
 import com.dungeon.engine.resource.loader.AnimationLoader;
 import com.dungeon.engine.resource.loader.EntityPrototypeLoader;
+import com.dungeon.engine.resource.loader.LevelSpecLoader;
+import com.dungeon.engine.resource.loader.RoomPrototypeLoader;
 import com.dungeon.engine.resource.loader.TilesetLoader;
+import com.dungeon.game.level.RoomPrototype;
+import com.dungeon.game.tileset.LevelSpec;
 import com.dungeon.game.tileset.Tileset;
 import com.moandjiezana.toml.Toml;
 
@@ -35,6 +39,8 @@ public class ResourceManager {
 	private static final Map<String, EntityPrototype> prototypes = new HashMap<>();
 	private static final Map<String, BitmapFont> fonts = new HashMap<>();
 	private static final Map<String, Tileset> tilesets = new HashMap<>();
+	private static final Map<String, RoomPrototype> rooms = new HashMap<>();
+	private static final Map<String, LevelSpec> levels = new HashMap<>();
 
 	private static final Map<String, BiConsumer<String, Toml>> loaders = new HashMap<>();
 	private static final Map<String, ResourceLoader<?>> readers = new HashMap<>();
@@ -44,6 +50,8 @@ public class ResourceManager {
 		readers.put("animation", new AnimationLoader(animations));
 		readers.put("prototype", new EntityPrototypeLoader(prototypes));
 		readers.put("tileset", new TilesetLoader(tilesets));
+		readers.put("room", new RoomPrototypeLoader(rooms));
+		readers.put("level", new LevelSpecLoader(levels));
 
 		// Read all descriptor files in the assets directory
 		List<String> assetFiles = scanPath(ASSETS_PATH, ".*\\.toml");
@@ -75,7 +83,6 @@ public class ResourceManager {
 
 			while ((entry = br.readLine()) != null) {
 				String resource = path + "/" + entry;
-				System.out.println(entry + "(" + resource + ")");
 				if (new File(ResourceManager.class.getClassLoader().getResource(resource).getFile()).isDirectory()) {
 					filenames.addAll(scanPath(resource, pattern));
 				}
@@ -139,8 +146,16 @@ public class ResourceManager {
 		return getResource(name, "prototype", prototypes);
 	}
 
-	public static Tileset getLevelTileset(String name) {
+	public static Tileset getTileset(String name) {
 		return getResource(name, "tileset", tilesets);
+	}
+
+	public static RoomPrototype getRoomPrototype(String name) {
+		return getResource(name, "room", rooms);
+	}
+
+	public static LevelSpec getLevelSpec(String name) {
+		return getResource(name, "level", levels);
 	}
 
 	private static <T> T getResource(String name, String type, Map<String, T> repository) {

@@ -19,6 +19,8 @@ import java.util.function.Supplier;
 
 public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>> {
 
+	private static final String TYPE = "animation";
+
 	private final Map<String, Animation<TextureRegion>> repository;
 
 	public AnimationLoader(Map<String, Animation<TextureRegion>> repository) {
@@ -32,7 +34,7 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 
 	@Override
 	public ResourceDescriptor scan(String key, Toml toml) {
-		return new ResourceDescriptor(new ResourceIdentifier("animation", key), toml, Collections.emptyList());
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, Collections.emptyList());
 	}
 
 	@Override
@@ -41,9 +43,9 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 		List<Integer> sequence = new ArrayList<>();
 		ConfigUtil.<Number>getList(toml, "loop").ifPresent(list -> list.stream().map(Number::intValue).forEach(loop::add));
 		ConfigUtil.<Number>getList(toml, "sequence").ifPresent(list -> list.stream().map(Number::intValue).forEach(sequence::add));
-		int tilesize = ConfigUtil.getInteger(toml, "tilesize").orElseThrow(missing("tilesize"));
-		String texture = ConfigUtil.getString(toml, "texture").orElseThrow(missing("texture"));
-		float frameDuration = ConfigUtil.getFloat(toml, "frameDuration").orElseThrow(missing("frameDuration"));
+		int tilesize = ConfigUtil.requireInteger(toml, "tilesize");
+		String texture = ConfigUtil.requireString(toml, "texture");
+		float frameDuration = ConfigUtil.requireFloat(toml, "frameDuration");
 
 		if (loop.isEmpty() == sequence.isEmpty()) {
 			throw new LoadingException("must have either 'loop' or 'sequence'.", "????");
@@ -61,10 +63,6 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 			List<TextureRegion> frames = getFrames(tex, sequence, tilesize, columns);
 			return sequence(frameDuration, frames);
 		}
-	}
-
-	private static Supplier<RuntimeException> missing(String property) {
-		return () -> new RuntimeException("Missing property '" + property + "'");
 	}
 
 	private static List<TextureRegion> getFrames(Texture tex, List<Integer> regions, int tilesize, int columns) {

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ConfigUtil {
@@ -139,9 +140,17 @@ public class ConfigUtil {
 		return Optional.ofNullable(configuration.getLong(key));
 	}
 
+	public static long requireLong(Toml configuration, String key) {
+		return getLong(configuration, key).orElseThrow(missing(key));
+	}
+
 	public static Optional<Integer> getInteger(Toml configuration, String key) {
 		Long value = configuration.getLong(key);
 		return value == null ? Optional.empty() : Optional.of(value.intValue());
+	}
+
+	public static int requireInteger(Toml configuration, String key) {
+		return getInteger(configuration, key).orElseThrow(missing(key));
 	}
 
 	public static Optional<Double> getDouble(Toml configuration, String key) {
@@ -150,6 +159,10 @@ public class ConfigUtil {
 		} catch (ClassCastException e) {
 			return Optional.of(configuration.getLong(key).doubleValue());
 		}
+	}
+
+	public static double requireDouble(Toml configuration, String key) {
+		return getDouble(configuration, key).orElseThrow(missing(key));
 	}
 
 	public static Optional<Float> getFloat(Toml configuration, String key) {
@@ -162,6 +175,10 @@ public class ConfigUtil {
 		}
 	}
 
+	public static float requireFloat(Toml configuration, String key) {
+		return getFloat(configuration, key).orElseThrow(missing(key));
+	}
+
 	public static Optional<Boolean> getBoolean(Toml configuration, String key) {
 		try {
 			return configuration.contains(key) ? Optional.of(configuration.getBoolean(key)) : Optional.empty();
@@ -170,12 +187,28 @@ public class ConfigUtil {
 		}
 	}
 
+	public static boolean requireBoolean(Toml configuration, String key) {
+		return getBoolean(configuration, key).orElseThrow(missing(key));
+	}
+
 	public static Optional<String> getString(Toml toml, String key) {
-		return Optional.ofNullable(toml.getString(key));
+		try {
+			return Optional.ofNullable(toml.getString(key));
+		} catch (ClassCastException e) {
+			return Optional.empty();
+		}
+	}
+
+	public static String requireString(Toml configuration, String key) {
+		return getString(configuration, key).orElseThrow(missing(key));
 	}
 
 	public static <T> Optional<List<T>> getList(Toml toml, String key) {
 		return Optional.ofNullable(toml.getList(key));
+	}
+
+	public static <T> List<T> requireList(Toml configuration, String key) {
+		return ConfigUtil.<T>getList(configuration, key).orElseThrow(missing(key));
 	}
 
 	public static Optional<Vector2> getVector2(Toml toml, String key) {
@@ -190,38 +223,46 @@ public class ConfigUtil {
 		}
 	}
 
+	public static Vector2 requireVector2(Toml configuration, String key) {
+		return getVector2(configuration, key).orElseThrow(missing(key));
+	}
+
 	public static Optional<Color> getColor(Toml toml, String key) {
 		// Attempt to get a hex string
-		String string = toml.getString(key);
-		if (string != null) {
-			return Optional.of(Color.valueOf(string));
+		Optional<Color> fromString = getString(toml, key).map(Color::valueOf);
+		if (fromString.isPresent()) {
+			return fromString;
 		}
 		// Otherwise, attempt to get a table
 		Toml color = toml.getTable(key);
 		if (color != null) {
 			// Attempt to get rgb/rgba
-			String r = color.getString("r");
-			String g = color.getString("g");
-			String b = color.getString("b");
-			String a = color.getString("a");
-			if (r != null && g != null && b != null) {
-				if (a != null) {
-					return Optional.of(new Color(Float.parseFloat(r), Float.parseFloat(g), Float.parseFloat(b), Float.parseFloat(a)));
-				} else {
-					return Optional.of(new Color(Float.parseFloat(r), Float.parseFloat(g), Float.parseFloat(b), 1));
-				}
+			Optional<Float> r = ConfigUtil.getFloat(color, "r");
+			Optional<Float> g = ConfigUtil.getFloat(color, "g");
+			Optional<Float> b = ConfigUtil.getFloat(color, "b");
+			Optional<Float> a = ConfigUtil.getFloat(color, "a");
+			if (r.isPresent() && g.isPresent() && b.isPresent()) {
+				return a.map(aFloat -> Optional.of(new Color(r.get(), g.get(), b.get(), aFloat)))
+						.orElseGet(() -> Optional.of(new Color(r.get(), g.get(), b.get(), 1)));
 			}
 			// Attempt to get hsv/hsva
-			String h = color.getString("h");
-			String s = color.getString("s");
-			String v = color.getString("v");
-			if (h != null && s != null && v != null) {
-				if (a != null) {
-					return Optional.of(new Color(Float.parseFloat(h), Float.parseFloat(s), Float.parseFloat(v), Float.parseFloat(a)));
-				} else {
-					return Optional.of(new Color(Float.parseFloat(h), Float.parseFloat(s), Float.parseFloat(v), 1));
-				}
+			Optional<Float> h = ConfigUtil.getFloat(color, "h");
+			Optional<Float> s = ConfigUtil.getFloat(color, "s");
+			Optional<Float> v = ConfigUtil.getFloat(color, "v");
+			if (h.isPresent() && s.isPresent() && v.isPresent()) {
+				return a.map(aFloat -> Optional.of(new Color(h.get(), s.get(), v.get(), aFloat)))
+						.orElseGet(() -> Optional.of(new Color(h.get(), s.get(), v.get(), 1)));
 			}
 		}
 		return Optional.empty();
-	}}
+	}
+
+	public static Color requireColor(Toml configuration, String key) {
+		return getColor(configuration, key).orElseThrow(missing(key));
+	}
+
+	private static Supplier<RuntimeException> missing(String property) {
+		return () -> new RuntimeException("Missing property '" + property + "'");
+	}
+
+}
