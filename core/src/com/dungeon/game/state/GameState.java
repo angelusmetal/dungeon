@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.ResourceManager;
@@ -35,7 +34,7 @@ import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
-import com.dungeon.game.tileset.LevelTileset;
+import com.dungeon.game.tileset.Tileset;
 import com.dungeon.game.tileset.TilesetManager;
 import com.moandjiezana.toml.Toml;
 
@@ -63,7 +62,7 @@ public class GameState {
 	private static float frameTime;
 	private static Level level;
 	private static TilesetManager tilesetManager = new TilesetManager();
-	private static LevelTileset levelTileset;
+	private static Tileset tileset;
 	private static State currentState = State.MENU;
 
 	private static List<PlayerEntity> playerCharacters = new LinkedList<>();
@@ -223,7 +222,7 @@ public class GameState {
 		entities.clear();
 
 		// TODO Remove this hardcoding
-		levelTileset = ResourceManager.getLevelTileset("dungeon");
+		tileset = ResourceManager.getLevelTileset("dungeon");
 
 		generateNewLevel();
 
@@ -235,7 +234,7 @@ public class GameState {
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
 		for (Player player : players) {
-			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(levelTileset.tile_size);
+			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(tileset.tile_size);
 			player.spawn(origin);
 			origin.y += 30;
 			addOverlayText(new OverlayText(origin, getWelcomeMessage()).spell(1, 1).fadeout(1, 4));
@@ -247,7 +246,7 @@ public class GameState {
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
 			if (Rand.chance(placeholder.getChance())) {
-				addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(getLevelTileset().tile_size)));
+				addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(getTileset().tile_size)));
 			}
 		}
 
@@ -319,8 +318,8 @@ public class GameState {
 	}
 
 
-	public static LevelTileset getLevelTileset() {
-		return levelTileset;
+	public static Tileset getTileset() {
+		return tileset;
 	}
 
 	public static void generateNewLevel() {
@@ -328,7 +327,7 @@ public class GameState {
 		int baseHeight = configuration.getLong("map.width", (long) BASE_MAP_HEIGHT).intValue();
 		int growth = configuration.getLong("map.growth", (long) 10).intValue();
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
-		level = generator.generateLevel(levelTileset);
+		level = generator.generateLevel(tileset);
 	}
 	public static void addEntity(Entity entity) {
 		newEntities.add(entity);

@@ -20,4 +20,31 @@
 	wallDecor3 = [36]
 	wallDecor4 = [37]
 
-# TODO Add lighting, rooms and monsters (and maybe loot?)
+[level.dungeon]
+    tileset = "dungeon"
+    light = { h = 0.6, s = 0.5, v = 0.5 }
+    rooms = ["empty_room", "dinning_room", "library", "columns_room", "torture_room", "cross_room", "horizontal_hallway", "vertical_hallway", "chest_room"]
+    monsters = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
+
+# TODO Move this to a separate file
+[tileset.prairie]
+	texture = "prairie_tileset.png"
+	tilesize = 48
+	out = [32]
+	floor = [22, 23, 30, 31]
+	convexDL = [16]
+	convexDR = [17]
+	convexUL = [24]
+	convexUR = [25]
+	concaveDL = [8]
+	concaveDR = [9]
+	concaveUL = [0]
+	concaveUR = [1]
+	concaveDown = [10, 11, 12, 13]
+	concaveUp = [2, 3, 4, 5]
+	concaveLeft = [18, 19, 20, 21]
+	concaveRight = [26, 27, 28, 29]
+	wallDecor1 = [34]
+	wallDecor2 = [35]
+	wallDecor3 = [36]
+	wallDecor4 = [37]

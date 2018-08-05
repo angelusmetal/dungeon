@@ -1,4 +1,4 @@
-package com.dungeon.engine.resource;
+package com.dungeon.engine.resource.loader;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,50 +9,74 @@ import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.ResourceDescriptor;
+import com.dungeon.engine.resource.ResourceIdentifier;
+import com.dungeon.engine.resource.ResourceLoader;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EntityPrototypeReader {
+public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
-	public static EntityPrototype read(Toml toml) {
+	private final Map<String, EntityPrototype> repository;
+
+	public EntityPrototypeLoader(Map<String, EntityPrototype> repository) {
+		this.repository = repository;
+	}
+
+	@Override
+	public Map<String, EntityPrototype> getRepository() {
+		return repository;
+	}
+
+	@Override
+	public ResourceDescriptor scan(String key, Toml toml) {
+		List<ResourceIdentifier> dependencies = new ArrayList<>();
+		ConfigUtil.getString(toml, "animation").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("animation", dependency)));
+		return new ResourceDescriptor(new ResourceIdentifier("prototype", key), toml, dependencies);
+	}
+
+	@Override
+	public EntityPrototype read(Toml descriptor) {
 		EntityPrototype prototype = new EntityPrototype();
-		ConfigUtil.getString(toml, "animation").ifPresent(a -> prototype.animation(ResourceManager.getAnimation(a)));
-		ConfigUtil.getFloat(toml, "bounciness").ifPresent(prototype::bounciness);
-		ConfigUtil.getVector2(toml, "boundingBox").ifPresent(prototype::boundingBox);
-		ConfigUtil.getBoolean(toml, "castsShadow").ifPresent(prototype::castsShadow);
-		ConfigUtil.getColor(toml, "color").ifPresent(prototype::color);
-		getDrawFunction(toml, "drawFunction").ifPresent(prototype::drawFunction);
-		ConfigUtil.getVector2(toml, "drawOffset").ifPresent(prototype::drawOffset);
-		ConfigUtil.getFloat(toml, "friction").ifPresent(prototype::friction);
-		ConfigUtil.getInteger(toml, "health").ifPresent(prototype::health);
-		ConfigUtil.getFloat(toml, "knockback").ifPresent(prototype::knockback);
-		getLight(toml, "light").ifPresent(prototype::light);
-		ConfigUtil.getFloat(toml, "timeToLive").ifPresent(prototype::timeToLive);
-		ConfigUtil.getFloat(toml, "zAccel").ifPresent(value -> prototype.with(Traits.zAccel(value)));
-		ConfigUtil.getFloat(toml, "zSpeed").ifPresent(prototype::zSpeed);
-		ConfigUtil.getInteger(toml, "zIndex").ifPresent(prototype::zIndex);
-		ConfigUtil.getFloat(toml, "fadeOut").ifPresent(value -> prototype.with(Traits.fadeOut(value)));
-		ConfigUtil.getBoolean(toml, "fadeOutLight").ifPresent(value -> prototype.with(Traits.fadeOutLight()));
-		ConfigUtil.getVector2(toml, "hOscillate").ifPresent(value -> prototype.with(Traits.hOscillate(value.x, value.y)));
-		ConfigUtil.getVector2(toml, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
-		ConfigUtil.getBoolean(toml, "solid").ifPresent(value -> {
+		ConfigUtil.getString(descriptor, "animation").ifPresent(a -> prototype.animation(ResourceManager.getAnimation(a)));
+		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
+		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
+		ConfigUtil.getBoolean(descriptor, "castsShadow").ifPresent(prototype::castsShadow);
+		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
+		getDrawFunction(descriptor, "drawFunction").ifPresent(prototype::drawFunction);
+		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);
+		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
+		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
+		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
+		getLight(descriptor, "light").ifPresent(prototype::light);
+		ConfigUtil.getFloat(descriptor, "timeToLive").ifPresent(prototype::timeToLive);
+		ConfigUtil.getFloat(descriptor, "zAccel").ifPresent(value -> prototype.with(Traits.zAccel(value)));
+		ConfigUtil.getFloat(descriptor, "zSpeed").ifPresent(prototype::zSpeed);
+		ConfigUtil.getInteger(descriptor, "zIndex").ifPresent(prototype::zIndex);
+		ConfigUtil.getFloat(descriptor, "fadeOut").ifPresent(value -> prototype.with(Traits.fadeOut(value)));
+		ConfigUtil.getBoolean(descriptor, "fadeOutLight").ifPresent(value -> prototype.with(Traits.fadeOutLight()));
+		ConfigUtil.getVector2(descriptor, "hOscillate").ifPresent(value -> prototype.with(Traits.hOscillate(value.x, value.y)));
+		ConfigUtil.getVector2(descriptor, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
+		ConfigUtil.getBoolean(descriptor, "solid").ifPresent(value -> {
 			prototype.solid(value);
 			prototype.canBeHit(value);
 			prototype.canBeHurt(value);
 		});
-		ConfigUtil.getBoolean(toml, "canBeHit").ifPresent(value -> {
+		ConfigUtil.getBoolean(descriptor, "canBeHit").ifPresent(value -> {
 			prototype.canBeHit(value);
 			prototype.canBeHurt(value);
 		});
-		ConfigUtil.getBoolean(toml, "canBeHurt").ifPresent(prototype::canBeHurt);
-		getGenerator(toml, "generate").ifPresent(prototype::with);
+		ConfigUtil.getBoolean(descriptor, "canBeHurt").ifPresent(prototype::canBeHurt);
+		getGenerator(descriptor, "generate").ifPresent(prototype::with);
 		return prototype;
 	}
 

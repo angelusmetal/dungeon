@@ -2,7 +2,6 @@ package com.dungeon.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.dungeon.engine.resource.TextureResource;
 import com.dungeon.game.Dungeon;
 import com.moandjiezana.toml.Toml;
 

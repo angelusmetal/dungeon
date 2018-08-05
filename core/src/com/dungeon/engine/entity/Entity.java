@@ -417,7 +417,7 @@ public class Entity implements Drawable, Movable {
 	}
 
 	private boolean detectTileCollision(Vector2 step) {
-		int tile_size = GameState.getLevelTileset().tile_size;
+		int tile_size = GameState.getTileset().tile_size;
 		int left = body.getLeftTile(tile_size);
 		int right = body.getRightTile(tile_size);
 		int bottom = body.getBottomTile(tile_size);

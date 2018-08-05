@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.render.TileSheet;
 
-public abstract class LevelTileset extends TileSheet {
+public abstract class Tileset extends TileSheet {
 
-	public LevelTileset(Texture texture, int tile_size) {
+	public Tileset(Texture texture, int tile_size) {
 		super(texture, tile_size);
 	}
 

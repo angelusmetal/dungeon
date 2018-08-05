@@ -6,7 +6,7 @@ import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.tileset.LevelTileset;
+import com.dungeon.game.tileset.Tileset;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class ProceduralLevelGenerator {
 
 	}
 
-	public Level generateLevel(LevelTileset tileset) {
+	public Level generateLevel(Tileset tileset) {
 		// Generate rooms
 		while (rooms.isEmpty()) {
 			// Pick a random position to start (excluding border rows/columns)
@@ -170,7 +170,7 @@ public class ProceduralLevelGenerator {
 		return placeholders;
 	}
 
-	private Tile getTile(int x, int y, LevelTileset tileset) {
+	private Tile getTile(int x, int y, Tileset tileset) {
 
 		if (tiles[x][y] == TileType.FLOOR) {
 			return tileset.floor();

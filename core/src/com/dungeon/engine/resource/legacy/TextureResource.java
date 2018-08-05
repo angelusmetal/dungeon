@@ -1,4 +1,4 @@
-package com.dungeon.engine.resource;
+package com.dungeon.engine.resource.legacy;
 
 import com.badlogic.gdx.graphics.Texture;
 

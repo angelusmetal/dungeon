@@ -1,4 +1,4 @@
-package com.dungeon.engine.resource;
+package com.dungeon.engine.resource.legacy;
 
 public interface Resource<T> {
 	void load();

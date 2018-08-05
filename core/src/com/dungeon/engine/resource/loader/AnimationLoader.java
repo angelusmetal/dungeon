@@ -1,19 +1,42 @@
-package com.dungeon.engine.resource;
+package com.dungeon.engine.resource.loader;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.resource.LoadingException;
+import com.dungeon.engine.resource.ResourceDescriptor;
+import com.dungeon.engine.resource.ResourceIdentifier;
+import com.dungeon.engine.resource.ResourceLoader;
+import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
-public class AnimationReader {
+public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>> {
 
-	public static Animation<TextureRegion> read(Toml toml) {
+	private final Map<String, Animation<TextureRegion>> repository;
+
+	public AnimationLoader(Map<String, Animation<TextureRegion>> repository) {
+		this.repository = repository;
+	}
+
+	@Override
+	public Map<String, Animation<TextureRegion>> getRepository() {
+		return repository;
+	}
+
+	@Override
+	public ResourceDescriptor scan(String key, Toml toml) {
+		return new ResourceDescriptor(new ResourceIdentifier("animation", key), toml, Collections.emptyList());
+	}
+
+	@Override
+	public Animation<TextureRegion> read(Toml toml) {
 		List<Integer> loop = new ArrayList<>();
 		List<Integer> sequence = new ArrayList<>();
 		ConfigUtil.<Number>getList(toml, "loop").ifPresent(list -> list.stream().map(Number::intValue).forEach(loop::add));
