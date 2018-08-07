@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.FireballWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
@@ -39,9 +39,9 @@ public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
 		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.getAnimation(IDLE);
+		idleAnimation = Resources.animations.get(IDLE);
 
-		character = ResourceManager.getPrototype("creature_slime_fire");
+		character = Resources.prototypes.get("creature_slime_fire");
 		weapon = new FireballWeapon();
 	}
 

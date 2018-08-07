@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class PlayerArrowsStage implements RenderStage {
@@ -20,7 +20,7 @@ public class PlayerArrowsStage implements RenderStage {
 	public PlayerArrowsStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
-		texture = ResourceManager.getTexture("player_arrow.png");
+		texture = Resources.textures.get("player_arrow.png");
 	}
 
 	@Override

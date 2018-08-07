@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class FadeEffect implements RenderEffect {
@@ -28,7 +28,7 @@ public class FadeEffect implements RenderEffect {
 		this.startTime = startTime;
 		this.duration = duration;
 		this.endAction = endAction;
-		this.fill = ResourceManager.getTexture("fill.png");
+		this.fill = Resources.textures.get("fill.png");
 	}
 
 	@Override

@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class FurnitureFactory {
@@ -37,29 +37,29 @@ public class FurnitureFactory {
 	private final EntityPrototype coinPrototype;
 
 	public FurnitureFactory() {
-		bookshelfProtoype = ResourceManager.getPrototype("prop_bookshelf");
-		tablePrototype = ResourceManager.getPrototype("prop_table_1");
-		table2Prototype = ResourceManager.getPrototype("prop_table_2");
-		cagePrototype = ResourceManager.getPrototype("prop_cage");
-		bushGreenPrototype = ResourceManager.getPrototype("prop_bush_green");
-		bushGreenSmallPrototype = ResourceManager.getPrototype("prop_bush_green_small");
-		bushGoldPrototype = ResourceManager.getPrototype("prop_bush_gold");
-		bushGoldSmallPrototype = ResourceManager.getPrototype("prop_bush_gold_small");
-		bushRedPrototype = ResourceManager.getPrototype("prop_bush_red");
-		bushRedSmallPrototype = ResourceManager.getPrototype("prop_bush_red_small");
-		bushCyanPrototype = ResourceManager.getPrototype("prop_bush_cyan");
-		bushCyanSmallPrototype = ResourceManager.getPrototype("prop_bush_cyan_small");
-		bushPurplePrototype = ResourceManager.getPrototype("prop_bush_purple");
-		bushPurpleSmallPrototype = ResourceManager.getPrototype("prop_bush_purple_small");
-		grass1Prototype = ResourceManager.getPrototype("prop_grass_1");
-		grass2Prototype = ResourceManager.getPrototype("prop_grass_2");
-		grass3Prototype = ResourceManager.getPrototype("prop_grass_3");
-		flower1Prototype = ResourceManager.getPrototype("prop_flower_1");
-		chestPrototype = ResourceManager.getPrototype("chest");
-		painting1Prototype = ResourceManager.getPrototype("prop_painting_1");
-		painting2Prototype = ResourceManager.getPrototype("prop_painting_2");
-		painting3Prototype = ResourceManager.getPrototype("prop_painting_3");
-		coinPrototype = ResourceManager.getPrototype("coin");
+		bookshelfProtoype = Resources.prototypes.get("prop_bookshelf");
+		tablePrototype = Resources.prototypes.get("prop_table_1");
+		table2Prototype = Resources.prototypes.get("prop_table_2");
+		cagePrototype = Resources.prototypes.get("prop_cage");
+		bushGreenPrototype = Resources.prototypes.get("prop_bush_green");
+		bushGreenSmallPrototype = Resources.prototypes.get("prop_bush_green_small");
+		bushGoldPrototype = Resources.prototypes.get("prop_bush_gold");
+		bushGoldSmallPrototype = Resources.prototypes.get("prop_bush_gold_small");
+		bushRedPrototype = Resources.prototypes.get("prop_bush_red");
+		bushRedSmallPrototype = Resources.prototypes.get("prop_bush_red_small");
+		bushCyanPrototype = Resources.prototypes.get("prop_bush_cyan");
+		bushCyanSmallPrototype = Resources.prototypes.get("prop_bush_cyan_small");
+		bushPurplePrototype = Resources.prototypes.get("prop_bush_purple");
+		bushPurpleSmallPrototype = Resources.prototypes.get("prop_bush_purple_small");
+		grass1Prototype = Resources.prototypes.get("prop_grass_1");
+		grass2Prototype = Resources.prototypes.get("prop_grass_2");
+		grass3Prototype = Resources.prototypes.get("prop_grass_3");
+		flower1Prototype = Resources.prototypes.get("prop_flower_1");
+		chestPrototype = Resources.prototypes.get("chest");
+		painting1Prototype = Resources.prototypes.get("prop_painting_1");
+		painting2Prototype = Resources.prototypes.get("prop_painting_2");
+		painting3Prototype = Resources.prototypes.get("prop_painting_3");
+		coinPrototype = Resources.prototypes.get("coin");
 	}
 
 	public Entity buildBookshelf(Vector2 origin) {
@@ -143,7 +143,7 @@ public class FurnitureFactory {
 				if (health < 1) {
 					health = 1;
 					canBeHit = false;
-					setCurrentAnimation(ResourceManager.getAnimation("chest_opening"));
+					setCurrentAnimation(Resources.animations.get("chest_opening"));
 					Entity loot = GameState.build(GameState.createLoot(), getOrigin());
 					loot.setZPos(15);
 					GameState.addEntity(loot);

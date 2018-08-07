@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
@@ -13,7 +13,7 @@ public class ExitPlatformFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype prototype;
 
 	public ExitPlatformFactory() {
-		prototype = ResourceManager.getPrototype("exit_platform");
+		prototype = Resources.prototypes.get("exit_platform");
 
 	}
 

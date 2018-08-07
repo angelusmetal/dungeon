@@ -2,6 +2,9 @@ package com.dungeon.engine.resource;
 
 import java.util.Objects;
 
+/**
+ * Uniquely identifies a resource, globally. An identifier is made up of a type and a key
+ */
 public class ResourceIdentifier {
 	private final String type;
 	private final String key;

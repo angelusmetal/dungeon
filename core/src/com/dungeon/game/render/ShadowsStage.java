@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class ShadowsStage implements RenderStage {
@@ -23,7 +23,7 @@ public class ShadowsStage implements RenderStage {
 	public ShadowsStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
-		texture = new TextureRegion(ResourceManager.getTexture("shadow.png"));
+		texture = new TextureRegion(Resources.textures.get("shadow.png"));
 	}
 
 	@Override

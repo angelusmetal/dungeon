@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Predicate;
@@ -22,7 +22,7 @@ public class SwordWeapon extends MeleeWeapon {
 
 	@Override
 	protected Animation<TextureRegion> getAttackAnimation() {
-		return ResourceManager.getAnimation(SLASH_ANIMATION);
+		return Resources.animations.get(SLASH_ANIMATION);
 	}
 
 	@Override

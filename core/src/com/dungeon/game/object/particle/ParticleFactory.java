@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.Arrays;
@@ -53,31 +53,31 @@ public class ParticleFactory {
 
 	public ParticleFactory() {
 		List<Animation<TextureRegion>> woodParticleAnimations = Arrays.asList(
-				ResourceManager.getAnimation(WOOD_PARTICLE_1),
-				ResourceManager.getAnimation(WOOD_PARTICLE_2),
-				ResourceManager.getAnimation(WOOD_PARTICLE_3),
-				ResourceManager.getAnimation(WOOD_PARTICLE_4),
-				ResourceManager.getAnimation(WOOD_PARTICLE_5),
-				ResourceManager.getAnimation(WOOD_PARTICLE_6),
-				ResourceManager.getAnimation(WOOD_PARTICLE_7),
-				ResourceManager.getAnimation(WOOD_PARTICLE_8)
+				Resources.animations.get(WOOD_PARTICLE_1),
+				Resources.animations.get(WOOD_PARTICLE_2),
+				Resources.animations.get(WOOD_PARTICLE_3),
+				Resources.animations.get(WOOD_PARTICLE_4),
+				Resources.animations.get(WOOD_PARTICLE_5),
+				Resources.animations.get(WOOD_PARTICLE_6),
+				Resources.animations.get(WOOD_PARTICLE_7),
+				Resources.animations.get(WOOD_PARTICLE_8)
 		);
 		List<Animation<TextureRegion>> stoneParticleAnimations = Arrays.asList(
-				ResourceManager.getAnimation(STONE_PARTICLE_1),
-				ResourceManager.getAnimation(STONE_PARTICLE_2),
-				ResourceManager.getAnimation(STONE_PARTICLE_3),
-				ResourceManager.getAnimation(STONE_PARTICLE_4),
-				ResourceManager.getAnimation(STONE_PARTICLE_5),
-				ResourceManager.getAnimation(STONE_PARTICLE_6),
-				ResourceManager.getAnimation(STONE_PARTICLE_7),
-				ResourceManager.getAnimation(STONE_PARTICLE_8)
+				Resources.animations.get(STONE_PARTICLE_1),
+				Resources.animations.get(STONE_PARTICLE_2),
+				Resources.animations.get(STONE_PARTICLE_3),
+				Resources.animations.get(STONE_PARTICLE_4),
+				Resources.animations.get(STONE_PARTICLE_5),
+				Resources.animations.get(STONE_PARTICLE_6),
+				Resources.animations.get(STONE_PARTICLE_7),
+				Resources.animations.get(STONE_PARTICLE_8)
 		);
-		Animation<TextureRegion> dropletStartAnimation = ResourceManager.getAnimation(DROPLET_START);
-		Animation<TextureRegion> dropletFallAnimation = ResourceManager.getAnimation(DROPLET_FALL);
-		Animation<TextureRegion> dropletEndAnimation = ResourceManager.getAnimation(DROPLET_END);
-		Animation<TextureRegion> fireballAnimation = ResourceManager.getAnimation(FIREBALL);
-		Animation<TextureRegion> flameAnimation = ResourceManager.getAnimation(FLAME);
-		Animation<TextureRegion> candleAnimation = ResourceManager.getAnimation(CANDLE);
+		Animation<TextureRegion> dropletStartAnimation = Resources.animations.get(DROPLET_START);
+		Animation<TextureRegion> dropletFallAnimation = Resources.animations.get(DROPLET_FALL);
+		Animation<TextureRegion> dropletEndAnimation = Resources.animations.get(DROPLET_END);
+		Animation<TextureRegion> fireballAnimation = Resources.animations.get(FIREBALL);
+		Animation<TextureRegion> flameAnimation = Resources.animations.get(FLAME);
+		Animation<TextureRegion> candleAnimation = Resources.animations.get(CANDLE);
 
 		woodParticlePrototype = new EntityPrototype()
 				.animation(() -> Rand.pick(woodParticleAnimations))
@@ -129,7 +129,7 @@ public class ParticleFactory {
 				.boundingBox(BOUNDING_BOX)
 				.drawOffset(DRAW_OFFSET);
 		leavePrototype = new EntityPrototype()
-				.animation(ResourceManager.getAnimation("leave_particle"))
+				.animation(Resources.animations.get("leave_particle"))
 				.boundingBox(BOUNDING_BOX)
 				.drawOffset(DRAW_OFFSET)
 				.timeToLive(3f)

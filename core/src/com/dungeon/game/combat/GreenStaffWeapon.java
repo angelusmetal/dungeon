@@ -10,8 +10,8 @@ import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Supplier;
@@ -28,8 +28,8 @@ public class GreenStaffWeapon extends ProjectileWeapon {
 	public GreenStaffWeapon() {
 		super("Green staff", damageSupplier(), DamageType.ELEMENTAL, 0);
 
-		Animation<TextureRegion> bulletFlyAnimation = ResourceManager.getAnimation(PROJECTILE_FLY);
-		Animation<TextureRegion> bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
+		Animation<TextureRegion> bulletFlyAnimation = Resources.animations.get(PROJECTILE_FLY);
+		Animation<TextureRegion> bulletExplodeAnimation = Resources.animations.get(PROJECTILE_EXPLODE);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
 		Vector2 bulletDrawOffset = new Vector2(8, 8);

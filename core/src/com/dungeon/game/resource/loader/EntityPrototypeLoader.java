@@ -1,4 +1,4 @@
-package com.dungeon.engine.resource.loader;
+package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,14 +12,14 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
-import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -28,14 +28,14 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
 	private static final String TYPE = "prototype";
 
-	private final Map<String, EntityPrototype> repository;
+	private final ResourceRepository<EntityPrototype> repository;
 
-	public EntityPrototypeLoader(Map<String, EntityPrototype> repository) {
+	public EntityPrototypeLoader(ResourceRepository<EntityPrototype> repository) {
 		this.repository = repository;
 	}
 
 	@Override
-	public Map<String, EntityPrototype> getRepository() {
+	public ResourceRepository<EntityPrototype> getRepository() {
 		return repository;
 	}
 
@@ -49,7 +49,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	@Override
 	public EntityPrototype read(Toml descriptor) {
 		EntityPrototype prototype = new EntityPrototype();
-		ConfigUtil.getString(descriptor, "animation").ifPresent(a -> prototype.animation(ResourceManager.getAnimation(a)));
+		ConfigUtil.getString(descriptor, "animation").ifPresent(a -> prototype.animation(Resources.animations.get(a)));
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
 		ConfigUtil.getBoolean(descriptor, "castsShadow").ifPresent(prototype::castsShadow);
@@ -118,7 +118,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 			impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(Rand.between(v.x, v.y), 0)));
 			impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, Rand.between(v.x, v.y))));
 			return Optional.of(Traits.generator(frequence, (gen) -> {
-				Entity particle = new Entity(ResourceManager.getPrototype(prototype), gen.getOrigin());
+				Entity particle = new Entity(Resources.prototypes.get(prototype), gen.getOrigin());
 				traits.forEach(trait -> trait.accept(particle));
 				return particle;
 			}));

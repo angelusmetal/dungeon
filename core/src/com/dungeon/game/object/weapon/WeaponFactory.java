@@ -9,11 +9,11 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.combat.CatStaffWeapon;
 import com.dungeon.game.combat.GreenStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
+import com.dungeon.game.resource.Resources;
 
 public class WeaponFactory {
 
@@ -35,9 +35,9 @@ public class WeaponFactory {
 	private final Light light = new Light(96, new Color(0.1f, 0.8f, 0.7f, 1), Light.RAYS, Light.torchlight(), Light.rotateFast());
 
 	public WeaponFactory() {
-		swordAnimation = ResourceManager.getAnimation(SWORD);
-		catStaffAnimation = ResourceManager.getAnimation(CAT_STAFF);
-		greenStaffAnimation = ResourceManager.getAnimation(GREEN_STAFF);
+		swordAnimation = Resources.animations.get(SWORD);
+		catStaffAnimation = Resources.animations.get(CAT_STAFF);
+		greenStaffAnimation = Resources.animations.get(GREEN_STAFF);
 
 		sword = weaponPrototype().animation(swordAnimation);
 		catStaff = weaponPrototype().animation(catStaffAnimation);

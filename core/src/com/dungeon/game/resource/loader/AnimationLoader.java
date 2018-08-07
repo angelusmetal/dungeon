@@ -1,4 +1,4 @@
-package com.dungeon.engine.resource.loader;
+package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -7,28 +7,27 @@ import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
-import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
+import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>> {
 
 	private static final String TYPE = "animation";
 
-	private final Map<String, Animation<TextureRegion>> repository;
+	private final ResourceRepository<Animation<TextureRegion>> repository;
 
-	public AnimationLoader(Map<String, Animation<TextureRegion>> repository) {
+	public AnimationLoader(ResourceRepository<Animation<TextureRegion>> repository) {
 		this.repository = repository;
 	}
 
 	@Override
-	public Map<String, Animation<TextureRegion>> getRepository() {
+	public ResourceRepository<Animation<TextureRegion>> getRepository() {
 		return repository;
 	}
 
@@ -48,12 +47,12 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 		float frameDuration = ConfigUtil.requireFloat(toml, "frameDuration");
 
 		if (loop.isEmpty() == sequence.isEmpty()) {
-			throw new LoadingException("must have either 'loop' or 'sequence'.", "????");
+			throw new LoadingException("must have either 'loop' or 'sequence'.");
 		}
 
-		Texture tex = ResourceManager.getTexture(texture);
+		Texture tex = Resources.textures.get(texture);
 		if (tex.getHeight() % tilesize != 0 || tex.getWidth() % tilesize != 0) {
-			throw new LoadingException("texture dimensions must be an exact multiple of the tilesize", "????");
+			throw new LoadingException("texture dimensions must be an exact multiple of the tilesize");
 		}
 		int columns = tex.getWidth() / tilesize;
 		if (!loop.isEmpty()) {

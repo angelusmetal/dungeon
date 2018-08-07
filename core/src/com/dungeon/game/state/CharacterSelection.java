@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.controller.player.PlayerControlBundle;
 import com.dungeon.engine.render.effect.FadeEffect;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.game.character.assassin.AssassinFactory;
 import com.dungeon.game.character.thief.ThiefFactory;
 import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.player.Player;
+import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class CharacterSelection {
 
 	public void initialize() {
 		batch = new SpriteBatch();
-		playerCharacterScreen = ResourceManager.getTexture("character_selection.png");
+		playerCharacterScreen = Resources.textures.get("character_selection.png");
 	}
 
 	public void dispose() {
@@ -86,11 +86,11 @@ public class CharacterSelection {
 
 	private Animation<TextureRegion> getAnimation(int characterId) {
 		if (characterId == 0) {
-			return ResourceManager.getAnimation(WitchFactory.WITCH_WALK);
+			return Resources.animations.get(WitchFactory.WITCH_WALK);
 		} else if (characterId == 1) {
-			return ResourceManager.getAnimation(ThiefFactory.THIEF_WALK);
+			return Resources.animations.get(ThiefFactory.THIEF_WALK);
 		} else {
-			return ResourceManager.getAnimation(AssassinFactory.ASSASSIN_WALK);
+			return Resources.animations.get(AssassinFactory.ASSASSIN_WALK);
 		}
 	}
 

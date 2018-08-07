@@ -7,7 +7,6 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
@@ -34,8 +33,8 @@ import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
-import com.dungeon.game.tileset.LevelSpec;
-import com.dungeon.game.tileset.Tileset;
+import com.dungeon.game.resource.Resources;
+import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.TilesetManager;
 import com.moandjiezana.toml.Toml;
 
@@ -63,7 +62,7 @@ public class GameState {
 	private static float frameTime;
 	private static Level level;
 	private static TilesetManager tilesetManager = new TilesetManager();
-	private static LevelSpec levelSpec;
+	private static Environment levelSpec;
 	private static State currentState = State.MENU;
 
 	private static List<PlayerEntity> playerCharacters = new LinkedList<>();
@@ -315,7 +314,7 @@ public class GameState {
 		});
 	}
 
-	public static LevelSpec getLevelSpec() {
+	public static Environment getLevelSpec() {
 		return levelSpec;
 	}
 
@@ -324,7 +323,7 @@ public class GameState {
 		int baseHeight = configuration.getLong("map.width", (long) BASE_MAP_HEIGHT).intValue();
 		int growth = configuration.getLong("map.growth", (long) 10).intValue();
 
-		levelSpec = ResourceManager.getLevelSpec("dungeon");
+		levelSpec = Resources.environments.get("dungeon");
 		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, levelSpec, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		level = generator.generateLevel();
 	}

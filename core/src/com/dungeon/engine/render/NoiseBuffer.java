@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
 public class NoiseBuffer {
@@ -32,7 +32,7 @@ public class NoiseBuffer {
 	}
 
 	public void renderNoise() {
-		Texture texture = ResourceManager.getTexture("fill.png");
+		Texture texture = Resources.textures.get("fill.png");
 		frameBuffer.begin();
 		batch.begin();
 		for (int x = 0; x < width; ++x) {

@@ -3,9 +3,9 @@ package com.dungeon.game.object.props;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class DoorFactory {
@@ -21,10 +21,10 @@ public class DoorFactory {
 	private final EntityPrototype horizontalOpening;
 
 	public DoorFactory() {
-		horizontalClosed = ResourceManager.getPrototype(HORIZONTAL_DOOR);
-		horizontalOpening = ResourceManager.getPrototype(HORIZONTAL_DOOR_OPENING);
-		verticalClosed = ResourceManager.getPrototype(VERTICAL_DOOR);
-		verticalOpening = ResourceManager.getPrototype(VERTICAL_DOOR_OPENING);
+		horizontalClosed = Resources.prototypes.get(HORIZONTAL_DOOR);
+		horizontalOpening = Resources.prototypes.get(HORIZONTAL_DOOR_OPENING);
+		verticalClosed = Resources.prototypes.get(VERTICAL_DOOR);
+		verticalOpening = Resources.prototypes.get(VERTICAL_DOOR_OPENING);
 	}
 
 	public Entity buildHorizontal(Vector2 origin) {

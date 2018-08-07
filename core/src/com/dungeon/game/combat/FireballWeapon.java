@@ -10,8 +10,8 @@ import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Supplier;
@@ -28,8 +28,8 @@ public class FireballWeapon extends ProjectileWeapon {
 	public FireballWeapon() {
 		super("Fireball", damageSupplier(), DamageType.ELEMENTAL, 0);
 
-		Animation<TextureRegion> projectileAnimation = ResourceManager.getAnimation(PROJECTILE);
-		Animation<TextureRegion> explosionAnimation = ResourceManager.getAnimation(EXPLOSION);
+		Animation<TextureRegion> projectileAnimation = Resources.animations.get(PROJECTILE);
+		Animation<TextureRegion> explosionAnimation = Resources.animations.get(EXPLOSION);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
 		Vector2 bulletDrawOffset = new Vector2(8, 8);

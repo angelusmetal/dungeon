@@ -7,7 +7,7 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.render.DrawFunction;
-import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Predicate;
@@ -22,7 +22,7 @@ public abstract class MeleeWeapon extends Weapon {
 
 	public MeleeWeapon(String name, Supplier<Float> damage, DamageType damageType, float knockback) {
 		super(name, damage, damageType, knockback);
-		Animation<TextureRegion> hitAnimation = ResourceManager.getAnimation(HIT_ANIMATION);
+		Animation<TextureRegion> hitAnimation = Resources.animations.get(HIT_ANIMATION);
 		Animation<TextureRegion> slashAnimation = getAttackAnimation();
 		Vector2 hitBoundingBox = getHitBox();
 		TextureRegion referenceFrame = slashAnimation.getKeyFrame(0);

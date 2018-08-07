@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class OverlayText {
     }
 
     public OverlayText(Vector2 origin, String text, Color color) {
-        this(origin, text, color, ResourceManager.getFont(DEFAULT_FONT));
+        this(origin, text, color, Resources.fonts.get(DEFAULT_FONT));
     }
 
     public OverlayText(Vector2 origin, String text, Color color, BitmapFont font) {

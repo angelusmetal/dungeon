@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
@@ -28,9 +28,9 @@ public class ThiefFactory implements EntityFactory.EntityTypeFactory {
 		float speed = config.getLong("speed", 96L).floatValue();
 		float friction = config.getLong("friction", 10L).floatValue();
 
-		idleAnimation = ResourceManager.getAnimation(THIEF_IDLE);
-		walkAnimation = ResourceManager.getAnimation(THIEF_WALK);
-		attackAnimation = ResourceManager.getAnimation(THIEF_ATTACK);
+		idleAnimation = Resources.animations.get(THIEF_IDLE);
+		walkAnimation = Resources.animations.get(THIEF_WALK);
+		attackAnimation = Resources.animations.get(THIEF_ATTACK);
 
 		Vector2 characterBoundingBox = new Vector2(14, 12);
 		Vector2 characterDrawOffset = new Vector2(16, 6);

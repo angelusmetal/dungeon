@@ -1,4 +1,4 @@
-package com.dungeon.engine.resource.loader;
+package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -6,31 +6,30 @@ import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
-import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Tileset;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class TilesetLoader implements ResourceLoader<Tileset> {
 
 	private static final String TYPE = "tileset";
 
-	private final Map<String, Tileset> repository;
+	private final ResourceRepository<Tileset> repository;
 
-	public TilesetLoader(Map<String, Tileset> repository) {
+	public TilesetLoader(ResourceRepository<Tileset> repository) {
 		this.repository = repository;
 	}
 
 	@Override
-	public Map<String, Tileset> getRepository() {
+	public ResourceRepository<Tileset> getRepository() {
 		return repository;
 	}
 
@@ -42,7 +41,7 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 	@Override
 	public Tileset read(Toml descriptor) {
 		String texture = ConfigUtil.requireString(descriptor, "texture");
-		Texture tex = ResourceManager.getTexture(texture);
+		Texture tex = Resources.textures.get(texture);
 		int tilesize = ConfigUtil.requireInteger(descriptor, "tilesize");
 		int columns = tex.getWidth() / tilesize;
 		List<Tile> out = getFrames(descriptor, "out", tex, tilesize, columns);

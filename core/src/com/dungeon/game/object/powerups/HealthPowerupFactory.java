@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
@@ -17,9 +17,9 @@ public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
 	private final EntityPrototype vanishPrototype;
 
 	public HealthPowerupFactory() {
-		specPrototype = ResourceManager.getPrototype("particle_health_spec");
-		vanishPrototype = ResourceManager.getPrototype("health_powerup_fade");
-		powerupPrototype = ResourceManager.getPrototype("health_powerup");
+		specPrototype = Resources.prototypes.get("particle_health_spec");
+		vanishPrototype = Resources.prototypes.get("health_powerup_fade");
+		powerupPrototype = Resources.prototypes.get("health_powerup");
 	}
 
 	@Override

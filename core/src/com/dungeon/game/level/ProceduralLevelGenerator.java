@@ -2,11 +2,10 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Tile;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.tileset.LevelSpec;
+import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
 import com.moandjiezana.toml.Toml;
 
@@ -30,7 +29,7 @@ public class ProceduralLevelGenerator {
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
 	private List<Coords> doors = new ArrayList<>();
-	private LevelSpec levelSpec;
+	private Environment levelSpec;
 
 	public enum Type {
 		HEART,
@@ -91,7 +90,7 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public ProceduralLevelGenerator(Toml configuration, LevelSpec levelSpec, int width, int height) {
+	public ProceduralLevelGenerator(Toml configuration, Environment levelSpec, int width, int height) {
 		this.configuration = configuration;
 		this.levelSpec = levelSpec;
 		this.width = width;

@@ -7,13 +7,13 @@ import com.dungeon.game.level.entity.EntityType;
 import java.util.function.Supplier;
 import java.util.List;
 
-public class LevelSpec {
+public class Environment {
 	private final Tileset tileset;
 	private final Supplier<Color> light;
 	private final List<RoomPrototype> rooms;
 	private final List<EntityType> monsters;
 
-	public LevelSpec(Tileset tileset, Supplier<Color> light, List<RoomPrototype> rooms, List<EntityType> monsters) {
+	public Environment(Tileset tileset, Supplier<Color> light, List<RoomPrototype> rooms, List<EntityType> monsters) {
 		this.tileset = tileset;
 		this.light = light;
 		this.rooms = rooms;

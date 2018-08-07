@@ -3,8 +3,8 @@ package com.dungeon.engine.render;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.entity.Timer;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.Arrays;
@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 
 public class Light {
 
-	public static Texture NORMAL = ResourceManager.getTexture("light_1.png");
-	public static Texture RAYS = ResourceManager.getTexture("light_2.png");
-	public static Texture FLARE = ResourceManager.getTexture("light_3.png");
-	public static Texture POSTERIZED_TEXTURE = ResourceManager.getTexture("light_cellshaded.png");
+	public static Texture NORMAL = Resources.textures.get("light_1.png");
+	public static Texture RAYS = Resources.textures.get("light_2.png");
+	public static Texture FLARE = Resources.textures.get("light_3.png");
+	public static Texture POSTERIZED_TEXTURE = Resources.textures.get("light_cellshaded.png");
 
 	/** Light texture to use */
 	public final Texture texture;

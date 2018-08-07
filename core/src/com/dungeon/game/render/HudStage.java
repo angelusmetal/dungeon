@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.dungeon.game.state.OverlayText;
 
@@ -30,9 +30,9 @@ public class HudStage implements RenderStage {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
 		this.player = player;
-		font = ResourceManager.getFont(OverlayText.DEFAULT_FONT);
-		hearts = ResourceManager.getAnimation("heart_container");
-		coins = ResourceManager.getAnimation("coin");
+		font = Resources.fonts.get(OverlayText.DEFAULT_FONT);
+		hearts = Resources.animations.get("heart_container");
+		coins = Resources.animations.get("coin");
 	}
 
 	@Override

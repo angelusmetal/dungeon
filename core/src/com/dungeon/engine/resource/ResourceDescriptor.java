@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Describes a resource through a toml blob.
+ */
 public class ResourceDescriptor {
 
 	private final ResourceIdentifier identifier;
@@ -30,7 +33,7 @@ public class ResourceDescriptor {
 		dependencies.forEach(depId -> {
 			ResourceDescriptor dependency = descriptors.get(depId);
 			if (dependency == null) {
-				throw new RuntimeException("Dependency '" + depId + "' does not exist");
+				throw new LoadingException("Dependency '" + depId + "' does not exist");
 			}
 			dependency.scanDependencies(descriptors, sequence);
 		});

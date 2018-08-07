@@ -3,8 +3,8 @@ package com.dungeon.game.render;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 public class CollisionStage implements RenderStage {
@@ -19,7 +19,7 @@ public class CollisionStage implements RenderStage {
 	public CollisionStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
-		this.fill = new TextureRegion(ResourceManager.getTexture("fill.png"));
+		this.fill = new TextureRegion(Resources.textures.get("fill.png"));
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package com.dungeon.game.render;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.Console;
 import com.dungeon.game.state.GameState;
 
@@ -22,7 +22,7 @@ public class ConsoleStage implements RenderStage {
 	public ConsoleStage(ViewPort viewPort, SpriteBatch batch, Console console) {
 		this.viewPort = viewPort;
 		this.batch = batch;
-		this.font = ResourceManager.getFont("alegreya-sans-sc-black-15");
+		this.font = Resources.fonts.get("alegreya-sans-sc-black-15");
 		this.console = console;
 	}
 

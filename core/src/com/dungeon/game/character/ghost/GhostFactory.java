@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
@@ -34,10 +34,10 @@ public class GhostFactory implements EntityFactory.EntityTypeFactory {
 		stealthSpeed = config.getLong("stealthSpeed", 40L).floatValue();
 		damagePerSecond = config.getLong("damagePerSecond", 20L).floatValue();
 
-		idleAnimation = ResourceManager.getAnimation(HOVER);
+		idleAnimation = Resources.animations.get(HOVER);
 
-		character = ResourceManager.getPrototype("creature_ghost");
-		death = ResourceManager.getPrototype("creature_ghost_death");
+		character = Resources.prototypes.get("creature_ghost");
+		death = Resources.prototypes.get("creature_ghost_death");
 	}
 
 	@Override

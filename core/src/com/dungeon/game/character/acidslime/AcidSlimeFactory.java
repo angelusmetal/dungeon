@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
@@ -46,17 +46,17 @@ public class AcidSlimeFactory implements EntityFactory.EntityTypeFactory {
 		damagePerSecond = config.getLong("damagePerSecond", 10L).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.getAnimation(IDLE);
-		attackAnimation = ResourceManager.getAnimation(ATTACK);
+		idleAnimation = Resources.animations.get(IDLE);
+		attackAnimation = Resources.animations.get(ATTACK);
 		// Pool animations
-		poolDryAnimation = ResourceManager.getAnimation(SlimeFactory.POOL_DRY);
+		poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
 
-		character = ResourceManager.getPrototype("creature_slime_acid");
-		death = ResourceManager.getPrototype("creature_slime_acid_death");
-		pool = ResourceManager.getPrototype("creature_slime_acid_pool");
-		blob = ResourceManager.getPrototype("creature_slime_acid_blob");
+		character = Resources.prototypes.get("creature_slime_acid");
+		death = Resources.prototypes.get("creature_slime_acid_death");
+		pool = Resources.prototypes.get("creature_slime_acid_pool");
+		blob = Resources.prototypes.get("creature_slime_acid_blob");
 		//.zSpeed(() -> Rand.between(50f, 100f))
-		splat = ResourceManager.getPrototype("creature_slime_acid_splat");
+		splat = Resources.prototypes.get("creature_slime_acid_splat");
 	}
 
 	@Override

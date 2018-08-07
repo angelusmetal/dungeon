@@ -19,11 +19,11 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.GameState;
@@ -52,7 +52,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		ResourceManager.init();
+		initResources();
 		inputMultiplexer = new InputMultiplexer();
 //		inputMultiplexer.addProcessor(viewPortInputProcessor);
 //		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
@@ -93,6 +93,10 @@ public class Dungeon extends ApplicationAdapter {
 
 		characterViewPortTracker = new CharacterViewPortTracker();
 
+	}
+
+	private void initResources() {
+		Resources.load();
 	}
 
 	private void addDeveloperHotkeys() {
@@ -167,6 +171,6 @@ public class Dungeon extends ApplicationAdapter {
 		characterSelection.dispose();
 		GameState.getPlayers().forEach(Disposable::dispose);
 		GameState.getTilesetManager().dispose();
-		ResourceManager.unloadAll();
+		Resources.dispose();
 	}
 }

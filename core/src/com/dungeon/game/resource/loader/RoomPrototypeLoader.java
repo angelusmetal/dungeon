@@ -1,9 +1,10 @@
-package com.dungeon.engine.resource.loader;
+package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
+import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TileType;
@@ -14,21 +15,20 @@ import com.moandjiezana.toml.Toml;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 
 	private static final String TYPE = "room";
 
-	private final Map<String, RoomPrototype> repository;
+	private final ResourceRepository<RoomPrototype> repository;
 
-	public RoomPrototypeLoader(Map<String, RoomPrototype> repository) {
+	public RoomPrototypeLoader(ResourceRepository<RoomPrototype> repository) {
 		this.repository = repository;
 	}
 
 	@Override
-	public Map<String, RoomPrototype> getRepository() {
+	public ResourceRepository<RoomPrototype> getRepository() {
 		return repository;
 	}
 

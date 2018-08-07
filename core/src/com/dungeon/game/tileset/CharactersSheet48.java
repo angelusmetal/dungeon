@@ -3,7 +3,7 @@ package com.dungeon.game.tileset;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.TileSheet;
-import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.game.resource.Resources;
 
 public class CharactersSheet48 extends TileSheet {
 
@@ -35,7 +35,7 @@ public class CharactersSheet48 extends TileSheet {
 	public static final String WITCH_IDLE = "witch_idle_2";
 
 	public CharactersSheet48() {
-		super(ResourceManager.getTexture("character_sheet_48.png"), 48);
+		super(Resources.textures.get("character_sheet_48.png"), 48);
 	}
 
 	public static Animation<TextureRegion> witchWalk() {

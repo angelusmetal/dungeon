@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
@@ -53,11 +53,11 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		attackFrequency = config.getDouble("attackFrequency", 3d).floatValue();
 
 		// Character animations
-		idleAnimation = ResourceManager.getAnimation(IDLE);
-		blinkAnimation = ResourceManager.getAnimation(BLINK);
+		idleAnimation = Resources.animations.get(IDLE);
+		blinkAnimation = Resources.animations.get(BLINK);
 		// Spawn animations
-		spawnIdleAnimation = ResourceManager.getAnimation(SPAWN_IDLE);
-		spawnBlinkAnimation = ResourceManager.getAnimation(SPAWN_BLINK);
+		spawnIdleAnimation = Resources.animations.get(SPAWN_IDLE);
+		spawnBlinkAnimation = Resources.animations.get(SPAWN_BLINK);
 
 		Supplier<Color> color = () -> Util.hsvaToColor(
 				Rand.between(0f, 1f),
@@ -65,13 +65,13 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 				Rand.between(0.7f, 1f),
 				0.7f);
 
-		character = ResourceManager.getPrototype("creature_slime")
+		character = Resources.prototypes.get("creature_slime")
 				.color(color);
-		death = ResourceManager.getPrototype("creature_slime_death");
-		spawn = ResourceManager.getPrototype("creature_slime_spawn");
-		spawnDeath = ResourceManager.getPrototype("creature_slime_spawn_death");
-		blob = ResourceManager.getPrototype("creature_slime_blob");
-		splat = ResourceManager.getPrototype("creature_slime_splat");
+		death = Resources.prototypes.get("creature_slime_death");
+		spawn = Resources.prototypes.get("creature_slime_spawn");
+		spawnDeath = Resources.prototypes.get("creature_slime_spawn_death");
+		blob = Resources.prototypes.get("creature_slime_blob");
+		splat = Resources.prototypes.get("creature_slime_splat");
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package com.dungeon.game.tileset;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.TileSheet;
-import com.dungeon.engine.resource.ResourceManager;
+import com.dungeon.game.resource.Resources;
 
 public class FillSheet extends TileSheet {
 
@@ -12,7 +12,7 @@ public class FillSheet extends TileSheet {
     private final Animation<TextureRegion> FILL_ANIMATION = loop(Float.MAX_VALUE, FILL_1);
 
     public FillSheet() {
-        super(ResourceManager.getTexture("fill.png"), 1);
+        super(Resources.textures.get("fill.png"), 1);
     }
 
     public static Animation<TextureRegion> fill() {

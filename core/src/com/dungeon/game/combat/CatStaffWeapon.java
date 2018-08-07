@@ -10,8 +10,8 @@ import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
-import com.dungeon.engine.resource.ResourceManager;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
 import java.util.function.Supplier;
@@ -30,10 +30,10 @@ public class CatStaffWeapon extends ProjectileWeapon {
 	public CatStaffWeapon() {
 		super("Cat staff", damageSupplier(), DamageType.ELEMENTAL, 0);
 
-		Animation<TextureRegion> bulletFlySideAnimation = ResourceManager.getAnimation(PROJECTILE_RIGHT);
-		Animation<TextureRegion> bulletFlyNorthAnimation = ResourceManager.getAnimation(PROJECTILE_UP);
-		Animation<TextureRegion> bulletFlySouthAnimation = ResourceManager.getAnimation(PROJECTILE_DOWN);
-		Animation<TextureRegion> bulletExplodeAnimation = ResourceManager.getAnimation(PROJECTILE_EXPLODE);
+		Animation<TextureRegion> bulletFlySideAnimation = Resources.animations.get(PROJECTILE_RIGHT);
+		Animation<TextureRegion> bulletFlyNorthAnimation = Resources.animations.get(PROJECTILE_UP);
+		Animation<TextureRegion> bulletFlySouthAnimation = Resources.animations.get(PROJECTILE_DOWN);
+		Animation<TextureRegion> bulletExplodeAnimation = Resources.animations.get(PROJECTILE_EXPLODE);
 
 		Vector2 bulletBoundingBox = new Vector2(6, 6);
 		Vector2 bulletDrawOffset = new Vector2(12, 10);
