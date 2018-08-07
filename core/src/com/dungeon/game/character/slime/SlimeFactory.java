@@ -86,7 +86,7 @@ public class SlimeFactory implements EntityFactory.EntityTypeFactory {
 		entity.setZPos(dying.getZPos());
 		entity.setColor(dying.getColor());
 		entity.getLight().color.set(dying.getColor());
-		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
+		entity.impulse(Rand.between(-20f, 20f), Rand.between(-10f, 10f));
 		return entity;
 	}
 

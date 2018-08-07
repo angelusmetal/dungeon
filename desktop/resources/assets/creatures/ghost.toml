@@ -16,15 +16,13 @@
     speed = 20
     castsShadow = true
 [prototype.creature_ghost_death]
+    inherits = "creature_ghost"
     animation = "ghost_hover"
-    boundingBox = [16, 26]
-    drawOffset = [16, 16]
     color = "ff000088"
     light = ["200", "4a66ff88", "RAYS", "rotateSlow"]
     fadeOut = 0.5
     fadeOutLight = true
     timeToLive = 1
     zSpeed = 50
-    castsShadow = true
 
 

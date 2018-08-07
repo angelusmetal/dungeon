@@ -29,14 +29,11 @@
 	frameDuration = 0.07
 	sequence = [5, 6, 7, 8, 9, 10, 11, 12, 13]
 [prototype.creature_slime_death]
+    inherits = "creature_slime"
     animation = "slime_die"
-    boundingBox = [22, 12]
-    drawOffset = [16, 11]
     color = "ffffff88"
-    light = ["100", "ffffff88", "NORMAL"]
     fadeOutLight = true
     timeToLive = 1.6
-    castsShadow = true
 
 # Slime spawn
 [animation.slime_mini_idle]
@@ -69,9 +66,8 @@
 	frameDuration = 0.07
 	sequence = [5, 6, 7, 8, 9, 10, 11, 12, 13]
 [prototype.creature_slime_spawn_death]
+    inherits = "creature_slime_spawn"
     animation = "slime_mini_die"
-    boundingBox = [11, 6]
-    drawOffset = [8, 6]
     color = "ffffff88"
     light = ["100", "ffffff88", "NORMAL"]
     fadeOutLight = true

@@ -42,13 +42,15 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	@Override
 	public ResourceDescriptor scan(String key, Toml toml) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
+		ConfigUtil.getString(toml, "inherits").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
 		ConfigUtil.getString(toml, "animation").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("animation", dependency)));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, dependencies);
 	}
 
 	@Override
 	public EntityPrototype read(Toml descriptor) {
-		EntityPrototype prototype = new EntityPrototype();
+		Optional<String> ancestor = ConfigUtil.getString(descriptor, "inherits");
+		EntityPrototype prototype = ancestor.map(s -> new EntityPrototype(Resources.prototypes.get(s))).orElseGet(EntityPrototype::new);
 		ConfigUtil.getString(descriptor, "animation").ifPresent(a -> prototype.animation(Resources.animations.get(a)));
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);

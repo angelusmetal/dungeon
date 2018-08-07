@@ -1,3 +1,8 @@
+[prototype.furniture]
+    solid = true
+    castsShadow = true
+
+
 #
 # Bookcase
 #
@@ -8,12 +13,11 @@
     loop = [0]
 
 [prototype.prop_bookshelf]
+    inherits = "furniture"
     animation = "prop_bookshelf"
     boundingBox = [48, 38]
     drawOffset = [24, 24]
     health = 500
-    solid = true
-    castsShadow = true
 
 #
 # Tables
@@ -30,19 +34,17 @@
     loop = [2]
 
 [prototype.prop_table_1]
+    inherits = "furniture"
     animation = "prop_table_1"
     boundingBox = [42, 20]
     drawOffset = [24, 24]
     health = 500
-    solid = true
-    castsShadow = true
 [prototype.prop_table_2]
+    inherits = "furniture"
     animation = "prop_table_2"
     boundingBox = [42, 20]
     drawOffset = [24, 24]
     health = 500
-    solid = true
-    castsShadow = true
 
 #
 # Cage
@@ -54,12 +56,11 @@
     loop = [3]
 
 [prototype.prop_cage]
+    inherits = "furniture"
     animation = "prop_cage"
     boundingBox = [20, 36]
     drawOffset = [24, 24]
     health = 1000
-    solid = true
-    castsShadow = true
 
 #
 # Paintings

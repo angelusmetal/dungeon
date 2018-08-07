@@ -10,10 +10,9 @@
     sequence = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 
 [prototype.chest]
+    inherits = "furniture"
     animation = "chest_closed"
     boundingBox = [22, 6]
 	drawOffset = [24, 12]
     health = 50
-    solid = true
-    castsShadow = true
 
