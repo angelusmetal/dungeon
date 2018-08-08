@@ -28,7 +28,7 @@
     frameDuration = 0.07
     sequence = [18, 19, 20, 21, 22, 23, 24, 25, 26]
 [prototype.creature_slime_acid_death]
-    inherit = "creature_slime_acid"
+    inherits = "creature_slime_acid"
     animation = "slime_acid_die"
     timeToLive = 1.7
     fadeOutLight = true

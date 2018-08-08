@@ -1,29 +1,31 @@
 #
 # Bushes
 #
+[prototype.bush]
+    inherits = "furniture"
+    boundingBox = [22, 22]
+    drawOffset = [24, 23]
+    health = 200
+[prototype.bush_small]
+    inherits = "furniture"
+    boundingBox = [12, 12]
+    drawOffset = [24, 24]
+    health = 100
 
 # Green
+[prototype.prop_bush_green]
+    inherits = "bush"
+    animation = "prop_bush_green"
 [animation.prop_bush_green]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [4]
-[prototype.prop_bush_green]
-    animation = "prop_bush_green"
-    boundingBox = [30, 30]
-    drawOffset = [24, 23]
-    health = 200
-    solid = true
-    castsShadow = true
 
 # Green (small)
 [prototype.prop_bush_green_small]
+    inherits = "bush_small"
     animation = "prop_bush_green_small"
-    boundingBox = [19, 20]
-    drawOffset = [24, 24]
-    health = 100
-    solid = true
-    castsShadow = true
 [animation.prop_bush_green_small]
     texture = "furniture.png"
     tilesize = 48
@@ -31,116 +33,84 @@
     loop = [5]
 
 # Gold
+[prototype.prop_bush_gold]
+    inherits = "bush"
+    animation = "prop_bush_gold"
 [animation.prop_bush_gold]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [6]
-[prototype.prop_bush_gold]
-    animation = "prop_bush_gold"
-    boundingBox = [30, 30]
-    drawOffset = [24, 23]
-    health = 200
-    solid = true
-    castsShadow = true
 
 # Gold (small)
+[prototype.prop_bush_gold_small]
+    inherits = "bush_small"
+    animation = "prop_bush_gold_small"
 [animation.prop_bush_gold_small]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [7]
-[prototype.prop_bush_gold_small]
-    animation = "prop_bush_gold_small"
-    boundingBox = [19, 20]
-    drawOffset = [24, 24]
-    health = 100
-    solid = true
-    castsShadow = true
 
 # Red
+[prototype.prop_bush_red]
+    inherits = "bush"
+    animation = "prop_bush_red"
 [animation.prop_bush_red]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [8]
-[prototype.prop_bush_red]
-    animation = "prop_bush_red"
-    boundingBox = [30, 30]
-    drawOffset = [24, 23]
-    health = 200
-    solid = true
-    castsShadow = true
 
 # Red (small)
+[prototype.prop_bush_red_small]
+    inherits = "bush_small"
+    animation = "prop_bush_red_small"
 [animation.prop_bush_red_small]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [9]
-[prototype.prop_bush_red_small]
-    animation = "prop_bush_red_small"
-    boundingBox = [19, 20]
-    drawOffset = [24, 24]
-    health = 100
-    solid = true
-    castsShadow = true
 
 # Cyan
+[prototype.prop_bush_cyan]
+    inherits = "bush"
+    animation = "prop_bush_cyan"
 [animation.prop_bush_cyan]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [10]
-[prototype.prop_bush_cyan]
-    animation = "prop_bush_cyan"
-    boundingBox = [30, 30]
-    drawOffset = [24, 23]
-    health = 200
-    solid = true
-    castsShadow = true
 
 # Cyan (small)
+[prototype.prop_bush_cyan_small]
+    inherits = "bush_small"
+    animation = "prop_bush_cyan_small"
 [animation.prop_bush_cyan_small]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [11]
-[prototype.prop_bush_cyan_small]
-    animation = "prop_bush_cyan_small"
-    boundingBox = [19, 20]
-    drawOffset = [24, 24]
-    health = 100
-    solid = true
-    castsShadow = true
 
 # Purple
+[prototype.prop_bush_purple]
+    inherits = "bush"
+    animation = "prop_bush_purple"
 [animation.prop_bush_purple]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [12]
-[prototype.prop_bush_purple]
-    animation = "prop_bush_purple"
-    boundingBox = [30, 30]
-    drawOffset = [24, 23]
-    health = 200
-    solid = true
-    castsShadow = true
 
 # Purple (small)
+[prototype.prop_bush_purple_small]
+    inherits = "bush_small"
+    animation = "prop_bush_purple_small"
 [animation.prop_bush_purple_small]
     texture = "furniture.png"
     tilesize = 48
     frameDuration = 1
     loop = [13]
-[prototype.prop_bush_purple_small]
-    animation = "prop_bush_purple_small"
-    boundingBox = [19, 20]
-    drawOffset = [24, 24]
-    health = 100
-    solid = true
-    castsShadow = true
 
 #
 # Grass

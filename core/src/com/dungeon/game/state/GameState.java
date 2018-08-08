@@ -62,7 +62,7 @@ public class GameState {
 	private static float frameTime;
 	private static Level level;
 	private static TilesetManager tilesetManager = new TilesetManager();
-	private static Environment levelSpec;
+	private static Environment environment;
 	private static State currentState = State.MENU;
 
 	private static List<PlayerEntity> playerCharacters = new LinkedList<>();
@@ -231,19 +231,19 @@ public class GameState {
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
 		for (Player player : players) {
-			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(levelSpec.getTileset().tile_size);
+			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(environment.getTileset().tile_size);
 			player.spawn(origin);
 			origin.y += 30;
 			addOverlayText(new OverlayText(origin, getWelcomeMessage()).spell(1, 1).fadeout(1, 4));
 		}
 
 		initViewPorts();
-		randomizeBaseLight();
+//		randomizeBaseLight();
 
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
 			if (Rand.chance(placeholder.getChance())) {
-				addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(levelSpec.getTileset().tile_size)));
+				addEntity(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
 			}
 		}
 
@@ -314,8 +314,8 @@ public class GameState {
 		});
 	}
 
-	public static Environment getLevelSpec() {
-		return levelSpec;
+	public static Environment getEnvironment() {
+		return environment;
 	}
 
 	public static void generateNewLevel() {
@@ -323,8 +323,12 @@ public class GameState {
 		int baseHeight = configuration.getLong("map.width", (long) BASE_MAP_HEIGHT).intValue();
 		int growth = configuration.getLong("map.growth", (long) 10).intValue();
 
-		levelSpec = Resources.environments.get("dungeon");
-		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, levelSpec, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+		// Pick a random environment
+		String env = Rand.pick(Resources.environments.getKeys());
+		env = "dungeon";
+		environment = Resources.environments.get(env);
+		baseLight = environment.getLight().get();
+		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		level = generator.generateLevel();
 	}
 	public static void addEntity(Entity entity) {

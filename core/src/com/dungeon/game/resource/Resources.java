@@ -32,7 +32,7 @@ public class Resources<T> {
 		loader.registerLoader("prototype", new EntityPrototypeLoader(prototypes));
 		loader.registerLoader("tileset", new TilesetLoader(tilesets));
 		loader.registerLoader("room", new RoomPrototypeLoader(rooms));
-		loader.registerLoader("level", new EnvironmentLoader(environments));
+		loader.registerLoader("environment", new EnvironmentLoader(environments));
 		loader.load();
 	}
 

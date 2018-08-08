@@ -1,5 +1,6 @@
 package com.dungeon.engine.util;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -40,5 +41,9 @@ public class Rand {
 
     public static <T> T pick(List<T> list) {
         return list.get(random.nextInt(list.size()));
+    }
+
+    public static <T> T pick(Collection<T> collection) {
+        return collection.stream().skip(random.nextInt(collection.size())).findFirst().get();
     }
 }

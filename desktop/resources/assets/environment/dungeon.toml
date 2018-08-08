@@ -1,7 +1,6 @@
-# Level
-[level.dungeon]
+[environment.dungeon]
     tileset = "dungeon"
-    light = { h = 0.6, s = 0.5, v = 0.5 }
+    light = { h = 0.6, s = 0.8, v = 0.3 }
     rooms = ["empty_room", "dinning_room", "library", "columns_room", "torture_room", "cross_room", "horizontal_hallway", "vertical_hallway", "chest_room"]
     monsters = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
 

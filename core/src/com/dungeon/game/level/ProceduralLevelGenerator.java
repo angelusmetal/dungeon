@@ -29,7 +29,7 @@ public class ProceduralLevelGenerator {
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
 	private List<Coords> doors = new ArrayList<>();
-	private Environment levelSpec;
+	private Environment environment;
 
 	public enum Type {
 		HEART,
@@ -90,9 +90,9 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public ProceduralLevelGenerator(Toml configuration, Environment levelSpec, int width, int height) {
+	public ProceduralLevelGenerator(Toml configuration, Environment environment, int width, int height) {
 		this.configuration = configuration;
-		this.levelSpec = levelSpec;
+		this.environment = environment;
 		this.width = width;
 		this.height = height;
 		this.tiles = new TileType[width][height];
@@ -125,7 +125,7 @@ public class ProceduralLevelGenerator {
 		Tile[][] map = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				map[x][y] = getTile(x, y, levelSpec.getTileset());
+				map[x][y] = getTile(x, y, environment.getTileset());
 			}
 		}
 
@@ -139,7 +139,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
-		List<EntityType> monsterTypes = configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		List<EntityType> monsterTypes = environment.getMonsters();//configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 
 		// Create monsters in each room, to begin with
@@ -292,8 +292,8 @@ public class ProceduralLevelGenerator {
 		}
 
 		// Attempt to place each room (in random order) until one succeeds
-		Collections.shuffle(levelSpec.getRooms());
-		for (RoomPrototype prototype : levelSpec.getRooms()) {
+		Collections.shuffle(environment.getRooms());
+		for (RoomPrototype prototype : environment.getRooms()) {
 			Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
 			if (entryPoint.isPresent()) {
 				ConnectionPoint p = entryPoint.get();

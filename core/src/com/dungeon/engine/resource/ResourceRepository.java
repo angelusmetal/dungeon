@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -51,6 +52,10 @@ public class ResourceRepository<T> implements Disposable {
 			throw new LoadingException("No resource with key '" + key + "'");
 		}
 		return resource;
+	}
+
+	public Set<String> getKeys() {
+		return resources.keySet();
 	}
 
 	public void dispose() {

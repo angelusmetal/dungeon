@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class EnvironmentLoader implements ResourceLoader<Environment> {
 
-	private static final String TYPE = "level";
+	private static final String TYPE = "environment";
 
 	private final ResourceRepository<Environment> repository;
 

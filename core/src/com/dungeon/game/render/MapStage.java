@@ -49,7 +49,7 @@ public class MapStage implements RenderStage {
 
 	private void drawMap(SpriteBatch batch) {
 		// Only render the visible portion of the map
-		int tSize = GameState.getLevelSpec().getTileset().tile_size;
+		int tSize = GameState.getEnvironment().getTileset().tile_size;
 		int minX = Math.max(0, viewPort.cameraX / tSize);
 		int maxX = Math.min(GameState.getLevel().map.length - 1, (viewPort.cameraX + viewPort.width) / tSize) + 1;
 		int minY = Math.max(0, viewPort.cameraY / tSize - 1);

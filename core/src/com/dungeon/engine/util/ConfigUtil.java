@@ -242,16 +242,16 @@ public class ConfigUtil {
 			Optional<Float> b = ConfigUtil.getFloat(color, "b");
 			Optional<Float> a = ConfigUtil.getFloat(color, "a");
 			if (r.isPresent() && g.isPresent() && b.isPresent()) {
-				return a.map(aFloat -> Optional.of(new Color(r.get(), g.get(), b.get(), aFloat)))
-						.orElseGet(() -> Optional.of(new Color(r.get(), g.get(), b.get(), 1)));
+				return Optional.of(a.map(aFloat -> new Color(r.get(), g.get(), b.get(), aFloat))
+						.orElseGet(() -> new Color(r.get(), g.get(), b.get(), 1)));
 			}
 			// Attempt to get hsv/hsva
 			Optional<Float> h = ConfigUtil.getFloat(color, "h");
 			Optional<Float> s = ConfigUtil.getFloat(color, "s");
 			Optional<Float> v = ConfigUtil.getFloat(color, "v");
 			if (h.isPresent() && s.isPresent() && v.isPresent()) {
-				return a.map(aFloat -> Optional.of(new Color(h.get(), s.get(), v.get(), aFloat)))
-						.orElseGet(() -> Optional.of(new Color(h.get(), s.get(), v.get(), 1)));
+				return Optional.of(a.map(aFloat -> Util.hsvaToColor(h.get(), s.get(), v.get(), aFloat))
+						.orElseGet(() -> Util.hsvaToColor(h.get(), s.get(), v.get(), 1)));
 			}
 		}
 		return Optional.empty();
