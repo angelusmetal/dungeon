@@ -13,23 +13,25 @@
     inherits = "furniture"
     animation = "door_horizontal"
     boundingBox = [7, 48]
-    drawOffset = [47, 32]
+    boundingBoxOffset = [3, 0]
+    drawOffset = [47, 8]
     canBeHurt = false
 [prototype.door_horizontal_opening]
     inherits = "door_horizontal"
     animation = "door_horizontal"
-    timeToLive = 1
-    zSpeed = 40
+    timeToLive = 0.5
+    zSpeed = 70
     fadeOut = 1
 [prototype.door_vertical]
     inherits = "furniture"
     animation = "door_vertical"
     boundingBox = [48, 48]
-    drawOffset = [48, 48]
+    boundingBoxOffset = [24, 0]
+    drawOffset = [48, 24]
     canBeHurt = false
 [prototype.door_vertical_opening]
     inherits = "door_vertical"
     animation = "door_vertical"
-    timeToLive = 1
-    zSpeed = 40
+    timeToLive = 0.5
+    zSpeed = 70
     fadeOut = 1

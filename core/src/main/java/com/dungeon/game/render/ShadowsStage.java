@@ -42,8 +42,8 @@ public class ShadowsStage implements RenderStage {
 					float height = width / 3 * attenuation;
 					viewPort.draw(batch,
 							texture,
-							entity.getOrigin().x - width / 2,
-							entity.getOrigin().y - entity.getBody().getBoundingBox().y / 2 + VERTICAL_OFFSET,
+							entity.getBody().getBottomLeft().x,
+							entity.getBody().getBottomLeft().y + VERTICAL_OFFSET,
 							width,
 							height);
 				});

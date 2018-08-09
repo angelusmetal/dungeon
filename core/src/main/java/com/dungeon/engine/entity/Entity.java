@@ -95,7 +95,11 @@ public class Entity implements Drawable, Movable {
 	 */
 	public Entity(EntityPrototype prototype, Vector2 origin) {
 		this.setCurrentAnimation(prototype.animation.get());
-		this.body = Body.centered(origin, prototype.boundingBox);
+		if (prototype.boundingBoxOffset.len2() == 0) {
+			this.body = Body.centered(origin, prototype.boundingBox);
+		} else {
+			this.body = Body.withOffset(origin, prototype.boundingBox, prototype.boundingBoxOffset);
+		}
 		this.drawOffset = prototype.drawOffset;
 		this.drawFunction = prototype.drawFunction.get();
 		this.startTime = GameState.time();

@@ -35,6 +35,7 @@ public class EntityPrototype {
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
+	Vector2 boundingBoxOffset = Vector2.Zero;
 
 	public EntityPrototype() {}
 
@@ -54,6 +55,7 @@ public class EntityPrototype {
 		this.drawFunction = other.drawFunction;
 		this.health = other.health;
 		this.boundingBox = other.boundingBox.cpy();
+		this.boundingBoxOffset = other.boundingBoxOffset.cpy();
 		this.drawOffset = other.drawOffset.cpy();
 		this.solid = other.solid;
 		this.canBeHit = other.canBeHit;
@@ -78,6 +80,11 @@ public class EntityPrototype {
 
 	public EntityPrototype boundingBox(Vector2 boundingBox) {
 		this.boundingBox = boundingBox;
+		return this;
+	}
+
+	public EntityPrototype boundingBoxOffset(Vector2 boundingBoxOffset) {
+		this.boundingBoxOffset = boundingBoxOffset;
 		return this;
 	}
 

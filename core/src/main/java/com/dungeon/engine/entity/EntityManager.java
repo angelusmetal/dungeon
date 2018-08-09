@@ -73,9 +73,11 @@ public class EntityManager {
 		return entities.stream().filter(e -> e.collides(area));
 	}
 
+	/**
+	 * @return Stream of entities whose origin is at radius distance or less, from the provided radius
+	 */
 	public Stream<Entity> radius(Vector2 origin, float radius) {
 		float radius2 = Util.length2(radius);
-		// First do the cheap rectangle filter
 		return entities.stream().filter(e -> e.getOrigin().dst2(origin) <= radius2);
 	}
 

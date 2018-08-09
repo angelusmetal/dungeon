@@ -54,6 +54,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getString(descriptor, "animation").ifPresent(a -> prototype.animation(Resources.animations.get(a)));
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
+		ConfigUtil.getVector2(descriptor, "boundingBoxOffset").ifPresent(prototype::boundingBoxOffset);
 		ConfigUtil.getBoolean(descriptor, "castsShadow").ifPresent(prototype::castsShadow);
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
 		getDrawFunction(descriptor, "drawFunction").ifPresent(prototype::drawFunction);

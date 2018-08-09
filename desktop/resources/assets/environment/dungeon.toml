@@ -1,7 +1,7 @@
 [environment.dungeon]
     tileset = "dungeon"
     light = { h = 0.6, s = 0.8, v = 0.3 }
-    rooms = ["empty_room", "dinning_room", "library", "columns_room", "torture_room", "cross_room", "horizontal_hallway", "vertical_hallway", "chest_room"]
+    rooms = ["chest_room"]#["empty_room", "dinning_room", "library", "columns_room", "torture_room", "cross_room", "horizontal_hallway", "vertical_hallway", "chest_room"]
     monsters = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
 
 # Tileset
@@ -56,13 +56,13 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 2.5, y = 6.5, type = "TORCH"},
-		{x = 4.5, y = 6.5, type = "TORCH"},
-		{x = 1, y = 4.5, type = "TORCH"},
-		{x = 1, y = 2.5, type = "TORCH"},
-		{x = 6, y = 4.5, type = "TORCH"},
-		{x = 6, y = 2.5, type = "TORCH"},
-		{x = 3.5, y = 3.5, type = "HEALTH_POWERUP", chance = 0.2},
+		{x = 2.5, y = 6, type = "TORCH"},
+		{x = 4.5, y = 6, type = "TORCH"},
+		{x = 1, y = 4, type = "TORCH"},
+		{x = 1, y = 2, type = "TORCH"},
+		{x = 6, y = 4, type = "TORCH"},
+		{x = 6, y = 2, type = "TORCH"},
+		{x = 3.5, y = 3, type = "HEALTH_POWERUP", chance = 0.2},
 	]
 
 [room.dinning_room]
@@ -89,12 +89,12 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 2.5, y = 6.5, type = "TORCH"},
-		{x = 4.5, y = 6.5, type = "TORCH"},
-		{x = 1, y = 4.5, type = "TORCH"},
-		{x = 1, y = 2.5, type = "TORCH"},
-		{x = 6, y = 4.5, type = "TORCH"},
-		{x = 6, y = 2.5, type = "TORCH"},
+		{x = 2.5, y = 6, type = "TORCH"},
+		{x = 4.5, y = 6, type = "TORCH"},
+		{x = 1, y = 4, type = "TORCH"},
+		{x = 1, y = 2, type = "TORCH"},
+		{x = 6, y = 4, type = "TORCH"},
+		{x = 6, y = 2, type = "TORCH"},
 		# Furniture
 		{x = 5, y = 5, type = "TABLE"},
 		{x = 4, y = 5, type = "TABLE"},
@@ -131,24 +131,24 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 4.5, y = 6.5, type = "TORCH"},
-		{x = 6.5, y = 6.5, type = "TORCH"},
-		{x = 1, y = 4.5, type = "TORCH"},
-		{x = 1, y = 2.5, type = "TORCH"},
-		{x = 10, y = 4.5, type = "TORCH"},
-		{x = 10, y = 2.5, type = "TORCH"},
+		{x = 4.5, y = 6, type = "TORCH"},
+		{x = 6.5, y = 6, type = "TORCH"},
+		{x = 1, y = 4, type = "TORCH"},
+		{x = 1, y = 2, type = "TORCH"},
+		{x = 10, y = 4, type = "TORCH"},
+		{x = 10, y = 2, type = "TORCH"},
 
-		{x = 4, y = 4.25, type = "TORCH"},
-		{x = 7, y = 4.25, type = "TORCH"},
-		{x = 4, y = 2.25, type = "TORCH"},
-		{x = 7, y = 2.25, type = "TORCH"},
+		{x = 3, y = 4.24, type = "TORCH"},
+		{x = 8, y = 4.24, type = "TORCH"},
+		{x = 3, y = 2.24, type = "TORCH"},
+		{x = 8, y = 2.24, type = "TORCH"},
 		# Furniture
-		{x = 1.5, y = 6.25, type = "BOOKSHELF"},
-		{x = 2.5, y = 6.25, type = "BOOKSHELF"},
-		{x = 3.5, y = 6.25, type = "BOOKSHELF"},
-		{x = 7.5, y = 6.25, type = "BOOKSHELF"},
-		{x = 8.5, y = 6.25, type = "BOOKSHELF"},
-		{x = 9.5, y = 6.25, type = "BOOKSHELF"},
+		{x = 1.5, y = 5.75, type = "BOOKSHELF"},
+		{x = 2.5, y = 5.75, type = "BOOKSHELF"},
+		{x = 3.5, y = 5.75, type = "BOOKSHELF"},
+		{x = 7.5, y = 5.75, type = "BOOKSHELF"},
+		{x = 8.5, y = 5.75, type = "BOOKSHELF"},
+		{x = 9.5, y = 5.75, type = "BOOKSHELF"},
 
 		{x = 2.5, y = 4.25, type = "BOOKSHELF"},
 		{x = 3.5, y = 4.25, type = "BOOKSHELF"},
@@ -196,17 +196,17 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 5.5, y = 10.5, type = "TORCH"},
-		{x = 7.5, y = 10.5, type = "TORCH"},
-		{x = 1, y = 6.5, type = "TORCH"},
-		{x = 1, y = 4.5, type = "TORCH"},
-		{x = 12, y = 6.5, type = "TORCH"},
-		{x = 12, y = 4.5, type = "TORCH"},
+		{x = 5.5, y = 10, type = "TORCH"},
+		{x = 7.5, y = 10, type = "TORCH"},
+		{x = 1, y = 6, type = "TORCH"},
+		{x = 1, y = 4, type = "TORCH"},
+		{x = 12, y = 6, type = "TORCH"},
+		{x = 12, y = 4, type = "TORCH"},
 
-		{x = 3, y = 7.25, type = "TORCH"},
-		{x = 10, y = 7.25, type = "TORCH"},
-		{x = 3, y = 2.25, type = "TORCH"},
-		{x = 10, y = 2.25, type = "TORCH"},
+		{x = 3, y = 7, type = "TORCH"},
+		{x = 10, y = 7, type = "TORCH"},
+		{x = 3, y = 2, type = "TORCH"},
+		{x = 10, y = 2, type = "TORCH"},
 		{x = 6.5, y = 5.5, type = "HEALTH_POWERUP", chance = 0.2},
 	]
 
@@ -237,12 +237,12 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 2.5, y = 6.5, type = "TORCH"},
-		{x = 4.5, y = 6.5, type = "TORCH"},
-		{x = 1, y = 4.5, type = "TORCH"},
-		{x = 1, y = 2.5, type = "TORCH"},
-		{x = 6, y = 4.5, type = "TORCH"},
-		{x = 6, y = 2.5, type = "TORCH"},
+		{x = 2.5, y = 6, type = "TORCH"},
+		{x = 4.5, y = 6, type = "TORCH"},
+		{x = 1, y = 4, type = "TORCH"},
+		{x = 1, y = 2, type = "TORCH"},
+		{x = 6, y = 4, type = "TORCH"},
+		{x = 6, y = 2, type = "TORCH"},
 		# Furniture
 		{x = 5.5, y = 5.5, type = "CAGE"},
 		{x = 2, y = 5.5, type = "CAGE"},
@@ -276,12 +276,12 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 3.5, y = 8.5, type = "TORCH"},
-		{x = 5.5, y = 8.5, type = "TORCH"},
-		{x = 1, y = 5.5, type = "TORCH"},
-		{x = 1, y = 3.5, type = "TORCH"},
-		{x = 8, y = 5.5, type = "TORCH"},
-		{x = 8, y = 3.5, type = "TORCH"},
+		{x = 3.5, y = 8, type = "TORCH"},
+		{x = 5.5, y = 8, type = "TORCH"},
+		{x = 1, y = 5, type = "TORCH"},
+		{x = 1, y = 3, type = "TORCH"},
+		{x = 8, y = 5, type = "TORCH"},
+		{x = 8, y = 3, type = "TORCH"},
 		{x = 4.5, y = 4.5, type = "HEALTH_POWERUP", chance = 0.2},
 	]
 
@@ -310,14 +310,14 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 2.5, y = 4.5, type = "TORCH"},
-		{x = 4.5, y = 4.5, type = "TORCH"},
-		{x = 8.5, y = 4.5, type = "TORCH"},
-		{x = 10.5, y = 4.5, type = "TORCH"},
-		{x = 1, y = 3.5, type = "TORCH"},
-		{x = 1, y = 1.5, type = "TORCH"},
-		{x = 12, y = 3.5, type = "TORCH"},
-		{x = 12, y = 1.5, type = "TORCH"},
+		{x = 2.5, y = 4, type = "TORCH"},
+		{x = 4.5, y = 4, type = "TORCH"},
+		{x = 8.5, y = 4, type = "TORCH"},
+		{x = 10.5, y = 4, type = "TORCH"},
+		{x = 1, y = 3, type = "TORCH"},
+		{x = 1, y = 1, type = "TORCH"},
+		{x = 12, y = 3, type = "TORCH"},
+		{x = 12, y = 1, type = "TORCH"},
 		# Furnitures
 		{x = 2, y = 4.4, type = "PAINTING_1"},
 		{x = 6.5, y = 4.4, type = "PAINTING_2"},
@@ -357,16 +357,16 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 1, y = 2.5, type = "TORCH"},
-		{x = 1, y = 4.5, type = "TORCH"},
-		{x = 1, y = 8.5, type = "TORCH"},
-		{x = 1, y = 10.5, type = "TORCH"},
-		{x = 4, y = 2.5, type = "TORCH"},
-		{x = 4, y = 4.5, type = "TORCH"},
-		{x = 4, y = 8.5, type = "TORCH"},
-		{x = 4, y = 10.5, type = "TORCH"},
-		{x = 3.5, y = 12.5, type = "TORCH"},
-		{x = 1.5, y = 12.5, type = "TORCH"},
+		{x = 1, y = 2, type = "TORCH"},
+		{x = 1, y = 4, type = "TORCH"},
+		{x = 1, y = 8, type = "TORCH"},
+		{x = 1, y = 10, type = "TORCH"},
+		{x = 4, y = 2, type = "TORCH"},
+		{x = 4, y = 4, type = "TORCH"},
+		{x = 4, y = 8, type = "TORCH"},
+		{x = 4, y = 10, type = "TORCH"},
+		{x = 3.5, y = 12, type = "TORCH"},
+		{x = 1.5, y = 12, type = "TORCH"},
 	]
 
 [room.chest_room]
@@ -391,11 +391,11 @@
 	]
 	placeholders = [
 		# Torches
-		{x = 1.5, y = 4.5, type = "TORCH"},
-		{x = 3.5, y = 4.5, type = "TORCH"},
-		{x = 1, y = 3.5, type = "TORCH"},
-		{x = 1, y = 1.5, type = "TORCH"},
-		{x = 4, y = 3.5, type = "TORCH"},
-		{x = 4, y = 1.5, type = "TORCH"},
-		{x = 2.5, y = 2.5, type = "CHEST"},
+		{x = 1.5, y = 4, type = "TORCH"},
+		{x = 3.5, y = 4, type = "TORCH"},
+		{x = 1, y = 3, type = "TORCH"},
+		{x = 1, y = 1, type = "TORCH"},
+		{x = 4, y = 3, type = "TORCH"},
+		{x = 4, y = 1, type = "TORCH"},
+		{x = 2.5, y = 2, type = "CHEST"},
 	]

@@ -16,6 +16,9 @@ public class TorchFactory implements EntityFactory.EntityTypeFactory {
 
 	@Override
 	public Entity build(Vector2 origin) {
-		return new Entity(prototype, origin);
+		Entity entity = new Entity(prototype, origin);
+		// TODO Move this logic to toml files
+		entity.setZPos(24);
+		return entity;
 	}
 }

@@ -37,11 +37,6 @@ public class DoorFactory {
 
 	private Entity buildDoor(Vector2 origin, EntityPrototype closed, EntityPrototype opening) {
 		return new Entity(closed, origin) {
-			@Override public void onHit() {
-				Rand.doBetween(2, 5, () ->
-						GameState.entities.add(GameState.build(EntityType.WOOD_PARTICLE, getOrigin()))
-				);
-			}
 			@Override public void onSignal(Entity emitter) {
 				if (!expired) {
 					Entity openingDoor = new Entity(opening, getOrigin());

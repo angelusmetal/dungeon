@@ -280,9 +280,9 @@ public class ProceduralLevelGenerator {
 	private void addDoor(Frame frame, Room room) {
 		EntityType doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
 		// TODO replace Coords with Vector2...
-		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f, frame.originPoint.coords.y + 0.5f));
+		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f, frame.originPoint.coords.y));
 		room.placeholders.add(door);
-		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.coords.y + 0.5f + frame.roomSeparation * frame.direction.y));
+		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.coords.y + frame.roomSeparation * frame.direction.y));
 		room.placeholders.add(door);
 	}
 

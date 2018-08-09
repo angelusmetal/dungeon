@@ -16,7 +16,8 @@
     inherits = "furniture"
     animation = "prop_bookshelf"
     boundingBox = [48, 38]
-    drawOffset = [24, 24]
+    boundingBoxOffset = [24, 0]
+    drawOffset = [24, 5]
     health = 500
 
 #
@@ -37,14 +38,12 @@
     inherits = "furniture"
     animation = "prop_table_1"
     boundingBox = [42, 20]
-    drawOffset = [24, 24]
+    boundingBoxOffset = [21, 0]
+    drawOffset = [24, 12]
     health = 500
 [prototype.prop_table_2]
-    inherits = "furniture"
+    inherits = "prop_table_1"
     animation = "prop_table_2"
-    boundingBox = [42, 20]
-    drawOffset = [24, 24]
-    health = 500
 
 #
 # Cage

@@ -4,7 +4,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.state.GameState;
 
@@ -61,9 +63,13 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
+	private final float interactDistance = Util.length2(20f);
+	private final Vector2 interactArea = new Vector2(40f, 40f);
+
 	public void interact() {
 		if (!expired) {
-			GameState.entities.radius(getAim().cpy().setLength2(400f).add(getOrigin()), 20f).forEach(e -> e.onSignal(this));
+			Body area = Body.centered(getAim().cpy().setLength2(interactDistance).add(getOrigin()), interactArea);
+			GameState.entities.area(area).forEach(e -> e.onSignal(this));
 		}
 	}
 

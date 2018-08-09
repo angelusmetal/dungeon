@@ -10,3 +10,4 @@
 	drawOffset = [16, 16]
     light = ["80", "ffb232", "NORMAL", "torchlight"]
     solid = false
+    z = 24
