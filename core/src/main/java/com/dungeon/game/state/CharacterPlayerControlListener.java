@@ -56,7 +56,10 @@ public class CharacterPlayerControlListener implements PlayerControlBundle.Liste
 
 	@Override
 	public void trigger2() {
-		trigger1();
+		PlayerEntity character = control.getEntity();
+		if (character != null) {
+			character.interact();
+		}
 	}
 
 	@Override

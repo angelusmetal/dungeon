@@ -14,5 +14,5 @@
     animation = "chest_closed"
     boundingBox = [22, 6]
 	drawOffset = [24, 12]
-    health = 50
+    canBeHurt = false
 

@@ -555,4 +555,5 @@ public class Entity implements Drawable, Movable {
 		return zIndex;
 	}
 
+	public void onSignal(Entity emitter) {}
 }

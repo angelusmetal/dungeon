@@ -42,14 +42,13 @@ public class DoorFactory {
 						GameState.entities.add(GameState.build(EntityType.WOOD_PARTICLE, getOrigin()))
 				);
 			}
-			@Override public void onExpire() {
-				Entity openingDoor = new Entity(opening, getOrigin());
-				GameState.entities.add(openingDoor);
+			@Override public void onSignal(Entity emitter) {
+				if (!expired) {
+					Entity openingDoor = new Entity(opening, getOrigin());
+					GameState.entities.add(openingDoor);
+					expire();
+				}
 			}
-// TODO Re-enable this once we can interact some other way with the props
-//			@Override public boolean canBeHurt() {
-//				return false;
-//			}
 		};
 	}
 }

@@ -61,6 +61,12 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
+	public void interact() {
+		if (!expired) {
+			GameState.entities.radius(getAim().cpy().setLength2(400f).add(getOrigin()), 20f).forEach(e -> e.onSignal(this));
+		}
+	}
+
 	abstract protected Animation<TextureRegion> getAttackAnimation();
 	abstract protected Animation<TextureRegion> getIdleAnimation();
 	abstract protected Animation<TextureRegion> getWalkAnimation();

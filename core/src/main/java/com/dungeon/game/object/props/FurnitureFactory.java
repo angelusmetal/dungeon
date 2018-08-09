@@ -136,11 +136,8 @@ public class FurnitureFactory {
 
 	public Entity buildChest(Vector2 origin) {
 		return new Entity(chestPrototype, origin) {
-			@Override public void onHit() {
-				Rand.doBetween(1, 2, () ->
-						GameState.entities.add(GameState.build(EntityType.WOOD_PARTICLE, getOrigin()))
-				);
-				if (health < 1) {
+			@Override public void onSignal(Entity emitter) {
+				if (health != 1) {
 					health = 1;
 					canBeHit = false;
 					setCurrentAnimation(Resources.animations.get("chest_opening"));
