@@ -64,6 +64,9 @@ project(":core") {
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
+        testCompile "junit:junit:4.12"
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+
     }
 }
 
