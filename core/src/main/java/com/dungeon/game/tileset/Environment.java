@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.entity.EntityType;
 
-import java.util.function.Supplier;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class Environment {
 	private final Tileset tileset;

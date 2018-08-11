@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.state.GameState;
 
 // TODO Remove this and move this logic to toml files
 public abstract class CreatureEntity extends Entity implements Movable, Drawable {

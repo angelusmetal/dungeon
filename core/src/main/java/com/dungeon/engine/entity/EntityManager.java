@@ -3,7 +3,6 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.util.Util;
-import com.dungeon.game.state.GameState;
 
 import java.util.ArrayList;
 import java.util.Iterator;

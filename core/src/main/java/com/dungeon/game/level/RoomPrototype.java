@@ -2,12 +2,8 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.level.entity.EntityPlaceholder;
-import com.dungeon.game.level.entity.EntityType;
-import com.moandjiezana.toml.Toml;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RoomPrototype {
 	private final TileType[][] tiles;

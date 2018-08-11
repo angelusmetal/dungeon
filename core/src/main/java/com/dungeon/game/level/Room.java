@@ -1,7 +1,6 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 
 import java.util.ArrayList;

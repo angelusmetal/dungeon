@@ -3,8 +3,6 @@ package com.dungeon.game.object.props;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.util.Rand;
-import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
