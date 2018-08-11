@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
+import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
-public class GhostFactory implements NewEntityTypeFactory {
+public class GhostFactory implements EntityTypeFactory {
 
 	private static final String HOVER = "ghost_hover";
 

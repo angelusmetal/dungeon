@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewEntityFactory {
+public class EntityFactory {
 	private final Map<String, Integer> ordinals = new HashMap<>();
-	private final List<NewEntityTypeFactory> factories = new ArrayList<>();
+	private final List<EntityTypeFactory> factories = new ArrayList<>();
 
-	public int registerFactory(String type, NewEntityTypeFactory factory) {
+	public int registerFactory(String type, EntityTypeFactory factory) {
 		int ordinal = factories.size();
 		Integer duplicate = ordinals.put(type, ordinal);
 		// TODO Reenable when migration is done!
@@ -34,7 +34,7 @@ public class NewEntityFactory {
 		return getFactory(type).build(origin);
 	}
 
-	public NewEntityTypeFactory getFactory(String type) {
+	public EntityTypeFactory getFactory(String type) {
 		Integer ordinal = ordinals.get(type);
 		if (ordinal == null) {
 			throw new RuntimeException("No factory registered for entity type " + type);

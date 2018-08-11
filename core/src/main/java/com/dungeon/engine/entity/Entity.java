@@ -67,6 +67,9 @@ public class Entity implements Drawable, Movable {
 
 	/** Aspects */
 	protected List<Trait<Entity>> traits;
+	protected List<Trait<Entity>> onHitTraits;
+	protected List<Trait<Entity>> onExpireTraits;
+	protected List<Trait<Entity>> onRestTraits;
 
 	/** Determines whether an entity can be hit */
 	protected final Predicate<Entity> hitPredicate;
@@ -120,6 +123,9 @@ public class Entity implements Drawable, Movable {
 		if (timeToLive != null) {
 			traits.add(Traits.expireByTime().get(this));
 		}
+		this.onHitTraits = prototype.onHitTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
+		this.onExpireTraits = prototype.onExpireTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
+		this.onRestTraits = prototype.onRestTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.maxHealth = prototype.health.get();
 		this.health = maxHealth;
 		this.solid = prototype.solid;
@@ -150,6 +156,9 @@ public class Entity implements Drawable, Movable {
 		this.zIndex = other.zIndex;
 		this.expirationTime = other.expirationTime;
 		this.traits = other.traits;
+		this.onHitTraits = other.onHitTraits;
+		this.onExpireTraits = other.onExpireTraits;
+		this.onRestTraits = other.onRestTraits;
 		this.maxHealth = other.getMaxHealth();
 		this.health = other.health;
 		this.solid = other.solid;
@@ -395,6 +404,7 @@ public class Entity implements Drawable, Movable {
 					zSpeed *= -bounciness;
 				} else {
 					zSpeed = 0;
+					onRestTraits.forEach(m -> m.accept(this));
 					onGroundRest();
 				}
 			}
@@ -474,6 +484,7 @@ public class Entity implements Drawable, Movable {
 	public void hit(Attack attack) {
 		if (canBeHurt()) {
 			health -= attack.getDamage();
+			onHitTraits.forEach(m -> m.accept(this));
 			onHit();
 			if (attack.getDamage() > 1) {
 				GameState.addOverlayText(new OverlayText(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
@@ -518,6 +529,7 @@ public class Entity implements Drawable, Movable {
 	public void expire() {
 		if (!expired) {
 			expired = true;
+			onExpireTraits.forEach(m -> m.accept(this));
 			onExpire();
 		}
 	}

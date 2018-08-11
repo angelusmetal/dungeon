@@ -3,93 +3,122 @@
 #
 
 # Wood chips
-[animation.wood_particle_1]
+[animation.particle_wood_1]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [0]
-[animation.wood_particle_2]
+[animation.particle_wood_2]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [1]
-[animation.wood_particle_3]
+[animation.particle_wood_3]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [2]
-[animation.wood_particle_4]
+[animation.particle_wood_4]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [3]
-[animation.wood_particle_5]
+[animation.particle_wood_5]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [4]
-[animation.wood_particle_6]
+[animation.particle_wood_6]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [5]
-[animation.wood_particle_7]
+[animation.particle_wood_7]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [6]
-[animation.wood_particle_8]
+[animation.particle_wood_8]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [7]
+[prototype.particle_wood]
+    animation = ["particle_wood_1", "particle_wood_2", "particle_wood_3", "particle_wood_4", "particle_wood_5", "particle_wood_6", "particle_wood_7", "particle_wood_8"]
+    boundingBox = [1, 1]
+    drawOffset = [4, 4]
+    timeToLive = 4
+    fadeOut = 1
+    zAccel = -200
+    bounciness = 0.1
+    onRest = "stop"
 
 # Stone chips
-[animation.stone_particle_1]
+[animation.particle_stone_1]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [8]
-[animation.stone_particle_2]
+[animation.particle_stone_2]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [9]
-[animation.stone_particle_3]
+[animation.particle_stone_3]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [10]
-[animation.stone_particle_4]
+[animation.particle_stone_4]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [11]
-[animation.stone_particle_5]
+[animation.particle_stone_5]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [12]
-[animation.stone_particle_6]
+[animation.particle_stone_6]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [13]
-[animation.stone_particle_7]
+[animation.particle_stone_7]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [14]
-[animation.stone_particle_8]
+[animation.particle_stone_8]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 1.0
     sequence = [15]
-[animation.leave_particle]
+[prototype.particle_stone]
+    animation = ["particle_stone_1", "particle_stone_2", "particle_stone_3", "particle_stone_4", "particle_stone_5", "particle_stone_6", "particle_stone_7", "particle_stone_8"]
+    boundingBox = [1, 1]
+    drawOffset = [4, 4]
+    timeToLive = 4
+    fadeOut = 1
+    zAccel = -200
+    bounciness = 0.1
+    onRest = "stop"
+
+[animation.particle_leave]
     texture = "particles.png"
     tilesize = 8
     frameDuration = 0.05
     loop = [48, 48, 48, 49, 50, 51, 52, 53, 54, 55, 56, 56, 56, 55, 54, 53, 52, 51, 50, 49]
+[prototype.particle_leave]
+    animation = "particle_leave"
+    boundingBox = [1, 1]
+    drawOffset = [4, 4]
+    timeToLive = 3
+    fadeOut = 1
+    zAccel = -50
+    hOscillate = [0.5, 20.0]
+    onRest = "expire"
+
 
 # Droplets
 [animation.droplet_start]

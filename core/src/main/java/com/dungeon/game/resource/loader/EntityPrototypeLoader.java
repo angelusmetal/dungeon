@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
@@ -43,15 +44,37 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	public ResourceDescriptor scan(String key, Toml toml) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
 		ConfigUtil.getString(toml, "inherits").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
-		ConfigUtil.getString(toml, "animation").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("animation", dependency)));
+		Optional<String> animation = ConfigUtil.getString(toml, "animation");
+		if (animation.isPresent()) {
+			dependencies.add(new ResourceIdentifier("animation", animation.get()));
+		} else {
+			ConfigUtil.<String>getList(toml, "animation").ifPresent(animations -> animations.forEach(anim -> dependencies.add(new ResourceIdentifier("animation", anim))));
+		}
+		getGeneratorDeps(toml, dependencies, "generate");
+		getGeneratorDeps(toml, dependencies, "generateOnHit");
+		getGeneratorDeps(toml, dependencies, "generateOnExpire");
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, dependencies);
+	}
+
+	private void getGeneratorDeps(Toml toml, List<ResourceIdentifier> dependencies, String key) {
+		Toml generate = toml.getTable(key);
+		if (generate != null) {
+			ConfigUtil.getString(generate, "prototype").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
+		}
 	}
 
 	@Override
 	public EntityPrototype read(Toml descriptor) {
 		Optional<String> ancestor = ConfigUtil.getString(descriptor, "inherits");
 		EntityPrototype prototype = ancestor.map(s -> new EntityPrototype(Resources.prototypes.get(s))).orElseGet(EntityPrototype::new);
-		ConfigUtil.getString(descriptor, "animation").ifPresent(a -> prototype.animation(Resources.animations.get(a)));
+
+		Optional<String> animation = ConfigUtil.getString(descriptor, "animation");
+		if (animation.isPresent()) {
+			prototype.animation(Resources.animations.get(animation.get()));
+		} else {
+			// If there are multiple animations, pick one at random
+			ConfigUtil.<String>getList(descriptor, "animation").ifPresent(animations -> prototype.animation(() -> Resources.animations.get(Rand.pick(animations))));
+		}
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
 		ConfigUtil.getVector2(descriptor, "boundingBoxOffset").ifPresent(prototype::boundingBoxOffset);
@@ -59,6 +82,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
 		getDrawFunction(descriptor, "drawFunction").ifPresent(prototype::drawFunction);
 		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);
+		ConfigUtil.getString(descriptor, "onRest").map(EntityPrototypeLoader::getOnRest).ifPresent(prototype::onRest);
 		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
 		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
@@ -83,8 +107,19 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 			prototype.canBeHurt(value);
 		});
 		ConfigUtil.getBoolean(descriptor, "canBeHurt").ifPresent(prototype::canBeHurt);
-		getGenerator(descriptor, "generate").ifPresent(prototype::with);
+		getContinuousGenerator(descriptor, "generate").ifPresent(prototype::with);
+		getInstantGenerator(descriptor, "generateOnHit").ifPresent(prototype::onHit);
+		getInstantGenerator(descriptor, "generateOnExpire").ifPresent(prototype::onExpire);
 		return prototype;
+	}
+
+	private static <T extends Entity> TraitSupplier<T> getOnRest(String onRest) {
+		if ("expire".equals(onRest)) {
+			return (e) -> Entity::expire;
+		} else if ("stop".equals(onRest)) {
+			return (e) -> Entity::stop;
+		}
+		throw new RuntimeException("Unknown onRest type '" + onRest + "'");
 	}
 
 	private static Optional<Light> getLight(Toml toml, String key) {
@@ -106,29 +141,55 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		}
 	}
 
-	private static <T extends Entity> Optional<TraitSupplier<T>> getGenerator(Toml toml, String key) {
+	/**
+	 * A generator that continuously generates particles, in the specified frequency
+	 */
+	private static <T extends Entity> Optional<TraitSupplier<T>> getContinuousGenerator(Toml toml, String key) {
 		Toml table = toml.getTable(key);
 		if (table != null) {
-			float frequence = ConfigUtil.getFloat(table, "frequence").orElseThrow(() -> new RuntimeException("Missing frequence parameter"));
-			String prototype = ConfigUtil.getString(table, "prototype").orElseThrow(() -> new RuntimeException("Missing prototype parameter"));
-			Optional<Vector2> x = ConfigUtil.getVector2(table, "x");
-			Optional<Vector2> y = ConfigUtil.getVector2(table, "y");
-			Optional<Vector2> z = ConfigUtil.getVector2(table, "z");
-			Optional<Vector2> impulseX = ConfigUtil.getVector2(table, "impulseX");
-			Optional<Vector2> impulseY = ConfigUtil.getVector2(table, "impulseY");
-			List<Consumer<Entity>> traits = new ArrayList<>();
-			x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += Rand.between(v.x, v.y)));
-			y.ifPresent(v -> traits.add(particle -> particle.getOrigin().y += Rand.between(v.x, v.y)));
-			z.ifPresent(v -> traits.add(particle -> particle.setZPos(particle.getZPos() + Rand.between(v.x, v.y))));
-			impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(Rand.between(v.x, v.y), 0)));
-			impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, Rand.between(v.x, v.y))));
-			return Optional.of(Traits.generator(frequence, (gen) -> {
-				Entity particle = new Entity(Resources.prototypes.get(prototype), gen.getOrigin());
-				traits.forEach(trait -> trait.accept(particle));
-				return particle;
-			}));
+			float frequency = ConfigUtil.getFloat(table, "frequency").orElseThrow(() -> new RuntimeException("Missing frequency parameter"));
+			Function<Vector2, Entity> generator = getParticleGenerator(table);
+			return Optional.of(Traits.generator(frequency, gen -> generator.apply(gen.getOrigin())));
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * A generator that generates particles once, with the (optionally) specified particle count
+	 */
+	private static <T extends Entity> Optional<TraitSupplier<T>> getInstantGenerator(Toml toml, String key) {
+		Toml table = toml.getTable(key);
+		if (table != null) {
+			Vector2 count = ConfigUtil.getVector2(table, "count").orElse(new Vector2(1, 1));
+			Function<Vector2, Entity> generator = getParticleGenerator(table);
+			return Optional.of(Traits.generatorMultiple((int)count.x, (int)count.y, gen -> generator.apply(gen.getOrigin())));
+		}
+		return Optional.empty();
+	}
+
+	private static Function<Vector2, Entity> getParticleGenerator(Toml table) {
+		String prototype = ConfigUtil.getString(table, "prototype").orElseThrow(() -> new RuntimeException("Missing prototype parameter"));
+		Optional<Vector2> x = ConfigUtil.getVector2(table, "x");
+		Optional<Vector2> y = ConfigUtil.getVector2(table, "y");
+		Optional<Vector2> z = ConfigUtil.getVector2(table, "z");
+		Optional<Vector2> impulseX = ConfigUtil.getVector2(table, "impulseX");
+		Optional<Vector2> impulseY = ConfigUtil.getVector2(table, "impulseY");
+		Optional<Vector2> impulseZ = ConfigUtil.getVector2(table, "impulseZ");
+		// List of initialization steps (like offset & impulse)
+		List<Consumer<Entity>> traits = new ArrayList<>();
+		x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += Rand.between(v.x, v.y)));
+		y.ifPresent(v -> traits.add(particle -> particle.getOrigin().y += Rand.between(v.x, v.y)));
+		z.ifPresent(v -> traits.add(particle -> particle.setZPos(particle.getZPos() + Rand.between(v.x, v.y))));
+		impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(Rand.between(v.x, v.y), 0)));
+		impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, Rand.between(v.x, v.y))));
+		impulseZ.ifPresent(v -> traits.add(particle -> particle.setZSpeed(Rand.between(v.x, v.y))));
+		EntityPrototype proto = Resources.prototypes.get(prototype);
+		return origin -> {
+			Entity particle = new Entity(proto, origin);
+			// Run initialization steps
+			traits.forEach(trait -> trait.accept(particle));
+			return particle;
+		};
 	}
 
 	private static Texture getLightTexture(String name) {

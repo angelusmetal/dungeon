@@ -22,9 +22,7 @@
     width = 40
     height = 40
     growth = 10
-    #creatures = ["SLIME_FIRE"]
-    creatures = ["GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE"]
-    items = ["WEAPON_SWORD", "WEAPON_CAT_STAFF", "WEAPON_GREEN_STAFF"]
+    items = ["weapon_sword", "weapon_cat_staff", "weapon_green_staff"]
     itemchance = 1.0
 [rendering]
     noiseHidth = 128
@@ -32,23 +30,6 @@
     noiseGrit = 0.2
     blurOpacity = 0.2
     blurDuration = 4.0
-
-# Characters
-[[creatures]]
-    id = "ASSASSIN"
-    health = 100
-    speed = 60
-    friction = 10
-[[creatures]]
-    id = "THIEF"
-    health = 100
-    speed = 96
-    friction = 10
-[[creatures]]
-    id = "WITCH"
-    health = 100
-    speed = 60
-    friction = 10
 
 # Creatures
 [[creatures]]

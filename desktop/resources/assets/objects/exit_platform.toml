@@ -27,7 +27,7 @@
     zIndex = -1
     light = ["300", "0000ff", "RAYS", "torchlight", "rotateSlow"]
     solid = false
-	generate = {frequence = 0.1, prototype = "smoke", impulseX = [-30, 30], impulseY = [-30, 30]}
+	generate = {frequency = 0.1, prototype = "smoke", impulseX = [-30, 30], impulseY = [-30, 30]}
 
 
 

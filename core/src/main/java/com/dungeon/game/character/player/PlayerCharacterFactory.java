@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
-import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
+import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
@@ -23,9 +23,9 @@ public class PlayerCharacterFactory {
 	private static final String WITCH_ATTACK = "witch_attack";
 	private static final String WITCH_IDLE = "witch_idle";
 
-	public final NewEntityTypeFactory assassin;
-	public final NewEntityTypeFactory thief;
-	public final NewEntityTypeFactory witch;
+	public final EntityTypeFactory assassin;
+	public final EntityTypeFactory thief;
+	public final EntityTypeFactory witch;
 
 	public PlayerCharacterFactory() {
 		assassin = factory(ASSASSIN_IDLE, ASSASSIN_WALK, ASSASSIN_ATTACK, "player_assassin");
@@ -33,7 +33,7 @@ public class PlayerCharacterFactory {
 		witch = factory(WITCH_IDLE, WITCH_WALK, WITCH_ATTACK, "player_witch");
 	}
 
-	private NewEntityTypeFactory factory(String idle, String walk, String attack, String prototype) {
+	private EntityTypeFactory factory(String idle, String walk, String attack, String prototype) {
 		final Animation<TextureRegion> idleAnimation = Resources.animations.get(idle);
 		final Animation<TextureRegion> walkAnimation = Resources.animations.get(walk);
 		final Animation<TextureRegion> attackAnimation = Resources.animations.get(attack);

@@ -1,7 +1,14 @@
 [prototype.furniture]
     solid = true
     castsShadow = true
+    generateOnHit = {count = [2, 4], prototype = "particle_wood", x = [-8, 8], z = [8, 16], impulseX = [-50, 50], impulseY = [-20, 0], impulseZ = [50, 100]}
+    generateOnExpire = {count = [4, 8], prototype = "particle_wood", x = [-8, 8], z = [8, 16], impulseX = [-50, 50], impulseY = [-20, 0], impulseZ = [50, 100]}
 
+[prototype.stone_furniture]
+    solid = true
+    castsShadow = true
+    generateOnHit = {count = [2, 4], prototype = "particle_stone", x = [-8, 8], z = [8, 16], impulseX = [-50, 50], impulseY = [-20, 0], impulseZ = [50, 100]}
+    generateOnExpire = {count = [4, 8], prototype = "particle_stone", x = [-8, 8], z = [8, 16], impulseX = [-50, 50], impulseY = [-20, 0], impulseZ = [50, 100]}
 
 #
 # Bookcase
@@ -55,7 +62,7 @@
     loop = [3]
 
 [prototype.prop_cage]
-    inherits = "furniture"
+    inherits = "stone_furniture"
     animation = "prop_cage"
     boundingBox = [20, 36]
     drawOffset = [24, 24]

@@ -20,8 +20,8 @@
     boundingBox = [10, 10]
     drawOffset = [10, 10]
 	light = ["192", "ff1932", "RAYS", "oscillate", "rotateFast"]
-	zOscillate = [3, 8]
-	generate = {frequence = 0.05, prototype = "particle_health_spec", x = [-8, 8], z = [2, 10], impulseX = [-10, 10]}
+	zOscillate = [0.5, 8.0]
+	generate = {frequency = 0.05, prototype = "particle_health_spec", x = [-8, 8], z = [2, 10], impulseX = [-10, 10]}
     castsShadow = true
 [prototype.health_powerup_fade]
     inherits = "health_powerup"

@@ -60,7 +60,7 @@ public class AcidSlime extends CreatureEntity {
 			if (status == Status.ATTACKING) {
 				if (getOrigin().dst2(lastPool) > factory.poolSeparation) {
 					lastPool.set(getOrigin());
-					GameState.entities.add(factory.createPool(this));
+					GameState.entities.add(factory.pool.build(getOrigin()));
 				}
 				if (GameState.time() >= nextThink - 2) {
 					updateCurrentAnimation(factory.idleAnimation);
@@ -71,18 +71,7 @@ public class AcidSlime extends CreatureEntity {
 
 	@Override
 	protected void onExpire() {
-		// Create a death splatter and a pool
-		GameState.entities.add(factory.createDeath(this));
-		GameState.entities.add(factory.createPool(this));
-		// Create a bunch of blobs
-		int splats = Rand.between(8, 16);
-		for (int i = 0; i < splats; ++i) {
-			GameState.entities.add(factory.createBlob(this));
-		}
-		// Create loot
-		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.entities.add(GameState.build(EntityType.COIN, getOrigin())));
-		}
+		GameState.createCreatureLoot(getOrigin());
 	}
 
 	@Override
@@ -94,11 +83,6 @@ public class AcidSlime extends CreatureEntity {
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	protected void onHit() {
-		GameState.entities.add(factory.createBlob(this));
 	}
 
 }

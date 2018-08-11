@@ -64,9 +64,7 @@ public class FireSlime extends CreatureEntity {
 			aim.rotate(360 / bullets);
 		}
 		// Create loot
-		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.entities.add(GameState.build(EntityType.COIN, getOrigin())));
-		}
+		GameState.createCreatureLoot(getOrigin());
 	}
 
 	@Override

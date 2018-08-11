@@ -5,29 +5,26 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
+import com.dungeon.engine.entity.PlayerEntity;
+import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.util.ConfigUtil;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.character.slime.SlimeFactory;
+import com.dungeon.game.combat.Attack;
+import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
-public class AcidSlimeFactory implements NewEntityTypeFactory {
+public class AcidSlimeFactory implements EntityTypeFactory {
 
 	private static final String IDLE = "slime_acid_idle";
 	private static final String ATTACK = "slime_acid_attack";
 
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> attackAnimation;
-	final Animation<TextureRegion> poolDryAnimation;
 
 	final EntityPrototype character;
-	final EntityPrototype death;
-	final EntityPrototype pool;
-	final EntityPrototype blob;
-	final EntityPrototype splat;
 
 	final float maxTargetDistance;
 	final float dashDistance;
@@ -35,6 +32,8 @@ public class AcidSlimeFactory implements NewEntityTypeFactory {
 	final float poolDamage;
 	final float attackFrequency;
 	final float damagePerSecond;
+
+	public final EntityTypeFactory pool;
 
 	public AcidSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(GameState.getConfiguration(), "creatures", "id").get("SLIME_ACID");
@@ -48,50 +47,34 @@ public class AcidSlimeFactory implements NewEntityTypeFactory {
 		// Character animations
 		idleAnimation = Resources.animations.get(IDLE);
 		attackAnimation = Resources.animations.get(ATTACK);
-		// Pool animations
-		poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
 
 		character = Resources.prototypes.get("creature_slime_acid");
-		death = Resources.prototypes.get("creature_slime_acid_death");
-		pool = Resources.prototypes.get("creature_slime_acid_pool");
-		blob = Resources.prototypes.get("creature_slime_acid_blob");
-		//.zSpeed(() -> Rand.between(50f, 100f))
-		splat = Resources.prototypes.get("creature_slime_acid_splat");
+
+		final Animation<TextureRegion> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
+		final EntityPrototype pool = Resources.prototypes.get("creature_slime_acid_pool");
+
+		this.pool = origin -> new Entity(pool, origin) {
+			@Override public void think() {
+				if (GameState.time() > expirationTime - 0.5f && getCurrentAnimation().getAnimation() != poolDryAnimation) {
+					setCurrentAnimation(poolDryAnimation);
+				}
+			}
+
+			@Override protected boolean onEntityCollision(Entity entity) {
+				if (entity instanceof PlayerEntity) {
+					Attack attack = new Attack(this, damagePerSecond * GameState.frameTime(), DamageType.ELEMENTAL, 0);
+					entity.hit(attack);
+					return true;
+				} else {
+					return false;
+				}
+			}
+		};
 	}
 
 	@Override
 	public Entity build(Vector2 origin) {
 		return new AcidSlime(origin, this);
-	}
-
-	Entity createDeath(Entity dying) {
-		Entity entity = new Entity(death, dying.getOrigin());
-		entity.setZPos(dying.getZPos());
-		entity.setColor(dying.getColor());
-		return entity;
-	}
-
-	Entity createPool(Entity dying) {
-		Entity entity = new AcidPool(dying.getOrigin(), this);
-		entity.setZPos(dying.getZPos());
-		return entity;
-	}
-
-	Entity createBlob(Entity dying) {
-		Entity entity = new Entity(blob, dying.getOrigin()) {
-			@Override
-			protected void onExpire() {
-				Entity splatEntity = new Entity(splat, getOrigin());
-				GameState.entities.add(splatEntity);
-			}
-			@Override
-			protected void onGroundRest() {
-				expire();
-			}
-		};
-		entity.setZPos(8);
-		entity.impulse(Rand.between(-50f, 50f), Rand.between(-10f, 10f));
-		return entity;
 	}
 
 }

@@ -1,4 +1,4 @@
-# Fire slime
+# Fire pool
 [animation.slime_fire_idle]
 	texture = "fire_slime.png"
 	tilesize = 32

@@ -62,9 +62,7 @@ public class Ghost extends CreatureEntity {
 	public void onExpire() {
 		GameState.entities.add(factory.createDeath(getOrigin(), invertX())) ;
 		// Create loot
-		if (Rand.chance(0.5f)) {
-			Rand.doBetween(1, 3, () -> GameState.entities.add(GameState.build(EntityType.COIN, getOrigin())));
-		}
+		GameState.createCreatureLoot(getOrigin());
 	}
 
 }

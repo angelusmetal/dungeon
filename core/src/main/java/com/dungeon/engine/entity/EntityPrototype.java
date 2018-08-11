@@ -21,6 +21,9 @@ public class EntityPrototype {
 	Supplier<Float> friction = () -> 0f;
 	Light light = null;
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
+	List<TraitSupplier<Entity>> onHitTraits = new ArrayList<>();
+	List<TraitSupplier<Entity>> onExpireTraits = new ArrayList<>();
+	List<TraitSupplier<Entity>> onRestTraits = new ArrayList<>();
 	Supplier<Float> speed = () -> 1f;
 	Supplier<Float> zSpeed = () -> 0f;
 	int zIndex = 0;
@@ -48,6 +51,9 @@ public class EntityPrototype {
 		this.friction = other.friction;
 		this.light = other.light;
 		this.traits = new ArrayList<>(other.traits);
+		this.onHitTraits = new ArrayList<>(other.onHitTraits);
+		this.onExpireTraits = new ArrayList<>(other.onExpireTraits);
+		this.onRestTraits = new ArrayList<>(other.onRestTraits);
 		this.speed = other.speed;
 		this.zSpeed = other.zSpeed;
 		this.zIndex = other.zIndex;
@@ -212,6 +218,21 @@ public class EntityPrototype {
 
 	public EntityPrototype canBeHurt(boolean canBeHurt) {
 		this.canBeHurt = canBeHurt;
+		return this;
+	}
+
+	public EntityPrototype onHit(TraitSupplier<Entity> trait) {
+		this.onHitTraits.add(trait);
+		return this;
+	}
+
+	public EntityPrototype onExpire(TraitSupplier<Entity> trait) {
+		this.onExpireTraits.add(trait);
+		return this;
+	}
+
+	public EntityPrototype onRest(TraitSupplier<Entity> trait) {
+		this.onRestTraits.add(trait);
 		return this;
 	}
 

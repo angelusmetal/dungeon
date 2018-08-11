@@ -1,13 +1,16 @@
+
 #
 # Bushes
 #
 [prototype.bush]
-    inherits = "furniture"
     boundingBox = [22, 22]
     drawOffset = [24, 23]
     health = 200
+    solid = true
+    generateOnHit = {count = [1, 2], prototype = "particle_leave", x = [-8, 8], z = [8, 16], impulseX = [-5, 5], impulseY = [-5, 0], impulseZ = [25, 50]}
+    generateOnExpire = {count = [4, 8], prototype = "particle_leave", x = [-8, 8], z = [8, 16], impulseX = [-5, 5], impulseY = [-5, 0], impulseZ = [25, 50]}
 [prototype.bush_small]
-    inherits = "furniture"
+    inherits = "bush"
     boundingBox = [12, 12]
     drawOffset = [24, 24]
     health = 100
@@ -116,6 +119,12 @@
 # Grass
 #
 
+[prototype.grass]
+    solid = false
+    canBeHit = true
+    generateOnHit = {count = [1, 2], prototype = "particle_leave", x = [-8, 8], z = [2, 4], impulseX = [-5, 5], impulseY = [-5, 0], impulseZ = [25, 50]}
+    generateOnExpire = {count = [2, 3], prototype = "particle_leave", x = [-8, 8], z = [2, 4], impulseX = [-5, 5], impulseY = [-5, 0], impulseZ = [25, 50]}
+
 # Grass 1
 [animation.prop_grass_1]
     texture = "grass.png"
@@ -123,12 +132,11 @@
     frameDuration = 0.5
     loop = [0, 1, 2, 1]
 [prototype.prop_grass_1]
+    inherits = "grass"
     animation = "prop_grass_1"
     boundingBox = [16, 18]
     drawOffset = [12, 10]
     health = 1
-    solid = false
-    canBeHit = true
 
 # Grass 2
 [animation.prop_grass_2]
@@ -137,12 +145,11 @@
     frameDuration = 0.8
     loop = [3, 4]
 [prototype.prop_grass_2]
+    inherits = "grass"
     animation = "prop_grass_2"
     boundingBox = [5, 4]
     drawOffset = [12, 3]
     health = 1
-    solid = false
-    canBeHit = true
 
 # Grass 3
 [animation.prop_grass_3]
@@ -151,12 +158,11 @@
     frameDuration = 0.8
     loop = [5, 6, 7, 6]
 [prototype.prop_grass_3]
+    inherits = "grass"
     animation = "prop_grass_3"
     boundingBox = [6, 6]
     drawOffset = [12, 4]
     health = 1
-    solid = false
-    canBeHit = true
 
 # Flower 1
 [animation.prop_flower_1]
@@ -165,9 +171,8 @@
     frameDuration = 0.5
     loop = [8, 8, 9, 10, 10, 9]
 [prototype.prop_flower_1]
+    inherits = "grass"
     animation = "prop_flower_1"
     boundingBox = [10, 16]
     drawOffset = [12, 15]
     health = 1
-    solid = false
-    canBeHit = true
