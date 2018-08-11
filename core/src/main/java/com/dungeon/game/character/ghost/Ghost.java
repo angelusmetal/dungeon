@@ -6,11 +6,9 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.util.ClosestEntity;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
-import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.state.GameState;
 
 public class Ghost extends CreatureEntity {

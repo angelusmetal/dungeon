@@ -3,9 +3,9 @@ package com.dungeon.engine.entity.factory;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EntityFactory {

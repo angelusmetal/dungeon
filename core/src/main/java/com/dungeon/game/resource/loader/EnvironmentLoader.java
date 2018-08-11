@@ -7,7 +7,6 @@ import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.RoomPrototype;
-import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;

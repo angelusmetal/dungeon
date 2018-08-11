@@ -9,7 +9,6 @@ import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
-import com.dungeon.game.level.entity.EntityType;
 import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;

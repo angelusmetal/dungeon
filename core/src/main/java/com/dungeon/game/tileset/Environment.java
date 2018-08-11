@@ -2,7 +2,6 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.Color;
 import com.dungeon.game.level.RoomPrototype;
-import com.dungeon.game.level.entity.EntityType;
 
 import java.util.List;
 import java.util.function.Supplier;
