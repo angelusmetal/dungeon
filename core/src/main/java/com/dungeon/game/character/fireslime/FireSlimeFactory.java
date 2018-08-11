@@ -5,16 +5,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.FireballWeapon;
 import com.dungeon.game.combat.Weapon;
-import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
-public class FireSlimeFactory implements EntityFactory.EntityTypeFactory {
+public class FireSlimeFactory implements NewEntityTypeFactory {
 
 	private static final String IDLE = "slime_fire_idle";
 

@@ -5,12 +5,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
+import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 
-public class HealthPowerupFactory implements EntityFactory.EntityTypeFactory {
+public class HealthPowerupFactory implements NewEntityTypeFactory {
 
 	private final EntityPrototype powerupPrototype;
 	private final EntityPrototype specPrototype;

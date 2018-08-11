@@ -3,10 +3,10 @@ package com.dungeon.game.object.torch;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.game.level.entity.EntityFactory;
+import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
 import com.dungeon.game.resource.Resources;
 
-public class TorchFactory implements EntityFactory.EntityTypeFactory {
+public class TorchFactory implements NewEntityTypeFactory {
 
 	private final EntityPrototype prototype;
 

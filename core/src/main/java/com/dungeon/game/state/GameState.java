@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityManager;
+import com.dungeon.engine.entity.factory.NewEntityFactory;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.Rand;
@@ -20,7 +21,6 @@ import com.dungeon.game.character.witch.WitchFactory;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
-import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.exit.ExitPlatformFactory;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 public class GameState {
 
@@ -53,7 +52,7 @@ public class GameState {
 	private static final int BASE_MAP_HEIGHT = 40;
 	public static final List<String> DEFAULT_ITEM_TYPES = Arrays.asList("HEALTH_POWERUP", "WEAPON_SWORD", "WEAPON_CAT_STAFF", "WEAPON_GREEN_STAFF");
 
-	private static EntityFactory entityFactory;
+	private static NewEntityFactory entityFactory;
 	private static Toml configuration;
 
 	private static float stateTime = 0;
@@ -74,19 +73,19 @@ public class GameState {
 	private static List<OverlayText> overlayTexts = new ArrayList<>();
 	private static List<OverlayText> newOverelayTexts = new ArrayList<>();
 
-	private static List<EntityType> lootSet;
+	private static List<String> lootSet;
 
 	// FIXME Does this belong here?
 	private static Color baseLight = Color.WHITE.cpy();
 
 	public static void initialize(Toml configuration) {
-		GameState.entityFactory = new EntityFactory();
+		GameState.entityFactory = new NewEntityFactory();
 		GameState.configuration = configuration;
-		GameState.lootSet = configuration.getList("map.items", DEFAULT_ITEM_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		GameState.lootSet = configuration.getList("map.items", DEFAULT_ITEM_TYPES);
 		initEntityFactories(entityFactory);
 	}
 
-	private static void initEntityFactories(EntityFactory entityFactory) {
+	private static void initEntityFactories(NewEntityFactory entityFactory) {
 		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
 
 		entityFactory.registerFactory(EntityType.TORCH, new TorchFactory());
@@ -156,8 +155,8 @@ public class GameState {
 		return configuration;
 	}
 
-	public static Entity build(EntityType type, Vector2 position) {
-		return entityFactory.build(type, position);
+	public static Entity build(String type, Vector2 position) {
+		return entityFactory.build(entityFactory.getFactoryOrdinal(type), position);
 	}
 
 	public static void addTime(float frameTime) {
@@ -230,7 +229,7 @@ public class GameState {
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
 			if (Rand.chance(placeholder.getChance())) {
-				entities.add(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
+				entities.add(entityFactory.build(entityFactory.getFactoryOrdinal(placeholder.getType()), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
 			}
 		}
 
@@ -356,7 +355,7 @@ public class GameState {
 		baseLight.set(Util.hsvaToColor(Rand.between(0f, 1f), 0.5f, 1f, 1f));
 	}
 
-	public static EntityType createLoot() {
+	public static String createLoot() {
 		return Rand.pick(lootSet);
 	}
 

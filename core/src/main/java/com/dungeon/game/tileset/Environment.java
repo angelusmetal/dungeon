@@ -11,9 +11,9 @@ public class Environment {
 	private final Tileset tileset;
 	private final Supplier<Color> light;
 	private final List<RoomPrototype> rooms;
-	private final List<EntityType> monsters;
+	private final List<String> monsters;
 
-	public Environment(Tileset tileset, Supplier<Color> light, List<RoomPrototype> rooms, List<EntityType> monsters) {
+	public Environment(Tileset tileset, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
 		this.tileset = tileset;
 		this.light = light;
 		this.rooms = rooms;
@@ -32,7 +32,7 @@ public class Environment {
 		return rooms;
 	}
 
-	public List<EntityType> getMonsters() {
+	public List<String> getMonsters() {
 		return monsters;
 	}
 }

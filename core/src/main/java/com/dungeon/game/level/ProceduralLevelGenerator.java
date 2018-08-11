@@ -138,7 +138,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
-		List<EntityType> monsterTypes = environment.getMonsters();//configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		List<String> monsterTypes = environment.getMonsters();//configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 
 		// Create monsters in each room, to begin with
@@ -277,7 +277,7 @@ public class ProceduralLevelGenerator {
 	}
 
 	private void addDoor(Frame frame, Room room) {
-		EntityType doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
+		String doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
 		// TODO replace Coords with Vector2...
 		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f, frame.originPoint.coords.y));
 		room.placeholders.add(door);

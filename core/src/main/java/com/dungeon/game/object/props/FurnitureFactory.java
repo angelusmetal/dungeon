@@ -178,11 +178,11 @@ public class FurnitureFactory {
 		return coin;
 	}
 
-	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle) {
+	private Entity buildProp(Vector2 origin, EntityPrototype prototype, String particle) {
 		return buildProp(origin, prototype, particle, 6);
 	}
 
-	private Entity buildProp(Vector2 origin, EntityPrototype prototype, EntityType particle, int count) {
+	private Entity buildProp(Vector2 origin, EntityPrototype prototype, String particle, int count) {
 		return new Entity(prototype, origin) {
 			@Override public void onHit() {
 				Rand.doBetween(count / 2, count, () ->

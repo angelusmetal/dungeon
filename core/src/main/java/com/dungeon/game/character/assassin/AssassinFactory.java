@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
 import com.dungeon.engine.util.ConfigUtil;
-import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
-public class AssassinFactory implements EntityFactory.EntityTypeFactory {
+public class AssassinFactory implements NewEntityTypeFactory {
 
 	public static final String ASSASSIN_WALK = "assassin_walk";
 	private static final String ASSASSIN_ATTACK = "assassin_attack";

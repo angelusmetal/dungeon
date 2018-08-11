@@ -6,17 +6,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.factory.NewEntityTypeFactory;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-import com.dungeon.game.level.entity.EntityFactory;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.GameState;
 import com.moandjiezana.toml.Toml;
 
 import java.util.function.Supplier;
 
-public class SlimeFactory implements EntityFactory.EntityTypeFactory {
+public class SlimeFactory implements NewEntityTypeFactory {
 
 	private static final String IDLE = "slime_idle";
 	private static final String BLINK = "slime_blink";

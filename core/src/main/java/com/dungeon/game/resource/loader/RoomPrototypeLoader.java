@@ -12,6 +12,7 @@ import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.moandjiezana.toml.Toml;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,8 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 
 	@Override
 	public ResourceDescriptor scan(String key, Toml toml) {
+		List<ResourceIdentifier> dependencies = new ArrayList<>();
+		getPlaceholders(toml).stream().map(EntityPlaceholder::getType).forEach(prototype -> dependencies.add(new ResourceIdentifier("prototype", prototype)));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, Collections.emptyList());
 	}
 
@@ -114,7 +117,7 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 				throw new RuntimeException("'type' cannot be null in room placeholder definition: " + t);
 			}
 			float ch = chance == null ? 1 : chance.floatValue();
-			return new EntityPlaceholder(EntityType.valueOf(type), new Vector2(x.floatValue(), y.floatValue()), ch);
+			return new EntityPlaceholder(type, new Vector2(x.floatValue(), y.floatValue()), ch);
 		}).collect(Collectors.toList());
 	}
 

@@ -36,7 +36,8 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	public ResourceDescriptor scan(String key, Toml toml) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
 		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(toml, "tileset")));
-		ConfigUtil.<String>requireList(toml, "rooms").stream().forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
+		ConfigUtil.<String>requireList(toml, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
+		ConfigUtil.<String>requireList(toml, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, dependencies);
 	}
 
@@ -45,7 +46,7 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 		Tileset tileset = Resources.tilesets.get(ConfigUtil.requireString(toml, "tileset"));
 		Color lightColor = ConfigUtil.requireColor(toml, "light");
 		List<RoomPrototype> rooms = ConfigUtil.<String>requireList(toml, "rooms").stream().map(Resources.rooms::get).collect(Collectors.toList());
-		List<EntityType> monsters = ConfigUtil.<String>requireList(toml, "monsters").stream().map(EntityType::valueOf).collect(Collectors.toList());
+		List<String> monsters = ConfigUtil.<String>requireList(toml, "monsters");
 		return new Environment(tileset, () -> lightColor, rooms, monsters);
 	}
 
