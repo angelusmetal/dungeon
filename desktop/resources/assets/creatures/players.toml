@@ -1,3 +1,9 @@
+[prototype.player_character]
+    health = 100
+    friction = 10
+    speed = 60
+    castShadow = true
+    knockback = 0.5
 #
 # Witch
 #
@@ -16,6 +22,12 @@
     tilesize = 32
     frameDuration = 0.5
     loop = [20, 21]
+
+[prototype.player_witch]
+    inherits = "player_character"
+    animation = "witch_idle"
+    boundingBox = [14, 12]
+    drawOffset = [16, 6]
 
 #
 # Thief
@@ -36,6 +48,13 @@
     frameDuration = 0.5
     loop = [66, 67]
 
+[prototype.player_thief]
+    inherits = "player_character"
+    animation = "thief_idle"
+    boundingBox = [14, 12]
+    drawOffset = [16, 6]
+    speed = 96
+
 #
 # Assasin
 #
@@ -54,3 +73,10 @@
     tilesize = 32
     frameDuration = 0.5
     loop = [43, 44, 45]
+
+[prototype.player_assassin]
+    inherits = "player_character"
+    animation = "assassin_idle"
+    boundingBox = [14, 12]
+    drawOffset = [16, 6]
+

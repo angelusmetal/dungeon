@@ -15,18 +15,11 @@ public class NewEntityFactory {
 	public int registerFactory(String type, NewEntityTypeFactory factory) {
 		int ordinal = factories.size();
 		Integer duplicate = ordinals.put(type, ordinal);
-		if (duplicate != null) {
-			throw new RuntimeException("Entity type '" + type + "' already had a factory associated");
-		}
+		// TODO Reenable when migration is done!
+//		if (duplicate != null) {
+//			throw new RuntimeException("Entity type '" + type + "' already had a factory associated");
+//		}
 		factories.add(factory);
-		return ordinal;
-	}
-
-	public int getFactoryOrdinal(String type) {
-		Integer ordinal = ordinals.get(type);
-		if (ordinal == null) {
-			throw new RuntimeException("No factory registered for entity type " + type);
-		}
 		return ordinal;
 	}
 
@@ -36,4 +29,17 @@ public class NewEntityFactory {
 		}
 		return factories.get(ordinal).build(origin);
 	}
+
+	public Entity build(String type, Vector2 origin) {
+		return getFactory(type).build(origin);
+	}
+
+	public NewEntityTypeFactory getFactory(String type) {
+		Integer ordinal = ordinals.get(type);
+		if (ordinal == null) {
+			throw new RuntimeException("No factory registered for entity type " + type);
+		}
+		return factories.get(ordinal);
+	}
+
 }

@@ -113,6 +113,7 @@ public class Entity implements Drawable, Movable {
 		this.light = prototype.light != null ? prototype.light.cpy() : null; // TODO Check this null...
 		this.drawContext = new ColorContext(this.color);
 		this.zIndex = prototype.zIndex;
+		this.z = prototype.z;
 		Float timeToLive = prototype.timeToLive.get();
 		this.expirationTime = timeToLive == null ? Float.MAX_VALUE : GameState.time() + timeToLive;
 		this.traits = prototype.traits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));

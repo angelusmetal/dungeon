@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityManager;
+import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.NewEntityFactory;
 import com.dungeon.engine.render.effect.FadeEffect;
 import com.dungeon.engine.render.effect.RenderEffect;
@@ -12,12 +13,10 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.character.acidslime.AcidSlimeFactory;
-import com.dungeon.game.character.assassin.AssassinFactory;
 import com.dungeon.game.character.fireslime.FireSlimeFactory;
 import com.dungeon.game.character.ghost.GhostFactory;
 import com.dungeon.game.character.slime.SlimeFactory;
-import com.dungeon.game.character.thief.ThiefFactory;
-import com.dungeon.game.character.witch.WitchFactory;
+import com.dungeon.game.character.player.PlayerCharacterFactory;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
@@ -29,7 +28,6 @@ import com.dungeon.game.object.powerups.HealthPowerupFactory;
 import com.dungeon.game.object.props.DoorFactory;
 import com.dungeon.game.object.props.FurnitureFactory;
 import com.dungeon.game.object.tombstone.TombstoneFactory;
-import com.dungeon.game.object.torch.TorchFactory;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
@@ -86,9 +84,12 @@ public class GameState {
 	}
 
 	private static void initEntityFactories(NewEntityFactory entityFactory) {
-		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
+		Resources.prototypes.getKeys().forEach(name -> {
+			EntityPrototype prototype = Resources.prototypes.get(name);
+			entityFactory.registerFactory(name, origin -> new Entity(prototype, origin));
+		});
 
-		entityFactory.registerFactory(EntityType.TORCH, new TorchFactory());
+		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
 		entityFactory.registerFactory(EntityType.TOMBSTONE, new TombstoneFactory());
 		DoorFactory doorFactory = new DoorFactory();
 		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, doorFactory::buildVertical);
@@ -129,9 +130,10 @@ public class GameState {
 		entityFactory.registerFactory(EntityType.WEAPON_CAT_STAFF, weaponFactory::buildCatStaff);
 		entityFactory.registerFactory(EntityType.WEAPON_GREEN_STAFF, weaponFactory::buildGreenStaff);
 
-		entityFactory.registerFactory(EntityType.ASSASSIN, new AssassinFactory());
-		entityFactory.registerFactory(EntityType.THIEF, new ThiefFactory());
-		entityFactory.registerFactory(EntityType.WITCH, new WitchFactory());
+		PlayerCharacterFactory playerCharacter = new PlayerCharacterFactory();
+		entityFactory.registerFactory(EntityType.ASSASSIN, playerCharacter.assassin);
+		entityFactory.registerFactory(EntityType.THIEF, playerCharacter.thief);
+		entityFactory.registerFactory(EntityType.WITCH, playerCharacter.witch);
 
 		ParticleFactory particleFactory = new ParticleFactory();
 		entityFactory.registerFactory(EntityType.WOOD_PARTICLE, particleFactory::buildWoodParticle);
@@ -156,7 +158,7 @@ public class GameState {
 	}
 
 	public static Entity build(String type, Vector2 position) {
-		return entityFactory.build(entityFactory.getFactoryOrdinal(type), position);
+		return entityFactory.build(type, position);
 	}
 
 	public static void addTime(float frameTime) {
@@ -213,7 +215,7 @@ public class GameState {
 		playerCount = players.size();
 		levelCount++;
 
-		// Get starting room and spawn players there
+		// Get starting room and spawn player there
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
 		for (Player player : players) {
@@ -229,7 +231,7 @@ public class GameState {
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
 			if (Rand.chance(placeholder.getChance())) {
-				entities.add(entityFactory.build(entityFactory.getFactoryOrdinal(placeholder.getType()), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
+				entities.add(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
 			}
 		}
 

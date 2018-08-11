@@ -62,6 +62,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
 		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
+		ConfigUtil.getFloat(descriptor, "speed").ifPresent(prototype::speed);
 		getLight(descriptor, "light").ifPresent(prototype::light);
 		ConfigUtil.getFloat(descriptor, "timeToLive").ifPresent(prototype::timeToLive);
 		ConfigUtil.getFloat(descriptor, "zAccel").ifPresent(value -> prototype.with(Traits.zAccel(value)));
@@ -71,6 +72,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getBoolean(descriptor, "fadeOutLight").ifPresent(value -> prototype.with(Traits.fadeOutLight()));
 		ConfigUtil.getVector2(descriptor, "hOscillate").ifPresent(value -> prototype.with(Traits.hOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
+		ConfigUtil.getFloat(descriptor, "z").ifPresent(prototype::z);;
 		ConfigUtil.getBoolean(descriptor, "solid").ifPresent(value -> {
 			prototype.solid(value);
 			prototype.canBeHit(value);

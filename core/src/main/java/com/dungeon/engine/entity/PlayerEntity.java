@@ -19,7 +19,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	private int playerId;
 
-	protected PlayerEntity(Vector2 origin, EntityPrototype prototype) {
+	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
 		light = TORCH_LIGHT;
 	}

@@ -24,6 +24,7 @@ public class EntityPrototype {
 	Supplier<Float> speed = () -> 1f;
 	Supplier<Float> zSpeed = () -> 0f;
 	int zIndex = 0;
+	float z = 0;
 	Predicate<Entity> hitPredicate = (entity) -> false;
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
@@ -50,6 +51,7 @@ public class EntityPrototype {
 		this.speed = other.speed;
 		this.zSpeed = other.zSpeed;
 		this.zIndex = other.zIndex;
+		this.z = other.z;
 		this.hitPredicate = other.hitPredicate;
 		this.timeToLive = other.timeToLive;
 		this.drawFunction = other.drawFunction;
@@ -185,6 +187,11 @@ public class EntityPrototype {
 
 	public EntityPrototype zSpeed(float zSpeed) {
 		this.zSpeed = () -> zSpeed;
+		return this;
+	}
+
+	public EntityPrototype z(float z) {
+		this.z = z;
 		return this;
 	}
 
