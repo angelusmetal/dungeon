@@ -26,7 +26,6 @@ import com.dungeon.game.object.exit.ExitPlatformFactory;
 import com.dungeon.game.object.powerups.HealthPowerupFactory;
 import com.dungeon.game.object.props.DoorFactory;
 import com.dungeon.game.object.props.FurnitureFactory;
-import com.dungeon.game.object.tombstone.TombstoneFactory;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.ViewPortRenderer;
@@ -89,7 +88,6 @@ public class GameState {
 		});
 
 		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
-		entityFactory.registerFactory(EntityType.TOMBSTONE, new TombstoneFactory());
 		DoorFactory doorFactory = new DoorFactory();
 		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, doorFactory::buildVertical);
 		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, doorFactory::buildHorizontal);
