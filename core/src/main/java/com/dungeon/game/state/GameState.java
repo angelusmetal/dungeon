@@ -35,6 +35,7 @@ import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -58,7 +59,7 @@ public class GameState {
 	private static State currentState = State.MENU;
 
 	public static EntityManager entities = new EntityManager();
-	private static List<Player> players;
+	private static List<Player> players = Collections.emptyList();
 
 	private static int playerCount;
 	private static int levelCount;
