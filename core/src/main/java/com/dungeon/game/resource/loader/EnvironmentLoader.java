@@ -10,7 +10,7 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
-import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +32,20 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	}
 
 	@Override
-	public ResourceDescriptor scan(String key, Toml toml) {
+	public ResourceDescriptor scan(String key, Config config) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
-		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(toml, "tileset")));
-		ConfigUtil.<String>requireList(toml, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
-		ConfigUtil.<String>requireList(toml, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
-		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, dependencies);
+		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "tileset")));
+		ConfigUtil.requireStringList(config, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
+		ConfigUtil.requireStringList(config, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, dependencies);
 	}
 
 	@Override
-	public Environment read(Toml toml) {
-		Tileset tileset = Resources.tilesets.get(ConfigUtil.requireString(toml, "tileset"));
-		Color lightColor = ConfigUtil.requireColor(toml, "light");
-		List<RoomPrototype> rooms = ConfigUtil.<String>requireList(toml, "rooms").stream().map(Resources.rooms::get).collect(Collectors.toList());
-		List<String> monsters = ConfigUtil.<String>requireList(toml, "monsters");
+	public Environment read(Config config) {
+		Tileset tileset = Resources.tilesets.get(ConfigUtil.requireString(config, "tileset"));
+		Color lightColor = ConfigUtil.requireColor(config, "light");
+		List<RoomPrototype> rooms = ConfigUtil.requireStringList(config, "rooms").stream().map(Resources.rooms::get).collect(Collectors.toList());
+		List<String> monsters = ConfigUtil.requireStringList(config, "monsters");
 		return new Environment(tileset, () -> lightColor, rooms, monsters);
 	}
 

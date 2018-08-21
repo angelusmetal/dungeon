@@ -16,7 +16,8 @@ import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
-import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,40 +42,43 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	}
 
 	@Override
-	public ResourceDescriptor scan(String key, Toml toml) {
+	public ResourceDescriptor scan(String key, Config descriptor) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
-		ConfigUtil.getString(toml, "inherits").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
-		Optional<String> animation = ConfigUtil.getString(toml, "animation");
-		if (animation.isPresent()) {
-			dependencies.add(new ResourceIdentifier("animation", animation.get()));
-		} else {
-			ConfigUtil.<String>getList(toml, "animation").ifPresent(animations -> animations.forEach(anim -> dependencies.add(new ResourceIdentifier("animation", anim))));
+		ConfigUtil.getString(descriptor, "inherits").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
+		try {
+			ConfigUtil.getString(descriptor, "animation").ifPresent(animation ->
+					dependencies.add(new ResourceIdentifier("animation", animation))
+			);
+		} catch (ConfigException.WrongType e) {
+			ConfigUtil.getStringList(descriptor, "animation").ifPresent(animations -> animations.forEach(anim -> dependencies.add(new ResourceIdentifier("animation", anim))));
 		}
-		getGeneratorDeps(toml, dependencies, "generate");
-		getGeneratorDeps(toml, dependencies, "generateOnHit");
-		getGeneratorDeps(toml, dependencies, "generateOnExpire");
-		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, dependencies);
+		getGeneratorDeps(descriptor, dependencies, "generate");
+		getGeneratorDeps(descriptor, dependencies, "generateOnHit");
+		getGeneratorDeps(descriptor, dependencies, "generateOnExpire");
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), descriptor, dependencies);
 	}
 
-	private void getGeneratorDeps(Toml toml, List<ResourceIdentifier> dependencies, String key) {
-		Toml generate = toml.getTable(key);
-		if (generate != null) {
+	private void getGeneratorDeps(Config descriptor, List<ResourceIdentifier> dependencies, String key) {
+		if (descriptor.hasPath(key)) {
+			Config generate = descriptor.getConfig(key);
 			ConfigUtil.getString(generate, "prototype").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
 		}
 	}
 
 	@Override
-	public EntityPrototype read(Toml descriptor) {
+	public EntityPrototype read(Config descriptor) {
 		Optional<String> ancestor = ConfigUtil.getString(descriptor, "inherits");
 		EntityPrototype prototype = ancestor.map(s -> new EntityPrototype(Resources.prototypes.get(s))).orElseGet(EntityPrototype::new);
 
-		Optional<String> animation = ConfigUtil.getString(descriptor, "animation");
-		if (animation.isPresent()) {
-			prototype.animation(Resources.animations.get(animation.get()));
-		} else {
+		try {
+			ConfigUtil.getString(descriptor, "animation").ifPresent(animation ->
+					prototype.animation(Resources.animations.get(animation))
+			);
+		} catch (ConfigException.WrongType e) {
 			// If there are multiple animations, pick one at random
-			ConfigUtil.<String>getList(descriptor, "animation").ifPresent(animations -> prototype.animation(() -> Resources.animations.get(Rand.pick(animations))));
+			ConfigUtil.getStringList(descriptor, "animation").ifPresent(animations -> prototype.animation(() -> Resources.animations.get(Rand.pick(animations))));
 		}
+
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
 		ConfigUtil.getVector2(descriptor, "boundingBoxOffset").ifPresent(prototype::boundingBoxOffset);
@@ -122,9 +126,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		throw new RuntimeException("Unknown onRest type '" + onRest + "'");
 	}
 
-	private static Optional<Light> getLight(Toml toml, String key) {
-		List<String> light = toml.getList(key);
-		if (light != null) {
+	private static Optional<Light> getLight(Config config, String key) {
+		if (config.hasPath(key)) {
+			List<String> light = config.getStringList(key);
 			if (light.size() < 3) {
 				throw new RuntimeException("light must have at least 3 parameters");
 			}
@@ -144,9 +148,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	/**
 	 * A generator that continuously generates particles, in the specified frequency
 	 */
-	private static <T extends Entity> Optional<TraitSupplier<T>> getContinuousGenerator(Toml toml, String key) {
-		Toml table = toml.getTable(key);
-		if (table != null) {
+	private static <T extends Entity> Optional<TraitSupplier<T>> getContinuousGenerator(Config config, String key) {
+		if (config.hasPath(key)) {
+			Config table = config.getConfig(key);
 			float frequency = ConfigUtil.getFloat(table, "frequency").orElseThrow(() -> new RuntimeException("Missing frequency parameter"));
 			Function<Vector2, Entity> generator = getParticleGenerator(table);
 			return Optional.of(Traits.generator(frequency, gen -> generator.apply(gen.getOrigin())));
@@ -157,9 +161,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	/**
 	 * A generator that generates particles once, with the (optionally) specified particle count
 	 */
-	private static <T extends Entity> Optional<TraitSupplier<T>> getInstantGenerator(Toml toml, String key) {
-		Toml table = toml.getTable(key);
-		if (table != null) {
+	private static <T extends Entity> Optional<TraitSupplier<T>> getInstantGenerator(Config config, String key) {
+		if (config.hasPath(key)) {
+			Config table = config.getConfig(key);
 			Vector2 count = ConfigUtil.getVector2(table, "count").orElse(new Vector2(1, 1));
 			Function<Vector2, Entity> generator = getParticleGenerator(table);
 			return Optional.of(Traits.generatorMultiple((int)count.x, (int)count.y, gen -> generator.apply(gen.getOrigin())));
@@ -167,7 +171,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		return Optional.empty();
 	}
 
-	private static Function<Vector2, Entity> getParticleGenerator(Toml table) {
+	private static Function<Vector2, Entity> getParticleGenerator(Config table) {
 		String prototype = ConfigUtil.getString(table, "prototype").orElseThrow(() -> new RuntimeException("Missing prototype parameter"));
 		Optional<Vector2> x = ConfigUtil.getVector2(table, "x");
 		Optional<Vector2> y = ConfigUtil.getVector2(table, "y");
@@ -220,9 +224,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		}
 	}
 
-	private static Optional<Supplier<DrawFunction>> getDrawFunction(Toml toml, String key) {
-		Toml table = toml.getTable(key);
-		if (table != null) {
+	private static Optional<Supplier<DrawFunction>> getDrawFunction(Config config, String key) {
+		if (config.hasPath(key)) {
+			Config table = config.getConfig(key);
 			Optional<Supplier<DrawFunction>> rotateFixed = ConfigUtil.getFloat(table, "rotateFixed").map(DrawFunction::rotateFixed);
 			Optional<Supplier<DrawFunction>> rotateRandom = ConfigUtil.getFloat(table, "rotateRandom").map(DrawFunction::rotateRandom);
 			if (rotateFixed.isPresent() && rotateRandom.isPresent()) {

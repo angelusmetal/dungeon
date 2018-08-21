@@ -3,6 +3,10 @@ package com.dungeon.engine.util;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigList;
+import com.typesafe.config.ConfigValue;
+import com.typesafe.config.ConfigValueType;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -259,6 +263,174 @@ public class ConfigUtil {
 
 	public static Color requireColor(Toml configuration, String key) {
 		return getColor(configuration, key).orElseThrow(missing(key));
+	}
+
+
+	/// New methods!!!
+
+	public static Optional<Long> getLong(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getLong(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static long requireLong(Config config, String key) {
+		return config.getLong(key);
+	}
+
+	public static Optional<Integer> getInteger(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getInt(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static int requireInteger(Config config, String key) {
+		return config.getInt(key);
+	}
+
+	public static Optional<Double> getDouble(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getDouble(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static double requireDouble(Config config, String key) {
+		return config.getDouble(key);
+	}
+
+	public static Optional<Float> getFloat(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of((float) config.getDouble(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static float requireFloat(Config config, String key) {
+		return (float) config.getDouble(key);
+	}
+
+	public static Optional<Boolean> getBoolean(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getBoolean(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static boolean requireBoolean(Config config, String key) {
+		return config.getBoolean(key);
+	}
+
+	public static Optional<String> getString(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getString(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static String requireString(Config config, String key) {
+		return config.getString(key);
+	}
+
+	// TODO Keep on this one
+//	public static <T> Optional<List<T>> getList(Config configuration, String key) {
+//		if (configuration.hasPath(key)) {
+//			ConfigList list = configuration.getList(key);
+//			for (ConfigValue item : list) {
+//				item.unwrapped()
+//			}
+//			return Optional.of(list);
+//		}
+//		return Optional.ofNullable(toml.getList(key));
+//	}
+//
+//	public static <T> List<T> requireList(Config configuration, String key) {
+//		return configuration.getL
+//		return ConfigUtil.<T>getList(configuration, key).orElseThrow(missing(key));
+//	}
+
+	public static Optional<List<Integer>> getIntList(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getIntList(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static List<Integer> requireIntList(Config config, String key) {
+		return config.getIntList(key);
+	}
+
+	public static Optional<List<String>> getStringList(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getStringList(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static List<String> requireStringList(Config config, String key) {
+		return config.getStringList(key);
+	}
+
+	public static Optional<Vector2> getVector2(Config config, String key) {
+		if (config.hasPath(key)) {
+			List<Double> vector2 = config.getDoubleList(key);
+			if (vector2.size() != 2) {
+				throw new RuntimeException("Expected Vector2 (2 numerical values) at key '" + key + "'");
+			}
+			return Optional.of(new Vector2(vector2.get(0).floatValue(), vector2.get(1).floatValue()));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static Vector2 requireVector2(Config config, String key) {
+		return getVector2(config, key).orElseThrow(missing(key));
+	}
+
+	public static Optional<Color> getColor(Config config, String key) {
+		// Attempt to get a hex string
+		if (!config.hasPath(key)) {
+			return Optional.empty();
+		}
+		if (config.getValue(key).valueType() == ConfigValueType.STRING) {
+			return getString(config, key).map(Color::valueOf);
+		}
+		// Otherwise, attempt to get a table
+		if (config.getValue(key).valueType() == ConfigValueType.OBJECT) {
+			Config color = config.getConfig(key);
+			// Attempt to get rgb/rgba
+			Optional<Float> r = ConfigUtil.getFloat(color, "r");
+			Optional<Float> g = ConfigUtil.getFloat(color, "g");
+			Optional<Float> b = ConfigUtil.getFloat(color, "b");
+			Optional<Float> a = ConfigUtil.getFloat(color, "a");
+			if (r.isPresent() && g.isPresent() && b.isPresent()) {
+				return Optional.of(a.map(aFloat -> new Color(r.get(), g.get(), b.get(), aFloat))
+						.orElseGet(() -> new Color(r.get(), g.get(), b.get(), 1)));
+			}
+			// Attempt to get hsv/hsva
+			Optional<Float> h = ConfigUtil.getFloat(color, "h");
+			Optional<Float> s = ConfigUtil.getFloat(color, "s");
+			Optional<Float> v = ConfigUtil.getFloat(color, "v");
+			if (h.isPresent() && s.isPresent() && v.isPresent()) {
+				return Optional.of(a.map(aFloat -> Util.hsvaToColor(h.get(), s.get(), v.get(), aFloat))
+						.orElseGet(() -> Util.hsvaToColor(h.get(), s.get(), v.get(), 1)));
+			}
+		}
+		return Optional.empty();
+	}
+
+	public static Color requireColor(Config config, String key) {
+		return getColor(config, key).orElseThrow(missing(key));
 	}
 
 	private static Supplier<RuntimeException> missing(String property) {

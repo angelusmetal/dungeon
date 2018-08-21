@@ -8,9 +8,8 @@ import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
-import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.resource.Resources;
-import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,19 +31,27 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 	}
 
 	@Override
-	public ResourceDescriptor scan(String key, Toml toml) {
-		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), toml, Collections.emptyList());
+	public Animation<TextureRegion> read(Config config) {
+		return AnimationLoader.readFrom(config);
 	}
 
 	@Override
-	public Animation<TextureRegion> read(Toml toml) {
-		List<Integer> loop = new ArrayList<>();
+	public ResourceDescriptor scan(String key, Config config) {
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, Collections.emptyList());
+	}
+
+	public static Animation<TextureRegion> readFrom(Config config) {
+		List<Integer> loop = Collections.emptyList();
 		List<Integer> sequence = new ArrayList<>();
-		ConfigUtil.<Number>getList(toml, "loop").ifPresent(list -> list.stream().map(Number::intValue).forEach(loop::add));
-		ConfigUtil.<Number>getList(toml, "sequence").ifPresent(list -> list.stream().map(Number::intValue).forEach(sequence::add));
-		int tilesize = ConfigUtil.requireInteger(toml, "tilesize");
-		String texture = ConfigUtil.requireString(toml, "texture");
-		float frameDuration = ConfigUtil.requireFloat(toml, "frameDuration");
+		if (config.hasPath("loop")) {
+			loop = config.getIntList("loop");
+		}
+		if (config.hasPath("sequence")) {
+			sequence = config.getIntList("sequence");
+		}
+		int tilesize = config.getInt("tilesize");
+		String texture = config.getString("texture");
+		float frameDuration = (float) config.getDouble("frameDuration");
 
 		if (loop.isEmpty() == sequence.isEmpty()) {
 			throw new LoadingException("must have either 'loop' or 'sequence'.");
@@ -63,7 +70,6 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 			return sequence(frameDuration, frames);
 		}
 	}
-
 	private static List<TextureRegion> getFrames(Texture tex, List<Integer> regions, int tilesize, int columns) {
 		List<TextureRegion> frames = new ArrayList<>();
 		for (int frame : regions) {

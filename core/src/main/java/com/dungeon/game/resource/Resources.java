@@ -17,7 +17,7 @@ import com.dungeon.game.resource.loader.TilesetLoader;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
 
-public class Resources<T> {
+public class Resources {
 	public static final ResourceRepository<Texture> textures = new ResourceRepository<>(Texture::new, Texture::dispose);
 	public static final ResourceRepository<Animation<TextureRegion>> animations = new ResourceRepository<>();
 	public static final ResourceRepository< EntityPrototype> prototypes = new ResourceRepository<>();
@@ -33,7 +33,7 @@ public class Resources<T> {
 		loader.registerLoader("tileset", new TilesetLoader(tilesets));
 		loader.registerLoader("room", new RoomPrototypeLoader(rooms));
 		loader.registerLoader("environment", new EnvironmentLoader(environments));
-		loader.load();
+		loader.load("assets/assets.conf");
 	}
 
 	private static BitmapFont computeFont(String name) {

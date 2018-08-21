@@ -1,6 +1,6 @@
 package com.dungeon.engine.resource;
 
-import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
 
 /**
  * Interface through which the ResourceManagerLoader interacts to load each resource type.
@@ -19,23 +19,22 @@ public interface ResourceLoader<T> {
 	/**
 	 * Scan a toml blob describing a resource
 	 *
-	 * @param key  Toml key
-	 * @param toml Toml blob
-	 * @return ResourceNode describing the resource and its dependencies
+	 * @param key  Config key
+	 * @param descriptor Config blob
+	 * @return ResourceDescriptor describing the resource and its dependencies
 	 */
-	ResourceDescriptor scan(String key, Toml toml);
-
+	ResourceDescriptor scan(String key, Config descriptor);
 	/**
-	 * Read an actual resource from a toml blob into an instance of its type
+	 * Read an actual resource from a config blob into an instance of its type
 	 *
-	 * @param toml Toml blob
+	 * @param descriptor Config blob
 	 * @return An instance of the appropriate type
 	 */
-	T read(Toml toml);
+	T read(Config descriptor);
 
 	default void load(ResourceDescriptor descriptor) {
-		System.out.println("Loading " + descriptor.getIdentifier() + "...");
-		getRepository().put(descriptor.getIdentifier().getKey(), read(descriptor.getToml()));
+		System.out.println("Loading " + descriptor.getIdentifier().getType() + " '" + descriptor.getIdentifier().getKey() + "'...");
+		getRepository().put(descriptor.getIdentifier().getKey(), read(descriptor.getBlob()));
 	}
 
 }

@@ -11,7 +11,7 @@ import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Tileset;
-import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +34,12 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 	}
 
 	@Override
-	public ResourceDescriptor scan(String key, Toml descriptor) {
+	public ResourceDescriptor scan(String key, Config descriptor) {
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), descriptor, Collections.emptyList());
 	}
 
 	@Override
-	public Tileset read(Toml descriptor) {
+	public Tileset read(Config descriptor) {
 		String texture = ConfigUtil.requireString(descriptor, "texture");
 		Texture tex = Resources.textures.get(texture);
 		int tilesize = ConfigUtil.requireInteger(descriptor, "tilesize");
@@ -138,8 +138,8 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 
 	}
 
-	private static List<Tile> getFrames(Toml toml, String key, Texture tex, int tilesize, int columns) {
-		List<Integer> regions = ConfigUtil.<Number>requireList(toml, key).stream().map(Number::intValue).collect(Collectors.toList());
+	private static List<Tile> getFrames(Config config, String key, Texture tex, int tilesize, int columns) {
+		List<Integer> regions = ConfigUtil.requireIntList(config, key).stream().map(Number::intValue).collect(Collectors.toList());
 		List<Tile> frames = new ArrayList<>();
 		for (int frame : regions) {
 			frames.add(getFrame(tex, frame, tilesize, columns));

@@ -1,6 +1,7 @@
 package com.dungeon.engine.resource;
 
 import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
 
 import java.util.List;
 import java.util.Map;
@@ -12,12 +13,12 @@ import java.util.Set;
 public class ResourceDescriptor {
 
 	private final ResourceIdentifier identifier;
-	private final Toml toml;
+	private final Config blob;
 	private final List<ResourceIdentifier> dependencies;
 
-	public ResourceDescriptor(ResourceIdentifier identifier, Toml toml, List<ResourceIdentifier> dependencies) {
+	public ResourceDescriptor(ResourceIdentifier identifier, Config blob, List<ResourceIdentifier> dependencies) {
 		this.identifier = identifier;
-		this.toml = toml;
+		this.blob = blob;
 		this.dependencies = dependencies;
 	}
 
@@ -25,8 +26,8 @@ public class ResourceDescriptor {
 		return identifier;
 	}
 
-	public Toml getToml() {
-		return toml;
+	public Config getBlob() {
+		return blob;
 	}
 
 	public void scanDependencies(Map<ResourceIdentifier, ResourceDescriptor> descriptors, Set<ResourceDescriptor> sequence) {
