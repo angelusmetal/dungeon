@@ -8,56 +8,36 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.render.Light;
 import com.dungeon.game.combat.CatStaffWeapon;
 import com.dungeon.game.combat.GreenStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.resource.Resources;
+import com.dungeon.game.state.GameState;
+
+import java.util.function.Supplier;
 
 public class WeaponFactory {
 
-	private static final String SWORD = "weapon_sword";
-	private static final String CAT_STAFF = "weapon_cat_staff";
-	private static final String GREEN_STAFF = "weapon_green_staff";
-
-	private static final Vector2 BOUNDING_BOX = new Vector2(20, 20);
-	private static final Vector2 DRAW_OFFSET = new Vector2(10, 10);
-
-	private Animation<TextureRegion> swordAnimation;
-	private Animation<TextureRegion> catStaffAnimation;
-	private Animation<TextureRegion> greenStaffAnimation;
-
-	private final EntityPrototype sword;
-	private final EntityPrototype catStaff;
-	private final EntityPrototype greenStaff;
-
-	private final Light light = new Light(96, new Color(0.1f, 0.8f, 0.7f, 1), Light.RAYS, Light.torchlight(), Light.rotateFast());
+	public final EntityTypeFactory sword;
+	public final EntityTypeFactory catStaff;
+	public final EntityTypeFactory greenStaff;
 
 	public WeaponFactory() {
-		swordAnimation = Resources.animations.get(SWORD);
-		catStaffAnimation = Resources.animations.get(CAT_STAFF);
-		greenStaffAnimation = Resources.animations.get(GREEN_STAFF);
-
-		sword = weaponPrototype().animation(swordAnimation);
-		catStaff = weaponPrototype().animation(catStaffAnimation);
-		greenStaff = weaponPrototype().animation(greenStaffAnimation);
+		sword = origin -> buildWeaponEntity(origin, Resources.prototypes.get("weapon_sword"), SwordWeapon::new);
+		catStaff = origin -> buildWeaponEntity(origin, Resources.prototypes.get("weapon_cat_staff"), CatStaffWeapon::new);
+		greenStaff = origin -> buildWeaponEntity(origin, Resources.prototypes.get("weapon_green_staff"), GreenStaffWeapon::new);
 	}
 
-	private EntityPrototype weaponPrototype() {
-		return new EntityPrototype()
-				.boundingBox(BOUNDING_BOX)
-				.drawOffset(DRAW_OFFSET)
-				.light(light)
-				.with(Traits.zOscillate(3, 8f));
-	}
-
-	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Weapon weapon, Animation<TextureRegion> animation) {
-		weapon.setAnimation(animation);
+	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Supplier<Weapon> weaponSupplier) {
+		Weapon weapon = weaponSupplier.get();
 		return new Entity(prototype, origin) {
 			@Override public boolean onEntityCollision(Entity other) {
 				if (!expired && other instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) other;
+					weapon.setAnimation(getCurrentAnimation().getAnimation());
 					character.getPlayer().setWeapon(weapon);
 					character.getPlayer().getConsole().log("Picked up " + weapon.getName() + "!", Color.GOLD);
 					expire();
@@ -66,18 +46,6 @@ public class WeaponFactory {
 				return false;
 			}
 		};
-	}
-
-	public Entity buildSword(Vector2 origin) {
-		return buildWeaponEntity(origin, sword, new SwordWeapon(), swordAnimation);
-	}
-
-	public Entity buildCatStaff(Vector2 origin) {
-		return buildWeaponEntity(origin, catStaff, new CatStaffWeapon(), catStaffAnimation);
-	}
-
-	public Entity buildGreenStaff(Vector2 origin) {
-		return buildWeaponEntity(origin, greenStaff, new GreenStaffWeapon(), greenStaffAnimation);
 	}
 
 }

@@ -103,9 +103,9 @@ public class GameState {
 
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
 		WeaponFactory weaponFactory = new WeaponFactory();
-		entityFactory.registerFactory(EntityType.WEAPON_SWORD, weaponFactory::buildSword);
-		entityFactory.registerFactory(EntityType.WEAPON_CAT_STAFF, weaponFactory::buildCatStaff);
-		entityFactory.registerFactory(EntityType.WEAPON_GREEN_STAFF, weaponFactory::buildGreenStaff);
+		entityFactory.registerFactory(EntityType.WEAPON_SWORD, weaponFactory.sword);
+		entityFactory.registerFactory(EntityType.WEAPON_CAT_STAFF, weaponFactory.catStaff);
+		entityFactory.registerFactory(EntityType.WEAPON_GREEN_STAFF, weaponFactory.greenStaff);
 
 		PlayerCharacterFactory playerCharacter = new PlayerCharacterFactory();
 		entityFactory.registerFactory(EntityType.ASSASSIN, playerCharacter.assassin);

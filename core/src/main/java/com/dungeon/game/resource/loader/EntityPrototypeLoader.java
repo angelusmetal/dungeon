@@ -62,13 +62,6 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getString(config, "prototype").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
 	}
 
-	private void getGeneratorDeps(Config descriptor, List<ResourceIdentifier> dependencies, String key) {
-		if (descriptor.hasPath(key)) {
-			Config generate = descriptor.getConfig(key);
-			ConfigUtil.getString(generate, "prototype").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
-		}
-	}
-
 	@Override
 	public EntityPrototype read(Config descriptor) {
 		EntityPrototype prototype = new EntityPrototype();
