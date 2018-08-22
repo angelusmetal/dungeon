@@ -44,7 +44,6 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	@Override
 	public ResourceDescriptor scan(String key, Config descriptor) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
-		ConfigUtil.getString(descriptor, "inherits").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
 		try {
 			ConfigUtil.getString(descriptor, "animation").ifPresent(animation ->
 					dependencies.add(new ResourceIdentifier("animation", animation))
@@ -67,8 +66,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
 	@Override
 	public EntityPrototype read(Config descriptor) {
-		Optional<String> ancestor = ConfigUtil.getString(descriptor, "inherits");
-		EntityPrototype prototype = ancestor.map(s -> new EntityPrototype(Resources.prototypes.get(s))).orElseGet(EntityPrototype::new);
+		EntityPrototype prototype = new EntityPrototype();
 
 		try {
 			ConfigUtil.getString(descriptor, "animation").ifPresent(animation ->
