@@ -2,7 +2,6 @@ package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.TraitSupplier;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
@@ -51,10 +49,17 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		} catch (ConfigException.WrongType e) {
 			ConfigUtil.getStringList(descriptor, "animation").ifPresent(animations -> animations.forEach(anim -> dependencies.add(new ResourceIdentifier("animation", anim))));
 		}
-		getGeneratorDeps(descriptor, dependencies, "generate");
-		getGeneratorDeps(descriptor, dependencies, "generateOnHit");
-		getGeneratorDeps(descriptor, dependencies, "generateOnExpire");
+		ConfigUtil.getConfigList(descriptor, "onHit").ifPresent(
+				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
+		ConfigUtil.getConfigList(descriptor, "onExpire").ifPresent(
+				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
+		ConfigUtil.getConfigList(descriptor, "with").ifPresent(
+				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), descriptor, dependencies);
+	}
+
+	private void getGeneratorDeps(Config config, List<ResourceIdentifier> dependencies) {
+		ConfigUtil.getString(config, "prototype").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
 	}
 
 	private void getGeneratorDeps(Config descriptor, List<ResourceIdentifier> dependencies, String key) {
@@ -109,9 +114,13 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 			prototype.canBeHurt(value);
 		});
 		ConfigUtil.getBoolean(descriptor, "canBeHurt").ifPresent(prototype::canBeHurt);
-		getContinuousGenerator(descriptor, "generate").ifPresent(prototype::with);
-		getInstantGenerator(descriptor, "generateOnHit").ifPresent(prototype::onHit);
-		getInstantGenerator(descriptor, "generateOnExpire").ifPresent(prototype::onExpire);
+
+		ConfigUtil.getConfigList(descriptor, "onHit").ifPresent(
+				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onHit));
+		ConfigUtil.getConfigList(descriptor, "onExpire").ifPresent(
+				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onExpire));
+		ConfigUtil.getConfigList(descriptor, "with").ifPresent(
+				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::with));
 		return prototype;
 	}
 
@@ -141,57 +150,6 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		} else {
 			return Optional.empty();
 		}
-	}
-
-	/**
-	 * A generator that continuously generates particles, in the specified frequency
-	 */
-	private static <T extends Entity> Optional<TraitSupplier<T>> getContinuousGenerator(Config config, String key) {
-		if (config.hasPath(key)) {
-			Config table = config.getConfig(key);
-			float frequency = ConfigUtil.getFloat(table, "frequency").orElseThrow(() -> new RuntimeException("Missing frequency parameter"));
-			Function<Vector2, Entity> generator = getParticleGenerator(table);
-			return Optional.of(Traits.generator(frequency, gen -> generator.apply(gen.getOrigin())));
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * A generator that generates particles once, with the (optionally) specified particle count
-	 */
-	private static <T extends Entity> Optional<TraitSupplier<T>> getInstantGenerator(Config config, String key) {
-		if (config.hasPath(key)) {
-			Config table = config.getConfig(key);
-			Vector2 count = ConfigUtil.getVector2(table, "count").orElse(new Vector2(1, 1));
-			Function<Vector2, Entity> generator = getParticleGenerator(table);
-			return Optional.of(Traits.generatorMultiple((int)count.x, (int)count.y, gen -> generator.apply(gen.getOrigin())));
-		}
-		return Optional.empty();
-	}
-
-	private static Function<Vector2, Entity> getParticleGenerator(Config table) {
-		String prototype = ConfigUtil.getString(table, "prototype").orElseThrow(() -> new RuntimeException("Missing prototype parameter"));
-		Optional<Vector2> x = ConfigUtil.getVector2(table, "x");
-		Optional<Vector2> y = ConfigUtil.getVector2(table, "y");
-		Optional<Vector2> z = ConfigUtil.getVector2(table, "z");
-		Optional<Vector2> impulseX = ConfigUtil.getVector2(table, "impulseX");
-		Optional<Vector2> impulseY = ConfigUtil.getVector2(table, "impulseY");
-		Optional<Vector2> impulseZ = ConfigUtil.getVector2(table, "impulseZ");
-		// List of initialization steps (like offset & impulse)
-		List<Consumer<Entity>> traits = new ArrayList<>();
-		x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += Rand.between(v.x, v.y)));
-		y.ifPresent(v -> traits.add(particle -> particle.getOrigin().y += Rand.between(v.x, v.y)));
-		z.ifPresent(v -> traits.add(particle -> particle.setZPos(particle.getZPos() + Rand.between(v.x, v.y))));
-		impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(Rand.between(v.x, v.y), 0)));
-		impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, Rand.between(v.x, v.y))));
-		impulseZ.ifPresent(v -> traits.add(particle -> particle.setZSpeed(Rand.between(v.x, v.y))));
-		EntityPrototype proto = Resources.prototypes.get(prototype);
-		return origin -> {
-			Entity particle = new Entity(proto, origin);
-			// Run initialization steps
-			traits.forEach(trait -> trait.accept(particle));
-			return particle;
-		};
 	}
 
 	private static Texture getLightTexture(String name) {

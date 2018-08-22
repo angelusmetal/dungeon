@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.moandjiezana.toml.Toml;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigList;
-import com.typesafe.config.ConfigValue;
 import com.typesafe.config.ConfigValueType;
 
 import java.lang.reflect.Field;
@@ -379,6 +377,18 @@ public class ConfigUtil {
 
 	public static List<String> requireStringList(Config config, String key) {
 		return config.getStringList(key);
+	}
+
+	public static Optional<List<? extends Config>> getConfigList(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getConfigList(key));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static List<? extends Config> requireConfigList(Config config, String key) {
+		return config.getConfigList(key);
 	}
 
 	public static Optional<Vector2> getVector2(Config config, String key) {
