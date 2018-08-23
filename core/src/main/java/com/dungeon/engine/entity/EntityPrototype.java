@@ -81,6 +81,10 @@ public class EntityPrototype {
 		return this;
 	}
 
+	public Supplier<Animation<TextureRegion>> getAnimation() {
+		return animation;
+	}
+
 	public EntityPrototype bounciness(float bounciness) {
 		this.bounciness = Util.clamp(bounciness);
 		return this;

@@ -4,10 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.PlayerEntity;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
@@ -17,6 +19,7 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigValueType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +91,20 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
 		ConfigUtil.getFloat(descriptor, "speed").ifPresent(prototype::speed);
 		getLight(descriptor, "light").ifPresent(prototype::light);
-		ConfigUtil.getFloat(descriptor, "timeToLive").ifPresent(prototype::timeToLive);
+
+		if (descriptor.hasPath("timeToLive")) {
+			if (descriptor.getValue("timeToLive").valueType() == ConfigValueType.NUMBER) {
+				prototype.timeToLive(ConfigUtil.requireFloat(descriptor, "timeToLive"));
+			} else if (descriptor.getValue("timeToLive").valueType() == ConfigValueType.STRING) {
+				String timeToLive = ConfigUtil.requireString(descriptor, "timeToLive");
+				if ("animation".equals(timeToLive)) {
+					prototype.timeToLive(prototype.getAnimation().get().getAnimationDuration());
+				} else {
+					throw new LoadingException("Invalid value '" + timeToLive + "' for timeToLive");
+				}
+			}
+		}
+
 		ConfigUtil.getFloat(descriptor, "zAccel").ifPresent(value -> prototype.with(Traits.zAccel(value)));
 		ConfigUtil.getFloat(descriptor, "zSpeed").ifPresent(prototype::zSpeed);
 		ConfigUtil.getInteger(descriptor, "zIndex").ifPresent(prototype::zIndex);
@@ -114,6 +130,15 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onExpire));
 		ConfigUtil.getConfigList(descriptor, "with").ifPresent(
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::with));
+
+		ConfigUtil.getString(descriptor, "hits").ifPresent(predicate -> {
+			if ("nonPlayers".equals(predicate)) {
+				prototype.hitPredicate(PlayerEntity.HIT_NON_PLAYERS);
+			} else {
+				throw new LoadingException("Invalid value '" + predicate + "' for hits");
+			}
+		});
+
 		return prototype;
 	}
 
