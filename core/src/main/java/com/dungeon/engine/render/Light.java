@@ -2,10 +2,9 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.resource.Resources;
-import com.dungeon.game.state.GameState;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,11 +12,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class Light {
-
-	public static Texture NORMAL = Resources.textures.get("light_1.png");
-	public static Texture RAYS = Resources.textures.get("light_2.png");
-	public static Texture FLARE = Resources.textures.get("light_3.png");
-	public static Texture POSTERIZED_TEXTURE = Resources.textures.get("light_cellshaded.png");
 
 	/** Light texture to use */
 	public final Texture texture;
@@ -84,18 +78,18 @@ public class Light {
 	}
 
 	public static Consumer<Light> oscillate(float delta, float frequency) {
-		return light -> light.dim = 1 + (float) Math.sin(GameState.time() * frequency) * delta ;
+		return light -> light.dim = 1 + (float) Math.sin(Engine.time() * frequency) * delta ;
 	}
 
 	public static Consumer<Light> rotateSlow() {
-		return light -> light.angle = GameState.time() % 360 * 20;
+		return light -> light.angle = Engine.time() % 360 * 20;
 	}
 
 	public static Consumer<Light> rotateMedium() {
-		return light -> light.angle = GameState.time() % 360 * 50;
+		return light -> light.angle = Engine.time() % 360 * 50;
 	}
 
 	public static Consumer<Light> rotateFast() {
-		return light -> light.angle = GameState.time() % 360 * 80;
+		return light -> light.angle = Engine.time() % 360 * 80;
 	}
 }

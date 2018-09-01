@@ -2,14 +2,14 @@ package com.dungeon.engine.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.game.state.GameState;
+import com.dungeon.engine.Engine;
 
 public class GameAnimation {
 	private final Animation<TextureRegion> animation;
 	private final float start;
 
 	public GameAnimation(Animation<TextureRegion> animation) {
-		this(animation, GameState.time());
+		this(animation, Engine.time());
 	}
 
 	public GameAnimation(Animation<TextureRegion> animation, float animationStart) {
@@ -31,6 +31,6 @@ public class GameAnimation {
 	}
 
 	public boolean isFinished() {
-		return GameState.time() >= start + animation.getAnimationDuration();
+		return Engine.time() >= start + animation.getAnimationDuration();
 	}
 }

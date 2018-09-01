@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
@@ -15,9 +16,6 @@ import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.combat.Attack;
-import com.dungeon.game.state.GameState;
-import com.dungeon.game.state.OverlayText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +103,7 @@ public class Entity implements Drawable, Movable {
 		}
 		this.drawOffset = prototype.drawOffset;
 		this.drawFunction = prototype.drawFunction.get();
-		this.startTime = GameState.time();
+		this.startTime = Engine.time();
 		this.speed = prototype.speed.get();
 		this.zSpeed = prototype.zSpeed.get();
 		this.knockback = prototype.friction.get();
@@ -118,7 +116,7 @@ public class Entity implements Drawable, Movable {
 		this.zIndex = prototype.zIndex;
 		this.z = prototype.z;
 		Float timeToLive = prototype.timeToLive.get();
-		this.expirationTime = timeToLive == null ? Float.MAX_VALUE : GameState.time() + timeToLive;
+		this.expirationTime = timeToLive == null ? Float.MAX_VALUE : Engine.time() + timeToLive;
 		this.traits = prototype.traits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		if (timeToLive != null) {
 			traits.add(Traits.expireByTime().get(this));
@@ -169,7 +167,7 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public TextureRegion getFrame() {
-		return currentAnimation.getKeyFrame(GameState.time());
+		return currentAnimation.getKeyFrame(Engine.time());
 	}
 
 	public float getStartTime() {
@@ -302,7 +300,7 @@ public class Entity implements Drawable, Movable {
 
 	public void spawn() {
 		// Detect collision against other entities upon spawning
-		GameState.entities.colliding(this).forEach(entity -> {
+		Engine.entities.colliding(this).forEach(entity -> {
 			if (entity != this && collides(entity)) {
 				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
 				if (!onEntityCollision(entity)) {
@@ -328,7 +326,7 @@ public class Entity implements Drawable, Movable {
 			movement.sub(frameMovement);
 		}
 
-		frameMovement.set(movement).scl(GameState.frameTime());
+		frameMovement.set(movement).scl(Engine.frameTime());
 
 		float distance = frameMovement.len();
 
@@ -385,7 +383,7 @@ public class Entity implements Drawable, Movable {
 		}
 
 		// Decrease speed
-		movement.scl(1 / (1 + (GameState.frameTime() * friction)));
+		movement.scl(1 / (1 + (Engine.frameTime() * friction)));
 
 		// Round out very small values
 		if (Math.abs(movement.x) < 0.1f) {
@@ -397,7 +395,7 @@ public class Entity implements Drawable, Movable {
 
 		// Handle vertical movement
 		if (!expired) {
-			z += zSpeed * GameState.frameTime();
+			z += zSpeed * Engine.frameTime();
 			if (z < 0) {
 				z = 0;
 				if (bounciness > 0 && Math.abs(zSpeed) > 10) {
@@ -432,14 +430,14 @@ public class Entity implements Drawable, Movable {
 	}
 
 	private boolean detectTileCollision(Vector2 step) {
-		int tile_size = GameState.getEnvironment().getTileset().tile_size;
+		int tile_size = Engine.getLevelTiles().getTileSize();
 		int left = body.getLeftTile(tile_size);
 		int right = body.getRightTile(tile_size);
 		int bottom = body.getBottomTile(tile_size);
 		int top = body.getTopTile(tile_size);
 		for (int x = left; x <= right; ++x) {
 			for (int y = bottom; y <= top; ++y) {
-				if (!GameState.getLevel().walkableTiles[x][y].isFloor() && body.intersectsTile(x, y, tile_size)) {
+				if (Engine.getLevelTiles().isSolid(x, y) && body.intersectsTile(x, y, tile_size)) {
 					// TODO we may want to enable/disable collision & pushback against solid tiles
 					body.move(step.scl(-1));
 					onTileCollision(Math.abs(step.x) > Math.abs(step.y));
@@ -453,7 +451,7 @@ public class Entity implements Drawable, Movable {
 	private boolean detectEntityCollision(Vector2 step) {
 		// Ugh...
 		final boolean[] pushedBack = new boolean[1];
-		GameState.entities.all().forEach(entity -> {
+		Engine.entities.all().forEach(entity -> {
 			if (entity != this && collides(entity)) {
 				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
 				if (!onEntityCollision(entity)) {
@@ -479,25 +477,6 @@ public class Entity implements Drawable, Movable {
 
 	public boolean collides(Entity entity) {
 		return this.body.intersects(entity.body);
-	}
-
-	public void hit(Attack attack) {
-		if (canBeHurt()) {
-			health -= attack.getDamage();
-			onHitTraits.forEach(m -> m.accept(this));
-			onHit();
-			if (attack.getDamage() > 1) {
-				GameState.addOverlayText(new OverlayText(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
-			}
-			if (health <= 0) {
-				expire();
-			}
-			if (attack.getKnockback() > 0) {
-				Vector2 knockback = getOrigin().cpy().sub(attack.getEmitter().getOrigin()).setLength(attack.getKnockback() * this.knockback);
-				impulse(knockback);
-				System.out.println("KNOCKBACK! " + knockback);
-			}
-		}
 	}
 
 	protected Vector2 getBoundingBox() {

@@ -3,10 +3,10 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-import com.dungeon.game.state.GameState;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -26,7 +26,7 @@ public class Traits {
             return entity -> {
                 // TODO FIXME
                 entity.stop();
-                entity.impulse((float) Math.sin((GameState.time() + phase) * SPIN * frequency) * amplitude, 0);
+                entity.impulse((float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude, 0);
             };
         };
     }
@@ -36,7 +36,7 @@ public class Traits {
         return e -> {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(SPIN);
-            return entity -> entity.impulse(0, (float) Math.sin((GameState.time() + phase) * SPIN * frequency) * amplitude * GameState.frameTime());
+            return entity -> entity.impulse(0, (float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime());
         };
     }
 
@@ -45,18 +45,18 @@ public class Traits {
         return e -> {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(SPIN);
-            return entity -> entity.z += (float) Math.sin((GameState.time() + phase) * SPIN * frequency) * amplitude * GameState.frameTime();
+            return entity -> entity.z += (float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime();
         };
     }
 
     /** Accelerate/decelerate particle in its current direction */
     static public <T extends Entity> TraitSupplier<T> accel(float acceleration) {
-        return e -> entity -> entity.speed += acceleration * GameState.frameTime();
+        return e -> entity -> entity.speed += acceleration * Engine.frameTime();
     }
 
     /** Accelerate/decelerate particle vertically */
     static public <T extends Entity> TraitSupplier<T> zAccel(float acceleration) {
-        return e -> entity -> entity.zSpeed += acceleration * GameState.frameTime();
+        return e -> entity -> entity.zSpeed += acceleration * Engine.frameTime();
     }
 
     static public <T extends Entity> TraitSupplier<T> autoSeek(float strength, float range, Supplier<Stream<Entity>> targetSupplier) {
@@ -86,7 +86,7 @@ public class Traits {
         return e -> {
             // Fade until the end of life
             float ttl = e.getExpirationTime() - e.getStartTime();
-            return entity -> entity.color.a = (1 - (GameState.time() - entity.getStartTime()) / ttl) * alpha;
+            return entity -> entity.color.a = (1 - (Engine.time() - entity.getStartTime()) / ttl) * alpha;
         };
     }
 
@@ -94,13 +94,13 @@ public class Traits {
     public static <T extends Entity> TraitSupplier<T> fadeOutLight() {
         return e -> {
             float ttl = e.getExpirationTime() - e.getStartTime();
-            return entity -> entity.light.dim = 1 - (GameState.time() - entity.getStartTime()) / ttl;
+            return entity -> entity.light.dim = 1 - (Engine.time() - entity.getStartTime()) / ttl;
         };
     }
 
     public static <T extends Entity> TraitSupplier<T> expireByTime() {
         return e -> entity -> {
-            if (GameState.time() > entity.expirationTime) {
+            if (Engine.time() > entity.expirationTime) {
 				entity.expire();
 			}
 		};
@@ -127,7 +127,7 @@ public class Traits {
     static public <T extends Entity> TraitSupplier<T> generator(float frequency, Function<T, Entity> entityProvider) {
         return e -> {
             Timer timer = new Timer(frequency);
-            return entity -> timer.doAtInterval(() -> GameState.entities.add(entityProvider.apply(entity)));
+            return entity -> timer.doAtInterval(() -> Engine.entities.add(entityProvider.apply(entity)));
         };
     }
 
@@ -135,7 +135,7 @@ public class Traits {
         return e -> entity -> {
             int count = minCount != maxCount ? Rand.between(minCount, maxCount) : minCount;
             for (int i = 0; i < count ; ++i) {
-                GameState.entities.add(entityProvider.apply(entity));
+                Engine.entities.add(entityProvider.apply(entity));
             }
         };
     }

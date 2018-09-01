@@ -1,6 +1,6 @@
 package com.dungeon.engine.entity;
 
-import com.dungeon.game.state.GameState;
+import com.dungeon.engine.Engine;
 
 public class Timer {
 	private final float interval;
@@ -8,10 +8,10 @@ public class Timer {
 
 	public Timer(float interval) {
 		this.interval = interval;
-		this.expiration = GameState.time() + interval;
+		this.expiration = Engine.time() + interval;
 	}
 	public void doAtInterval(Runnable runnable) {
-		if (GameState.time() > expiration) {
+		if (Engine.time() > expiration) {
 			runnable.run();
 			expiration += interval;
 		}

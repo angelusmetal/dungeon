@@ -2,10 +2,10 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.state.GameState;
 
 import java.util.function.Supplier;
 
@@ -18,13 +18,13 @@ public interface DrawFunction {
 	}
 
 	static Supplier<DrawFunction> rotateFixed(float speed) {
-		return () -> (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), GameState.time() * speed, true);
+		return () -> (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), Engine.time() * speed, true);
 	}
 
 	static Supplier<DrawFunction> rotateRandom(float speed) {
 		return () -> {
 			float actualSpeed = Rand.between(-speed, speed);
-			return (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), GameState.time() * actualSpeed, true);
+			return (vp, b, e) -> vp.drawRotated(b, e.getFrame(), e.getOrigin().x, e.getOrigin().y + e.getZPos(), Engine.time() * actualSpeed, true);
 		};
 	}
 
