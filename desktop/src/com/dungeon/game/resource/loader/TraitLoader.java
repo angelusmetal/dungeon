@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class TraitLoader {
 
@@ -32,34 +33,18 @@ public class TraitLoader {
 
 	private static <T extends Entity> TraitSupplier<T> generate(Config config) {
 		Optional<Float> frequency = ConfigUtil.getFloat(config, "frequency");
-		Vector2 count = ConfigUtil.getVector2(config, "count").orElse(new Vector2(1, 1));
-		int minCount = (int) count.x;
-		int maxCount = (int) count.y;
+		Supplier<Integer> count = ConfigUtil.getIntegerRange(config, "count").orElse(() -> 1);
 
 		// The particle factory generates a single particle
 		Function<Vector2, Entity> factory = getParticleGenerator(config);
 		Consumer<T> generator;
-		// Generate a random amount of particles
-		if (minCount != maxCount) {
-			generator = e -> {
-				int amount = Rand.between(minCount, maxCount);
-				for (int i = 1; i < amount; ++i) {
-					Engine.entities.add(factory.apply(e.getOrigin()));
-				}
-			};
-		} else {
-			if (minCount == 1) {
-				// Generate a single particle
-				generator = e -> Engine.entities.add(factory.apply(e.getOrigin()));
-			} else {
-				// Generate a fixed amount of particles
-				generator = e -> {
-					for (int i = 1; i < minCount; ++i) {
-						Engine.entities.add(factory.apply(e.getOrigin()));
-					}
-				};
+
+		generator = e -> {
+			int amount = count.get();
+			for (int i = 0; i < amount; ++i) {
+				Engine.entities.add(factory.apply(e.getOrigin()));
 			}
-		}
+		};
 
 		// If frequency is specified, wrap in a timer object
 		if (frequency.isPresent()) {
@@ -96,20 +81,20 @@ public class TraitLoader {
 
 	private static Function<Vector2, Entity> getParticleGenerator(Config config) {
 		String prototype = ConfigUtil.getString(config, "prototype").orElseThrow(() -> new RuntimeException("Missing prototype parameter"));
-		Optional<Vector2> x = ConfigUtil.getVector2(config, "x");
-		Optional<Vector2> y = ConfigUtil.getVector2(config, "y");
-		Optional<Vector2> z = ConfigUtil.getVector2(config, "z");
-		Optional<Vector2> impulseX = ConfigUtil.getVector2(config, "impulseX");
-		Optional<Vector2> impulseY = ConfigUtil.getVector2(config, "impulseY");
-		Optional<Vector2> impulseZ = ConfigUtil.getVector2(config, "impulseZ");
+		Optional<Supplier<Integer>> x = ConfigUtil.getIntegerRange(config, "x");
+		Optional<Supplier<Integer>> y = ConfigUtil.getIntegerRange(config, "y");
+		Optional<Supplier<Integer>> z = ConfigUtil.getIntegerRange(config, "z");
+		Optional<Supplier<Integer>> impulseX = ConfigUtil.getIntegerRange(config, "impulseX");
+		Optional<Supplier<Integer>> impulseY = ConfigUtil.getIntegerRange(config, "impulseY");
+		Optional<Supplier<Integer>> impulseZ = ConfigUtil.getIntegerRange(config, "impulseZ");
 		// List of initialization steps (like offset & impulse)
 		List<Consumer<Entity>> traits = new ArrayList<>();
-		x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += Rand.between(v.x, v.y)));
-		y.ifPresent(v -> traits.add(particle -> particle.getOrigin().y += Rand.between(v.x, v.y)));
-		z.ifPresent(v -> traits.add(particle -> particle.setZPos(particle.getZPos() + Rand.between(v.x, v.y))));
-		impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(Rand.between(v.x, v.y), 0)));
-		impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, Rand.between(v.x, v.y))));
-		impulseZ.ifPresent(v -> traits.add(particle -> particle.setZSpeed(Rand.between(v.x, v.y))));
+		x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += v.get()));
+		y.ifPresent(v -> traits.add(particle -> particle.getOrigin().y += v.get()));
+		z.ifPresent(v -> traits.add(particle -> particle.setZPos(particle.getZPos() + v.get())));
+		impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(v.get(), 0)));
+		impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, v.get())));
+		impulseZ.ifPresent(v -> traits.add(particle -> particle.setZSpeed(v.get())));
 		EntityPrototype proto = Resources.prototypes.get(prototype);
 		return origin -> {
 			Entity particle = new Entity(proto, origin);

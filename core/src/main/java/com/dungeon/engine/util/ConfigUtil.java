@@ -2,6 +2,7 @@ package com.dungeon.engine.util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.resource.LoadingException;
 import com.moandjiezana.toml.Toml;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValueType;
@@ -407,6 +408,24 @@ public class ConfigUtil {
 		return getVector2(config, key).orElseThrow(missing(key));
 	}
 
+	public static Optional<Supplier<Integer>> getIntegerRange(Config config, String key) {
+		if (!config.hasPath(key)) {
+			return Optional.empty();
+		}
+		ConfigValueType type = config.getValue(key).valueType();
+		if (type == ConfigValueType.NUMBER) {
+			int value = requireInteger(config, key);
+			return Optional.of(() -> value);
+		} else if (type == ConfigValueType.LIST) {
+			Vector2 range = requireVector2(config, key);
+			int min = (int) Math.min(range.x, range.y);
+			int max = (int) Math.max(range.x, range.y);
+			return min != max ? Optional.of(() -> Rand.between(min, max)) : Optional.of(() -> min);
+		} else {
+			throw new LoadingException("Invalid type '" + type + "' for key '" + key + "'");
+		}
+	}
+
 	public static Optional<Color> getColor(Config config, String key) {
 		// Attempt to get a hex string
 		if (!config.hasPath(key)) {
@@ -444,7 +463,7 @@ public class ConfigUtil {
 	}
 
 	private static Supplier<RuntimeException> missing(String property) {
-		return () -> new RuntimeException("Missing property '" + property + "'");
+		return () -> new LoadingException("Missing property '" + property + "'");
 	}
 
 }
