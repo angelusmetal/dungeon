@@ -58,27 +58,6 @@ public class TraitLoader {
 		}
 	}
 
-	/**
-	 * A generator that continuously generates particles, in the specified frequency
-	 */
-	private static <T extends Entity> Optional<TraitSupplier<T>> getContinuousGenerator(Config config, String key) {
-		if (config.hasPath(key)) {
-			Config table = config.getConfig(key);
-			float frequency = ConfigUtil.getFloat(table, "frequency").orElseThrow(() -> new RuntimeException("Missing frequency parameter"));
-			Function<Vector2, Entity> generator = getParticleGenerator(table);
-			return Optional.of(Traits.generator(frequency, gen -> generator.apply(gen.getOrigin())));
-		}
-		return Optional.empty();
-	}
-	/**
-	 * A generator that generates particles once, with the (optionally) specified particle count
-	 */
-	private static <T extends Entity> Optional<TraitSupplier<T>> getInstantGenerator(Config config) {
-		Vector2 count = ConfigUtil.getVector2(config, "count").orElse(new Vector2(1, 1));
-		Function<Vector2, Entity> generator = getParticleGenerator(config);
-		return Optional.of(Traits.generatorMultiple((int)count.x, (int)count.y, gen -> generator.apply(gen.getOrigin())));
-	}
-
 	private static Function<Vector2, Entity> getParticleGenerator(Config config) {
 		String prototype = ConfigUtil.getString(config, "prototype").orElseThrow(() -> new RuntimeException("Missing prototype parameter"));
 		Optional<Supplier<Integer>> x = ConfigUtil.getIntegerRange(config, "x");
@@ -92,8 +71,11 @@ public class TraitLoader {
 		x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += v.get()));
 		y.ifPresent(v -> traits.add(particle -> particle.getOrigin().y += v.get()));
 		z.ifPresent(v -> traits.add(particle -> particle.setZPos(particle.getZPos() + v.get())));
-		impulseX.ifPresent(v -> traits.add(particle -> particle.impulse(v.get(), 0)));
-		impulseY.ifPresent(v -> traits.add(particle -> particle.impulse(0, v.get())));
+		if (impulseX.isPresent() || impulseY.isPresent()) {
+			Supplier<Integer> xSupplier = impulseX.orElse(() -> 0);
+			Supplier<Integer> ySupplier = impulseY.orElse(() -> 0);
+			traits.add(particle -> particle.impulse(xSupplier.get(), ySupplier.get()));
+		}
 		impulseZ.ifPresent(v -> traits.add(particle -> particle.setZSpeed(v.get())));
 		EntityPrototype proto = Resources.prototypes.get(prototype);
 		return origin -> {

@@ -25,8 +25,8 @@ public class Traits {
             float phase = Rand.nextFloat(SPIN);
             return entity -> {
                 // TODO FIXME
-                entity.stop();
-                entity.impulse((float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude, 0);
+                //entity.stop();
+                entity.impulse((float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime(), 0);
             };
         };
     }
