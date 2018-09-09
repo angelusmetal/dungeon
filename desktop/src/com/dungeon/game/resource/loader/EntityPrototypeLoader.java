@@ -57,6 +57,10 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		ConfigUtil.getConfigList(descriptor, "onExpire").ifPresent(
 				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
+		ConfigUtil.getConfigList(descriptor, "onRest").ifPresent(
+				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
+		ConfigUtil.getConfigList(descriptor, "onSignal").ifPresent(
+				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		ConfigUtil.getConfigList(descriptor, "with").ifPresent(
 				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), descriptor, dependencies);
@@ -87,7 +91,6 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
 		getDrawFunction(descriptor, "drawFunction").ifPresent(prototype::drawFunction);
 		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);
-		ConfigUtil.getString(descriptor, "onRest").map(EntityPrototypeLoader::getOnRest).ifPresent(prototype::onRest);
 		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
 		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
@@ -130,6 +133,10 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onHit));
 		ConfigUtil.getConfigList(descriptor, "onExpire").ifPresent(
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onExpire));
+		ConfigUtil.getConfigList(descriptor, "onRest").ifPresent(
+				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onRest));
+		ConfigUtil.getConfigList(descriptor, "onSignal").ifPresent(
+				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onSignal));
 		ConfigUtil.getConfigList(descriptor, "with").ifPresent(
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::with));
 

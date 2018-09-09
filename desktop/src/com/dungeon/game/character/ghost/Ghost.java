@@ -1,6 +1,7 @@
 package com.dungeon.game.character.ghost;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.engine.entity.Entity;
@@ -19,11 +20,10 @@ public class Ghost extends CreatureEntity {
 	private float visibleUntil = 0;
 	private final Timer targettingTimer = new Timer(0.2f);
 
-	Ghost(Vector2 origin, GhostFactory factory) {
-		super(origin, factory.character);
+	Ghost(Vector2 origin, EntityPrototype prototype, GhostFactory factory) {
+		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
-		setCurrentAnimation(factory.idleAnimation);
 	}
 
 	@Override
@@ -60,8 +60,7 @@ public class Ghost extends CreatureEntity {
 
 	@Override
 	public void onExpire() {
-		Engine.entities.add(factory.createDeath(getOrigin(), invertX())) ;
-		// Create loot
+		// Create loot TODO Move this to the conf file
 		Game.createCreatureLoot(getOrigin());
 	}
 

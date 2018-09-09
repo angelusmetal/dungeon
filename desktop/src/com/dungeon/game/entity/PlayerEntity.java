@@ -72,7 +72,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public void interact() {
 		if (!expired) {
 			Body area = Body.centered(getAim().cpy().setLength2(interactDistance).add(getOrigin()), interactArea);
-			Engine.entities.area(area).forEach(e -> e.onSignal(this));
+			Engine.entities.area(area).forEach(e -> e.signal(this));
 		}
 	}
 

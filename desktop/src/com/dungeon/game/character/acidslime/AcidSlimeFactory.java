@@ -18,15 +18,13 @@ import com.dungeon.game.resource.Resources;
 import com.dungeon.engine.Engine;
 import com.moandjiezana.toml.Toml;
 
-public class AcidSlimeFactory implements EntityTypeFactory {
+public class AcidSlimeFactory {
 
 	private static final String IDLE = "slime_acid_idle";
 	private static final String ATTACK = "slime_acid_attack";
 
 	final Animation<TextureRegion> idleAnimation;
 	final Animation<TextureRegion> attackAnimation;
-
-	final EntityPrototype character;
 
 	final float maxTargetDistance;
 	final float dashDistance;
@@ -50,8 +48,6 @@ public class AcidSlimeFactory implements EntityTypeFactory {
 		idleAnimation = Resources.animations.get(IDLE);
 		attackAnimation = Resources.animations.get(ATTACK);
 
-		character = Resources.prototypes.get("creature_slime_acid");
-
 		final Animation<TextureRegion> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
 		final EntityPrototype pool = Resources.prototypes.get("creature_slime_acid_pool");
 
@@ -74,9 +70,8 @@ public class AcidSlimeFactory implements EntityTypeFactory {
 		};
 	}
 
-	@Override
-	public Entity build(Vector2 origin) {
-		return new AcidSlime(origin, this);
+	public Entity build(Vector2 origin, EntityPrototype prototype) {
+		return new AcidSlime(origin, prototype, this);
 	}
 
 }

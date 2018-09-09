@@ -15,10 +15,9 @@ public class EntityFactory {
 	public int registerFactory(String type, EntityTypeFactory factory) {
 		int ordinal = factories.size();
 		Integer duplicate = ordinals.put(type, ordinal);
-		// TODO Reenable when migration is done!
-//		if (duplicate != null) {
-//			throw new RuntimeException("Entity type '" + type + "' already had a factory associated");
-//		}
+		if (duplicate != null) {
+			throw new RuntimeException("Entity type '" + type + "' already had a factory associated");
+		}
 		factories.add(factory);
 		return ordinal;
 	}

@@ -10,17 +10,9 @@ import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.engine.Engine;
 
-public class ExitPlatformFactory implements EntityTypeFactory {
+public class ExitPlatformFactory {
 
-	private final EntityPrototype prototype;
-
-	public ExitPlatformFactory() {
-		prototype = Resources.prototypes.get("exit_platform");
-
-	}
-
-	@Override
-	public Entity build(Vector2 origin) {
+	public Entity build(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
 			boolean exited = false;
 			@Override

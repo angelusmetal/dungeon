@@ -1,6 +1,7 @@
 package com.dungeon.game.character.slime;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.game.entity.DungeonEntity;
@@ -16,8 +17,8 @@ public class SlimeSpawn extends CreatureEntity {
 	private final SlimeFactory factory;
 	private float nextThink;
 
-	SlimeSpawn(Vector2 origin, SlimeFactory factory) {
-		super(origin, factory.spawn);
+	SlimeSpawn(Vector2 origin, EntityPrototype prototype, SlimeFactory factory) {
+		super(origin, prototype);
 		this.factory = factory;
 		setCurrentAnimation(factory.spawnBlinkAnimation);
 	}
@@ -69,16 +70,6 @@ public class SlimeSpawn extends CreatureEntity {
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	protected void onExpire() {
-		Engine.entities.add(factory.createSpawnDeath(this));
-	}
-
-	@Override
-	protected void onHit() {
-		Engine.entities.add(factory.createBlob(this));
 	}
 
 }

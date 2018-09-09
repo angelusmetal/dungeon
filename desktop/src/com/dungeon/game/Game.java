@@ -9,24 +9,13 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
-import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.character.acidslime.AcidSlimeFactory;
-import com.dungeon.game.character.fireslime.FireSlimeFactory;
-import com.dungeon.game.character.ghost.GhostFactory;
-import com.dungeon.game.character.player.PlayerCharacterFactory;
-import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.object.exit.ExitPlatformFactory;
-import com.dungeon.game.object.powerups.HealthPowerupFactory;
-import com.dungeon.game.object.props.DoorFactory;
-import com.dungeon.game.object.props.FurnitureFactory;
-import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
@@ -35,12 +24,10 @@ import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 import com.moandjiezana.toml.Toml;
 
-import java.lang.invoke.LambdaConversionException;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,25 +92,6 @@ public class Game {
 			}
 		});
 
-		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
-		DoorFactory doorFactory = new DoorFactory();
-		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, doorFactory::buildVertical);
-		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, doorFactory::buildHorizontal);
-
-		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
-		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());
-		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory());
-
-		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
-		WeaponFactory weaponFactory = new WeaponFactory();
-		entityFactory.registerFactory(EntityType.WEAPON_SWORD, weaponFactory.sword);
-		entityFactory.registerFactory(EntityType.WEAPON_CAT_STAFF, weaponFactory.catStaff);
-		entityFactory.registerFactory(EntityType.WEAPON_GREEN_STAFF, weaponFactory.greenStaff);
-
-		PlayerCharacterFactory playerCharacter = new PlayerCharacterFactory();
-		entityFactory.registerFactory(EntityType.ASSASSIN, playerCharacter.assassin);
-		entityFactory.registerFactory(EntityType.THIEF, playerCharacter.thief);
-		entityFactory.registerFactory(EntityType.WITCH, playerCharacter.witch);
 	}
 
 	private static Object createEntityFactory(String className) {

@@ -38,7 +38,6 @@
     maxTargetDistance = 300 # Targeting distance
     jumpDistance = 50       # Jump distance
     damagePerSecond = 1     # Damage dealth per second upon contact
-    blobsOnDeath = 16       # Max amount of blobs spawned upon death
     attackFrequency = 3.0   # Frequency of attacks, in seconds
 [[creatures]]
     id = "SLIME_ACID"

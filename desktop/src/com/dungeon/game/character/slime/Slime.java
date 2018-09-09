@@ -1,6 +1,7 @@
 package com.dungeon.game.character.slime;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.engine.entity.Entity;
@@ -16,8 +17,8 @@ public class Slime extends CreatureEntity {
 
 	private final SlimeFactory factory;
 	private float nextThink;
-	Slime(Vector2 origin, SlimeFactory factory) {
-		super(origin, factory.character);
+	Slime(Vector2 origin, EntityPrototype prototype, SlimeFactory factory) {
+		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		setCurrentAnimation(factory.blinkAnimation);
@@ -73,19 +74,8 @@ public class Slime extends CreatureEntity {
 
 	@Override
 	protected void onExpire() {
-		Engine.entities.add(factory.createDeath(this));
-		// Create a bunch of blobs
-		Rand.doBetween(factory.blobsOnDeath / 2, factory.blobsOnDeath, () ->
-				Engine.entities.add(factory.createBlob(this)));
-		Rand.doBetween(0, 1, () ->
-				Engine.entities.add(factory.createSpawn(this)));
-		// Create loot
+		// TODO Move this as well to conf
 		Game.createCreatureLoot(getOrigin());
-	}
-
-	@Override
-	protected void onHit() {
-		Engine.entities.add(factory.createBlob(this));
 	}
 
 }

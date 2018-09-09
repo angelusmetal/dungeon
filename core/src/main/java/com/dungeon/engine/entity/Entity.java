@@ -68,6 +68,7 @@ public class Entity implements Drawable, Movable {
 	protected List<Trait<Entity>> onHitTraits;
 	protected List<Trait<Entity>> onExpireTraits;
 	protected List<Trait<Entity>> onRestTraits;
+	protected List<Trait<Entity>> onSignalTraits;
 
 	/** Determines whether an entity can be hit */
 	protected final Predicate<Entity> hitPredicate;
@@ -124,6 +125,7 @@ public class Entity implements Drawable, Movable {
 		this.onHitTraits = prototype.onHitTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.onExpireTraits = prototype.onExpireTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.onRestTraits = prototype.onRestTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
+		this.onSignalTraits = prototype.onSignalTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.maxHealth = prototype.health.get();
 		this.health = maxHealth;
 		this.solid = prototype.solid;
@@ -157,6 +159,7 @@ public class Entity implements Drawable, Movable {
 		this.onHitTraits = other.onHitTraits;
 		this.onExpireTraits = other.onExpireTraits;
 		this.onRestTraits = other.onRestTraits;
+		this.onSignalTraits = other.onSignalTraits;
 		this.maxHealth = other.getMaxHealth();
 		this.health = other.health;
 		this.solid = other.solid;
@@ -551,5 +554,11 @@ public class Entity implements Drawable, Movable {
 		return zIndex;
 	}
 
-	public void onSignal(Entity emitter) {}
+	public final void signal(Entity emitter) {
+		onSignal(emitter);
+		System.out.println("I'm being interacted with");
+		onSignalTraits.forEach(m -> m.accept(this));
+	}
+
+	protected void onSignal(Entity emitter) {}
 }

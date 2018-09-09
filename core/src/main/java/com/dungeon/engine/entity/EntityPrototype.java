@@ -24,6 +24,7 @@ public class EntityPrototype {
 	List<TraitSupplier<Entity>> onHitTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onExpireTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onRestTraits = new ArrayList<>();
+	List<TraitSupplier<Entity>> onSignalTraits = new ArrayList<>();
 	Supplier<Float> speed = () -> 1f;
 	Supplier<Float> zSpeed = () -> 0f;
 	int zIndex = 0;
@@ -40,7 +41,7 @@ public class EntityPrototype {
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
 	Vector2 boundingBoxOffset = Vector2.Zero;
-	String factory;
+	private String factory;
 
 	public EntityPrototype() {}
 
@@ -55,6 +56,7 @@ public class EntityPrototype {
 		this.onHitTraits = new ArrayList<>(other.onHitTraits);
 		this.onExpireTraits = new ArrayList<>(other.onExpireTraits);
 		this.onRestTraits = new ArrayList<>(other.onRestTraits);
+		this.onSignalTraits = new ArrayList<>(other.onSignalTraits);
 		this.speed = other.speed;
 		this.zSpeed = other.zSpeed;
 		this.zIndex = other.zIndex;
@@ -239,6 +241,11 @@ public class EntityPrototype {
 
 	public EntityPrototype onRest(TraitSupplier<Entity> trait) {
 		this.onRestTraits.add(trait);
+		return this;
+	}
+
+	public EntityPrototype onSignal(TraitSupplier<Entity> trait) {
+		this.onSignalTraits.add(trait);
 		return this;
 	}
 

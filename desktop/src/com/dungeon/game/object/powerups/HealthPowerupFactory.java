@@ -11,17 +11,10 @@ import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
 
-public class HealthPowerupFactory implements EntityTypeFactory {
+public class HealthPowerupFactory {
 
-	private final EntityPrototype powerupPrototype;
-
-	public HealthPowerupFactory() {
-		powerupPrototype = Resources.prototypes.get("health_powerup");
-	}
-
-	@Override
-	public Entity build(Vector2 origin) {
-		return new DungeonEntity(powerupPrototype, origin) {
+	public Entity build(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
 
 			@Override
 			protected boolean onEntityCollision(Entity entity) {

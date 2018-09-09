@@ -17,14 +17,16 @@ import java.util.function.Supplier;
 
 public class WeaponFactory {
 
-	public final EntityTypeFactory sword;
-	public final EntityTypeFactory catStaff;
-	public final EntityTypeFactory greenStaff;
+	public Entity sword(Vector2 origin, EntityPrototype prototype) {
+		return buildWeaponEntity(origin, prototype, SwordWeapon::new);
+	}
 
-	public WeaponFactory() {
-		sword = origin -> buildWeaponEntity(origin, Resources.prototypes.get("weapon_sword"), SwordWeapon::new);
-		catStaff = origin -> buildWeaponEntity(origin, Resources.prototypes.get("weapon_cat_staff"), CatStaffWeapon::new);
-		greenStaff = origin -> buildWeaponEntity(origin, Resources.prototypes.get("weapon_green_staff"), GreenStaffWeapon::new);
+	public Entity catStaff(Vector2 origin, EntityPrototype prototype) {
+		return buildWeaponEntity(origin, prototype, CatStaffWeapon::new);
+	}
+
+	public Entity greenStaff(Vector2 origin, EntityPrototype prototype) {
+		return buildWeaponEntity(origin, prototype, GreenStaffWeapon::new);
 	}
 
 	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Supplier<Weapon> weaponSupplier) {
