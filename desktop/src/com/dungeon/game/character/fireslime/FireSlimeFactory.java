@@ -14,7 +14,7 @@ import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
-public class FireSlimeFactory implements EntityTypeFactory {
+public class FireSlimeFactory {
 
 	private static final String IDLE = "slime_fire_idle";
 
@@ -45,11 +45,9 @@ public class FireSlimeFactory implements EntityTypeFactory {
 		weapon = new FireballWeapon();
 	}
 
-	@Override
-	public Entity build(Vector2 origin) {
+	public Entity build(Vector2 origin, EntityPrototype prototype) {
 		return new FireSlime(origin, this);
 	}
-
 	public Weapon getWeapon() {
 		return weapon;
 	}

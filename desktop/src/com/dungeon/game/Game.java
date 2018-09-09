@@ -8,6 +8,8 @@ import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
+import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
+import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.character.acidslime.AcidSlimeFactory;
@@ -33,7 +35,15 @@ import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 import com.moandjiezana.toml.Toml;
 
+import java.lang.invoke.LambdaConversionException;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Game {
@@ -64,23 +74,45 @@ public class Game {
 		initEntityFactories(entityFactory);
 	}
 	private static void initEntityFactories(EntityFactory entityFactory) {
+		Map<String, Object> factoryObjects = new HashMap<>();
 		Resources.prototypes.getKeys().forEach(name -> {
 			EntityPrototype prototype = Resources.prototypes.get(name);
-			entityFactory.registerFactory(name, origin -> new Entity(prototype, origin));
+			if (prototype.getFactory() != null) {
+				String factoryName = prototype.getFactory();
+				String className = factoryName.substring(0, factoryName.lastIndexOf('.'));
+				String methodName = factoryName.substring(factoryName.lastIndexOf('.') + 1);
+				Object factory = factoryObjects.computeIfAbsent(className, Game::createEntityFactory);
+				try {
+					MethodHandles.Lookup caller = MethodHandles.lookup();
+					MethodType invokedType = MethodType.methodType(EntityPrototypeFactory.class, factory.getClass());
+					MethodType methodType = MethodType.methodType(Entity.class, Vector2.class, EntityPrototype.class);
+					MethodHandle handle = caller.findVirtual(factory.getClass(), methodName, methodType);
+					EntityPrototypeFactory lambda = (EntityPrototypeFactory) LambdaMetafactory.metafactory(caller,
+							"build",
+							invokedType,
+							methodType,
+							handle,
+							methodType)
+							.getTarget()
+							.bindTo(factory)
+							.invoke();
+					entityFactory.registerFactory(name, vector2 -> lambda.build(vector2, prototype));
+				} catch (Throwable throwable) {
+					throw new IllegalStateException(throwable);
+				}
+			} else {
+				entityFactory.registerFactory(name, origin -> new Entity(prototype, origin));
+			}
 		});
 
 		entityFactory.registerFactory(EntityType.EXIT, new ExitPlatformFactory());
 		DoorFactory doorFactory = new DoorFactory();
 		entityFactory.registerFactory(EntityType.DOOR_VERTICAL, doorFactory::buildVertical);
 		entityFactory.registerFactory(EntityType.DOOR_HORIZONTAL, doorFactory::buildHorizontal);
-		FurnitureFactory furnitureFactory = new FurnitureFactory();
-		entityFactory.registerFactory(EntityType.CHEST, furnitureFactory.chest);
-		entityFactory.registerFactory(EntityType.COIN, furnitureFactory.coin);
 
 		entityFactory.registerFactory(EntityType.GHOST, new GhostFactory());
 		entityFactory.registerFactory(EntityType.SLIME, new SlimeFactory());
 		entityFactory.registerFactory(EntityType.SLIME_ACID, new AcidSlimeFactory());
-		entityFactory.registerFactory(EntityType.SLIME_FIRE, new FireSlimeFactory());
 
 		entityFactory.registerFactory(EntityType.HEALTH_POWERUP, new HealthPowerupFactory());
 		WeaponFactory weaponFactory = new WeaponFactory();
@@ -92,6 +124,14 @@ public class Game {
 		entityFactory.registerFactory(EntityType.ASSASSIN, playerCharacter.assassin);
 		entityFactory.registerFactory(EntityType.THIEF, playerCharacter.thief);
 		entityFactory.registerFactory(EntityType.WITCH, playerCharacter.witch);
+	}
+
+	private static Object createEntityFactory(String className) {
+		try {
+			return Class.forName(className).newInstance();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	public static float getDifficultyTier() {

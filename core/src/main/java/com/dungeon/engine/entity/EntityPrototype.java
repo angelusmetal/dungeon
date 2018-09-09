@@ -40,6 +40,7 @@ public class EntityPrototype {
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
 	Vector2 boundingBoxOffset = Vector2.Zero;
+	String factory;
 
 	public EntityPrototype() {}
 
@@ -69,6 +70,7 @@ public class EntityPrototype {
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
 		this.castsShadow = other.castsShadow;
+		this.factory = other.factory;
 	}
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
@@ -240,5 +242,13 @@ public class EntityPrototype {
 		return this;
 	}
 
+	public EntityPrototype factory(String factory) {
+		this.factory = factory;
+		return this;
+	}
+
+	public String getFactory() {
+		return factory;
+	}
 }
 

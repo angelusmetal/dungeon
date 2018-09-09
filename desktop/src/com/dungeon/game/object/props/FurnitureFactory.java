@@ -3,6 +3,7 @@ package com.dungeon.game.object.props;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.Game;
@@ -14,25 +15,21 @@ import com.dungeon.engine.Engine;
 
 public class FurnitureFactory {
 
-	public final EntityTypeFactory chest;
-	public final EntityTypeFactory coin;
-
-	public FurnitureFactory() {
-		EntityPrototype chestPrototype = Resources.prototypes.get("chest");
-		EntityPrototype coinPrototype = Resources.prototypes.get("coin");
-
+	public Entity chest(Vector2 origin, EntityPrototype prototype) {
 		Animation<TextureRegion> chestOpening = Resources.animations.get("chest_opening");
-
-		chest = origin -> new DungeonEntity(chestPrototype, origin) {
-			@Override public void onSignal(Entity emitter) {
+		return new DungeonEntity(prototype, origin) {
+			@Override
+			public void onSignal(Entity emitter) {
 				setCurrentAnimation(chestOpening);
 				Entity loot = Game.build(Game.createLoot(), getOrigin());
 				loot.setZPos(15);
 				Engine.entities.add(loot);
 			}
 		};
+	}
 
-		coin = origin -> new DungeonEntity(coinPrototype, origin) {
+	public Entity coin(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
 			@Override public boolean onEntityCollision(Entity entity) {
 				if (!expired && entity instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) entity;
@@ -44,7 +41,6 @@ public class FurnitureFactory {
 				return false;
 			}
 		};
-
 	}
 
 }
