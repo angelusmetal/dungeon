@@ -3,14 +3,13 @@ package com.dungeon.game.level;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.Game;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
-import com.moandjiezana.toml.Toml;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,22 +17,13 @@ import java.util.Stack;
 
 public class ProceduralLevelGenerator {
 
-	public static final List<String> DEFAULT_MONSTER_TYPES = Arrays.asList("GHOST", "SLIME", "SLIME_ACID", "SLIME_FIRE");
-
 	private int width;
 	private int height;
-	private final Toml configuration;
 	private TileType[][] tiles;
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
-	private List<Coords> doors = new ArrayList<>();
 	private Environment environment;
-
-	public enum Type {
-		HEART,
-		NORMAL
-	}
 
 	public enum Direction {
 		UP (0, 1),
@@ -60,26 +50,13 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public static class Coords {
-		public int x, y;
-		public Coords(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		@Override
-		public String toString() {
-			return "x: " + x + ", y: " + y;
-		}
-	}
-
 	public static class ConnectionPoint {
-		Coords coords;
+		Vector2 coords;
 		Direction direction;
 		boolean visited = false;
 		boolean active = false;
 		public ConnectionPoint (int x, int y, Direction direction) {
-			this.coords = new Coords(x, y);
+			this.coords = new Vector2(x, y);
 			this.direction = direction;
 		}
 
@@ -89,8 +66,7 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public ProceduralLevelGenerator(Toml configuration, Environment environment, int width, int height) {
-		this.configuration = configuration;
+	public ProceduralLevelGenerator(Environment environment, int width, int height) {
 		this.environment = environment;
 		this.width = width;
 		this.height = height;
@@ -118,7 +94,7 @@ public class ProceduralLevelGenerator {
 			} else {
 				direction = closestEdgeY == startY ? Direction.UP : Direction.DOWN;
 			}
-			generateRooms(startX, startY, direction, Type.HEART);
+			generateRooms(startX, startY, direction);
 		}
 
 		Tile[][] map = new Tile[width][height];
@@ -138,16 +114,15 @@ public class ProceduralLevelGenerator {
 	}
 
 	private List<EntityPlaceholder> generateEntities() {
-		List<String> monsterTypes = environment.getMonsters();//configuration.getList("map.creatures", DEFAULT_MONSTER_TYPES).stream().map(EntityType::valueOf).collect(Collectors.toList());
+		List<String> monsterTypes = environment.getMonsters();
 		List<EntityPlaceholder> placeholders = new ArrayList<>();
 
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
 			Room room = rooms.get(r);
-			// Create a random amount of monsters in each room
-			final int skip = Rand.nextInt(room.spawnPoints.size());
-
-			room.spawnPoints.forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
+			// Create a random amount of monsters in each room (less likely every level)
+			final int skip = Math.max(0, Rand.nextInt(room.spawnPoints.size()) - Game.getLevelCount());
+			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
 
 		}
 		// Add placeholders
@@ -225,27 +200,24 @@ public class ProceduralLevelGenerator {
 		final int x;
 		final int y;
 		final Direction direction;
-		final Type type;
 		final ConnectionPoint originPoint;
 		final int roomSeparation;
 		final int generation;
-		public Frame(int x, int y, Direction direction, Type type, ConnectionPoint originPoint, int roomSeparation, int generation) {
+		Frame(int x, int y, Direction direction, ConnectionPoint originPoint, int roomSeparation, int generation) {
 			this.x = x;
 			this.y = y;
 			this.direction = direction;
-			this.type = type;
 			this.originPoint = originPoint;
 			this.roomSeparation = roomSeparation;
 			this.generation = generation;
 		}
 	}
 
-	private void generateRooms(int x, int y, Direction direction, Type type) {
+	private void generateRooms(int x, int y, Direction direction) {
 		Stack<Frame> stack = new Stack<>();
-		stack.push(new Frame(x, y, direction, type, null, 0, 1));
+		stack.push(new Frame(x, y, direction, null, 0, 1));
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();
-			System.out.println("Generating " + frame.type + " room at " + frame.x + ", " + frame.y + ", with direction " + frame.direction);
 			// Check the available size, depending on the direction
 			Room room = attemptRoom(frame.x, frame.y, frame.generation, frame.direction);
 			if (room != null) {
@@ -255,30 +227,24 @@ public class ProceduralLevelGenerator {
 				}
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
-					System.out.println("   -> Visiting connection point " + point + "...");
 					// Attempt to generate a room in that direction (at a random separation)
 					int roomSeparation = Rand.between(minRoomSeparation, maxRoomSeparation);
-					stack.push(new Frame(point.coords.x + point.direction.x * roomSeparation, point.coords.y + point.direction.y * roomSeparation, point.direction, Type.NORMAL, point, roomSeparation, frame.generation + 1));
+					stack.push(new Frame((int) point.coords.x + point.direction.x * roomSeparation, (int) point.coords.y + point.direction.y * roomSeparation, point.direction, point, roomSeparation, frame.generation + 1));
 				});
 				if (frame.originPoint != null) {
 					frame.originPoint.active = true;
 					// Make the connecting tile walkable
 					for (int i = 0; i <= frame.roomSeparation; ++i) {
-						tiles[frame.originPoint.coords.x + frame.originPoint.direction.x * i][frame.originPoint.coords.y + frame.originPoint.direction.y * i] = TileType.FLOOR;
-						// TODO Hmm not entirely right... I need to fix this
-						doors.add(new Coords(frame.originPoint.coords.x + frame.originPoint.direction.x,frame.originPoint.coords.y + frame.originPoint.direction.y));
+						tiles[(int) frame.originPoint.coords.x + frame.originPoint.direction.x * i][(int) frame.originPoint.coords.y + frame.originPoint.direction.y * i] = TileType.FLOOR;
 					}
 					frame.originPoint.visited = true;
 				}
-			} else {
-				System.out.println("... but could not place it");
 			}
 		}
 	}
 
 	private void addDoor(Frame frame, Room room) {
 		String doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
-		// TODO replace Coords with Vector2...
 		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f, frame.originPoint.coords.y));
 		room.placeholders.add(door);
 		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.coords.y + frame.roomSeparation * frame.direction.y));
@@ -296,7 +262,7 @@ public class ProceduralLevelGenerator {
 			Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
 			if (entryPoint.isPresent()) {
 				ConnectionPoint p = entryPoint.get();
-				Room room = new Room(x - p.coords.x, y - p.coords.y, generation + 1, prototype);
+				Room room = new Room((int) (x - p.coords.x), (int) (y - p.coords.y), generation + 1, prototype);
 				if (canPlaceRoom(room)) {
 					placeRoom(room);
 					return room;
@@ -323,12 +289,10 @@ public class ProceduralLevelGenerator {
 	}
 
 	private void placeRoom(Room room) {
-		System.out.println("Placing room " + room);
 		rooms.add(room);
 		for (int x = 0; x < room.width; ++x) {
-			for (int y = 0; y < room.height; ++y) {
-				tiles[x + room.left][y + room.bottom] = room.tiles[x][y];
-			}
+			if (room.height >= 0)
+				System.arraycopy(room.tiles[x], 0, tiles[x + room.left], room.bottom, room.height);
 		}
 	}
 

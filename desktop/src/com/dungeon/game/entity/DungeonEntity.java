@@ -7,9 +7,7 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
-import com.dungeon.game.Dungeon;
 import com.dungeon.game.combat.Attack;
-import com.dungeon.game.combat.DamageType;
 
 import static com.dungeon.game.Game.text;
 

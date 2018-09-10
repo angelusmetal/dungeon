@@ -3,10 +3,10 @@ package com.dungeon.game.render.stage;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.resource.Resources;
 import com.dungeon.engine.Console;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.resource.Resources;
 
 import java.util.Map;
 import java.util.function.Supplier;

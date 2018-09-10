@@ -6,7 +6,6 @@ import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
-import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;

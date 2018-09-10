@@ -2,11 +2,11 @@ package com.dungeon.game.render.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.engine.Engine;
 import com.dungeon.game.Game;
 
 import java.util.function.Predicate;

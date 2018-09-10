@@ -1,9 +1,9 @@
 package com.dungeon.game.render.stage;
 
 import com.dungeon.engine.Engine;
-import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.entity.CreatureEntity;
 
 public class HealthbarStage implements RenderStage {
 

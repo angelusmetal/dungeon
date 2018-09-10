@@ -3,15 +3,12 @@ package com.dungeon.game.render.stage;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.Dungeon;
-import com.dungeon.game.Game;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.resource.Resources;
-import com.dungeon.engine.Engine;
-import com.dungeon.engine.OverlayText;
 
 public class HudStage implements RenderStage {
 

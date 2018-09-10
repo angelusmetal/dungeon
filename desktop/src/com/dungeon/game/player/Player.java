@@ -3,18 +3,18 @@ package com.dungeon.game.player;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import com.dungeon.engine.Console;
 import com.dungeon.engine.Engine;
-import com.dungeon.game.Game;
-import com.dungeon.game.controller.PlayerControlBundle;
-import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.Game;
 import com.dungeon.game.combat.CatStaffWeapon;
 import com.dungeon.game.combat.GreenStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
+import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.render.stage.ViewPortRenderer;
-import com.dungeon.engine.Console;
 
 public class Player implements Disposable {
 

@@ -4,11 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
-import com.dungeon.engine.Engine;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;

@@ -2,14 +2,10 @@ package com.dungeon.game.object.powerups;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.engine.entity.factory.EntityTypeFactory;
-import com.dungeon.engine.util.Rand;
-import com.dungeon.game.resource.Resources;
 
 public class HealthPowerupFactory {
 

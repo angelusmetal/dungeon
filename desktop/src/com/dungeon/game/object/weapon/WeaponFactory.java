@@ -4,14 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.game.combat.CatStaffWeapon;
 import com.dungeon.game.combat.GreenStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.entity.PlayerEntity;
 
 import java.util.function.Supplier;
 

@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
+import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.Comparator;
 

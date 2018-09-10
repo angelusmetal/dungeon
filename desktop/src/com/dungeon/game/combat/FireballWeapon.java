@@ -4,17 +4,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.game.Game;
-import com.dungeon.game.resource.Lights;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.entity.Projectile;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.Game;
+import com.dungeon.game.entity.PlayerEntity;
+import com.dungeon.game.entity.Projectile;
+import com.dungeon.game.resource.Lights;
 import com.dungeon.game.resource.Resources;
-import com.dungeon.engine.Engine;
 
 import java.util.function.Supplier;
 

@@ -8,7 +8,6 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.resource.Resources;
 

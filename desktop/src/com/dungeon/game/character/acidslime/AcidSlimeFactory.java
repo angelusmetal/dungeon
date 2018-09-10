@@ -3,19 +3,19 @@ package com.dungeon.game.character.acidslime;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.game.Game;
-import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.Game;
 import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
+import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.resource.Resources;
-import com.dungeon.engine.Engine;
 import com.moandjiezana.toml.Toml;
 
 public class AcidSlimeFactory {

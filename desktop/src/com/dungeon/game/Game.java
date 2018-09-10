@@ -227,7 +227,7 @@ public class Game {
 		env = "dungeon";
 		environment = Resources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
-		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(configuration, environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);
 	}

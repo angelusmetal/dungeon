@@ -1,18 +1,17 @@
 package com.dungeon.game.character.ghost;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.game.Game;
-import com.dungeon.game.entity.CreatureEntity;
-import com.dungeon.engine.entity.Entity;
-import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
-import com.dungeon.engine.Engine;
+import com.dungeon.game.entity.CreatureEntity;
+import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.entity.PlayerEntity;
 
 public class Ghost extends CreatureEntity {
 

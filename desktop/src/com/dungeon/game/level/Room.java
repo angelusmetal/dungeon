@@ -41,7 +41,7 @@ public class Room {
 			placeholders.add(new EntityPlaceholder(placeholder.getType(), new Vector2(placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom), placeholder.getChance()));
 		}
 		for (ProceduralLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
-			connectionPoints.add(new ProceduralLevelGenerator.ConnectionPoint(connection.coords.x + left, connection.coords.y + bottom, connection.direction));
+			connectionPoints.add(new ProceduralLevelGenerator.ConnectionPoint((int) (connection.coords.x + left), (int) (connection.coords.y + bottom), connection.direction));
 		}
 	}
 

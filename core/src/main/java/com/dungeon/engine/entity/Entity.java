@@ -556,7 +556,6 @@ public class Entity implements Drawable, Movable {
 
 	public final void signal(Entity emitter) {
 		onSignal(emitter);
-		System.out.println("I'm being interacted with");
 		onSignalTraits.forEach(m -> m.accept(this));
 	}
 

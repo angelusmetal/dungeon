@@ -6,7 +6,6 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
-import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
 public class GhostFactory {
