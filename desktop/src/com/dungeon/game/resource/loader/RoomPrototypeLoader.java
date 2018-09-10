@@ -73,13 +73,11 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 		return array;
 	}
 
-	private static List<ProceduralLevelGenerator.ConnectionPoint> getConnections(Config config) {
+	private static List<Vector2> getConnections(Config config) {
 		return config.getConfigList("connections").stream().map(t -> {
 			int x = ConfigUtil.requireInteger(t, "x");
 			int y = ConfigUtil.requireInteger(t, "y");
-			String type = ConfigUtil.requireString(t, "type");
-			ProceduralLevelGenerator.Direction direction = ProceduralLevelGenerator.Direction.valueOf(type);
-			return new ProceduralLevelGenerator.ConnectionPoint(x, y, direction);
+			return new Vector2(x, y);
 		}).collect(Collectors.toList());
 	}
 

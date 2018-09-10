@@ -2,6 +2,7 @@ package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
@@ -21,8 +22,8 @@ public class AcidSlime extends CreatureEntity {
 	}
 	private Status status;
 
-	AcidSlime(Vector2 origin, AcidSlimeFactory factory) {
-		super(origin, factory.character);
+	AcidSlime(Vector2 origin, EntityPrototype prototype, AcidSlimeFactory factory) {
+		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 	}

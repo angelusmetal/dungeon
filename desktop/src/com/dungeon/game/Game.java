@@ -11,6 +11,7 @@ import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.ProceduralLevelGenerator;
 import com.dungeon.game.level.Room;
@@ -55,10 +56,10 @@ public class Game {
 	private static State currentState = State.MENU;
 
 	public static void initialize(Toml configuration) {
-		entityFactory = new EntityFactory();
 		Game.configuration = configuration;
-		lootSet = configuration.getList("map.items");
+		entityFactory = new EntityFactory();
 		initEntityFactories(entityFactory);
+		lootSet = configuration.getList("map.items");
 	}
 	private static void initEntityFactories(EntityFactory entityFactory) {
 		Map<String, Object> factoryObjects = new HashMap<>();
@@ -88,7 +89,7 @@ public class Game {
 					throw new IllegalStateException(throwable);
 				}
 			} else {
-				entityFactory.registerFactory(name, origin -> new Entity(prototype, origin));
+				entityFactory.registerFactory(name, origin -> new DungeonEntity(prototype, origin));
 			}
 		});
 
@@ -124,8 +125,6 @@ public class Game {
 
 		generateNewLevel();
 
-		// Update player count
-//		playerCount = players.size();
 		levelCount++;
 
 		// Get starting room and spawn player there
@@ -139,7 +138,6 @@ public class Game {
 		}
 
 		initViewPorts();
-//		randomizeBaseLight();
 
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
