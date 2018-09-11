@@ -2,16 +2,20 @@ package com.dungeon.game.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.CooldownTrigger;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.Game;
+import java.util.List;
 
-// TODO Remove this and move this logic to toml files
 public abstract class CreatureEntity extends DungeonEntity implements Movable, Drawable {
 
 	private Vector2 aim = new Vector2(1, 0);
+	private float nextTalk = 0;
 
 	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.25f); // Default is fire every 0.25 seconds
 
@@ -45,4 +49,56 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 //		viewPort.draw(batch, GameState.getTilesetManager().getHudTileset().HEALTH_BAR, getOrigin().x - getDrawOffset().x, getOrigin().y - getDrawOffset().y + getBoundingBox().y + z, getBoundingBox().x * health/maxHealth, 2);
 //		viewPort.draw(batch, GameState.getTilesetManager().getHudTileset().HEALTH_BAR, getOrigin().x - getBoundingBox().x / 2, getOrigin().y + getBoundingBox().y / 2 + 4 + z, getBoundingBox().x * health/maxHealth, 2);
 	}
+
+	protected void say(String text) {
+		if (Engine.time() > nextTalk) {
+			nextTalk = Engine.time() + 4;
+			Game.say(this, text);
+		}
+	}
+
+	protected void say(String text, float chance) {
+		if (Rand.chance(chance)) {
+			say(text);
+		}
+	}
+
+	protected void say(List<String> text) {
+		if (Engine.time() > nextTalk) {
+			nextTalk = Engine.time() + 4;
+			Game.say(this, Rand.pick(text));
+		}
+	}
+
+	protected void say(List<String> text, float chance) {
+		if (Rand.chance(chance)) {
+			say(text);
+		}
+	}
+	protected void shout(String text) {
+		if (Engine.time() > nextTalk) {
+			nextTalk = Engine.time() + 4;
+			Game.shout(this, text);
+		}
+	}
+
+	protected void shout(String text, float chance) {
+		if (Rand.chance(chance)) {
+			shout(text);
+		}
+	}
+
+	protected void shout(List<String> text) {
+		if (Engine.time() > nextTalk) {
+			nextTalk = Engine.time() + 4;
+			Game.shout(this, Rand.pick(text));
+		}
+	}
+
+	protected void shout(List<String> text, float chance) {
+		if (Rand.chance(chance)) {
+			shout(text);
+		}
+	}
+
 }

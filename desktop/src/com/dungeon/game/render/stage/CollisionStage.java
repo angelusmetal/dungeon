@@ -25,7 +25,7 @@ public class CollisionStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				batch.setColor(collision);
 				Engine.entities.all().filter(viewPort::isInViewPort).forEach(e ->
 						viewPort.draw(

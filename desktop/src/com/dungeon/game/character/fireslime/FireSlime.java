@@ -12,7 +12,13 @@ import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.player.Players;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FireSlime extends CreatureEntity {
+
+	private static final List<String> attackPhrases = Arrays.asList("I'm on fire!", "Eat lead!", "That will teach you", "Smoky!");
+	private static final List<String> deathPhrases = Arrays.asList("Oh my!");
 
 	private final FireSlimeFactory factory;
 	private float nextThink;
@@ -38,6 +44,7 @@ public class FireSlime extends CreatureEntity {
 				// Fire a projectile
 				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
 				factory.getWeapon().spawnEntities(getOrigin(), aim);
+				shout(attackPhrases, 0.1f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
 				speed = factory.idleSpeed;
@@ -64,6 +71,7 @@ public class FireSlime extends CreatureEntity {
 			factory.getWeapon().spawnEntities(getOrigin(), aim);
 			aim.rotate(360f / bullets);
 		}
+		shout(deathPhrases, 0.3f);
 		// Create loot
 		Game.createCreatureLoot(getOrigin());
 	}

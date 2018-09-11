@@ -13,7 +13,13 @@ import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Ghost extends CreatureEntity {
+
+	private static final List<String> attackPhrases = Arrays.asList("Boo!", "I see dead people...", "Turn back!", "Yum!");
+	private static final List<String> hitPhrases = Arrays.asList("Ouch!", "Who you gonna call?", "That was mean!");
 
 	private final GhostFactory factory;
 	private float visibleUntil = 0;
@@ -34,6 +40,7 @@ public class Ghost extends CreatureEntity {
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				moveStrictlyTowards(closest.getEntity().getOrigin());
 			}
+			shout(attackPhrases, 0.02f);
 		});
 		// Set transparency based on invulnerability
 		color.a = Util.clamp(visibleUntil - Engine.time(), 0.1f, 0.5f);
@@ -55,6 +62,7 @@ public class Ghost extends CreatureEntity {
 	public void hit(Attack attack) {
 		super.hit(attack);
 		visibleUntil = Engine.time() + factory.visibleTime;
+		shout(hitPhrases, 0.3f);
 	}
 
 	@Override

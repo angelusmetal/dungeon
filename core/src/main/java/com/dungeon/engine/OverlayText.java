@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.ArrayList;
@@ -81,6 +82,11 @@ public class OverlayText {
     
     public OverlayText outline(boolean overlay) {
         this.outline = overlay;
+        return this;
+    }
+
+    public OverlayText bindTo(Entity entity, Vector2 offset) {
+        traits.add(() -> origin.set(entity.getOrigin().x + offset.x, entity.getBody().getTopRight().y + offset.y));
         return this;
     }
 

@@ -12,7 +12,12 @@ import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Slime extends CreatureEntity {
+
+	private static final List<String> attackPhrases = Arrays.asList("Let's play!", "Jell-o!", "Eat me!");
 
 	private final SlimeFactory factory;
 	private float nextThink;
@@ -36,6 +41,7 @@ public class Slime extends CreatureEntity {
 				aim(getMovement());
 				zSpeed = 100;
 				updateCurrentAnimation(factory.idleAnimation);
+				shout(attackPhrases, 0.02f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
 				// Aim random direction

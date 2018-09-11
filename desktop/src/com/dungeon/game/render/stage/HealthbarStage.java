@@ -19,7 +19,7 @@ public class HealthbarStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				Engine.entities.all().filter(e -> e instanceof CreatureEntity).filter(viewPort::isInViewPort).map(e -> (CreatureEntity)e).forEach(e -> e.drawHealthbar(batch, viewPort));
 			});
 		}

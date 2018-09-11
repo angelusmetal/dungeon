@@ -37,7 +37,7 @@ public class HudStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				int x = MARGIN;
 				int y = viewPort.cameraHeight - MARGIN;
 				// Display coins

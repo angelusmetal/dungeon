@@ -29,7 +29,7 @@ public class EntityPrototype {
 	Supplier<Float> zSpeed = () -> 0f;
 	int zIndex = 0;
 	float z = 0;
-	Predicate<Entity> hitPredicate = (entity) -> false;
+	Predicate<Entity> hitPredicate = entity -> false;
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
 	Supplier<Integer> health = () -> 100;

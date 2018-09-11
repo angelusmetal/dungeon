@@ -28,7 +28,7 @@ public class EntitiesStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				// Iterate entities in render order and draw them
 				Engine.entities.all().filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
 			});

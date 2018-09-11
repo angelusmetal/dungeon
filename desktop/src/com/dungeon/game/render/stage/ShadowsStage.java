@@ -29,7 +29,7 @@ public class ShadowsStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				// Iterate entities in render order and draw them
 				Engine.entities.all()
 						.filter(Entity::castsShadow)

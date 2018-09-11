@@ -6,13 +6,11 @@ import com.dungeon.engine.viewport.ViewPort;
 
 public class ScaleStage implements RenderStage {
 
-	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final SpriteBatch batch;
 	private boolean enabled = true;
 
-	public ScaleStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, SpriteBatch batch) {
-		this.viewPort = viewPort;
+	public ScaleStage(ViewPortBuffer viewportBuffer, SpriteBatch batch) {
 		this.viewportBuffer = viewportBuffer;
 		this.batch = batch;
 	}

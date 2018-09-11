@@ -51,6 +51,27 @@ public class Game {
 	public static OverlayText text(Vector2 origin, String text, Color color) {
 		return new OverlayText(origin, text, color, Resources.fonts.get(Resources.DEFAULT_FONT));
 	}
+
+	private static Vector2 SAY_OFFSET = new Vector2(0, 20);
+
+	public static OverlayText say(Entity emitter, String text) {
+		OverlayText overlayText = text(emitter.getOrigin(), text)
+				.spell(1, 0)
+				.fadeout(1, 4)
+				.bindTo(emitter, SAY_OFFSET);
+		Engine.addOverlayText(overlayText);
+		return overlayText;
+	}
+
+	public static OverlayText shout(Entity emitter, String text) {
+		OverlayText overlayText = text(emitter.getOrigin(), text)
+				.spell(0.25f, 0)
+				.fadeout(1, 1)
+				.bindTo(emitter, SAY_OFFSET);
+		Engine.addOverlayText(overlayText);
+		return overlayText;
+	}
+
 	private static Level level;
 	private static Environment environment;
 	private static State currentState = State.MENU;
@@ -127,6 +148,8 @@ public class Game {
 
 		levelCount++;
 
+		initViewPorts();
+
 		// Get starting room and spawn player there
 		Room startingRoom = level.rooms.get(0);
 		int spawnPoint = 0;
@@ -134,10 +157,8 @@ public class Game {
 			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(environment.getTileset().tile_size);
 			player.spawn(origin);
 			origin.y += 30;
-			Engine.addOverlayText(text(origin, getWelcomeMessage()).spell(1, 1).fadeout(1, 4));
+			player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage());
 		}
-
-		initViewPorts();
 
 		// Instantiate entities for every placeholder
 		for (EntityPlaceholder placeholder : level.entityPlaceholders) {

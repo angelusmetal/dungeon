@@ -26,7 +26,7 @@ public class NoiseStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				noiseContext.run(batch, () -> noiseBuffer.draw(batch, viewPort.cameraWidth, viewPort.cameraHeight));
 			});
 		}

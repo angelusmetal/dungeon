@@ -25,7 +25,7 @@ public class MotionBlurStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			blurBuffer.render((batch) -> {
+			blurBuffer.render(batch -> {
 				// Blend current viewport render in the blur buffer
 				float alpha = (Engine.time() - startTime) / duration * (1 - opacity) + opacity;
 				batch.setColor(1, 1, 1, alpha);
@@ -53,7 +53,7 @@ public class MotionBlurStage implements RenderStage {
 	public void begin() {
 		enabled = true;
 		startTime = Engine.time();
-		blurBuffer.render((batch) -> {
+		blurBuffer.render(batch -> {
 			// Refresh the blur buffer with the latest snapshot
 			batch.setColor(1, 1, 1, 1);
 			viewportBuffer.draw(batch);

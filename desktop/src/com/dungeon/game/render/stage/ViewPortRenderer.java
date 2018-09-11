@@ -31,6 +31,7 @@ public class ViewPortRenderer implements Disposable {
 	private final HudStage hudFragment;
 	private final ScaleStage scaleFragment;
 	private final ConsoleStage consoleFragment;
+	private final TitleStage titleStage;
 	private final List<RenderStage> pipeline = new ArrayList<>();
 
 	public ViewPortRenderer(ViewPort viewPort, Player player) {
@@ -45,11 +46,12 @@ public class ViewPortRenderer implements Disposable {
 		collisionFragment = new CollisionStage(viewPort, viewportBuffer);
 		noiseFragment = new NoiseStage(viewPort, viewportBuffer);
 		motionBlurFragment = new MotionBlurStage(viewPort, viewportBuffer);
-		scaleFragment = new ScaleStage(viewPort, viewportBuffer, batch);
+		scaleFragment = new ScaleStage(viewportBuffer, batch);
 		consoleFragment = new ConsoleStage(viewPort, batch, player.getConsole());
 		overlayTextFragment = new OverlayTextStage(viewPort, viewportBuffer);
 		playerArrowsFragment = new PlayerArrowsStage(viewPort, viewportBuffer);
 		hudFragment = new HudStage(viewPort, viewportBuffer, player);
+		titleStage = new TitleStage(viewPort, viewportBuffer);
 
 		pipeline.add(mapFragment);
 		pipeline.add(shadowsFragment);
@@ -62,6 +64,7 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.add(overlayTextFragment);
 		pipeline.add(playerArrowsFragment);
 		pipeline.add(hudFragment);
+		pipeline.add(titleStage);
 		pipeline.add(scaleFragment);
 		pipeline.add(consoleFragment);
 
@@ -124,6 +127,14 @@ public class ViewPortRenderer implements Disposable {
 
 	public float getFrameTime() {
 		return frameTime;
+	}
+
+	public void displayTitle(String title) {
+		titleStage.display(title);
+	}
+
+	public void displayTitle(String title, String subtitle) {
+		titleStage.display(title, subtitle);
 	}
 
 	@Override

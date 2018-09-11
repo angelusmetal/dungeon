@@ -42,14 +42,14 @@ public class LightStage implements RenderStage {
 	public void render() {
 		if (enabled) {
 			// Render light in a separate frame buffer
-			lightBuffer.render((batch) -> combineLights.run(batch, () -> {
+			lightBuffer.render(batch -> combineLights.run(batch, () -> {
 //				Gdx.gl.glClearColor(gamma, gamma, gamma, 1f);
 				Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				Engine.entities.all().filter(lightInCamera).forEach(e -> e.drawLight(batch, viewPort));
 			}));
 			// Draw lighting on top of scene
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 //				batch.setColor(GameState.getBaseLight());
 				blendLights.run(batch, () -> lightBuffer.draw(batch));
 //				batch.setColor(Color.WHITE);

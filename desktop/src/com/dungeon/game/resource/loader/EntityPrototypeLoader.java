@@ -153,9 +153,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
 	private static <T extends Entity> TraitSupplier<T> getOnRest(String onRest) {
 		if ("expire".equals(onRest)) {
-			return (e) -> Entity::expire;
+			return e -> Entity::expire;
 		} else if ("stop".equals(onRest)) {
-			return (e) -> Entity::stop;
+			return e -> Entity::stop;
 		}
 		throw new RuntimeException("Unknown onRest type '" + onRest + "'");
 	}

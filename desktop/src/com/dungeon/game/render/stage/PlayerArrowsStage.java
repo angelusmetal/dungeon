@@ -26,7 +26,7 @@ public class PlayerArrowsStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				for (Player player : Players.all()) {
 					if (!viewPort.isInViewPort(player.getAvatar())) {
 						float x = Util.clamp(player.getAvatar().getOrigin().x - viewPort.cameraX, 0, viewPort.cameraWidth - 16);

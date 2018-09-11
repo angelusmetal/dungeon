@@ -12,7 +12,12 @@ import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class AcidSlime extends CreatureEntity {
+
+	private static final List<String> attackPhrases = Arrays.asList("Caustic!", "Slimy!", "I'm toxic!");
 
 	private final AcidSlimeFactory factory;
 	private final Vector2 lastPool = new Vector2(0,0);
@@ -42,6 +47,7 @@ public class AcidSlime extends CreatureEntity {
 				aim(getMovement());
 				updateCurrentAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
+				shout(attackPhrases, 0.02f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
 				speed = 5f;

@@ -36,7 +36,7 @@ public class MapStage implements RenderStage {
 			// Draw map
 			viewportBuffer.render(this::drawMap);
 		} else {
-			viewportBuffer.render((batch) -> {
+			viewportBuffer.render(batch -> {
 				Gdx.gl.glClearColor(1, 1, 1, 1);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			});
