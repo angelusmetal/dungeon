@@ -38,7 +38,7 @@ public class FireballWeapon extends ProjectileWeapon {
 
 		float bulletSpeed = 100f;
 		Light bulletLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Lights.NORMAL, Light.torchlight());
-		Light bulletTrailLight = new Light(20, new Color(1, 0.5f, 0, 0.5f), Lights.NORMAL, Light.torchlight());
+		Light bulletTrailLight = new Light(50, new Color(1, 0.5f, 0, 0.5f), Lights.NORMAL);
 
 		projectile = new EntityPrototype()
 				.animation(projectileAnimation)
@@ -60,8 +60,9 @@ public class FireballWeapon extends ProjectileWeapon {
 				.boundingBox(bulletBoundingBox)
 				.drawOffset(bulletDrawOffset)
 				.light(bulletTrailLight)
-				.timeToLive(explosionAnimation.getAnimationDuration())
+				.timeToLive(1f)
 				.with(Traits.fadeOut(1f))
+				.with(Traits.fadeOutLight())
 				.zSpeed(10);	}
 
 	@Override

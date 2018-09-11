@@ -1,5 +1,6 @@
 package com.dungeon.game.render.stage;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,8 +17,6 @@ public class TitleStage implements RenderStage {
 	private final ViewPortBuffer viewportBuffer;
 	private final ViewPortBuffer textBuffer;
 	private boolean enabled = true;
-	private GlyphLayout title;
-	private GlyphLayout subtitle;
 	private BitmapFont titleFont;
 	private BitmapFont subtitleFont;
 	private Color color = Color.WHITE.cpy();
@@ -36,10 +35,6 @@ public class TitleStage implements RenderStage {
 	public void render() {
 		if (enabled) {
 			if (expiration > Engine.time()) {
-				textBuffer.render(batch -> {
-					titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - title.width / 2, viewPort.cameraHeight / 2 + title.height);
-					subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2 - subtitle.width / 2, viewPort.cameraHeight / 2 - subtitle.height);
-				});
 				viewportBuffer.render(batch -> {
 					color.a = Util.clamp((expiration - Engine.time()) / 2f);
 					batch.setColor(color);
@@ -61,15 +56,23 @@ public class TitleStage implements RenderStage {
 	}
 	
 	public void display(String title) {
-		this.title = new GlyphLayout(titleFont, title);
-		this.subtitle = null;
 		this.expiration = Engine.time() + 4;
+		textBuffer.render(batch -> {
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
+			titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - titleLayout.width / 2, viewPort.cameraHeight / 2 + titleLayout.height);
+		});
 	}
 
 	public void display(String title, String subtitle) {
-		this.title = new GlyphLayout(titleFont, title);
-		this.subtitle = new GlyphLayout(subtitleFont, subtitle);
 		this.expiration = Engine.time() + 4;
+		textBuffer.render(batch -> {
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
+			GlyphLayout subtitleLayout = new GlyphLayout(subtitleFont, subtitle);
+			titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - titleLayout.width / 2, viewPort.cameraHeight / 2 + titleLayout.height);
+			subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2 - subtitleLayout.width / 2, viewPort.cameraHeight / 2 - subtitleLayout.height);
+		});
 	}
 
 }
