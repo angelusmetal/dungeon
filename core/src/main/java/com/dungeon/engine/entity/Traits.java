@@ -84,17 +84,16 @@ public class Traits {
     /** Fade out particle */
     static public <T extends Entity> TraitSupplier<T> fadeOut(float alpha) {
         return e -> {
-            // Fade until the end of life
-            float ttl = e.getExpirationTime() - e.getStartTime();
-            return entity -> entity.color.a = (1 - (Engine.time() - entity.getStartTime()) / ttl) * alpha;
+            TimeGradient gradient = TimeGradient.fadeOut(e.getStartTime(), e.getExpirationTime() - e.getStartTime());
+            return entity -> entity.color.a = gradient.get() * alpha;
         };
     }
 
 
     public static <T extends Entity> TraitSupplier<T> fadeOutLight() {
         return e -> {
-            float ttl = e.getExpirationTime() - e.getStartTime();
-            return entity -> entity.light.dim = 1 - (Engine.time() - entity.getStartTime()) / ttl;
+            TimeGradient gradient = TimeGradient.fadeOut(e.getStartTime(), e.getExpirationTime() - e.getStartTime());
+            return entity -> entity.light.dim = gradient.get();
         };
     }
 
@@ -128,15 +127,6 @@ public class Traits {
         return e -> {
             Timer timer = new Timer(frequency);
             return entity -> timer.doAtInterval(() -> Engine.entities.add(entityProvider.apply(entity)));
-        };
-    }
-
-    static public <T extends Entity> TraitSupplier<T> generatorMultiple(int minCount, int maxCount, Function<T, Entity> entityProvider) {
-        return e -> entity -> {
-            int count = minCount != maxCount ? Rand.between(minCount, maxCount) : minCount;
-            for (int i = 0; i < count ; ++i) {
-                Engine.entities.add(entityProvider.apply(entity));
-            }
         };
     }
 
