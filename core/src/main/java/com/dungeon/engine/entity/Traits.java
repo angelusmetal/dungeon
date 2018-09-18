@@ -111,7 +111,7 @@ public class Traits {
             Animation<TextureRegion> newAnimation;
             Vector2 vector = vectorProvider.apply(entity);
             // Updates current animation based on the self impulse vector
-            entity.setInvertX(vector.x < 0);
+            entity.getDrawScale().x = vector.x < 0 ? -1 : 1;
             if (Math.abs(vector.x) > Math.abs(vector.y)) {
                 // Sideways animation
                 newAnimation = side;
@@ -128,6 +128,21 @@ public class Traits {
             Timer timer = new Timer(frequency);
             return entity -> timer.doAtInterval(() -> Engine.entities.add(entityProvider.apply(entity)));
         };
+    }
+
+    static public <T extends Entity> TraitSupplier<T> rotateFixed(float speed) {
+        return e -> entity -> entity.setRotation(Engine.time() * speed);
+    }
+
+    static public <T extends Entity> TraitSupplier<T> rotateRandom(Supplier<Integer> speed) {
+        return e -> {
+            float actualSpeed = speed.get();
+            return entity -> entity.setRotation(Engine.time() * actualSpeed);
+        };
+    }
+
+    static public <T extends Entity> TraitSupplier<T> rotateVector(Vector2 rotateVector) {
+        return e -> entity -> entity.setRotation(rotateVector.angle());
     }
 
 }

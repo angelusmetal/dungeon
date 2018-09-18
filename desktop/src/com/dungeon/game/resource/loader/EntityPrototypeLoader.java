@@ -6,7 +6,6 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.ResourceDescriptor;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
@@ -89,7 +87,6 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getVector2(descriptor, "boundingBoxOffset").ifPresent(prototype::boundingBoxOffset);
 		ConfigUtil.getBoolean(descriptor, "castsShadow").ifPresent(prototype::castsShadow);
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
-		getDrawFunction(descriptor, "drawFunction").ifPresent(prototype::drawFunction);
 		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);
 		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
 		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
@@ -205,19 +202,6 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		} else {
 			throw new RuntimeException("light trait '" + name + "' not recognized");
 		}
-	}
-
-	private static Optional<Supplier<DrawFunction>> getDrawFunction(Config config, String key) {
-		if (config.hasPath(key)) {
-			Config table = config.getConfig(key);
-			Optional<Supplier<DrawFunction>> rotateFixed = ConfigUtil.getFloat(table, "rotateFixed").map(DrawFunction::rotateFixed);
-			Optional<Supplier<DrawFunction>> rotateRandom = ConfigUtil.getFloat(table, "rotateRandom").map(DrawFunction::rotateRandom);
-			if (rotateFixed.isPresent() && rotateRandom.isPresent()) {
-				throw new RuntimeException("Only one drawFunction can be specified");
-			}
-			return Optional.ofNullable(rotateFixed.orElse(rotateRandom.orElse(null)));
-		}
-		return Optional.empty();
 	}
 
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 
 public class ViewPort {
@@ -37,15 +38,6 @@ public class ViewPort {
 		this.cameraHeight = (int) (height / scale);
 	}
 
-	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float invertX, Vector2 drawOffset) {
-		batch.draw(
-				textureRegion,
-				(x - cameraX - drawOffset.x * invertX),
-				(y - cameraY - drawOffset.y),
-				textureRegion.getRegionWidth() * invertX,
-				textureRegion.getRegionHeight());
-	}
-
 	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float width, float height) {
 		batch.draw(
 				textureRegion,
@@ -55,22 +47,19 @@ public class ViewPort {
 				height);
 	}
 
-	public void drawRotated(SpriteBatch batch, TextureRegion region, float x, float y, float rotation, boolean clockwise) {
-//		float scaleX, float scaleY, float rotation, boolean clockwise) {
-		float originX = region.getRegionWidth() / 2;
-		float originY = region.getRegionHeight() / 2;
+	public void drawEntity(SpriteBatch batch, Entity entity) {
+		TextureRegion frame = entity.getFrame();
 		batch.draw(
-				region,
-				(x - cameraX) - originX,
-				(y - cameraY) - originY,
-				originX,
-				originY,
-				region.getRegionWidth(),
-				region.getRegionHeight(),
-				1,
-				1,
-				rotation,
-				clockwise);
+				frame,
+				(entity.getOrigin().x - cameraX) - entity.getDrawOffset().x,
+				(entity.getOrigin().y - cameraY) - entity.getDrawOffset().y + entity.getZPos(),
+				entity.getDrawOffset().x,
+				entity.getDrawOffset().y,
+				frame.getRegionWidth(),
+				frame.getRegionHeight(),
+				entity.getDrawScale().x,
+				entity.getDrawScale().y,
+				entity.getRotation());
 	}
 
 	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter, float rotation) {
@@ -105,6 +94,10 @@ public class ViewPort {
 				e.getOrigin().x - e.getDrawOffset().x + e.getFrame().getRegionWidth() > cameraX &&
 				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() < cameraY + cameraHeight &&
 				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
+	}
+
+	public Vector2 worldToScreen(Vector2 vector2) {
+		return new Vector2(vector2.x - cameraX, vector2.y - cameraY);
 	}
 
 	@Override

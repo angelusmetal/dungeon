@@ -4,6 +4,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.entity.TraitSupplier;
+import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.Game;
@@ -26,9 +27,23 @@ public class TraitLoader {
 			return e -> Entity::expire;
 		} else if (type.equals("stop")) {
 			return e -> Entity::stop;
+		} else if (type.equals("rotate")) {
+			return rotate(config);
+		} else if (type.equals("rotateRandom")) {
+			return rotateRandom(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
+	}
+
+	private static <T extends Entity> TraitSupplier<T> rotate(Config config) {
+		float speed = ConfigUtil.requireFloat(config, "speed");
+		return Traits.rotateFixed(speed);
+	}
+
+	private static <T extends Entity> TraitSupplier<T> rotateRandom(Config config) {
+		Supplier<Integer> speed = ConfigUtil.requireIntegerRange(config, "speed");
+		return Traits.rotateRandom(speed);
 	}
 
 	private static <T extends Entity> TraitSupplier<T> generate(Config config) {
@@ -81,7 +96,7 @@ public class TraitLoader {
 		return generator -> {
 			Entity particle = Game.build(prototype, generator.getOrigin());
 			// Inherit generator properties
-			particle.setInvertX(generator.invertX());
+			particle.getDrawScale().set(generator.getDrawScale());
 			if (inheritColor) {
 				particle.setColor(generator.getColor());
 				if (particle.getLight() != null) {

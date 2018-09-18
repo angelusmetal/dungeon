@@ -11,7 +11,6 @@ import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
-import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.Util;
@@ -53,7 +52,6 @@ public class Entity implements Drawable, Movable {
 	 * Bounciness ratio (0...1)
 	 */
 	protected float bounciness;
-	private boolean invertX = false;
 
 	protected boolean expired;
 	protected float health;
@@ -62,6 +60,8 @@ public class Entity implements Drawable, Movable {
 	protected Light light;
 	protected DrawContext drawContext;
 	private final Vector2 drawOffset;
+	private Vector2 drawScale = new Vector2(1, 1);
+	private float rotation = 0;
 
 	/** Aspects */
 	protected List<Trait<Entity>> traits;
@@ -88,8 +88,6 @@ public class Entity implements Drawable, Movable {
 	protected boolean canBeHurt;
 	protected boolean castsShadow;
 
-	private DrawFunction drawFunction;
-
 	/**
 	 * Create an entity at origin, from the specified prototype
 	 * @param prototype Prototype to build entity from
@@ -103,7 +101,6 @@ public class Entity implements Drawable, Movable {
 			this.body = Body.withOffset(origin, prototype.boundingBox, prototype.boundingBoxOffset);
 		}
 		this.drawOffset = prototype.drawOffset;
-		this.drawFunction = prototype.drawFunction.get();
 		this.startTime = Engine.time();
 		this.speed = prototype.speed.get();
 		this.zSpeed = prototype.zSpeed.get();
@@ -142,7 +139,6 @@ public class Entity implements Drawable, Movable {
 		this.setCurrentAnimation(other.currentAnimation);
 		this.body = Body.centered(other.getOrigin(), other.getBoundingBox());
 		this.drawOffset = other.drawOffset;
-		this.drawFunction = other.drawFunction;
 		this.startTime = other.getStartTime();
 		this.speed = other.getSpeed();
 		this.zSpeed = other.getZSpeed();
@@ -200,15 +196,6 @@ public class Entity implements Drawable, Movable {
 	}
 
 	@Override
-	public boolean invertX() {
-		return invertX;
-	}
-
-	public void setInvertX(boolean invertX) {
-		this.invertX = invertX;
-	}
-
-	@Override
 	public Vector2 getOrigin() {
 		return body.getOrigin();
 	}
@@ -242,12 +229,20 @@ public class Entity implements Drawable, Movable {
 		return drawOffset;
 	}
 
-	public Body getBody() {
-		return body;
+	public Vector2 getDrawScale() {
+		return drawScale;
 	}
 
-	public void setDrawFunction(DrawFunction drawFunction) {
-		this.drawFunction = drawFunction;
+	public float getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+
+	public Body getBody() {
+		return body;
 	}
 
 	@Override
@@ -489,7 +484,7 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		drawContext.run(batch, () -> drawFunction.draw(viewPort, batch, this));
+		drawContext.run(batch, () -> viewPort.drawEntity(batch, this));
 	}
 
 	public void drawLight(SpriteBatch batch, ViewPort viewPort) {

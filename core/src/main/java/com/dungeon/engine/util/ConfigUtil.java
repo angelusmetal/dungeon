@@ -426,6 +426,10 @@ public class ConfigUtil {
 		}
 	}
 
+	public static Supplier<Integer> requireIntegerRange(Config config, String key) {
+		return getIntegerRange(config, key).orElseThrow(missing(key));
+	}
+
 	public static Optional<Color> getColor(Config config, String key) {
 		// Attempt to get a hex string
 		if (!config.hasPath(key)) {

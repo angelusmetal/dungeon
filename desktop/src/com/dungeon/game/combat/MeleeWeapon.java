@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.game.entity.Projectile;
 import com.dungeon.game.resource.Resources;
 
@@ -63,7 +62,7 @@ public abstract class MeleeWeapon extends Weapon {
 
 	private Entity createSlash(Vector2 origin, Vector2 aim) {
 		Entity entity = new Entity(slash, origin);
-		entity.setDrawFunction(DrawFunction.rotateVector(aim).get());
+		entity.setRotation(aim.angle());
 		return entity;
 	}
 

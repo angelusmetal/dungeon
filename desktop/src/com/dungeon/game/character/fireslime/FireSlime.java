@@ -31,8 +31,9 @@ public class FireSlime extends CreatureEntity {
 
 	@Override
 	public void think() {
-		if (getSelfImpulse().x != 0) {
-			setInvertX(getSelfImpulse().x < 0);
+		// TODO Move this to a trait?
+		if (getMovement().x != 0) {
+			getDrawScale().x = getMovement().x < 0 ? -1 : 1;
 		}
 		if (Engine.time() > nextThink) {
 			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);

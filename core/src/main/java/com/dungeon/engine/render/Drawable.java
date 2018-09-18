@@ -8,7 +8,6 @@ import com.dungeon.engine.viewport.ViewPort;
 public interface Drawable {
 
 	TextureRegion getFrame();
-	boolean invertX();
 
 	Vector2 getOrigin();
 	Vector2 getDrawOffset();

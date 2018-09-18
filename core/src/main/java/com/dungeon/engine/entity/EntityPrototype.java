@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.DrawFunction;
 import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.Util;
 
@@ -31,7 +30,6 @@ public class EntityPrototype {
 	float z = 0;
 	Predicate<Entity> hitPredicate = entity -> false;
 	Supplier<Float> timeToLive = () -> null;
-	Supplier<DrawFunction> drawFunction = DrawFunction.regular();
 	Supplier<Integer> health = () -> 100;
 	boolean solid = false;
 	boolean canBeHit = false;
@@ -63,7 +61,6 @@ public class EntityPrototype {
 		this.z = other.z;
 		this.hitPredicate = other.hitPredicate;
 		this.timeToLive = other.timeToLive;
-		this.drawFunction = other.drawFunction;
 		this.health = other.health;
 		this.boundingBox = other.boundingBox.cpy();
 		this.boundingBoxOffset = other.boundingBoxOffset.cpy();
@@ -131,11 +128,6 @@ public class EntityPrototype {
 
 	public EntityPrototype drawOffset(Vector2 drawOffset) {
 		this.drawOffset = drawOffset;
-		return this;
-	}
-
-	public EntityPrototype drawFunction(Supplier<DrawFunction> drawFunction) {
-		this.drawFunction = drawFunction;
 		return this;
 	}
 
