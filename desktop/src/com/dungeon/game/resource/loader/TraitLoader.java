@@ -8,6 +8,7 @@ import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.Game;
+import com.dungeon.game.entity.PlayerEntity;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -21,9 +22,7 @@ public class TraitLoader {
 
 	public static <T extends Entity> TraitSupplier<T> load(Config config) {
 		String type = ConfigUtil.requireString(config, "do");
-		if (type.equals("generate")) {
-			return generate(config);
-		} else if (type.equals("expire")) {
+		if (type.equals("expire")) {
 			return e -> Entity::expire;
 		} else if (type.equals("stop")) {
 			return e -> Entity::stop;
@@ -31,6 +30,10 @@ public class TraitLoader {
 			return rotate(config);
 		} else if (type.equals("rotateRandom")) {
 			return rotateRandom(config);
+		} else if (type.equals("generate")) {
+			return generate(config);
+		} else if (type.equals("xInvert")){
+			return xInvert(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
@@ -44,6 +47,17 @@ public class TraitLoader {
 	private static <T extends Entity> TraitSupplier<T> rotateRandom(Config config) {
 		Supplier<Integer> speed = ConfigUtil.requireIntegerRange(config, "speed");
 		return Traits.rotateRandom(speed);
+	}
+
+	private static <T extends Entity> TraitSupplier<T> xInvert(Config config) {
+		String vector = ConfigUtil.requireString(config, "vector");
+		if (vector.equals("movement")) {
+			return Traits.xInvertByVector(Entity::getMovement);
+//		} else if (vector.equals("aim")) {
+//			return Traits.xInvertByVector(PlayerEntity::getAim);
+		} else {
+			throw new LoadingException("Invalid vector type " + vector);
+		}
 	}
 
 	private static <T extends Entity> TraitSupplier<T> generate(Config config) {

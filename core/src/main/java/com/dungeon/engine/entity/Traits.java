@@ -123,6 +123,15 @@ public class Traits {
         };
     }
 
+    /** Inverts the horizontal draw scale based on the movement vector */
+    static public <T extends Entity> TraitSupplier<T> xInvertByVector(Function<Entity, Vector2> vFunction) {
+        return e -> entity -> {
+            if (vFunction.apply(e).x != 0) {
+                entity.getDrawScale().x = Math.abs(entity.getDrawScale().x) * entity.getMovement().x < 0 ? -1 : 1;
+            }
+        };
+    }
+
     static public <T extends Entity> TraitSupplier<T> generator(float frequency, Function<T, Entity> entityProvider) {
         return e -> {
             Timer timer = new Timer(frequency);

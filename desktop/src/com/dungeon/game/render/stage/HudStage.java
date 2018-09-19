@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
@@ -62,7 +61,6 @@ public class HudStage implements RenderStage {
 				ratio = Util.clamp(ratio - Engine.frameTime());
 				scale += scale * Engine.frameTime();
 				speed.set(startSpeed).scl(ratio).add(head.setLength(scale * (1 - ratio)));
-				System.out.println("ratio: " + ratio);
 				TextureRegion frame = animation.getKeyFrame(Engine.time());
 				batch.draw(frame, origin.x - frame.getRegionWidth() / 2f, origin.y - frame.getRegionHeight() / 2f);
 			}
