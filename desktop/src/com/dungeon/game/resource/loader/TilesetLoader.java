@@ -1,8 +1,8 @@
 package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
@@ -44,111 +44,112 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 		Texture tex = Resources.textures.get(texture);
 		int tilesize = ConfigUtil.requireInteger(descriptor, "tilesize");
 		int columns = tex.getWidth() / tilesize;
-		List<Tile> out = getFrames(descriptor, "out", tex, tilesize, columns);
-		List<Tile> floor = getFrames(descriptor, "floor", tex, tilesize, columns);
-		List<Tile> convexDL = getFrames(descriptor, "convexDL", tex, tilesize, columns);
-		List<Tile> convexDR = getFrames(descriptor, "convexDR", tex, tilesize, columns);
-		List<Tile> convexUL = getFrames(descriptor, "convexUL", tex, tilesize, columns);
-		List<Tile> convexUR = getFrames(descriptor, "convexUR", tex, tilesize, columns);
-		List<Tile> concaveDL = getFrames(descriptor, "concaveDL", tex, tilesize, columns);
-		List<Tile> concaveDR = getFrames(descriptor, "concaveDR", tex, tilesize, columns);
-		List<Tile> concaveUL = getFrames(descriptor, "concaveUL", tex, tilesize, columns);
-		List<Tile> concaveUR = getFrames(descriptor, "concaveUR", tex, tilesize, columns);
-		List<Tile> concaveDown = getFrames(descriptor, "concaveDown", tex, tilesize, columns);
-		List<Tile> concaveUp = getFrames(descriptor, "concaveUp", tex, tilesize, columns);
-		List<Tile> concaveLeft = getFrames(descriptor, "concaveLeft", tex, tilesize, columns);
-		List<Tile> concaveRight = getFrames(descriptor, "concaveRight", tex, tilesize, columns);
-		List<Tile> wallDecor1 = getFrames(descriptor, "wallDecor1", tex, tilesize, columns);
-		List<Tile> wallDecor2 = getFrames(descriptor, "wallDecor2", tex, tilesize, columns);
-		List<Tile> wallDecor3 = getFrames(descriptor, "wallDecor3", tex, tilesize, columns);
-		List<Tile> wallDecor4 = getFrames(descriptor, "wallDecor4", tex, tilesize, columns);
+		List<Animation<TextureRegion>> out = getFrames(descriptor, "out", tex, tilesize, columns);
+		List<Animation<TextureRegion>> floor = getFrames(descriptor, "floor", tex, tilesize, columns);
+		List<Animation<TextureRegion>> convexDL = getFrames(descriptor, "convexDL", tex, tilesize, columns);
+		List<Animation<TextureRegion>> convexDR = getFrames(descriptor, "convexDR", tex, tilesize, columns);
+		List<Animation<TextureRegion>> convexUL = getFrames(descriptor, "convexUL", tex, tilesize, columns);
+		List<Animation<TextureRegion>> convexUR = getFrames(descriptor, "convexUR", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveDL = getFrames(descriptor, "concaveDL", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveDR = getFrames(descriptor, "concaveDR", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveUL = getFrames(descriptor, "concaveUL", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveUR = getFrames(descriptor, "concaveUR", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveDown = getFrames(descriptor, "concaveDown", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveUp = getFrames(descriptor, "concaveUp", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveLeft = getFrames(descriptor, "concaveLeft", tex, tilesize, columns);
+		List<Animation<TextureRegion>> concaveRight = getFrames(descriptor, "concaveRight", tex, tilesize, columns);
+		List<Animation<TextureRegion>> wallDecor1 = getFrames(descriptor, "wallDecor1", tex, tilesize, columns);
+		List<Animation<TextureRegion>> wallDecor2 = getFrames(descriptor, "wallDecor2", tex, tilesize, columns);
+		List<Animation<TextureRegion>> wallDecor3 = getFrames(descriptor, "wallDecor3", tex, tilesize, columns);
+		List<Animation<TextureRegion>> wallDecor4 = getFrames(descriptor, "wallDecor4", tex, tilesize, columns);
 		return new Tileset(tex, tilesize) {
-			@Override public Tile out() {
+			@Override public Animation<TextureRegion> out() {
 				return Rand.pick(out);
 			}
 
-			@Override public Tile floor() {
+			@Override public Animation<TextureRegion> floor() {
 				return Rand.pick(floor);
 			}
 
-			@Override public Tile convexLowerLeft() {
+			@Override public Animation<TextureRegion> convexLowerLeft() {
 				return Rand.pick(convexDL);
 			}
 
-			@Override public Tile convexLowerRight() {
+			@Override public Animation<TextureRegion> convexLowerRight() {
 				return Rand.pick(convexDR);
 			}
 
-			@Override public Tile convexUpperLeft() {
+			@Override public Animation<TextureRegion> convexUpperLeft() {
 				return Rand.pick(convexUL);
 			}
 
-			@Override public Tile convexUpperRight() {
+			@Override public Animation<TextureRegion> convexUpperRight() {
 				return Rand.pick(convexUR);
 			}
 
-			@Override public Tile concaveLowerLeft() {
+			@Override public Animation<TextureRegion> concaveLowerLeft() {
 				return Rand.pick(concaveDL);
 			}
 
-			@Override public Tile concaveLowerRight() {
+			@Override public Animation<TextureRegion> concaveLowerRight() {
 				return Rand.pick(concaveDR);
 			}
 
-			@Override public Tile concaveUpperLeft() {
+			@Override public Animation<TextureRegion> concaveUpperLeft() {
 				return Rand.pick(concaveUL);
 			}
 
-			@Override public Tile concaveUpperRight() {
+			@Override public Animation<TextureRegion> concaveUpperRight() {
 				return Rand.pick(concaveUR);
 			}
 
-			@Override public Tile concaveLower() {
+			@Override public Animation<TextureRegion> concaveLower() {
 				return Rand.pick(concaveDown);
 			}
 
-			@Override public Tile concaveUpper() {
+			@Override public Animation<TextureRegion> concaveUpper() {
 				return Rand.pick(concaveUp);
 			}
 
-			@Override public Tile concaveLeft() {
+			@Override public Animation<TextureRegion> concaveLeft() {
 				return Rand.pick(concaveLeft);
 			}
 
-			@Override public Tile concaveRight() {
+			@Override public Animation<TextureRegion> concaveRight() {
 				return Rand.pick(concaveRight);
 			}
 
-			@Override public Tile wallDecoration1() {
+			@Override public Animation<TextureRegion> wallDecoration1() {
 				return Rand.pick(wallDecor1);
 			}
 
-			@Override public Tile wallDecoration2() {
+			@Override public Animation<TextureRegion> wallDecoration2() {
 				return Rand.pick(wallDecor2);
 			}
 
-			@Override public Tile wallDecoration3() {
+			@Override public Animation<TextureRegion> wallDecoration3() {
 				return Rand.pick(wallDecor3);
 			}
 
-			@Override public Tile wallDecoration4() {
+			@Override public Animation<TextureRegion> wallDecoration4() {
 				return Rand.pick(wallDecor4);
 			}
 		};
 
 	}
 
-	private static List<Tile> getFrames(Config config, String key, Texture tex, int tilesize, int columns) {
+	private static List<Animation<TextureRegion>> getFrames(Config config, String key, Texture tex, int tilesize, int columns) {
 		List<Integer> regions = ConfigUtil.requireIntList(config, key).stream().map(Number::intValue).collect(Collectors.toList());
-		List<Tile> frames = new ArrayList<>();
+		List<Animation<TextureRegion>> frames = new ArrayList<>();
 		for (int frame : regions) {
 			frames.add(getFrame(tex, frame, tilesize, columns));
 		}
 		return frames;
 	}
 
-	private static Tile getFrame(Texture tex, int frame, int tilesize, int columns) {
-		return new Tile(new TextureRegion(tex, tilesize * (frame % columns), tilesize * (frame / columns), tilesize, tilesize));
+	private static Animation<TextureRegion> getFrame(Texture tex, int frame, int tilesize, int columns) {
+		// TODO Use Resources here to reuse previously loaded animations??
+		return new Animation<>(0f, new TextureRegion(tex, tilesize * (frame % columns), tilesize * (frame / columns), tilesize, tilesize));
 	}
 
 }

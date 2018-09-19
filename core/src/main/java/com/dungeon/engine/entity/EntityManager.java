@@ -19,6 +19,13 @@ public class EntityManager {
 		newEntities.add(entity);
 	}
 
+	/** The initial commit skips the spawn method, which can be quite costly for densely populated levels */
+	public void initialCommit() {
+		// TODO We may be able to remove this if we can make traversing large sets much more efficient
+		entities.addAll(newEntities);
+		newEntities.clear();
+	}
+
 	public void commit() {
 		entities.addAll(newEntities);
 		List<Entity> spawning = new ArrayList<>(newEntities);

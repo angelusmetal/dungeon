@@ -21,14 +21,6 @@ public abstract class TileSheet {
 		return new TextureRegion(texture, (int) (tile_size * x), (int) (tile_size * y), (int) (tile_size * x_tiles), (int) (tile_size * y_tiles));
 	}
 
-	protected Tile[] createTiles(TextureRegion ... regions) {
-		Tile[] tiles = new Tile[regions.length];
-		for (int i = 0; i < regions.length; ++i) {
-			tiles[i] = new Tile(regions[i]);
-		}
-		return tiles;
-	}
-
 	public Animation<TextureRegion> loop(float frameDuration, TextureRegion... frames) {
 		Animation<TextureRegion> animation = new Animation<>(frameDuration, frames);
 		animation.setPlayMode(Animation.PlayMode.LOOP);

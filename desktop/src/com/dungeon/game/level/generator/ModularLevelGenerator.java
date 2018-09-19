@@ -1,9 +1,14 @@
-package com.dungeon.game.level;
+package com.dungeon.game.level.generator;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.Tile;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
+import com.dungeon.game.level.Level;
+import com.dungeon.game.level.Room;
+import com.dungeon.game.level.RoomPrototype;
+import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.Environment;
@@ -15,7 +20,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
-public class ProceduralLevelGenerator {
+/**
+ * A level generator that generates levels by connecting a set of pre-built modules (rooms).
+ */
+public class ModularLevelGenerator implements LevelGenerator {
 
 	private int width;
 	private int height;
@@ -51,10 +59,10 @@ public class ProceduralLevelGenerator {
 	}
 
 	public static class ConnectionPoint {
-		Vector2 coords;
-		Direction direction;
-		boolean visited = false;
-		boolean active = false;
+		public Vector2 coords;
+		public Direction direction;
+		public boolean visited = false;
+		public boolean active = false;
 		public ConnectionPoint (int x, int y, Direction direction) {
 			this.coords = new Vector2(x, y);
 			this.direction = direction;
@@ -66,7 +74,7 @@ public class ProceduralLevelGenerator {
 		}
 	}
 
-	public ProceduralLevelGenerator(Environment environment, int width, int height) {
+	public ModularLevelGenerator(Environment environment, int width, int height) {
 		this.environment = environment;
 		this.width = width;
 		this.height = height;
@@ -97,25 +105,24 @@ public class ProceduralLevelGenerator {
 			generateRooms(startX, startY, direction);
 		}
 
-		Tile[][] map = new Tile[width][height];
+		Level level = new Level(width, height);
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				map[x][y] = getTile(x, y, environment.getTileset());
+				level.setAnimation(x, y, getTile(x, y, environment.getTileset()));
+				level.setSolid(x, y, !tiles[x][y].isFloor());
 			}
 		}
-
-		Level level = new Level();
-		level.map = map;
-		level.rooms = rooms;
-		level.walkableTiles = tiles;
-		level.entityPlaceholders = generateEntities();
+		level.setRooms(rooms);
+		generateEntities(level.getEntityPlaceholders());
 
 		return level;
 	}
 
-	private List<EntityPlaceholder> generateEntities() {
+	private void generateEntities(List<EntityPlaceholder> placeholders) {
 		List<String> monsterTypes = environment.getMonsters();
-		List<EntityPlaceholder> placeholders = new ArrayList<>();
+
+		// Create player spawn points in the starting room
+		rooms.get(0).spawnPoints.forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.PLAYER_SPAWN, pos)));
 
 		// Create monsters in each room, to begin with
 		for (int r = 1; r < rooms.size(); ++r) {
@@ -135,11 +142,10 @@ public class ProceduralLevelGenerator {
 		Room exitRoom = rooms.stream().filter(r -> r.generation == farthest).findFirst().orElseThrow(() -> new RuntimeException("Could not find farthest room"));
 		Vector2 exitPosition = Rand.pick(exitRoom.spawnPoints);
 		placeholders.add(new EntityPlaceholder(EntityType.EXIT, exitPosition));
-
-		return placeholders;
 	}
 
-	private Tile getTile(int x, int y, Tileset tileset) {
+	private Animation<TextureRegion> getTile(int x, int y, Tileset tileset) {
+		// TODO Make this work with level itself
 
 		if (tiles[x][y] == TileType.FLOOR) {
 			return tileset.floor();

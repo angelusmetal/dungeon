@@ -4,6 +4,7 @@ public interface EntityType {
 	// Exit altar
 	String EXIT = "exit_platform";
 	// Player characters
+	String PLAYER_SPAWN = "player_spawn";
 	String WITCH = "player_witch";
 	String THIEF = "player_thief";
 	String ASSASSIN = "player_assassin";

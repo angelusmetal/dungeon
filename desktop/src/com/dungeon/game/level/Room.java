@@ -2,6 +2,7 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.level.generator.ModularLevelGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Room {
 	public final int generation;
 	public final List<Vector2> spawnPoints = new ArrayList<>();
 	public final List<EntityPlaceholder> placeholders = new ArrayList<>();
-	public final List<ProceduralLevelGenerator.ConnectionPoint> connectionPoints = new ArrayList<>();
+	public final List<ModularLevelGenerator.ConnectionPoint> connectionPoints = new ArrayList<>();
 
 	public final TileType[][] tiles;
 
@@ -40,8 +41,8 @@ public class Room {
 		for (EntityPlaceholder placeholder : prototype.getPlaceholders()) {
 			placeholders.add(new EntityPlaceholder(placeholder.getType(), new Vector2(placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom), placeholder.getChance()));
 		}
-		for (ProceduralLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
-			connectionPoints.add(new ProceduralLevelGenerator.ConnectionPoint((int) (connection.coords.x + left), (int) (connection.coords.y + bottom), connection.direction));
+		for (ModularLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
+			connectionPoints.add(new ModularLevelGenerator.ConnectionPoint((int) (connection.coords.x + left), (int) (connection.coords.y + bottom), connection.direction));
 		}
 	}
 

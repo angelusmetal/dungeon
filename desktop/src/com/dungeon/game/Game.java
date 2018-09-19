@@ -13,10 +13,10 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
-import com.dungeon.game.level.ProceduralLevelGenerator;
-import com.dungeon.game.level.Room;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.level.generator.ModularLevelGenerator;
+import com.dungeon.game.level.generator.NoiseLevelGenerator;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -151,21 +152,24 @@ public class Game {
 		initViewPorts();
 
 		// Get starting room and spawn player there
-		Room startingRoom = level.rooms.get(0);
-		int spawnPoint = 0;
+		List<EntityPlaceholder> playerSpawns = level.getEntityPlaceholders().stream().filter(ph -> ph.getType().equals(EntityType.PLAYER_SPAWN)).collect(Collectors.toList());
+		int i = 0;
 		for (Player player : Players.all()) {
-			Vector2 origin = startingRoom.spawnPoints.get(spawnPoint++).cpy().scl(environment.getTileset().tile_size);
+			EntityPlaceholder spawnPoint = playerSpawns.get(i++);
+			Vector2 origin = spawnPoint.getOrigin().cpy().scl(environment.getTileset().tile_size);
 			player.spawn(origin);
 			origin.y += 30;
 			player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage());
 		}
 
 		// Instantiate entities for every placeholder
-		for (EntityPlaceholder placeholder : level.entityPlaceholders) {
+		level.getEntityPlaceholders().stream().filter(ph -> !ph.getType().equals(EntityType.PLAYER_SPAWN)).forEach(placeholder -> {
 			if (Rand.chance(placeholder.getChance())) {
 				Engine.entities.add(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
 			}
-		}
+		});
+		// Do the initial commit, which is cheaper than the regular one because it skips collision checks
+		Engine.entities.initialCommit();
 
 		setCurrentState(State.INGAME);
 
@@ -245,10 +249,12 @@ public class Game {
 
 		// Pick a random environment
 		String env = Rand.pick(Resources.environments.getKeys());
-		env = "dungeon";
+//		env = "dungeon";
+		env = "prairie";
 		environment = Resources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
-		ProceduralLevelGenerator generator = new ProceduralLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+//		ModularLevelGenerator generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+		NoiseLevelGenerator generator = new NoiseLevelGenerator(environment, 100, 100, 8d);//baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);
 	}
