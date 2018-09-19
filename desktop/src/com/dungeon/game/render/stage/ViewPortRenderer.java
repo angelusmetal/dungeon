@@ -1,6 +1,9 @@
 package com.dungeon.game.render.stage;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
@@ -18,19 +21,19 @@ public class ViewPortRenderer implements Disposable {
 	private int renderCalls = 0;
 	private float frameTime;
 
-	private final MapStage mapFragment;
-	private final ShadowsStage shadowsFragment;
-	private final EntitiesStage entitiesFragment;
-	private final LightStage lightFragment;
-	private final HealthbarStage healthbarFragment;
-	private final CollisionStage collisionFragment;
-	private final NoiseStage noiseFragment;
-	private final MotionBlurStage motionBlurFragment;
-	private final OverlayTextStage overlayTextFragment;
-	private final PlayerArrowsStage playerArrowsFragment;
-	private final HudStage hudFragment;
-	private final ScaleStage scaleFragment;
-	private final ConsoleStage consoleFragment;
+	private final MapStage mapStage;
+	private final ShadowsStage shadowsStage;
+	private final EntitiesStage entitiesStage;
+	private final LightStage lightStage;
+	private final HealthbarStage healthbarStage;
+	private final CollisionStage collisionStage;
+	private final NoiseStage noiseStage;
+	private final MotionBlurStage motionBlurStage;
+	private final OverlayTextStage overlayTextStage;
+	private final PlayerArrowsStage playerArrowsStage;
+	private final HudStage hudStage;
+	private final ScaleStage scaleStage;
+	private final ConsoleStage consoleStage;
 	private final TitleStage titleStage;
 	private final List<RenderStage> pipeline = new ArrayList<>();
 
@@ -38,39 +41,39 @@ public class ViewPortRenderer implements Disposable {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.batch = new SpriteBatch();
 
-		mapFragment = new MapStage(viewPort, viewportBuffer);
-		shadowsFragment = new ShadowsStage(viewPort, viewportBuffer);
-		entitiesFragment = new EntitiesStage(viewPort, viewportBuffer);
-		lightFragment = new LightStage(viewPort, viewportBuffer);
-		healthbarFragment = new HealthbarStage(viewPort, viewportBuffer);
-		collisionFragment = new CollisionStage(viewPort, viewportBuffer);
-		noiseFragment = new NoiseStage(viewPort, viewportBuffer);
-		motionBlurFragment = new MotionBlurStage(viewPort, viewportBuffer);
-		scaleFragment = new ScaleStage(viewportBuffer, batch);
-		consoleFragment = new ConsoleStage(viewPort, batch, player.getConsole());
-		overlayTextFragment = new OverlayTextStage(viewPort, viewportBuffer);
-		playerArrowsFragment = new PlayerArrowsStage(viewPort, viewportBuffer);
-		hudFragment = new HudStage(viewPort, viewportBuffer, player);
+		mapStage = new MapStage(viewPort, viewportBuffer);
+		shadowsStage = new ShadowsStage(viewPort, viewportBuffer);
+		entitiesStage = new EntitiesStage(viewPort, viewportBuffer);
+		lightStage = new LightStage(viewPort, viewportBuffer);
+		healthbarStage = new HealthbarStage(viewPort, viewportBuffer);
+		collisionStage = new CollisionStage(viewPort, viewportBuffer);
+		noiseStage = new NoiseStage(viewPort, viewportBuffer);
+		motionBlurStage = new MotionBlurStage(viewPort, viewportBuffer);
+		scaleStage = new ScaleStage(viewportBuffer, batch);
+		consoleStage = new ConsoleStage(viewPort, batch, player.getConsole());
+		overlayTextStage = new OverlayTextStage(viewPort, viewportBuffer);
+		playerArrowsStage = new PlayerArrowsStage(viewPort, viewportBuffer);
+		hudStage = new HudStage(viewPort, viewportBuffer, player);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
-		pipeline.add(mapFragment);
-		pipeline.add(shadowsFragment);
-		pipeline.add(entitiesFragment);
-		pipeline.add(lightFragment);
-		pipeline.add(healthbarFragment);
-		pipeline.add(collisionFragment);
-		pipeline.add(noiseFragment);
-		pipeline.add(motionBlurFragment);
-		pipeline.add(overlayTextFragment);
-		pipeline.add(playerArrowsFragment);
-		pipeline.add(hudFragment);
+		pipeline.add(mapStage);
+		pipeline.add(shadowsStage);
+		pipeline.add(entitiesStage);
+		pipeline.add(lightStage);
+		pipeline.add(healthbarStage);
+		pipeline.add(collisionStage);
+		pipeline.add(noiseStage);
+		pipeline.add(motionBlurStage);
+		pipeline.add(overlayTextStage);
+		pipeline.add(playerArrowsStage);
+		pipeline.add(hudStage);
 		pipeline.add(titleStage);
-		pipeline.add(scaleFragment);
-		pipeline.add(consoleFragment);
+		pipeline.add(scaleStage);
+		pipeline.add(consoleStage);
 
 		// Disable some default disabled
-		healthbarFragment.toggle();
-		collisionFragment.toggle();
+		healthbarStage.toggle();
+		collisionStage.toggle();
 	}
 
 	public void initialize() {
@@ -97,28 +100,28 @@ public class ViewPortRenderer implements Disposable {
 	}
 
 	public void toggleScene() {
-		mapFragment.toggle();
-		entitiesFragment.toggle();
+		mapStage.toggle();
+		entitiesStage.toggle();
 	}
 
 	public void toggleLighting() {
-		lightFragment.toggle();
+		lightStage.toggle();
 	}
 
 	public void toggleHealthbars() {
-		healthbarFragment.toggle();
+		healthbarStage.toggle();
 	}
 
 	public void toggleBoundingBox() {
-		collisionFragment.toggle();
+		collisionStage.toggle();
 	}
 
 	public void toggleNoise() {
-		noiseFragment.toggle();
+		noiseStage.toggle();
 	}
 
 	public void beginMotionBlur() {
-		motionBlurFragment.begin();
+		motionBlurStage.begin();
 	}
 
 	public int getRenderCalls() {
@@ -135,6 +138,10 @@ public class ViewPortRenderer implements Disposable {
 
 	public void displayTitle(String title, String subtitle) {
 		titleStage.display(title, subtitle);
+	}
+
+	public void addParticle(Vector2 origin, Vector2 destination, Vector2 speed, Animation<TextureRegion> animation) {
+		hudStage.addParticle(origin, destination, speed, animation);
 	}
 
 	@Override
