@@ -46,7 +46,9 @@ public class LightStage implements RenderStage {
 //				Gdx.gl.glClearColor(gamma, gamma, gamma, 1f);
 				Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				Engine.entities.all().filter(lightInCamera).forEach(e -> e.drawLight(batch, viewPort));
+				Engine.entities.inViewPort(viewPort).forEach(e -> e.drawLight(batch, viewPort));
+				// TODO Do we need to fix this? do some lights not get caught?
+//				Engine.entities.dynamic().filter(lightInCamera).forEach(e -> e.drawLight(batch, viewPort));
 			}));
 			// Draw lighting on top of scene
 			viewportBuffer.render(batch -> {

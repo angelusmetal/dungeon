@@ -87,6 +87,7 @@ public class Entity implements Drawable, Movable {
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
 	protected boolean castsShadow;
+	protected boolean isStatic;
 
 	/**
 	 * Create an entity at origin, from the specified prototype
@@ -129,6 +130,7 @@ public class Entity implements Drawable, Movable {
 		this.canBeHit = prototype.canBeHit;
 		this.canBeHurt = prototype.canBeHurt;
 		this.castsShadow = prototype.castsShadow;
+		this.isStatic = prototype.isStatic;
 	}
 
 	/**
@@ -162,6 +164,7 @@ public class Entity implements Drawable, Movable {
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
 		this.castsShadow = other.castsShadow;
+		this.isStatic = other.isStatic;
 	}
 
 	@Override
@@ -449,8 +452,8 @@ public class Entity implements Drawable, Movable {
 	private boolean detectEntityCollision(Vector2 step) {
 		// Ugh...
 		final boolean[] pushedBack = new boolean[1];
-		Engine.entities.all().forEach(entity -> {
-			if (entity != this && collides(entity)) {
+		Engine.entities.colliding(this).forEach(entity -> {
+			if (entity != this) {
 				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
 				if (!onEntityCollision(entity)) {
 					entity.onEntityCollision(this);
@@ -523,6 +526,9 @@ public class Entity implements Drawable, Movable {
 	}
 	public boolean canBeHurt() {
 		return canBeHurt;
+	}
+	public boolean isStatic() {
+		return isStatic;
 	}
 
 	/** Handle entity collision; true if handled; false otherwise */

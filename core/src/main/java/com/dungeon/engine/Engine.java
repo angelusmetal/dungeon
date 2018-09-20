@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Engine {
 
-	public static EntityManager entities = new EntityManager();
+	public static EntityManager entities = new EntityManager(500);
 
 	private static float stateTime = 0;
 	private static float frameTime;

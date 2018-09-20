@@ -35,6 +35,7 @@ public class EntityPrototype {
 	boolean canBeHit = false;
 	boolean canBeHurt = false;
 	boolean castsShadow = false;
+	boolean isStatic = false;
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
@@ -70,6 +71,7 @@ public class EntityPrototype {
 		this.canBeHurt = other.canBeHurt;
 		this.castsShadow = other.castsShadow;
 		this.factory = other.factory;
+		this.isStatic = other.isStatic;
 	}
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
@@ -221,6 +223,10 @@ public class EntityPrototype {
 		return this;
 	}
 
+	public void isStatic(Boolean isStatic) {
+		this.isStatic = isStatic;
+	}
+
 	public EntityPrototype onHit(TraitSupplier<Entity> trait) {
 		this.onHitTraits.add(trait);
 		return this;
@@ -249,5 +255,6 @@ public class EntityPrototype {
 	public String getFactory() {
 		return factory;
 	}
+
 }
 

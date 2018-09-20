@@ -48,6 +48,9 @@ public class Level implements LevelTiles {
 
 	@Override
 	public boolean isSolid(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) {
+			return true;
+		}
 		return getTile(x, y).solid;
 	}
 

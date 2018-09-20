@@ -51,7 +51,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 				.timeToLive(10)
 				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS)
 				// TODO Should this use the radius filter instead?
-				.with(Traits.autoSeek(0.1f, 60, () -> Engine.entities.all().filter(PlayerEntity.TARGET_NON_PLAYER_CHARACTERS)))
+				.with(Traits.autoSeek(0.1f, 60, () -> Engine.entities.dynamic().filter(PlayerEntity.TARGET_NON_PLAYER_CHARACTERS)))
 				.with(Traits.animationByVector(Entity::getMovement, bulletFlySideAnimation, bulletFlyNorthAnimation, bulletFlySouthAnimation))
 				.with(Traits.generator(0.05f, this::createTrail));
 		impact = new EntityPrototype()

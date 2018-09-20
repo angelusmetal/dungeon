@@ -2,7 +2,9 @@ package com.dungeon.game.render.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.dungeon.engine.Engine;
@@ -19,6 +21,7 @@ public class TitleStage implements RenderStage {
 	private boolean enabled = true;
 	private BitmapFont titleFont;
 	private BitmapFont subtitleFont;
+//	private Texture ornament;
 	private Color color = Color.WHITE.cpy();
 	private float expiration;
 
@@ -29,6 +32,7 @@ public class TitleStage implements RenderStage {
 		textBuffer.reset();
 		titleFont = Resources.fonts.get("chantelli-antiqua-32");
 		subtitleFont = Resources.fonts.get(Resources.DEFAULT_FONT);
+//		ornament = Resources.textures.get("title_ornament.png");
 	}
 
 	@Override
@@ -59,6 +63,7 @@ public class TitleStage implements RenderStage {
 		this.expiration = Engine.time() + 4;
 		textBuffer.render(batch -> {
 			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
 			titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - titleLayout.width / 2, viewPort.cameraHeight / 2 + titleLayout.height);
 		});
@@ -68,10 +73,12 @@ public class TitleStage implements RenderStage {
 		this.expiration = Engine.time() + 4;
 		textBuffer.render(batch -> {
 			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
 			GlyphLayout subtitleLayout = new GlyphLayout(subtitleFont, subtitle);
 			titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - titleLayout.width / 2, viewPort.cameraHeight / 2 + titleLayout.height);
 			subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2 - subtitleLayout.width / 2, viewPort.cameraHeight / 2 - subtitleLayout.height);
+//			batch.draw(ornament, viewPort.cameraWidth / 2 - ornament.getWidth() / 2, viewPort.cameraHeight / 2 - subtitleLayout.height * 2 - ornament.getHeight());
 		});
 	}
 

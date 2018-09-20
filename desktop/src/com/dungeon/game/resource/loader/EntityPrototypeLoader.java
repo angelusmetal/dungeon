@@ -125,6 +125,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 			prototype.canBeHurt(value);
 		});
 		ConfigUtil.getBoolean(descriptor, "canBeHurt").ifPresent(prototype::canBeHurt);
+		ConfigUtil.getBoolean(descriptor, "static").ifPresent(prototype::isStatic);
 
 		ConfigUtil.getConfigList(descriptor, "onHit").ifPresent(
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onHit));

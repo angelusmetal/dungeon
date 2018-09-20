@@ -15,8 +15,9 @@ import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.level.generator.ForestLevelGenerator;
+import com.dungeon.game.level.generator.LevelGenerator;
 import com.dungeon.game.level.generator.ModularLevelGenerator;
-import com.dungeon.game.level.generator.NoiseLevelGenerator;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
@@ -143,9 +144,9 @@ public class Game {
 
 	public static void startNewLevel() {
 
-		Engine.entities.clear();
-
 		generateNewLevel();
+
+		Engine.entities.clear(level.getWidth() * level.getTileSize(), level.getHeight() * level.getTileSize());
 
 		levelCount++;
 
@@ -168,8 +169,6 @@ public class Game {
 				Engine.entities.add(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
 			}
 		});
-		// Do the initial commit, which is cheaper than the regular one because it skips collision checks
-		Engine.entities.initialCommit();
 
 		setCurrentState(State.INGAME);
 
@@ -253,8 +252,13 @@ public class Game {
 		env = "prairie";
 		environment = Resources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
-//		ModularLevelGenerator generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
-		NoiseLevelGenerator generator = new NoiseLevelGenerator(environment, 100, 100, 8d);//baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+		LevelGenerator generator;
+		// TODO Wire the corresponding generator in the environment definition
+		if (env.equals("dungeon")) {
+			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+		} else {
+			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
+		}
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);
 	}

@@ -11,6 +11,10 @@ public class Util {
 		return Math.max(min, Math.min(max, val));
 	}
 
+	public static double clamp(double val, double min, double max) {
+		return Math.max(min, Math.min(max, val));
+	}
+
 	public static Color hsvaToColor(float hue, float saturation, float value, float alpha) {
 
 		int h = (int)(hue * 6);
