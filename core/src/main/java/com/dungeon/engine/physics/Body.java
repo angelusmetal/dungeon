@@ -49,6 +49,11 @@ public class Body {
 				&& bottomLeft.y <= other.topRight.y && topRight.y >= other.bottomLeft.y;
 	}
 
+	public boolean intersects(float left, float right, float bottom, float top) {
+		return bottomLeft.x <= right && topRight.x >= left
+				&& bottomLeft.y <= top && topRight.y >= bottom;
+	}
+
 	public boolean intersectsTile(int x, int y, int tile_size) {
 		int left = x * tile_size;
 		int right = left + tile_size;

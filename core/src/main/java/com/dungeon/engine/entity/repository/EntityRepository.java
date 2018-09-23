@@ -1,7 +1,10 @@
-package com.dungeon.engine.entity;
+package com.dungeon.engine.entity.repository;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.util.StopWatch;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -9,23 +12,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EntityManager {
+public class EntityRepository {
 
 	private final List<Entity> dynamic = new LinkedList<>();
 	private final List<Entity> newEntities = new LinkedList<>();
 	private final List<Entity> staticOnes = new LinkedList<>();
-	private List<List<Entity>> partitions = new ArrayList<>();
-
-	private final int partitionSize;
-	private int xPartitions;
-	private int yPartitions;
-	private int partitionCount;
-
-	public EntityManager(int partitionSize) {
-		this.partitionSize = partitionSize;
-	}
+	private QuadTree quadTree;
+	public final StopWatch processTime = new StopWatch();
 
 	public void add(Entity entity) {
 		newEntities.add(entity);
@@ -35,16 +31,7 @@ public class EntityManager {
 		newEntities.forEach(e -> {
 			if (e.isStatic()) {
 				staticOnes.add(e);
-				// Find out in which partitions this static entity will be at, for faster lookup
-				int left = (int) Util.clamp(e.getBody().getBottomLeft().x / partitionSize, 0, xPartitions - 1);
-				int right = (int) Util.clamp(e.getBody().getTopRight().x / partitionSize, 0, xPartitions - 1);
-				int bottom = (int) Util.clamp(e.getBody().getBottomLeft().y / partitionSize, 0, yPartitions - 1);
-				int top = (int) Util.clamp(e.getBody().getTopRight().y / partitionSize, 0, yPartitions - 1);
-				for (int x = left; x <= right; ++x) {
-					for (int y = bottom; y <= top; ++y) {
-						partitions.get(x * yPartitions + y).add(e);
-					}
-				}
+				quadTree.insert(e);
 			} else {
 				dynamic.add(e);
 			}
@@ -56,16 +43,12 @@ public class EntityManager {
 
 	public void clear(int width, int height) {
 		dynamic.clear();
-		xPartitions = width / partitionSize;
-		yPartitions = height / partitionSize;
-		partitionCount = xPartitions * yPartitions;
-		partitions = new ArrayList<>(partitionCount);
-		for (int i = 0; i < partitionCount; ++i) {
-			partitions.add(new LinkedList<>());
-		}
+		System.out.println("Creating QuadTree of size: [" + width + ", " + height + "]");
+		quadTree = new QuadTree(new Rectangle(0, 0, width, height));
 	}
 
 	public void process() {
+		processTime.start();
 		// Process dynamic entities
 		for (Iterator<Entity> e = dynamic.iterator(); e.hasNext();) {
 			Entity entity = e.next();
@@ -82,10 +65,11 @@ public class EntityManager {
 			entity.move();
 			if (entity.isExpired()) {
 				e.remove();
+				quadTree.remove(entity);
 			}
 		}
-		// Remove expired entities from the partitions
-		partitions.forEach(partition -> partition.removeIf(Entity::isExpired));
+
+		processTime.stop();
 	}
 
 	public Stream<Entity> dynamic() {
@@ -93,28 +77,24 @@ public class EntityManager {
 	}
 
 	public Stream<Entity> point(Vector2 point) {
-		int x = (int) Util.clamp(point.x / partitionSize, 0, xPartitions);
-		int y = (int) Util.clamp(point.y / partitionSize, 0, yPartitions);
-		return Stream.concat(dynamic(), partitions.get(x * yPartitions + y).stream()).filter(e -> e.collides(point));
+		return Stream.concat(dynamic(), quadTree.retrieve(point.x, point.x, point.y, point.y));
 	}
 
 	public Stream<Entity> colliding(Entity entity) {
 		// TODO is it better to first scan by radius and only then by bounding box?
-		return inRect(
+		return inRectStrict(
 				entity.getBody().getBottomLeft().x,
 				entity.getBody().getTopRight().x,
 				entity.getBody().getBottomLeft().y,
-				entity.getBody().getTopRight().y)
-				.filter(e -> e.collides(entity));
+				entity.getBody().getTopRight().y);
 	}
 
 	public Stream<Entity> area(Body area) {
-		return inRect(
+		return inRectStrict(
 				area.getBottomLeft().x,
 				area.getTopRight().x,
 				area.getBottomLeft().y,
-				area.getTopRight().y)
-				.filter(e -> e.collides(area));
+				area.getTopRight().y);
 	}
 
 	/**
@@ -122,7 +102,7 @@ public class EntityManager {
 	 */
 	public Stream<Entity> radius(Vector2 origin, float radius) {
 		float radius2 = Util.length2(radius);
-		return inRect(
+		return inRectStrict(
 				origin.x - radius,
 				origin.x + radius,
 				origin.y - radius,
@@ -131,22 +111,22 @@ public class EntityManager {
 	}
 
 	public Stream<Entity> inViewPort(ViewPort viewPort) {
-		return inRect(viewPort.cameraX, viewPort.cameraX + viewPort.cameraWidth, viewPort.cameraY, viewPort.cameraY + viewPort.cameraHeight);
+		return inRectAprox(
+				viewPort.cameraX,
+				viewPort.cameraX + viewPort.cameraWidth,
+				viewPort.cameraY,
+				viewPort.cameraY + viewPort.cameraHeight)
+				.filter(viewPort::isInViewPort);
+	}
+
+	/** Aproximation that includes all dynamic entities and entities in partitions that intersect with the rectangle and more */
+	public Stream<Entity> inRectAprox(float x1, float x2, float y1, float y2) {
+		return Stream.concat(dynamic(), quadTree.retrieve(x1, x2, y1, y2));
 	}
 
 	/** Includes all dynamic entities and entities in partitions that intersect with the rectangle */
-	public Stream<Entity> inRect(float x1, float x2, float y1, float y2) {
-		int left = (int) Util.clamp(x1 / partitionSize, 0, xPartitions - 1);
-		int right = (int) Util.clamp(x2 / partitionSize, 0, xPartitions - 1);
-		int bottom = (int) Util.clamp(y1 / partitionSize, 0, yPartitions - 1);
-		int top = (int) Util.clamp(y2 / partitionSize, 0, yPartitions - 1);
-		Stream<Entity> stream = dynamic();
-		for (int x = left; x <= right; ++x) {
-			for (int y = bottom; y <= top; ++y) {
-				stream = Stream.concat(stream, partitions.get(x * yPartitions + y).stream());
-			}
-		}
-		return stream;
+	public Stream<Entity> inRectStrict(float x1, float x2, float y1, float y2) {
+		return Stream.concat(dynamic(), quadTree.retrieve(x1, x2, y1, y2)).filter(e -> e.collides(x1, x2, y1, y2));
 	}
 
 	public <T extends Entity> Stream<T> ofType(Class<T> type) {
@@ -155,6 +135,18 @@ public class EntityManager {
 
 	public Stream<Entity> all() {
 		return Stream.concat(dynamic.stream(), staticOnes.stream());
+	}
+
+	public int staticCount() {
+		return staticOnes.size();
+	}
+
+	public int dynamicCount() {
+		return dynamic.size();
+	}
+
+	public String analysis() {
+		return quadTree.getStats().stream().filter(s -> s.count != 0).map(QuadTree.Stats::toString).collect(Collectors.joining("\n"));
 	}
 
 }

@@ -170,6 +170,9 @@ public class Game {
 			}
 		});
 
+		Engine.entities.commit();
+		System.out.println(Engine.entities.analysis());
+
 		setCurrentState(State.INGAME);
 
 		Engine.addRenderEffect(FadeEffect.fadeIn(Engine.time()));
@@ -179,6 +182,11 @@ public class Game {
 			player.getConsole().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
 //			GameState.console().watch("Time", () -> Float.toString(GameState.time()));
 			player.getConsole().watch("Level", () -> Integer.toString(Game.getLevelCount()));
+			player.getConsole().watch("Origin", () -> player.getAvatar().getOrigin().toString());
+			player.getConsole().watch("Static Entities", () -> Integer.toString(Engine.entities.staticCount()));
+			player.getConsole().watch("Dynamic Entities", () -> Integer.toString(Engine.entities.dynamicCount()));
+			player.getConsole().watch("Entity process", () -> Engine.entities.processTime.toString());
+//			player.getConsole().watch("QuadTree", () -> Engine.entities.analysis());
 			//TODO Fix
 //			GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
 //			GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
@@ -258,6 +266,7 @@ public class Game {
 			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		} else {
 			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
+//			generator = new ForestLevelGenerator(environment, 250, 200, 4d);
 		}
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);

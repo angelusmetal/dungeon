@@ -1,7 +1,7 @@
 package com.dungeon.engine;
 
 import com.badlogic.gdx.graphics.Color;
-import com.dungeon.engine.entity.EntityManager;
+import com.dungeon.engine.entity.repository.EntityRepository;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.Rand;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Engine {
 
-	public static EntityManager entities = new EntityManager(500);
+	public static EntityRepository entities = new EntityRepository();
 
 	private static float stateTime = 0;
 	private static float frameTime;

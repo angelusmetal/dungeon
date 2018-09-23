@@ -3,6 +3,7 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.repository.EntityRepository;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.StopWatch;
 import org.junit.Before;
@@ -16,7 +17,7 @@ public class EntityManagerPerfTest {
 	public static final int ENTITY_COUNT = 250_000;
 	public static final int ITERATIONS = 50_000_000;
 
-	EntityManager manager2 = new EntityManager(100);
+	EntityRepository manager2 = new EntityRepository(100);
 	@Mock
 	Animation<TextureRegion> animation;
 

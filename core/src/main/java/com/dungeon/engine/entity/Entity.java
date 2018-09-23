@@ -18,10 +18,16 @@ import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Entity implements Drawable, Movable {
+
+	private static final AtomicInteger sequencer = new AtomicInteger();
+
+	private final int uniqueid = sequencer.getAndIncrement();
 
 	private GameAnimation currentAnimation;
 	/**
@@ -480,6 +486,10 @@ public class Entity implements Drawable, Movable {
 		return this.body.intersects(entity.body);
 	}
 
+	public boolean collides(float left, float right, float bottom, float top) {
+		return this.body.intersects(left, right, bottom, top);
+	}
+
 	protected Vector2 getBoundingBox() {
 		return body.getBoundingBox();
 	}
@@ -561,4 +571,17 @@ public class Entity implements Drawable, Movable {
 	}
 
 	protected void onSignal(Entity emitter) {}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Entity entity = (Entity) o;
+		return uniqueid == entity.uniqueid;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(uniqueid);
+	}
 }
