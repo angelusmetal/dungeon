@@ -1,6 +1,7 @@
 package com.dungeon.engine.util;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 public class Util {
 	public static float clamp(float val) {
@@ -32,6 +33,12 @@ public class Util {
 			case 5: return new Color(value, p, q, alpha);
 			default: throw new RuntimeException("Invalid HSV conversion:  " + hue + ", " + saturation + ", " + value);
 		}
+	}
+
+	public static Vector2 floor(Vector2 vector2) {
+		vector2.x = (int) vector2.x;
+		vector2.y = (int) vector2.y;
+		return vector2;
 	}
 
 	public static float length2(float length) {

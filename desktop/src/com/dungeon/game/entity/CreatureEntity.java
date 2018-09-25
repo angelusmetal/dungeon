@@ -28,10 +28,6 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	@Override
 	public void think() {
-		// TODO Move this to a trait?
-		if (getAim().x != 0) {
-			getDrawScale().x = getAim().x < 0 ? -1 : 1;
-		}
 		if (getSelfImpulse().len() > 0.5) {
 			aim(getSelfImpulse());
 		}

@@ -10,6 +10,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
@@ -157,16 +158,15 @@ public class Game {
 		int i = 0;
 		for (Player player : Players.all()) {
 			EntityPlaceholder spawnPoint = playerSpawns.get(i++);
-			Vector2 origin = spawnPoint.getOrigin().cpy().scl(environment.getTileset().tile_size);
+			Vector2 origin = Util.floor(spawnPoint.getOrigin().cpy().scl(environment.getTileset().tile_size));
 			player.spawn(origin);
-			origin.y += 30;
 			player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage());
 		}
 
 		// Instantiate entities for every placeholder
 		level.getEntityPlaceholders().stream().filter(ph -> !ph.getType().equals(EntityType.PLAYER_SPAWN)).forEach(placeholder -> {
 			if (Rand.chance(placeholder.getChance())) {
-				Engine.entities.add(entityFactory.build(placeholder.getType(), placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size)));
+				Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size))));
 			}
 		});
 
@@ -256,8 +256,8 @@ public class Game {
 
 		// Pick a random environment
 		String env = Rand.pick(Resources.environments.getKeys());
-//		env = "dungeon";
-		env = "prairie";
+		env = "dungeon";
+//		env = "prairie";
 		environment = Resources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
 		LevelGenerator generator;
@@ -265,8 +265,8 @@ public class Game {
 		if (env.equals("dungeon")) {
 			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		} else {
-			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
-//			generator = new ForestLevelGenerator(environment, 250, 200, 4d);
+//			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
+			generator = new ForestLevelGenerator(environment, 250, 500, 4d);
 		}
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);

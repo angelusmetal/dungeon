@@ -20,8 +20,9 @@ public class QuadTree {
 	private final float midWidth;
 	private final float midHeight;
 
+	/** Create a QuadTree with the specified bounds */
 	public QuadTree(Rectangle bounds) {
-		this(0, bounds, 500, 10);
+		this(0, bounds, 200, 10);
 	}
 
 	private QuadTree(int depth, Rectangle bounds, int nodeCapacity, int maxDepth) {
@@ -77,9 +78,6 @@ public class QuadTree {
 	}
 
 	private void split() {
-		// 2 3
-		// 0 1
-		System.out.println("Splitting node " + bounds + "...");
 		nodes[0] = new QuadTree(depth + 1, new Rectangle(bounds.x, bounds.y, midWidth, midHeight), nodeCapacity, maxDepth);
 		nodes[1] = new QuadTree(depth + 1, new Rectangle(bounds.x + midWidth, bounds.y, midWidth, midHeight), nodeCapacity, maxDepth);
 		nodes[2] = new QuadTree(depth + 1, new Rectangle(bounds.x, bounds.y + midHeight, midWidth, midHeight), nodeCapacity, maxDepth);
@@ -141,6 +139,7 @@ public class QuadTree {
 		objects.forEach(stream);
 	}
 
+	/** Return a list of elements that might collide with the supplied rectangle */
 	public Stream<Entity> retrieve(float left, float right, float bottom, float top) {
 		Stream.Builder<Entity> stream = Stream.builder();
 		retrieve(stream, left, right, bottom, top);

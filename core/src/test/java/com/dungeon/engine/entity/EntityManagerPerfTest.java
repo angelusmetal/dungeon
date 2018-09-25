@@ -17,18 +17,18 @@ public class EntityManagerPerfTest {
 	public static final int ENTITY_COUNT = 250_000;
 	public static final int ITERATIONS = 50_000_000;
 
-	EntityRepository manager2 = new EntityRepository(100);
+	EntityRepository repository = new EntityRepository();
 	@Mock
 	Animation<TextureRegion> animation;
 
 	@Before
 	public void init() {
 		initMocks(this);
-		manager2.clear(100_000, 100_000);
+		repository.clear(100_000, 100_000);
 		for (int i = 0; i < ENTITY_COUNT; ++i) {
-			manager2.add(getRandomEntity());
+			repository.add(getRandomEntity());
 		}
-		manager2.commit();
+		repository.commit();
 		System.out.println("Done initializing");
 	}
 
@@ -36,7 +36,7 @@ public class EntityManagerPerfTest {
 	public void testRadius() {
 		Vector2 point = new Vector2(10, 10);
 		StopWatch watch = new StopWatch();
-		watch.measure(ITERATIONS, () -> manager2.radius(point, 100f));
+		watch.measure(ITERATIONS, () -> repository.radius(point, 100f));
 		System.out.println("Radius: " + ITERATIONS + " iterations took " + watch);
 	}
 
@@ -44,7 +44,7 @@ public class EntityManagerPerfTest {
 	public void testEntity() {
 		Entity randomEntity = getRandomEntity();
 		StopWatch watch = new StopWatch();
-		watch.measure(ITERATIONS, () -> manager2.colliding(randomEntity));
+		watch.measure(ITERATIONS, () -> repository.colliding(randomEntity));
 		System.out.println("Entity: " + ITERATIONS + " iterations took " + watch);
 	}
 

@@ -96,6 +96,15 @@ public class ViewPort {
 				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
 	}
 
+	public boolean lightIsInViewPort(Entity e) {
+		return
+				e.getLight() != null &&
+						e.getOrigin().x - e.getLight().diameter < cameraX + cameraWidth &&
+						e.getOrigin().x + e.getLight().diameter > cameraX &&
+						e.getOrigin().y - e.getLight().diameter < cameraY + cameraHeight &&
+						e.getOrigin().y + e.getLight().diameter > cameraY;
+	}
+
 	public Vector2 worldToScreen(Vector2 vector2) {
 		return new Vector2(vector2.x - cameraX, vector2.y - cameraY);
 	}

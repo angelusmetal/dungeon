@@ -38,6 +38,7 @@ public class EntityRepository {
 		});
 		List<Entity> spawning = new ArrayList<>(newEntities);
 		newEntities.clear();
+		// This takes a lot of time in very densely populated maps
 		spawning.forEach(Entity::spawn);
 	}
 
@@ -117,6 +118,15 @@ public class EntityRepository {
 				viewPort.cameraY,
 				viewPort.cameraY + viewPort.cameraHeight)
 				.filter(viewPort::isInViewPort);
+	}
+
+	public Stream<Entity> lightInViewPort(ViewPort viewPort) {
+		return inRectAprox(
+				viewPort.cameraX - 100,
+				viewPort.cameraX + viewPort.cameraWidth + 200,
+				viewPort.cameraY - 100,
+				viewPort.cameraY + viewPort.cameraHeight + 200)
+				.filter(viewPort::lightIsInViewPort);
 	}
 
 	/** Aproximation that includes all dynamic entities and entities in partitions that intersect with the rectangle and more */

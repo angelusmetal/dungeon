@@ -18,7 +18,6 @@ public class LightStage implements RenderStage {
 	private final ViewPortBuffer lightBuffer;
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
-	private final Predicate<? super Entity> lightInCamera;
 	private final float gamma;
 	private boolean enabled = true;
 
@@ -30,12 +29,6 @@ public class LightStage implements RenderStage {
 		this.combineLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.gamma = Game.getConfiguration().getDouble("viewport.gamma", 1.0d).floatValue();
-		this.lightInCamera = (e) ->
-				e.getLight() != null &&
-				e.getOrigin().x - e.getLight().diameter < viewPort.cameraX + viewPort.cameraWidth &&
-				e.getOrigin().x + e.getLight().diameter > viewPort.cameraX &&
-				e.getOrigin().y - e.getLight().diameter < viewPort.cameraY + viewPort.cameraHeight &&
-				e.getOrigin().y + e.getLight().diameter > viewPort.cameraY;
 	}
 
 	@Override
@@ -46,9 +39,7 @@ public class LightStage implements RenderStage {
 //				Gdx.gl.glClearColor(gamma, gamma, gamma, 1f);
 				Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				Engine.entities.inViewPort(viewPort).forEach(e -> e.drawLight(batch, viewPort));
-				// TODO Do we need to fix this? do some lights not get caught?
-//				Engine.entities.dynamic().filter(lightInCamera).forEach(e -> e.drawLight(batch, viewPort));
+				Engine.entities.lightInViewPort(viewPort).forEach(e -> e.drawLight(batch, viewPort));
 			}));
 			// Draw lighting on top of scene
 			viewportBuffer.render(batch -> {
