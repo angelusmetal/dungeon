@@ -28,7 +28,7 @@ public class EntityManagerPerfTest {
 		for (int i = 0; i < ENTITY_COUNT; ++i) {
 			repository.add(getRandomEntity());
 		}
-		repository.commit();
+		repository.commit(false);
 		System.out.println("Done initializing");
 	}
 

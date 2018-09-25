@@ -38,8 +38,8 @@ public class ForestLevelGenerator implements LevelGenerator {
 		}
 		placePlayerSpawns(level);
 
-		for (float x = 0; x < width; x += 0.5f) {
-			for (float y = 0; y < height; y += 0.5f) {
+		for (float x = 0; x < width; x += 0.6f) {
+			for (float y = 0; y < height; y += 0.6f) {
 				placeVegetation(level, x, y);
 			}
 		}
@@ -82,7 +82,7 @@ public class ForestLevelGenerator implements LevelGenerator {
 				plant = "prop_grass_2";
 			} else if (noise < 0.4) {
 				plant = "prop_grass_3";
-			} else if (noise < 0.5) {
+			} else if (noise > 0.7 && Rand.chance(0.2f)) {
 				plant = "prop_flower_1";
 			} else {
 				return;

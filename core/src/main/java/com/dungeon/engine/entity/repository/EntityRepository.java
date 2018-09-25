@@ -27,7 +27,7 @@ public class EntityRepository {
 		newEntities.add(entity);
 	}
 
-	public void commit() {
+	public void commit(boolean checkSpawn) {
 		newEntities.forEach(e -> {
 			if (e.isStatic()) {
 				staticOnes.add(e);
@@ -36,10 +36,12 @@ public class EntityRepository {
 				dynamic.add(e);
 			}
 		});
-		List<Entity> spawning = new ArrayList<>(newEntities);
+		if (checkSpawn) {
+			List<Entity> spawning = new ArrayList<>(newEntities);
+			// This takes a lot of time in very densely populated maps
+			spawning.forEach(Entity::spawn);
+		}
 		newEntities.clear();
-		// This takes a lot of time in very densely populated maps
-//		spawning.forEach(Entity::spawn);
 	}
 
 	public void clear(int width, int height) {

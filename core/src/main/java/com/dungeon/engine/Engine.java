@@ -74,7 +74,7 @@ public class Engine {
 		renderEffects.addAll(newRenderEffects);
 		newRenderEffects.clear();
 
-		entities.commit();
+		entities.commit(true);
 		overlayTexts.addAll(newOverelayTexts);
 		newOverelayTexts.clear();
 	}

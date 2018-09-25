@@ -170,7 +170,7 @@ public class Game {
 			}
 		});
 
-		Engine.entities.commit();
+		Engine.entities.commit(false);
 		System.out.println(Engine.entities.analysis());
 
 		setCurrentState(State.INGAME);
@@ -186,7 +186,7 @@ public class Game {
 			player.getConsole().watch("Static Entities", () -> Integer.toString(Engine.entities.staticCount()));
 			player.getConsole().watch("Dynamic Entities", () -> Integer.toString(Engine.entities.dynamicCount()));
 			player.getConsole().watch("Entity updateAll", () -> Engine.entities.processTime.toString());
-			player.getConsole().watch("Avatar Movement", () -> Players.get(0).getAvatar().getMovement().toString());
+			player.getConsole().watch("Mov", () -> player.getAvatar().getMovement().toString());
 //			player.getConsole().watch("QuadTree", () -> Engine.entities.analysis());
 			//TODO Fix
 //			GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
@@ -257,8 +257,8 @@ public class Game {
 
 		// Pick a random environment
 		String env = Rand.pick(Resources.environments.getKeys());
-		env = "dungeon";
-//		env = "prairie";
+//		env = "dungeon";
+		env = "prairie";
 		environment = Resources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
 		LevelGenerator generator;
