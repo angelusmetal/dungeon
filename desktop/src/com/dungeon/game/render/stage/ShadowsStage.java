@@ -31,7 +31,7 @@ public class ShadowsStage implements RenderStage {
 		if (enabled) {
 			viewportBuffer.render(batch -> {
 				// Iterate entities in render order and draw them
-				Engine.entities.inViewPort(viewPort)
+				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort)
 						.filter(Entity::castsShadow)
 						.forEach(entity -> {
 					color.a = SHADOW_INTENSITY * entity.getColor().a;

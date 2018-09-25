@@ -44,6 +44,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 		Light bulletLight = new Light(60, new Color(0.8f, 0.2f, 0.8f, 0.5f), Lights.FLARE);
 
 		projectile = new EntityPrototype()
+				.animation(bulletFlySideAnimation)
 				.boundingBox(bulletBoundingBox)
 				.drawOffset(bulletDrawOffset)
 				.light(bulletLight)

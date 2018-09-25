@@ -51,8 +51,8 @@ public class ViewPort {
 		TextureRegion frame = entity.getFrame();
 		batch.draw(
 				frame,
-				(entity.getOrigin().x - cameraX) - entity.getDrawOffset().x,
-				(entity.getOrigin().y - cameraY) - entity.getDrawOffset().y + entity.getZPos(),
+				(int) (entity.getOrigin().x - cameraX) - entity.getDrawOffset().x,
+				(int) (entity.getOrigin().y - cameraY) - entity.getDrawOffset().y + entity.getZPos(),
 				entity.getDrawOffset().x,
 				entity.getDrawOffset().y,
 				frame.getRegionWidth(),

@@ -119,8 +119,6 @@ public class Dungeon extends ApplicationAdapter {
 	public void render() {
 		Engine.addTime(Gdx.graphics.getDeltaTime());
 
-		Engine.entities.process();
-
 		for (Iterator<OverlayText> t = Engine.getOverlayTexts().iterator(); t.hasNext();) {
 			OverlayText overlayText = t.next();
 			overlayText.think();
@@ -133,6 +131,9 @@ public class Dungeon extends ApplicationAdapter {
 		if (Game.getCurrentState() == Game.State.MENU) {
 			characterSelection.render();
 		} else if (Game.getCurrentState() == Game.State.INGAME) {
+			// Only process static entities in viewport
+			Engine.entities.update(Engine.entities.inViewPort(Players.get(0).getViewPort(), 100f));
+
 			Players.all().forEach(player -> {
 				characterViewPortTracker.refresh(player.getViewPort(), player.getAvatar());
 				player.getRenderer().render();

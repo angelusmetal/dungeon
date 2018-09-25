@@ -39,7 +39,7 @@ public class LightStage implements RenderStage {
 //				Gdx.gl.glClearColor(gamma, gamma, gamma, 1f);
 				Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				Engine.entities.lightInViewPort(viewPort).forEach(e -> e.drawLight(batch, viewPort));
+				Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).forEach(e -> e.drawLight(batch, viewPort));
 			}));
 			// Draw lighting on top of scene
 			viewportBuffer.render(batch -> {

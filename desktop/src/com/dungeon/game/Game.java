@@ -185,7 +185,8 @@ public class Game {
 			player.getConsole().watch("Origin", () -> player.getAvatar().getOrigin().toString());
 			player.getConsole().watch("Static Entities", () -> Integer.toString(Engine.entities.staticCount()));
 			player.getConsole().watch("Dynamic Entities", () -> Integer.toString(Engine.entities.dynamicCount()));
-			player.getConsole().watch("Entity process", () -> Engine.entities.processTime.toString());
+			player.getConsole().watch("Entity updateAll", () -> Engine.entities.processTime.toString());
+			player.getConsole().watch("Avatar Movement", () -> Players.get(0).getAvatar().getMovement().toString());
 //			player.getConsole().watch("QuadTree", () -> Engine.entities.analysis());
 			//TODO Fix
 //			GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));

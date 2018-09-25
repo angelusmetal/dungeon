@@ -39,7 +39,7 @@ public class EntityRepository {
 		List<Entity> spawning = new ArrayList<>(newEntities);
 		newEntities.clear();
 		// This takes a lot of time in very densely populated maps
-		spawning.forEach(Entity::spawn);
+//		spawning.forEach(Entity::spawn);
 	}
 
 	public void clear(int width, int height) {
@@ -48,7 +48,7 @@ public class EntityRepository {
 		quadTree = new QuadTree(new Rectangle(0, 0, width, height));
 	}
 
-	public void process() {
+	public void updateAll() {
 		processTime.start();
 		// Process dynamic entities
 		for (Iterator<Entity> e = dynamic.iterator(); e.hasNext();) {
@@ -67,6 +67,32 @@ public class EntityRepository {
 			if (entity.isExpired()) {
 				e.remove();
 				quadTree.remove(entity);
+			}
+		}
+
+		processTime.stop();
+	}
+
+	public void update(Stream<Entity> stream) {
+		processTime.start();
+		// Process static entities in stream
+		LinkedList<Entity> removed = new LinkedList<>();
+		stream.filter(Entity::isStatic).forEach(entity -> {
+			entity.doThink();
+			entity.move();
+			if (entity.isExpired()) {
+				removed.add(entity);
+			}
+		});
+		removed.forEach(quadTree::remove);
+
+		// Process dynamic entities
+		for (Iterator<Entity> e = dynamic.iterator(); e.hasNext();) {
+			Entity entity = e.next();
+			entity.doThink();
+			entity.move();
+			if (entity.isExpired()) {
+				e.remove();
 			}
 		}
 
@@ -116,17 +142,15 @@ public class EntityRepository {
 				viewPort.cameraX,
 				viewPort.cameraX + viewPort.cameraWidth,
 				viewPort.cameraY,
-				viewPort.cameraY + viewPort.cameraHeight)
-				.filter(viewPort::isInViewPort);
+				viewPort.cameraY + viewPort.cameraHeight);
 	}
 
-	public Stream<Entity> lightInViewPort(ViewPort viewPort) {
+	public Stream<Entity> inViewPort(ViewPort viewPort, float margin) {
 		return inRectAprox(
-				viewPort.cameraX - 100,
-				viewPort.cameraX + viewPort.cameraWidth + 200,
-				viewPort.cameraY - 100,
-				viewPort.cameraY + viewPort.cameraHeight + 200)
-				.filter(viewPort::lightIsInViewPort);
+				viewPort.cameraX - margin,
+				viewPort.cameraX + viewPort.cameraWidth + margin + margin,
+				viewPort.cameraY - margin,
+				viewPort.cameraY + viewPort.cameraHeight + margin + margin);
 	}
 
 	/** Aproximation that includes all dynamic entities and entities in partitions that intersect with the rectangle and more */
