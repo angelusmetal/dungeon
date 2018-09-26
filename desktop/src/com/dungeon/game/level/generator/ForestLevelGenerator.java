@@ -38,9 +38,16 @@ public class ForestLevelGenerator implements LevelGenerator {
 		}
 		placePlayerSpawns(level);
 
+		// Vegetation
 		for (float x = 0; x < width; x += 0.6f) {
 			for (float y = 0; y < height; y += 0.6f) {
 				placeVegetation(level, x, y);
+			}
+		}
+		// Trees
+		for (float x = 0; x < width; x += 1.5f) {
+			for (float y = 0; y < height; y += 2.2f) {
+				placeTree(level, x, y);
 			}
 		}
 
@@ -62,7 +69,9 @@ public class ForestLevelGenerator implements LevelGenerator {
 		String plant;
 		double noise = getNoise(x, y);
 		double color = getColorNoise(x, y);
-		if (noise < -0.1) {
+		if (noise < -0.5) {
+			return;
+		} else if (noise < -0.1) {
 			boolean large = Rand.chance(0.5f);
 			if (color < -0.6) {
 				plant = large ? "prop_bush_red" : "prop_bush_red_small";
@@ -95,6 +104,32 @@ public class ForestLevelGenerator implements LevelGenerator {
 		level.getEntityPlaceholders().add(new EntityPlaceholder(plant, new Vector2(x + offsetX, y + offsetY)));
 	}
 
+	private void placeTree(Level level, float x, float y) {
+		String plant;
+		double noise = getNoise(x, y);
+		double color = getColorNoise(x, y);
+		if (noise < -0.5) {
+			if (color < -0.6) {
+				plant = "prop_tree_red";
+			} else if (color < -0.2) {
+				plant = "prop_tree_purple";
+			} else if (color < 0.2) {
+				plant = "prop_tree_cyan";
+			} else if (color < 0.6) {
+				plant = "prop_tree_green";
+			} else {
+				plant = "prop_tree_gold";
+			}
+		} else {
+			return;
+		}
+
+		float offsetX = Rand.between(-0.45f, 0.45f);
+		float offsetY = Rand.between(-0.45f, 0.45f);
+
+		level.getEntityPlaceholders().add(new EntityPlaceholder(plant, new Vector2(x + offsetX, y + offsetY)));
+	}
+
 	private double getNoise(double x, double y) {
 		double value = noise.eval(x / featureSize, y / featureSize);
 		// Distance to center is used to increase density towards the edges
@@ -103,7 +138,7 @@ public class ForestLevelGenerator implements LevelGenerator {
 	}
 
 	private double getColorNoise(double x, double y) {
-		return colorNoise.eval(x / (featureSize * 2d), y / (featureSize * 2d));
+		return colorNoise.eval(x / (featureSize * 10d), y / (featureSize * 10d));
 	}
 
 }
