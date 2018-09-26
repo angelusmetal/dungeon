@@ -139,6 +139,18 @@ public class Traits {
         };
     }
 
+    static public <T extends Entity> TraitSupplier<T> deathClone(float timeToLive) {
+        return e -> entity -> {
+            Entity clone = new Entity(entity);
+            clone.isStatic = true;
+            clone.solid = false;
+            clone.expirationTime = Engine.time() + timeToLive;
+            clone.traits.add(expireByTime().get(clone));
+            clone.traits.add(fadeOut(1f).get(clone));
+            Engine.entities.add(clone);
+        };
+    }
+
     static public <T extends Entity> TraitSupplier<T> rotateFixed(float speed) {
         return e -> entity -> entity.setRotation(Engine.time() * speed);
     }

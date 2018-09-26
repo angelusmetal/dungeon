@@ -34,6 +34,8 @@ public class TraitLoader {
 			return generate(config);
 		} else if (type.equals("xInvert")){
 			return xInvert(config);
+		} else if (type.equals("deathClone")){
+			return deathClone(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
@@ -58,6 +60,11 @@ public class TraitLoader {
 		} else {
 			throw new LoadingException("Invalid vector type " + vector);
 		}
+	}
+
+	private static <T extends Entity> TraitSupplier<T> deathClone(Config config) {
+		float timeToLive = ConfigUtil.requireFloat(config, "timeToLive");
+		return Traits.deathClone(timeToLive);
 	}
 
 	private static <T extends Entity> TraitSupplier<T> generate(Config config) {

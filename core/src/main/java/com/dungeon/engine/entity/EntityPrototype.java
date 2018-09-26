@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 
 public class EntityPrototype {
 	Supplier<Animation<TextureRegion>> animation = () -> null;
+	boolean offsetAnimation;
 	float bounciness = 0;
 	Supplier<Color> color = Color.WHITE::cpy;
 	Supplier<Float> knockback = () -> 0f;
@@ -46,6 +47,7 @@ public class EntityPrototype {
 
 	public EntityPrototype(EntityPrototype other) {
 		this.animation = other.animation;
+		this.offsetAnimation = other.offsetAnimation;
 		this.bounciness = other.bounciness;
 		this.color = other.color;
 		this.knockback = other.knockback;
@@ -86,6 +88,11 @@ public class EntityPrototype {
 
 	public Supplier<Animation<TextureRegion>> getAnimation() {
 		return animation;
+	}
+
+	public EntityPrototype offsetAnimation(boolean offsetAnimation) {
+		this.offsetAnimation = offsetAnimation;
+		return this;
 	}
 
 	public EntityPrototype bounciness(float bounciness) {

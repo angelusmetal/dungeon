@@ -267,7 +267,7 @@ public class Game {
 			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
 		} else {
 //			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
-			generator = new ForestLevelGenerator(environment, 250, 500, 4d);
+			generator = new ForestLevelGenerator(environment, 500, 500, 4d);
 		}
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);

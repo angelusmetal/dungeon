@@ -13,6 +13,7 @@ import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -30,6 +31,7 @@ public class Entity implements Drawable, Movable {
 	private final int uniqueid = sequencer.getAndIncrement();
 
 	private GameAnimation currentAnimation;
+	private boolean offsetAnimation;
 	/**
 	 * Self impulse the entity will constantly applied. Gets added to the current movement vector at a rate of 1x per
 	 * second.
@@ -101,6 +103,7 @@ public class Entity implements Drawable, Movable {
 	 * @param origin Origin to build entity at
 	 */
 	public Entity(EntityPrototype prototype, Vector2 origin) {
+		this.offsetAnimation = prototype.offsetAnimation;
 		this.setCurrentAnimation(prototype.animation.get());
 		if (prototype.boundingBoxOffset.len2() == 0) {
 			this.body = Body.centered(origin, prototype.boundingBox);
@@ -144,10 +147,11 @@ public class Entity implements Drawable, Movable {
 	 * @param other Original entity to copy from
 	 */
 	public Entity (Entity other) {
+		this.offsetAnimation = other.offsetAnimation;
 		this.setCurrentAnimation(other.currentAnimation);
 		this.body = Body.centered(other.getOrigin(), other.getBoundingBox());
 		this.drawOffset = other.drawOffset;
-		this.startTime = other.getStartTime();
+		this.startTime = Engine.time();
 		this.speed = other.getSpeed();
 		this.zSpeed = other.getZSpeed();
 		this.knockback = other.knockback;
@@ -155,15 +159,15 @@ public class Entity implements Drawable, Movable {
 		this.bounciness = other.bounciness;
 		this.hitPredicate = other.hitPredicate;
 		this.color = other.color;
-		this.light = other.light.cpy();
+		this.light = other.light != null ? other.light.cpy(): null;
 		this.drawContext = other.drawContext;
 		this.zIndex = other.zIndex;
 		this.expirationTime = other.expirationTime;
 		this.traits = other.traits;
-		this.onHitTraits = other.onHitTraits;
-		this.onExpireTraits = other.onExpireTraits;
-		this.onRestTraits = other.onRestTraits;
-		this.onSignalTraits = other.onSignalTraits;
+		this.onHitTraits = new ArrayList<>();
+		this.onExpireTraits = new ArrayList<>();
+		this.onRestTraits = new ArrayList<>();
+		this.onSignalTraits = new ArrayList<>();
 		this.maxHealth = other.getMaxHealth();
 		this.health = other.health;
 		this.solid = other.solid;
@@ -195,7 +199,7 @@ public class Entity implements Drawable, Movable {
 	}
 
 	public void setCurrentAnimation(Animation<TextureRegion> animation) {
-		this.currentAnimation = new GameAnimation(animation);
+		this.currentAnimation = offsetAnimation ? new GameAnimation(animation, Rand.between(0f, animation.getAnimationDuration())): new GameAnimation(animation);
 	}
 
 	public void updateCurrentAnimation(Animation<TextureRegion> animation) {
