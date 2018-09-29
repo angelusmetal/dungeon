@@ -9,6 +9,10 @@ import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.Environment;
 
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+
 public class ForestLevelGenerator implements LevelGenerator {
 
 	private final OpenSimplexNoise noise;
@@ -56,13 +60,35 @@ public class ForestLevelGenerator implements LevelGenerator {
 
 	private void placePlayerSpawns(Level level) {
 		int startX, startY;
+		AtomicInteger count = new AtomicInteger(1);
+		List<EntityPlaceholder> spawns = new ArrayList<>();
 		do {
-			startX = Rand.between(1, width - 2);
-			startY = Rand.between(1, height - 2);
+			count.set(0);
+			spawns.clear();
+			do {
+				startX = Rand.between(1, width - 2);
+				startY = Rand.between(1, height - 2);
 
-		} while (getNoise(startX, startY) < 0.5d);
-		level.getEntityPlaceholders().add(new EntityPlaceholder(EntityType.PLAYER_SPAWN, new Vector2(startX, startY)));
-		// TODO Need to keep looking to place other players
+			} while (getNoise(startX, startY) < 0.5d);
+			attemptPlayerSpawn(level, startX, startY, count);
+			attemptPlayerSpawn(level, startX - 1, startY - 1, count);
+			attemptPlayerSpawn(level, startX, startY - 1, count);
+			attemptPlayerSpawn(level, startX + 1, startY - 1, count);
+			attemptPlayerSpawn(level, startX - 1, startY, count);
+			attemptPlayerSpawn(level, startX + 1, startY, count);
+			attemptPlayerSpawn(level, startX - 1, startY + 1, count);
+			attemptPlayerSpawn(level, startX, startY + 1, count);
+			attemptPlayerSpawn(level, startX + 1, startY + 1, count);
+		} while (count.get() < 4);
+		level.getEntityPlaceholders().addAll(spawns);
+
+	}
+
+	private void attemptPlayerSpawn(Level level, int x, int y, AtomicInteger count) {
+		if (count.get() < 4 & getNoise(x, y) > 0.5d) {
+			level.getEntityPlaceholders().add(new EntityPlaceholder(EntityType.PLAYER_SPAWN, new Vector2(x, y)));
+			count.incrementAndGet();
+		}
 	}
 
 	private void placeVegetation(Level level, float x, float y) {
