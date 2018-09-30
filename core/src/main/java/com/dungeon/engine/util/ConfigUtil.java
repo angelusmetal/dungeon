@@ -408,6 +408,28 @@ public class ConfigUtil {
 		return getVector2(config, key).orElseThrow(missing(key));
 	}
 
+	public static Optional<Supplier<Float>> getFloatRange(Config config, String key) {
+		if (!config.hasPath(key)) {
+			return Optional.empty();
+		}
+		ConfigValueType type = config.getValue(key).valueType();
+		if (type == ConfigValueType.NUMBER) {
+			float value = requireFloat(config, key);
+			return Optional.of(() -> value);
+		} else if (type == ConfigValueType.LIST) {
+			Vector2 range = requireVector2(config, key);
+			float min = Math.min(range.x, range.y);
+			float max = Math.max(range.x, range.y);
+			return min != max ? Optional.of(() -> Rand.between(min, max)) : Optional.of(() -> min);
+		} else {
+			throw new LoadingException("Invalid type '" + type + "' for key '" + key + "'");
+		}
+	}
+
+	public static Supplier<Float> requireFloatRange(Config config, String key) {
+		return getFloatRange(config, key).orElseThrow(missing(key));
+	}
+
 	public static Optional<Supplier<Integer>> getIntegerRange(Config config, String key) {
 		if (!config.hasPath(key)) {
 			return Optional.empty();

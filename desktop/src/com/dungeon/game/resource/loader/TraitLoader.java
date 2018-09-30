@@ -68,7 +68,7 @@ public class TraitLoader {
 	}
 
 	private static <T extends Entity> TraitSupplier<T> generate(Config config) {
-		Optional<Float> frequency = ConfigUtil.getFloat(config, "frequency");
+		Optional<Supplier<Float>> frequency = ConfigUtil.getFloatRange(config, "frequency");
 		Supplier<Integer> count = ConfigUtil.getIntegerRange(config, "count").orElse(() -> 1);
 
 		// The particle factory generates a single particle
@@ -84,9 +84,9 @@ public class TraitLoader {
 
 		// If frequency is specified, wrap in a timer object
 		if (frequency.isPresent()) {
-			Float freq = frequency.get();
+			Supplier<Float> freq = frequency.get();
 			return e -> {
-				Timer timer = new Timer(freq);
+				Timer timer = new Timer(freq.get());
 				return entity -> timer.doAtInterval(() -> generator.accept(entity));
 			};
 		} else {
