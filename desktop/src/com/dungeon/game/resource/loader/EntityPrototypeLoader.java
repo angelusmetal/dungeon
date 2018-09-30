@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
@@ -161,32 +162,15 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
 	private static Optional<Light> getLight(Config config, String key) {
 		if (config.hasPath(key)) {
-			List<String> light = config.getStringList(key);
-			if (light.size() < 3) {
-				throw new RuntimeException("light must have at least 3 parameters");
-			}
-			float diameter = Float.parseFloat(light.get(0));
-			Color color = Color.valueOf(light.get(1));
-			Texture texture = getLightTexture(light.get(2));
+			Config lightConfig = config.getConfig(key);
+			float diameter = ConfigUtil.requireFloat(lightConfig, "diameter");
+			Color color = ConfigUtil.requireColor(lightConfig, "color");
+			Texture texture = Resources.textures.get(ConfigUtil.requireString(lightConfig, "texture"));
 			List<Consumer<Light>> traits = new ArrayList<>();
-			for (int i = 3; i < light.size(); ++i) {
-				traits.add(getLightTrait(light.get(i)));
-			}
+			ConfigUtil.getStringList(lightConfig, "traits").ifPresent(list -> list.stream().map(EntityPrototypeLoader::getLightTrait).forEach(traits::add));
 			return Optional.of(new Light(diameter, color, texture, traits));
 		} else {
 			return Optional.empty();
-		}
-	}
-
-	private static Texture getLightTexture(String name) {
-		if ("NORMAL".equals(name)) {
-			return Lights.NORMAL;
-		} else if ("RAYS".equals(name)) {
-			return Lights.RAYS;
-		} else if ("FLARE".equals(name)) {
-			return Lights.FLARE;
-		} else {
-			throw new RuntimeException("light texture '" + name + "' not recognized");
 		}
 	}
 

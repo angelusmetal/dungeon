@@ -257,8 +257,8 @@ public class Game {
 
 		// Pick a random environment
 		String env = Rand.pick(Resources.environments.getKeys());
-//		env = "dungeon";
-		env = "prairie";
+		env = "dungeon";
+//		env = "prairie";
 		environment = Resources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
 		LevelGenerator generator;

@@ -435,6 +435,9 @@ public class ConfigUtil {
 		if (!config.hasPath(key)) {
 			return Optional.empty();
 		}
+		if (config.getValue(key).valueType() == ConfigValueType.NUMBER) {
+			return getInteger(config, key).map(num -> String.format("%06d", num)).map(Color::valueOf);
+		}
 		if (config.getValue(key).valueType() == ConfigValueType.STRING) {
 			return getString(config, key).map(Color::valueOf);
 		}

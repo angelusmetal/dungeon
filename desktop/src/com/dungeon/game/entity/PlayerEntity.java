@@ -18,13 +18,13 @@ import java.util.function.Predicate;
 
 public abstract class PlayerEntity extends CreatureEntity {
 
-	static private Light TORCH_LIGHT = new Light(160, new Color(0.25f, 0.2f, 0.1f, 0.2f), Lights.NORMAL, Light.torchlight());
+//	static private Light TORCH_LIGHT = new Light(160, new Color(0.25f, 0.2f, 0.1f, 0.2f), Lights.NORMAL, Light.torchlight());
 
 	private int playerId;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
-		light = TORCH_LIGHT;
+//		light = TORCH_LIGHT;
 	}
 
 	public void setPlayerId(int playerId) {
