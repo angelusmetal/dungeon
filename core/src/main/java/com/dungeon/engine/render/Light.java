@@ -2,6 +2,7 @@ package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Timer;
 import com.dungeon.engine.util.Rand;
@@ -78,7 +79,7 @@ public class Light {
 	}
 
 	public static Consumer<Light> oscillate(float delta, float frequency) {
-		return light -> light.dim = 1 + (float) Math.sin(Engine.time() * frequency) * delta ;
+		return light -> light.dim = 1 + MathUtils.sin(Engine.time() * frequency) * delta;
 	}
 
 	public static Consumer<Light> rotateSlow() {

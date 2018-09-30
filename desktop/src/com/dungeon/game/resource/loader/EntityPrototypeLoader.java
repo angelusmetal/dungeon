@@ -115,8 +115,10 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "fadeOut").ifPresent(value -> prototype.with(Traits.fadeOut(value)));
 		ConfigUtil.getBoolean(descriptor, "fadeOutLight").ifPresent(value -> prototype.with(Traits.fadeOutLight()));
 		ConfigUtil.getVector2(descriptor, "hOscillate").ifPresent(value -> prototype.with(Traits.hOscillate(value.x, value.y)));
+		ConfigUtil.getVector2(descriptor, "vOscillate").ifPresent(value -> prototype.with(Traits.vOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
-		ConfigUtil.getFloat(descriptor, "z").ifPresent(prototype::z);;
+		ConfigUtil.getFloat(descriptor, "z").ifPresent(prototype::z);
+		ConfigUtil.getBoolean(descriptor, "noclip").ifPresent(prototype::noclip);
 		ConfigUtil.getBoolean(descriptor, "solid").ifPresent(value -> {
 			prototype.solid(value);
 			prototype.canBeHit(value);

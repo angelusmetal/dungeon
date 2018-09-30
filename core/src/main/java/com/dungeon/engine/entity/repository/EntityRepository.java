@@ -50,30 +50,30 @@ public class EntityRepository {
 		quadTree = new QuadTree(new Rectangle(0, 0, width, height));
 	}
 
-	public void updateAll() {
-		processTime.start();
-		// Process dynamic entities
-		for (Iterator<Entity> e = dynamic.iterator(); e.hasNext();) {
-			Entity entity = e.next();
-			entity.doThink();
-			entity.move();
-			if (entity.isExpired()) {
-				e.remove();
-			}
-		}
-		// Process static entities
-		for (Iterator<Entity> e = staticOnes.iterator(); e.hasNext();) {
-			Entity entity = e.next();
-			entity.doThink();
-			entity.move();
-			if (entity.isExpired()) {
-				e.remove();
-				quadTree.remove(entity);
-			}
-		}
-
-		processTime.stop();
-	}
+//	public void updateAll() {
+//		processTime.start();
+//		// Process dynamic entities
+//		for (Iterator<Entity> e = dynamic.iterator(); e.hasNext();) {
+//			Entity entity = e.next();
+//			entity.doThink();
+//			entity.move();
+//			if (entity.isExpired()) {
+//				e.remove();
+//			}
+//		}
+//		// Process static entities
+//		for (Iterator<Entity> e = staticOnes.iterator(); e.hasNext();) {
+//			Entity entity = e.next();
+//			entity.doThink();
+//			entity.move();
+//			if (entity.isExpired()) {
+//				e.remove();
+//				quadTree.remove(entity);
+//			}
+//		}
+//
+//		processTime.stop();
+//	}
 
 	public void update(Stream<Entity> stream) {
 		processTime.start();

@@ -92,6 +92,7 @@ public class Entity implements Drawable, Movable {
 	private float zIndex;
 
 	protected boolean solid;
+	protected boolean noclip;
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
 	protected boolean castsShadow;
@@ -136,6 +137,7 @@ public class Entity implements Drawable, Movable {
 		this.maxHealth = prototype.health.get();
 		this.health = maxHealth;
 		this.solid = prototype.solid;
+		this.noclip = prototype.noclip;
 		this.canBeHit = prototype.canBeHit;
 		this.canBeHurt = prototype.canBeHurt;
 		this.castsShadow = prototype.castsShadow;
@@ -171,6 +173,7 @@ public class Entity implements Drawable, Movable {
 		this.maxHealth = other.getMaxHealth();
 		this.health = other.health;
 		this.solid = other.solid;
+		this.noclip = other.noclip;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
 		this.castsShadow = other.castsShadow;
@@ -353,20 +356,20 @@ public class Entity implements Drawable, Movable {
 			// do step
 			if (!collidedX) {
 				body.move(stepX);
-				collidedX = detectEntityCollision(stepX);
+				collidedX = detectEntityCollision(stepX) && !noclip;
 			}
 			if (!collidedX) {
-				collidedX = detectTileCollision(stepX);
+				collidedX = detectTileCollision(stepX) && !noclip;
 			}
 			if (collidedX) {
 				movement.x *= -bounciness;
 			}
 			if (!collidedY) {
 				body.move(stepY);
-				collidedY = detectEntityCollision(stepY);
+				collidedY = detectEntityCollision(stepY) && !noclip;
 			}
 			if (!collidedY) {
-				collidedY = detectTileCollision(stepY);
+				collidedY = detectTileCollision(stepY) && !noclip;
 			}
 			if (collidedY) {
 				movement.y *= -bounciness;
@@ -379,14 +382,14 @@ public class Entity implements Drawable, Movable {
 			// do remainder
 			if (!collidedX) {
 				body.move(stepX);
-				collidedX = detectTileCollision(stepX);
+				collidedX = detectTileCollision(stepX) && !noclip;
 			}
 			if (!collidedX) {
 				detectEntityCollision(stepX);
 			}
 			if (!collidedY) {
 				body.move(stepY);
-				collidedY = detectTileCollision(stepY);
+				collidedY = detectTileCollision(stepY) && !noclip;
 			}
 			if (!collidedY) {
 				detectEntityCollision(stepY);
@@ -448,8 +451,7 @@ public class Entity implements Drawable, Movable {
 		int top = body.getTopTile(tile_size);
 		for (int x = left; x <= right; ++x) {
 			for (int y = bottom; y <= top; ++y) {
-				if (Engine.getLevelTiles().isSolid(x, y) && body.intersectsTile(x, y, tile_size)) {
-					// TODO we may want to enable/disable collision & pushback against solid tiles
+				if (Engine.getLevelTiles().isSolid(x, y) && body.intersectsTile(x, y, tile_size) && !noclip) {
 					body.move(step.scl(-1));
 					onTileCollision(Math.abs(step.x) > Math.abs(step.y));
 					return true;

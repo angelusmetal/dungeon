@@ -2,12 +2,14 @@ package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -23,11 +25,7 @@ public class Traits {
         return e -> {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(SPIN);
-            return entity -> {
-                // TODO FIXME
-                //entity.stop();
-                entity.impulse((float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime(), 0);
-            };
+            return entity -> entity.getMovement().x = MathUtils.sin((Engine.time() + phase) * SPIN * frequency) * amplitude;
         };
     }
 
@@ -36,7 +34,7 @@ public class Traits {
         return e -> {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(SPIN);
-            return entity -> entity.impulse(0, (float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime());
+            return entity -> entity.impulse(0, MathUtils.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime());
         };
     }
 
@@ -45,7 +43,7 @@ public class Traits {
         return e -> {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(SPIN);
-            return entity -> entity.z += (float) Math.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime();
+            return entity -> entity.z += MathUtils.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime();
         };
     }
 
