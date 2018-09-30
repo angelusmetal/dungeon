@@ -241,7 +241,12 @@ public class ModularLevelGenerator implements LevelGenerator {
 					frame.originPoint.active = true;
 					// Make the connecting tile walkable
 					for (int i = 0; i <= frame.roomSeparation; ++i) {
-						tiles[(int) frame.originPoint.coords.x + frame.originPoint.direction.x * i][(int) frame.originPoint.coords.y + frame.originPoint.direction.y * i] = TileType.FLOOR;
+						int xi = (int) frame.originPoint.coords.x + frame.originPoint.direction.x * i;
+						int yi = (int) frame.originPoint.coords.y + frame.originPoint.direction.y * i;
+						tiles[xi][yi] = TileType.FLOOR;
+						if (i % 2 == 0) {
+							room.placeholders.add(new EntityPlaceholder("gold_light_small", new Vector2(xi + 0.5f, yi + 0.5f)));
+						}
 					}
 					frame.originPoint.visited = true;
 				}
