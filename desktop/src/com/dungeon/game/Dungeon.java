@@ -14,6 +14,7 @@ import com.dungeon.engine.controller.analog.DpadAnalogControl;
 import com.dungeon.engine.controller.analog.StickAnalogControl;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
@@ -35,6 +36,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Dungeon extends ApplicationAdapter {
 	private final Toml configuration;
@@ -131,8 +133,10 @@ public class Dungeon extends ApplicationAdapter {
 		if (Game.getCurrentState() == Game.State.MENU) {
 			characterSelection.render();
 		} else if (Game.getCurrentState() == Game.State.INGAME) {
-			// Only process static entities in viewport
-			Engine.entities.update(Engine.entities.inViewPort(Players.get(0).getViewPort(), 100f));
+			// Only process static entities in viewports
+			// We need to pick up stuff that fits in all viewports & merge them with a set
+			Stream<Entity> entitiesInAllViewPorts = Players.all().stream().flatMap(player -> Engine.entities.inViewPort(player.getViewPort(), 100f)).collect(Collectors.toSet()).stream();
+			Engine.entities.update(entitiesInAllViewPorts);
 
 			Players.all().forEach(player -> {
 				characterViewPortTracker.refresh(player.getViewPort(), player.getAvatar());

@@ -19,9 +19,9 @@ public class EntityRepository {
 
 	private final List<Entity> dynamic = new LinkedList<>();
 	private final List<Entity> newEntities = new LinkedList<>();
-	private final List<Entity> staticOnes = new LinkedList<>();
 	private QuadTree quadTree;
 	public final StopWatch processTime = new StopWatch();
+	private int staticCount = 0;
 
 	public void add(Entity entity) {
 		newEntities.add(entity);
@@ -30,7 +30,7 @@ public class EntityRepository {
 	public void commit(boolean checkSpawn) {
 		newEntities.forEach(e -> {
 			if (e.isStatic()) {
-				staticOnes.add(e);
+				staticCount++;
 				quadTree.insert(e);
 			} else {
 				dynamic.add(e);
@@ -84,6 +84,7 @@ public class EntityRepository {
 			entity.move();
 			if (entity.isExpired()) {
 				removed.add(entity);
+				staticCount--;
 			}
 		});
 		removed.forEach(quadTree::remove);
@@ -166,15 +167,11 @@ public class EntityRepository {
 	}
 
 	public <T extends Entity> Stream<T> ofType(Class<T> type) {
-		return all().filter(e -> type.isAssignableFrom(e.getClass())).map(type::cast);
-	}
-
-	public Stream<Entity> all() {
-		return Stream.concat(dynamic.stream(), staticOnes.stream());
+		return dynamic().filter(e -> type.isAssignableFrom(e.getClass())).map(type::cast);
 	}
 
 	public int staticCount() {
-		return staticOnes.size();
+		return staticCount;
 	}
 
 	public int dynamicCount() {
