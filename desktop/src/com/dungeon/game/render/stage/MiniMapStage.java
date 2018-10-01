@@ -18,8 +18,8 @@ public class MiniMapStage implements RenderStage {
 	private final Pixmap miniMap;
 	private final Texture miniMapTexture;
 	private boolean enabled = true;
-	private final int width = 100;
-	private final int height = 100;
+	private final int width = 60;
+	private final int height = 60;
 	private final Color background =  Color.valueOf("000000c0");
 	private final Color floor = Color.valueOf("a66620c0");
 
@@ -61,9 +61,12 @@ public class MiniMapStage implements RenderStage {
 					color.set(background);
 				} else if (Game.getLevel().isSolid(x, y)) {
 					color.set(background);
+				} else if (!Game.getLevel().isDiscovered(x, y)) {
+					color.set(background);
 				} else {
 					color.set(floor);
 				}
+				// TODO Maybe we can use a mask for alpha instead of doing this
 				color.a *= Util.clamp(1 - (midpoint.dst(x, y) / maxDst));
 				miniMap.setColor(color);
 				miniMap.drawPixel(xm, height - ym);

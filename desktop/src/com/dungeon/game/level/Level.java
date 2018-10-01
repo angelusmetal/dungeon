@@ -54,6 +54,14 @@ public class Level implements LevelTiles {
 		return getTile(x, y).solid;
 	}
 
+	public boolean isDiscovered(int x, int y) {
+		return getTile(x, y).discovered;
+	}
+
+	public void setDiscovered(int x, int y) {
+		getTile(x, y).discovered = true;
+	}
+
 	@Override
 	public int getTileSize() {
 		return Game.getEnvironment().getTileset().tile_size;
@@ -78,5 +86,6 @@ public class Level implements LevelTiles {
 	private static class Tile {
 		Animation<TextureRegion> animation;
 		boolean solid = false;
+		boolean discovered = false;
 	}
 }

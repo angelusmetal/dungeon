@@ -52,13 +52,14 @@ public class MapStage implements RenderStage {
 		// Only render the visible portion of the map
 		int tSize = Game.getEnvironment().getTileset().tile_size;
 		int minX = Math.max(0, viewPort.cameraX / tSize);
-		int maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.width) / tSize) + 1;
+		int maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + 1;
 		int minY = Math.max(0, viewPort.cameraY / tSize - 1);
-		int maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.height) / tSize);
+		int maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize);
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
 				TextureRegion textureRegion = Game.getLevel().getAnimation(x, y).getKeyFrame(Engine.time(), true);
 				batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				Game.getLevel().setDiscovered(x, y);
 			}
 		}
 	}
