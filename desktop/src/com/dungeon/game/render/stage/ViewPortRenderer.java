@@ -32,6 +32,7 @@ public class ViewPortRenderer implements Disposable {
 	private final OverlayTextStage overlayTextStage;
 	private final PlayerArrowsStage playerArrowsStage;
 	private final HudStage hudStage;
+	private final MiniMapStage miniMapStage;
 	private final ScaleStage scaleStage;
 	private final ConsoleStage consoleStage;
 	private final TitleStage titleStage;
@@ -54,6 +55,7 @@ public class ViewPortRenderer implements Disposable {
 		overlayTextStage = new OverlayTextStage(viewPort, viewportBuffer);
 		playerArrowsStage = new PlayerArrowsStage(viewPort, viewportBuffer);
 		hudStage = new HudStage(viewPort, viewportBuffer, player);
+		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
 		pipeline.add(mapStage);
@@ -67,6 +69,7 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.add(overlayTextStage);
 		pipeline.add(playerArrowsStage);
 		pipeline.add(hudStage);
+		pipeline.add(miniMapStage);
 		pipeline.add(titleStage);
 		pipeline.add(scaleStage);
 		pipeline.add(consoleStage);
