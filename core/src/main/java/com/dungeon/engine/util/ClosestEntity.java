@@ -3,7 +3,7 @@ package com.dungeon.engine.util;
 import com.dungeon.engine.entity.Entity;
 
 public class ClosestEntity {
-	private Entity source;
+	private final Entity source;
 	private Entity entity;
 	private float dst2 = Float.MAX_VALUE;
 	public ClosestEntity(Entity source) {

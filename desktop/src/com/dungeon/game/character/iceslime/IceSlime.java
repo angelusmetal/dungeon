@@ -1,4 +1,4 @@
-package com.dungeon.game.character.acidslime;
+package com.dungeon.game.character.iceslime;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -15,11 +15,11 @@ import com.dungeon.game.entity.PlayerEntity;
 import java.util.Arrays;
 import java.util.List;
 
-public class AcidSlime extends CreatureEntity {
+public class IceSlime extends CreatureEntity {
 
-	private static final List<String> attackPhrases = Arrays.asList("Caustic!", "Slimy!", "I'm toxic!");
+	private static final List<String> attackPhrases = Arrays.asList("Chill out", "Cool", "Caught a cold");
 
-	private final AcidSlimeFactory factory;
+	private final IceSlimeFactory factory;
 	private final Vector2 lastPool = new Vector2(0,0);
 	private float nextThink;
 	private enum Status {
@@ -27,7 +27,7 @@ public class AcidSlime extends CreatureEntity {
 	}
 	private Status status;
 
-	AcidSlime(Vector2 origin, EntityPrototype prototype, AcidSlimeFactory factory) {
+	IceSlime(Vector2 origin, EntityPrototype prototype, IceSlimeFactory factory) {
 		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
@@ -42,11 +42,11 @@ public class AcidSlime extends CreatureEntity {
 				// Aim towards target
 				impulseTowards(closest.getEntity().getOrigin(), factory.dashDistance);
 				aim(getMovement());
-				updateCurrentAnimation(factory.attackAnimation);
+//				updateCurrentAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
 				shout(attackPhrases, 0.02f);
 			} else {
-				nextThink = Engine.time() + Rand.nextFloat(3f);
+				nextThink = Engine.time() + Rand.between(2, 3);
 				speed = 5f;
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
@@ -70,6 +70,11 @@ public class AcidSlime extends CreatureEntity {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void onHit() {
+		updateCurrentAnimation(factory.hitAnimation);
 	}
 
 	@Override
