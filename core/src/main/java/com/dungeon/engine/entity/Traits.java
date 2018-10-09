@@ -80,6 +80,13 @@ public class Traits {
     }
 
     /** Fade in particle */
+    static public <T extends Entity> TraitSupplier<T> fadeIn(float alpha, float duration) {
+        return e -> {
+            TimeGradient gradient = TimeGradient.fadeIn(e.getStartTime(), duration);
+            return entity -> entity.color.a = gradient.get() * alpha;
+        };
+    }
+    /** Fade in particle */
     static public <T extends Entity> TraitSupplier<T> fadeIn(float alpha) {
         return e -> {
             TimeGradient gradient = TimeGradient.fadeIn(e.getStartTime(), e.getExpirationTime() - e.getStartTime());

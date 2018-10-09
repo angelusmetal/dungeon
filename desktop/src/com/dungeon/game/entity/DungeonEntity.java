@@ -5,8 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.TraitSupplier;
+import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
+import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 
 import static com.dungeon.game.Game.text;
@@ -59,5 +62,16 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 
 	protected boolean onEntityCollision(DungeonEntity entity) {
 		return false;
+	}
+
+
+	static public <T extends Entity> TraitSupplier<T> generateLoot() {
+		return e -> entity -> {
+			Entity loot = Game.build(Game.createLoot(), entity.getOrigin());
+			loot.setZPos(15);
+			// TODO Is this really ok?
+			loot.getTraits().add(Traits.fadeIn(1f, 1f).get(loot));
+			Engine.entities.add(loot);
+		};
 	}
 }

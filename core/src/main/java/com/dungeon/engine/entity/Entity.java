@@ -308,6 +308,26 @@ public class Entity implements Drawable, Movable {
 		return maxHealth;
 	}
 
+	public List<Trait<Entity>> getTraits() {
+		return traits;
+	}
+
+	public List<Trait<Entity>> getOnHitTraits() {
+		return onHitTraits;
+	}
+
+	public List<Trait<Entity>> getOnExpireTraits() {
+		return onExpireTraits;
+	}
+
+	public List<Trait<Entity>> getOnRestTraits() {
+		return onRestTraits;
+	}
+
+	public List<Trait<Entity>> getOnSignalTraits() {
+		return onSignalTraits;
+	}
+
 	private static final Vector2 frameMovement = new Vector2();
 	private static final Vector2 stepX = new Vector2();
 	private static final Vector2 stepY = new Vector2();

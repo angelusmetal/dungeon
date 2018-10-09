@@ -3,11 +3,13 @@ package com.dungeon.game.resource.loader;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.Timer;
+import com.dungeon.engine.entity.Trait;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.Game;
+import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.typesafe.config.Config;
 
@@ -32,13 +34,23 @@ public class TraitLoader {
 			return rotateRandom(config);
 		} else if (type.equals("generate")) {
 			return generate(config);
+		} else if (type.equals("generateLoot")) {
+			return DungeonEntity.generateLoot();
 		} else if (type.equals("xInvert")){
 			return xInvert(config);
 		} else if (type.equals("deathClone")){
 			return deathClone(config);
+		} else if (type.equals("fadeIn")){
+			return fadeIn(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
+	}
+
+	private static <T extends Entity> TraitSupplier<T> fadeIn(Config config) {
+		float alpha = ConfigUtil.getFloat(config, "alpha").orElse(1f);
+		Optional<Float> duration = ConfigUtil.getFloat(config, "duration");
+		return duration.<TraitSupplier<T>>map(aFloat -> Traits.fadeIn(alpha, aFloat)).orElseGet(() -> Traits.fadeIn(alpha));
 	}
 
 	private static <T extends Entity> TraitSupplier<T> rotate(Config config) {

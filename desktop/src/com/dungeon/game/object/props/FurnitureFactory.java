@@ -16,23 +16,6 @@ import com.dungeon.game.resource.Resources;
 
 public class FurnitureFactory {
 
-	public Entity chest(Vector2 origin, EntityPrototype prototype) {
-		Animation<TextureRegion> chestOpening = Resources.animations.get("chest_opening");
-		return new DungeonEntity(prototype, origin) {
-			boolean opened = false;
-			@Override
-			public void onSignal(Entity emitter) {
-				if (!opened) {
-					opened = true;
-					setCurrentAnimation(chestOpening);
-					Entity loot = Game.build(Game.createLoot(), getOrigin());
-					loot.setZPos(15);
-					Engine.entities.add(loot);
-				}
-			}
-		};
-	}
-
 	public Entity coin(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
 			@Override public boolean onEntityCollision(Entity entity) {
