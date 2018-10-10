@@ -30,4 +30,14 @@ public class Attack {
 	public float getKnockback() {
 		return knockback;
 	}
+
+	@Override
+	public String toString() {
+		return "Attack{" +
+				"emitter=" + emitter +
+				", damage=" + damage +
+				", damageType=" + damageType +
+				", knockback=" + knockback +
+				'}';
+	}
 }

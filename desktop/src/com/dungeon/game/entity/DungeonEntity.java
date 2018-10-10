@@ -43,8 +43,7 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 			}
 			if (health <= 0) {
 				expire();
-			}
-			if (attack.getKnockback() > 0) {
+			} else if (attack.getKnockback() > 0) {
 				Vector2 knockback = getOrigin().cpy().sub(attack.getEmitter().getOrigin()).setLength(attack.getKnockback() * this.knockback);
 				impulse(knockback);
 			}
