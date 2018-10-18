@@ -73,4 +73,8 @@ public class ViewPortBuffer implements Disposable {
 		renderCalls = 0;
 	}
 
+	public Texture getTexture() {
+		return textureRegion.getTexture();
+	}
+
 }

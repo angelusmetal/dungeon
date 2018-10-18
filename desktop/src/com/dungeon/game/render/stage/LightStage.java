@@ -2,6 +2,7 @@ package com.dungeon.game.render.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
@@ -26,6 +27,7 @@ public class LightStage implements RenderStage {
 		this.viewportBuffer = viewportBuffer;
 		this.lightBuffer = new ViewPortBuffer(viewPort);
 		this.lightBuffer.reset();
+		this.lightBuffer.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		this.combineLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.gamma = Game.getConfiguration().getDouble("viewport.gamma", 1.0d).floatValue();
