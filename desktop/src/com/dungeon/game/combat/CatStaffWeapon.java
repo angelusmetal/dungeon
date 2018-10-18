@@ -88,7 +88,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 
 	private Entity createTrail(Entity generator) {
 		Entity entity = new Entity(trail, generator.getOrigin());
-		entity.setCurrentAnimation(generator.getCurrentAnimation());
+		entity.setAnimation(generator.getAnimation(), generator.getAnimationStart());
 		entity.getDrawScale().set(generator.getDrawScale());
 		return entity;
 	}

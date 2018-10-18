@@ -1,18 +1,12 @@
 package com.dungeon.game.object.props;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.resource.Resources;
 
 public class FurnitureFactory {
 
@@ -27,7 +21,7 @@ public class FurnitureFactory {
 							getOrigin().cpy().add(0, getZPos()),
 							new Vector2(4, 190),
 							new Vector2(Rand.between(50, 100), 0).rotate(Rand.between(0, 360)),
-							getCurrentAnimation().getAnimation());
+							getAnimation());
 					expire();
 					return true;
 				}

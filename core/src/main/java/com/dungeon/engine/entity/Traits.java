@@ -9,7 +9,6 @@ import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -131,7 +130,7 @@ public class Traits {
                 // North / south animation
                 newAnimation = vector.y < 0 ? down : up;
             }
-            entity.updateCurrentAnimation(newAnimation);
+            entity.updateAnimation(newAnimation);
         };
     }
 

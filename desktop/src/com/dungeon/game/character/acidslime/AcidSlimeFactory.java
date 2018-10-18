@@ -53,8 +53,8 @@ public class AcidSlimeFactory {
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {
 			@Override public void think() {
-				if (Engine.time() > expirationTime - 0.5f && getCurrentAnimation().getAnimation() != poolDryAnimation) {
-					setCurrentAnimation(poolDryAnimation);
+				if (Engine.time() > expirationTime - 0.5f && getAnimation() != poolDryAnimation) {
+					startAnimation(poolDryAnimation);
 				}
 			}
 

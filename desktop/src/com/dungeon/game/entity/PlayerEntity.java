@@ -8,11 +8,9 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.physics.Body;
-import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
-import com.dungeon.game.resource.Lights;
 
 import java.util.function.Predicate;
 
@@ -44,11 +42,11 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public void think() {
 		super.think();
 		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-			if (getCurrentAnimation().getAnimation() != getAttackAnimation() || getCurrentAnimation().isFinished()) {
-				updateCurrentAnimation(getIdleAnimation());
+			if (getAnimation() != getAttackAnimation() || isAnimationFinished()) {
+				updateAnimation(getIdleAnimation());
 			}
 		} else {
-			updateCurrentAnimation(getWalkAnimation());
+			updateAnimation(getWalkAnimation());
 		}
 	}
 
@@ -61,7 +59,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 		if (!expired) {
 			fireCooldown.attempt(Engine.time(), () -> {
 				getPlayer().getWeapon().spawnEntities(getOrigin(), getAim());
-				updateCurrentAnimation(getAttackAnimation());
+				updateAnimation(getAttackAnimation());
 			});
 		}
 	}

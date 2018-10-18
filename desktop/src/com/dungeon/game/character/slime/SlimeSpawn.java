@@ -19,7 +19,7 @@ public class SlimeSpawn extends CreatureEntity {
 	SlimeSpawn(Vector2 origin, EntityPrototype prototype, SlimeFactory factory) {
 		super(origin, prototype);
 		this.factory = factory;
-		setCurrentAnimation(factory.spawnBlinkAnimation);
+		startAnimation(factory.spawnBlinkAnimation);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class SlimeSpawn extends CreatureEntity {
 				impulseTowards(closest.getEntity().getOrigin(), factory.jumpDistance);
 				aim(getMovement());
 				zSpeed = 100;
-				updateCurrentAnimation(factory.spawnIdleAnimation);
+				updateAnimation(factory.spawnIdleAnimation);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
 				// Aim random direction
@@ -40,10 +40,10 @@ public class SlimeSpawn extends CreatureEntity {
 					Vector2 newDirection = new Vector2(Rand.between(10f, 10), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					updateCurrentAnimation(factory.spawnBlinkAnimation);
+					updateAnimation(factory.spawnBlinkAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					updateCurrentAnimation(factory.spawnBlinkAnimation);
+					updateAnimation(factory.spawnBlinkAnimation);
 				}
 			}
 		} else {
@@ -54,7 +54,7 @@ public class SlimeSpawn extends CreatureEntity {
 
 	@Override
 	protected void onGroundRest() {
-		updateCurrentAnimation(factory.spawnBlinkAnimation);
+		updateAnimation(factory.spawnBlinkAnimation);
 	}
 
 	@Override

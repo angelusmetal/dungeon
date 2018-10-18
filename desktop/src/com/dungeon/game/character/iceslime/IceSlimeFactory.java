@@ -7,16 +7,10 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityTypeFactory;
-import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
-import com.dungeon.game.Game;
 import com.dungeon.game.character.slime.SlimeFactory;
-import com.dungeon.game.combat.Attack;
-import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.resource.Resources;
-import com.moandjiezana.toml.Toml;
 
 public class IceSlimeFactory {
 
@@ -44,8 +38,8 @@ public class IceSlimeFactory {
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {
 			@Override public void think() {
-				if (Engine.time() > expirationTime - 0.5f && getCurrentAnimation().getAnimation() != poolDryAnimation) {
-					setCurrentAnimation(poolDryAnimation);
+				if (Engine.time() > expirationTime - 0.5f && getAnimation() != poolDryAnimation) {
+					startAnimation(poolDryAnimation);
 				}
 			}
 

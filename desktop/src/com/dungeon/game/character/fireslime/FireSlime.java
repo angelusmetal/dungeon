@@ -49,10 +49,10 @@ public class FireSlime extends CreatureEntity {
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
 					setSelfImpulse(newDirection);
-					updateCurrentAnimation(factory.idleAnimation);
+					updateAnimation(factory.idleAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					updateCurrentAnimation(factory.idleAnimation);
+					updateAnimation(factory.idleAnimation);
 				}
 			}
 		} else {

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.animation.GameAnimation;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.ColorContext;
@@ -30,7 +29,8 @@ public class Entity implements Drawable, Movable {
 
 	private final int uniqueid = sequencer.getAndIncrement();
 
-	private GameAnimation currentAnimation;
+	private Animation<TextureRegion> animation;
+	private float animationStart;
 	private boolean offsetAnimation;
 	/**
 	 * Self impulse the entity will constantly applied. Gets added to the current movement vector at a rate of 1x per
@@ -105,7 +105,7 @@ public class Entity implements Drawable, Movable {
 	 */
 	public Entity(EntityPrototype prototype, Vector2 origin) {
 		this.offsetAnimation = prototype.offsetAnimation;
-		this.setCurrentAnimation(prototype.animation.get());
+		this.startAnimation(prototype.animation.get());
 		if (prototype.boundingBoxOffset.len2() == 0) {
 			this.body = Body.centered(origin, prototype.boundingBox);
 		} else {
@@ -150,7 +150,7 @@ public class Entity implements Drawable, Movable {
 	 */
 	public Entity (Entity other) {
 		this.offsetAnimation = other.offsetAnimation;
-		this.setCurrentAnimation(other.currentAnimation);
+		this.startAnimation(other.animation);
 		this.body = Body.centered(other.getOrigin(), other.getBoundingBox());
 		this.drawOffset = other.drawOffset;
 		this.startTime = Engine.time();
@@ -182,7 +182,7 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public TextureRegion getFrame() {
-		return currentAnimation.getKeyFrame(Engine.time());
+		return animation.getKeyFrame(Engine.time() - animationStart);
 	}
 
 	public float getStartTime() {
@@ -193,22 +193,33 @@ public class Entity implements Drawable, Movable {
 		return expirationTime;
 	}
 
-	public GameAnimation getCurrentAnimation() {
-		return currentAnimation;
+	public Animation<TextureRegion> getAnimation() {
+		return animation;
 	}
 
-	public void setCurrentAnimation(GameAnimation currentAnimation) {
-		this.currentAnimation = currentAnimation;
+	public void setAnimation(Animation<TextureRegion> currentAnimation, float animationStart) {
+		this.animation = currentAnimation;
+		this.animationStart = animationStart;
 	}
 
-	public void setCurrentAnimation(Animation<TextureRegion> animation) {
-		this.currentAnimation = offsetAnimation ? new GameAnimation(animation, Rand.between(0f, animation.getAnimationDuration())): new GameAnimation(animation);
+	public void startAnimation(Animation<TextureRegion> animation) {
+		this.animation = animation;
+		this.animationStart = offsetAnimation ? Engine.time() - Rand.between(0f, animation.getAnimationDuration()) : Engine.time();
 	}
 
-	public void updateCurrentAnimation(Animation<TextureRegion> animation) {
-		if (currentAnimation == null || currentAnimation.getAnimation() != animation) {
-			this.currentAnimation = new GameAnimation(animation);
+	public void updateAnimation(Animation<TextureRegion> animation) {
+		if (animation != this.animation) {
+			this.animation = animation;
+			this.animationStart = Engine.time();
 		}
+	}
+
+	public float getAnimationStart() {
+		return animationStart;
+	}
+
+	public boolean isAnimationFinished() {
+		return Engine.time() >= animationStart + animation.getAnimationDuration();
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class AcidSlime extends CreatureEntity {
 				// Aim towards target
 				impulseTowards(closest.getEntity().getOrigin(), factory.dashDistance);
 				aim(getMovement());
-				updateCurrentAnimation(factory.attackAnimation);
+				updateAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
 				shout(attackPhrases, 0.02f);
 			} else {
@@ -56,7 +56,7 @@ public class AcidSlime extends CreatureEntity {
 				} else {
 					setSelfImpulse(Vector2.Zero);
 				}
-				updateCurrentAnimation(factory.idleAnimation);
+				updateAnimation(factory.idleAnimation);
 				this.status = Status.IDLE;
 			}
 		} else {
@@ -66,7 +66,7 @@ public class AcidSlime extends CreatureEntity {
 					Engine.entities.add(factory.pool.build(getOrigin()));
 				}
 				if (Engine.time() >= nextThink - 2) {
-					updateCurrentAnimation(factory.idleAnimation);
+					updateAnimation(factory.idleAnimation);
 				}
 			}
 		}

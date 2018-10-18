@@ -25,7 +25,7 @@ public class Slime extends CreatureEntity {
 		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
-		setCurrentAnimation(factory.blinkAnimation);
+		startAnimation(factory.blinkAnimation);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class Slime extends CreatureEntity {
 				impulseTowards(closest.getEntity().getOrigin(), factory.jumpDistance);
 				aim(getMovement());
 				zSpeed = 100;
-				updateCurrentAnimation(factory.idleAnimation);
+				updateAnimation(factory.idleAnimation);
 				shout(attackPhrases, 0.02f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
@@ -46,10 +46,10 @@ public class Slime extends CreatureEntity {
 					Vector2 newDirection = new Vector2(Rand.between(10f, 10), Rand.between(-10f, 10f));
 					impulse(newDirection);
 					aim(newDirection);
-					updateCurrentAnimation(factory.blinkAnimation);
+					updateAnimation(factory.blinkAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					updateCurrentAnimation(factory.blinkAnimation);
+					updateAnimation(factory.blinkAnimation);
 				}
 			}
 		} else {
@@ -60,7 +60,7 @@ public class Slime extends CreatureEntity {
 
 	@Override
 	protected void onGroundRest() {
-		updateCurrentAnimation(factory.blinkAnimation);
+		updateAnimation(factory.blinkAnimation);
 	}
 
 	@Override
