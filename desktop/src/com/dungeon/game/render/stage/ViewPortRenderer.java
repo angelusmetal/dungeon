@@ -143,10 +143,6 @@ public class ViewPortRenderer implements Disposable {
 		titleStage.display(title, subtitle);
 	}
 
-	public void addParticle(Vector2 origin, Vector2 destination, Vector2 speed, Animation<TextureRegion> animation) {
-		hudStage.addParticle(origin, destination, speed, animation);
-	}
-
 	public HudStage getHudStage() {
 		return hudStage;
 	}

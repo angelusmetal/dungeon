@@ -7,6 +7,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
+import com.dungeon.game.ui.CoinsWidget;
 
 public class FurnitureFactory {
 
@@ -17,14 +18,10 @@ public class FurnitureFactory {
 					PlayerEntity character = (PlayerEntity) entity;
 					character.getPlayer().addGold(1);
 					character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
+					CoinsWidget coinsWidget = character.getPlayer().getRenderer().getHudStage().getCoinsWidget();
 					Vector2 origin = getOrigin().cpy().add(0, getZPos());
-					Vector2 destination = new Vector2(
-							character.getPlayer().getRenderer().getHudStage().getCoinsWidget().getX(),
-							character.getPlayer().getRenderer().getHudStage().getCoinsWidget().getY());
-					character.getPlayer().getRenderer().addParticle(
-							origin, destination,
-							new Vector2(Rand.between(50, 100), 0).rotate(Rand.between(0, 360)),
-							getAnimation());
+					Vector2 destination = new Vector2(coinsWidget.getX(), coinsWidget.getY());
+					character.getPlayer().getRenderer().getHudStage().addRandomQuadraticParticle(origin, destination, getAnimation());
 					expire();
 					return true;
 				}
