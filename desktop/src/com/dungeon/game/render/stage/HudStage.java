@@ -112,4 +112,15 @@ public class HudStage implements RenderStage {
 	@Override
 	public void dispose() {}
 
+	public CoinsWidget getCoinsWidget() {
+		return coinsWidget;
+	}
+
+	public WeaponWidget getWeaponWidget() {
+		return weaponWidget;
+	}
+
+	public HeartWidget getHeartWidget() {
+		return heartWidget;
+	}
 }

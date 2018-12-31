@@ -147,6 +147,10 @@ public class ViewPortRenderer implements Disposable {
 		hudStage.addParticle(origin, destination, speed, animation);
 	}
 
+	public HudStage getHudStage() {
+		return hudStage;
+	}
+
 	@Override
 	public void dispose() {
 		batch.dispose();
