@@ -2,15 +2,13 @@ package com.dungeon.game.resource.loader;
 
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.Timer;
-import com.dungeon.engine.entity.Trait;
+import com.dungeon.engine.entity.Metronome;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.entity.PlayerEntity;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -98,8 +96,8 @@ public class TraitLoader {
 		if (frequency.isPresent()) {
 			Supplier<Float> freq = frequency.get();
 			return e -> {
-				Timer timer = new Timer(freq.get());
-				return entity -> timer.doAtInterval(() -> generator.accept(entity));
+				Metronome metronome = new Metronome(freq.get(), () -> generator.accept(e));
+				return entity -> metronome.doAtInterval();
 			};
 		} else {
 			return e -> generator::accept;

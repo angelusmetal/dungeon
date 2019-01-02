@@ -3,8 +3,8 @@ package com.dungeon.game.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.ui.AbstractWidget;
-import com.dungeon.engine.ui.Widget;
+import com.dungeon.engine.ui.widget.AbstractWidget;
+import com.dungeon.engine.ui.widget.Widget;
 import com.dungeon.game.player.Player;
 
 public class WeaponWidget extends AbstractWidget implements Widget {

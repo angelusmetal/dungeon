@@ -278,7 +278,7 @@ public class Game {
 	}
 
 	public static void createCreatureLoot(Vector2 origin) {
-		if (Rand.chance(0.5f)) {
+		if (Rand.chance(1f)) { // Always
 			Rand.doBetween(1, 3, () -> {
 				Entity coin = build(EntityType.COIN, origin);
 				coin.impulse(Rand.between(-20, 20), Rand.between(-20, 20));

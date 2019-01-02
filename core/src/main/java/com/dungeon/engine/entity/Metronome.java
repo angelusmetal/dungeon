@@ -2,17 +2,23 @@ package com.dungeon.engine.entity;
 
 import com.dungeon.engine.Engine;
 
-public class Timer {
+public class Metronome {
 	private final float interval;
+	private final Runnable action;
 	private float expiration;
 
-	public Timer(float interval) {
+	public Metronome(float interval, Runnable action) {
 		this.interval = interval;
+		this.action = action;
 		this.expiration = Engine.time() + interval;
 	}
-	public void doAtInterval(Runnable runnable) {
+
+	/**
+	 * Perform the action if it's time
+	 */
+	public void doAtInterval() {
 		if (Engine.time() > expiration) {
-			runnable.run();
+			action.run();
 			expiration += interval;
 		}
 	}

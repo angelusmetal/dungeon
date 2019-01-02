@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.entity.Timer;
+import com.dungeon.engine.entity.Metronome;
 import com.dungeon.engine.util.Rand;
 
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class Light {
 	public float dim = 1;
 	/** Light angle */
 	public float angle;
-	private final Timer timer = new Timer(0.05f);
+	private final Metronome metronome;
 
 	private final List<Consumer<Light>> traits;
 
@@ -54,6 +54,7 @@ public class Light {
 		this.diameter = diameter;
 		this.angle = 0;
 		this.traits = traits;
+		this.metronome = new Metronome(0.05f, () -> traits.forEach(t -> t.accept(this)));
 	}
 
 	public Light cpy() {
@@ -61,7 +62,7 @@ public class Light {
 	}
 
 	public void update() {
-		timer.doAtInterval(() -> traits.forEach(t -> t.accept(this)));
+		metronome.doAtInterval();
 	}
 
 	public static Consumer<Light> torchlight() {

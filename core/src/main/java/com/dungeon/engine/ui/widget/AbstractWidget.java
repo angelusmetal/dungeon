@@ -1,4 +1,4 @@
-package com.dungeon.engine.ui;
+package com.dungeon.engine.ui.widget;
 
 public abstract class AbstractWidget implements Widget {
 

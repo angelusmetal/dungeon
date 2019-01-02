@@ -3,7 +3,7 @@ package com.dungeon.game.character.ghost;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Timer;
+import com.dungeon.engine.entity.Metronome;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
@@ -23,25 +23,26 @@ public class Ghost extends CreatureEntity {
 
 	private final GhostFactory factory;
 	private float visibleUntil = 0;
-	private final Timer targettingTimer = new Timer(0.2f);
+	private final Metronome targettingMetronome;
 
 	Ghost(Vector2 origin, EntityPrototype prototype, GhostFactory factory) {
 		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
-	}
-
-	@Override
-	public void think() {
-		super.think();
-		// Re-target periodically
-		targettingTimer.doAtInterval(() -> {
+		this.targettingMetronome = new Metronome(0.2f, () -> {
 			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				moveStrictlyTowards(closest.getEntity().getOrigin());
 			}
 			shout(attackPhrases, 0.02f);
 		});
+	}
+
+	@Override
+	public void think() {
+		super.think();
+		// Re-target periodically
+		targettingMetronome.doAtInterval();
 		// Set transparency based on invulnerability
 		color.a = Util.clamp(visibleUntil - Engine.time(), 0.1f, 0.5f);
 		speed = Engine.time() > visibleUntil ? factory.stealthSpeed : factory.visibleSpeed;

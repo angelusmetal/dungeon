@@ -145,8 +145,8 @@ public class Traits {
 
     static public <T extends Entity> TraitSupplier<T> generator(float frequency, Function<T, Entity> entityProvider) {
         return e -> {
-            Timer timer = new Timer(frequency);
-            return entity -> timer.doAtInterval(() -> Engine.entities.add(entityProvider.apply(entity)));
+            Metronome metronome = new Metronome(frequency, () -> Engine.entities.add(entityProvider.apply(e)));
+            return entity -> metronome.doAtInterval();
         };
     }
 

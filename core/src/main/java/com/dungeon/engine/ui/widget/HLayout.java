@@ -1,4 +1,4 @@
-package com.dungeon.engine.ui;
+package com.dungeon.engine.ui.widget;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

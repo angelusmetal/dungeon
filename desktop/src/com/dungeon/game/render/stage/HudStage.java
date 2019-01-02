@@ -1,11 +1,11 @@
 package com.dungeon.game.render.stage;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.ui.HLayout;
+import com.dungeon.engine.ui.particle.Particle;
+import com.dungeon.engine.ui.particle.PathParticle;
+import com.dungeon.engine.ui.widget.HLayout;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
@@ -27,7 +27,8 @@ public class HudStage implements RenderStage {
 	private final WeaponWidget weaponWidget;
 	private final HeartWidget heartWidget;
 
-	private List<HudParticle> particles = new ArrayList<>();
+	private List<Particle> particles = new ArrayList<>();
+	private List<Particle> newParticles = new ArrayList<>();
 
 	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, Player player) {
 		this.viewPort = viewPort;
@@ -44,8 +45,8 @@ public class HudStage implements RenderStage {
 		layout.add(heartWidget);
 	}
 
-	public void addParticle(HudParticle particle) {
-		particles.add(particle);
+	public void addParticle(Particle particle) {
+		newParticles.add(particle);
 	}
 
 	public Bezier<Vector2> randQuadratic(Vector2 origin, Vector2 destination) {
@@ -59,14 +60,16 @@ public class HudStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
+			particles.addAll(newParticles);
+			newParticles.clear();
 			viewportBuffer.render(batch -> {
 				layout.draw(batch);
 				// Update & draw particles
-				for (Iterator<HudParticle> p = particles.iterator(); p.hasNext();) {
-					HudParticle particle = p.next();
+				for (Iterator<Particle> p = particles.iterator(); p.hasNext();) {
+					Particle particle = p.next();
 					particle.drawAndUpdate(batch);
 					if (particle.isExpired()) {
-						particle.runAction();
+						particle.expire();
 						p.remove();
 					}
 				}

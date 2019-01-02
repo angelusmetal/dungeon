@@ -44,4 +44,11 @@ public class Util {
 	public static float length2(float length) {
 		return length * length;
 	}
+
+	public static Vector2 randVect(float length) {
+		return new Vector2(length, 0).rotate(Rand.nextFloat(360));
+	}
+	public static Vector2 randVect(float minLength, float maxLength) {
+		return new Vector2(Rand.between(minLength, maxLength), 0).rotate(Rand.nextFloat(360));
+	}
 }
