@@ -23,7 +23,7 @@ public class WeaponWidget extends AbstractWidget implements Widget {
 				height = weapon.getRegionHeight();
 				sizeObserver.run();
 			}
-			batch.draw(weapon, x, y - height);
+			batch.draw(weapon, x, y);
 		}
 	}
 }

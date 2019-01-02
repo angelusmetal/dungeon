@@ -38,11 +38,12 @@ public class HudStage implements RenderStage {
 		heartWidget = new HeartWidget(player);
 
 		layout.pad(4);
+		layout.align(HLayout.Alignment.TOP);
 		layout.setX(4);
-		layout.setY(viewPort.cameraHeight - 4);
 		layout.add(coinsWidget);
 		layout.add(weaponWidget);
 		layout.add(heartWidget);
+		layout.setY(viewPort.cameraHeight - layout.getHeight() - 4);
 	}
 
 	public void addParticle(Particle particle) {

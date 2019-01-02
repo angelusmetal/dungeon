@@ -7,11 +7,19 @@ import java.util.List;
 
 public class HLayout extends AbstractWidget implements Widget {
 
+	public enum Alignment { TOP, BOTTOM;}
+
 	private final List<Widget> children = new ArrayList<>();
 	private int padding;
+	private Alignment alignment;
 
 	public HLayout pad(int padding) {
 		this.padding = padding;
+		return this;
+	}
+
+	public HLayout align(Alignment alignment) {
+		this.alignment = alignment;
 		return this;
 	}
 
@@ -19,19 +27,18 @@ public class HLayout extends AbstractWidget implements Widget {
 		children.add(widget);
 		// If child widget changes its size, recalculate layout
 		widget.setSizeObserver(this::reset);
-		place(widget);
+		reset();
 	}
 
 	private void place(Widget widget) {
 		widget.setX(x + width);
-		widget.setY(y);
+		widget.setY(alignment == Alignment.BOTTOM ? y : y + height - widget.getHeight());
 		width += widget.getWidth() + padding;
-		height = Math.max(height, widget.getHeight());
 	}
 
 	private void reset() {
 		width = 0;
-		height = 0;
+		height = children.stream().map(Widget::getHeight).max(Integer::compareTo).orElse(0);
 		children.forEach(this::place);
 	}
 

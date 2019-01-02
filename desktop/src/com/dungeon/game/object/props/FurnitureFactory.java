@@ -25,7 +25,7 @@ public class FurnitureFactory {
 					character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
 					CoinsWidget coinsWidget = character.getPlayer().getRenderer().getHudStage().getCoinsWidget();
 					Vector2 origin = getOrigin().cpy().add(0, getZPos());
-					Vector2 destination = new Vector2(coinsWidget.getX() + coinsWidget.getWidth() / 2f, coinsWidget.getY() - coinsWidget.getHeight() / 2f);
+					Vector2 destination = coinsWidget.getCenter();
 					Bezier<Vector2> path = character.getPlayer().getRenderer().getHudStage().randQuadratic(origin, destination);
 
 					PathParticle particle = new PathParticle(path, getAnimation(),1f) {
@@ -34,7 +34,7 @@ public class FurnitureFactory {
 							sparkGenerator = new Metronome(0.05f, () -> {
 								LinearParticle spark = new LinearParticle(this.origin, randVect(10, 30), this.animation, 0.5f) {
 									@Override public void update() {
-										getColor().a = (1 - (Engine.time() - startTime) / duration) * 0.2f;
+										getColor().a = (1 - (Engine.time() - startTime) / duration) * 0.1f;
 									}
 								};
 								character.getPlayer().getRenderer().getHudStage().addParticle(spark);

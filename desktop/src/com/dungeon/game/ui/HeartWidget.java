@@ -38,7 +38,7 @@ public class HeartWidget extends AbstractWidget implements Widget {
 		float remaining = player.getAvatar().getHealth();
 		for (int i = 0; i < containers; ++i) {
 			TextureRegion heart = hearts.getKeyFrame(Util.clamp(remaining / healthPerContainer));
-			batch.draw(heart, x + i * heartTab, y - height);
+			batch.draw(heart, x + i * heartTab, y);
 			remaining -= healthPerContainer;
 		}
 	}

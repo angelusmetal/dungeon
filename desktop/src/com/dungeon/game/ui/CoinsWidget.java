@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.ui.widget.AbstractWidget;
 import com.dungeon.engine.ui.widget.Widget;
@@ -27,7 +28,11 @@ public class CoinsWidget extends AbstractWidget implements Widget {
 	}
 
 	@Override public void draw(SpriteBatch batch) {
-		batch.draw(coins.getKeyFrame(Engine.time()), x, y - spriteHeight);
-		font.draw(batch, Integer.toString(player.getGold()), x, y - spriteHeight);
+		batch.draw(coins.getKeyFrame(Engine.time()), x, y + font.getLineHeight());
+		font.draw(batch, Integer.toString(player.getGold()), x, y + font.getLineHeight());
+	}
+
+	@Override public Vector2 getCenter() {
+		return new Vector2(x + width / 2f, y + height - spriteHeight / 2f);
 	}
 }
