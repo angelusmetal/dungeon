@@ -120,14 +120,7 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void render() {
 		Engine.addTime(Gdx.graphics.getDeltaTime());
-
-		for (Iterator<OverlayText> t = Engine.getOverlayTexts().iterator(); t.hasNext();) {
-			OverlayText overlayText = t.next();
-			overlayText.think();
-			if (overlayText.isExpired()) {
-				t.remove();
-			}
-		}
+		Engine.overlayTexts.update(OverlayText::think, OverlayText::isExpired);
 
 		// Render corresponding state
 		if (Game.getCurrentState() == Game.State.MENU) {
@@ -145,15 +138,21 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		// Render effects on top
-		Engine.getRenderEffects().forEach(RenderEffect::render);
+		Engine.renderEffects.update(effect -> {
+			// TODO Can we make these not disposable to simplify this?
+			effect.render();
+			if (effect.isExpired()) {
+				effect.dispose();
+			}
+		}, RenderEffect::isExpired);
 
 		Engine.refresh();
 
 		if (!fading && Game.getCurrentState() == Game.State.INGAME && Engine.entities.ofType(PlayerEntity.class).count() == 0) {
 			fading = true;
-			Engine.addRenderEffect(FadeEffect.fadeOutDeath(Engine.time(), () -> {
+			Engine.renderEffects.add(FadeEffect.fadeOutDeath(Engine.time(), () -> {
 				Game.setCurrentState(Game.State.MENU);
-				Engine.addRenderEffect(FadeEffect.fadeIn(Engine.time()));
+				Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
 				fading = false;
 			}));
 		}

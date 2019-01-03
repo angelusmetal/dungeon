@@ -62,7 +62,7 @@ public class Game {
 				.spell(1, 0)
 				.fadeout(1, 4)
 				.bindTo(emitter, SAY_OFFSET);
-		Engine.addOverlayText(overlayText);
+		Engine.overlayTexts.add(overlayText);
 		return overlayText;
 	}
 
@@ -71,7 +71,7 @@ public class Game {
 				.spell(0.25f, 0)
 				.fadeout(1, 1)
 				.bindTo(emitter, SAY_OFFSET);
-		Engine.addOverlayText(overlayText);
+		Engine.overlayTexts.add(overlayText);
 		return overlayText;
 	}
 
@@ -140,7 +140,7 @@ public class Game {
 	}
 
 	public static void exitLevel() {
-		Engine.addRenderEffect(FadeEffect.fadeOut(Engine.time(), Game::startNewLevel));
+		Engine.renderEffects.add(FadeEffect.fadeOut(Engine.time(), Game::startNewLevel));
 	}
 
 	public static void startNewLevel() {
@@ -175,7 +175,7 @@ public class Game {
 
 		setCurrentState(State.INGAME);
 
-		Engine.addRenderEffect(FadeEffect.fadeIn(Engine.time()));
+		Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
 
 		// Add watches
 		Players.all().forEach(player -> {

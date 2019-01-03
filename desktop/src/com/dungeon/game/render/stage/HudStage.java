@@ -2,6 +2,7 @@ package com.dungeon.game.render.stage;
 
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.ui.particle.Particle;
 import com.dungeon.engine.ui.particle.PathParticle;
@@ -26,9 +27,7 @@ public class HudStage implements RenderStage {
 	private final CoinsWidget coinsWidget;
 	private final WeaponWidget weaponWidget;
 	private final HeartWidget heartWidget;
-
-	private List<Particle> particles = new ArrayList<>();
-	private List<Particle> newParticles = new ArrayList<>();
+	private final Repository<Particle> particles = new Repository<>();
 
 	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, Player player) {
 		this.viewPort = viewPort;
@@ -47,7 +46,7 @@ public class HudStage implements RenderStage {
 	}
 
 	public void addParticle(Particle particle) {
-		newParticles.add(particle);
+		particles.add(particle);
 	}
 
 	public Bezier<Vector2> randQuadratic(Vector2 origin, Vector2 destination) {
@@ -61,19 +60,9 @@ public class HudStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			particles.addAll(newParticles);
-			newParticles.clear();
 			viewportBuffer.render(batch -> {
 				layout.draw(batch);
-				// Update & draw particles
-				for (Iterator<Particle> p = particles.iterator(); p.hasNext();) {
-					Particle particle = p.next();
-					particle.drawAndUpdate(batch);
-					if (particle.isExpired()) {
-						particle.expire();
-						p.remove();
-					}
-				}
+				particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired);
 			});
 		}
 	}

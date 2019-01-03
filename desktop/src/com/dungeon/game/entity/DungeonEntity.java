@@ -39,7 +39,7 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 			onHitTraits.forEach(m -> m.accept(this));
 			onHit();
 			if (attack.getDamage() > 1) {
-				Engine.addOverlayText(text(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
+				Engine.overlayTexts.add(text(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
 			}
 			if (health <= 0) {
 				expire();

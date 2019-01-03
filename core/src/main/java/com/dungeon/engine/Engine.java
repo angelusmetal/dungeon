@@ -2,6 +2,7 @@ package com.dungeon.engine;
 
 import com.badlogic.gdx.graphics.Color;
 import com.dungeon.engine.entity.repository.EntityRepository;
+import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.Rand;
@@ -17,11 +18,8 @@ public class Engine {
 	private static float stateTime = 0;
 	private static float frameTime;
 
-	private static List<RenderEffect> renderEffects = new ArrayList<>();
-	private static List<RenderEffect> newRenderEffects = new ArrayList<>();
-
-	private static List<OverlayText> overlayTexts = new ArrayList<>();
-	private static List<OverlayText> newOverelayTexts = new ArrayList<>();
+	public static Repository<OverlayText> overlayTexts = new Repository<>();
+	public static Repository<RenderEffect> renderEffects = new Repository<>();
 
 	private static LevelTiles levelTiles;
 
@@ -51,32 +49,8 @@ public class Engine {
 		return levelTiles;
 	}
 
-	public static void addOverlayText(OverlayText overlayText) {
-		newOverelayTexts.add(overlayText);
-	}
-
-	public static List<OverlayText> getOverlayTexts() {
-		return overlayTexts;
-	}
-
-	public static void addRenderEffect(RenderEffect effect) {
-		newRenderEffects.add(effect);
-	}
-
-	public static List<RenderEffect> getRenderEffects() {
-		return renderEffects;
-	}
-
 	public static void refresh() {
-		// Dispose and remove old effects, and then add new ones
-		renderEffects.stream().filter(RenderEffect::isExpired).forEach(RenderEffect::dispose);
-		renderEffects.removeIf(RenderEffect::isExpired);
-		renderEffects.addAll(newRenderEffects);
-		newRenderEffects.clear();
-
 		entities.commit(false);
-		overlayTexts.addAll(newOverelayTexts);
-		newOverelayTexts.clear();
 	}
 
 	public static Color getBaseLight() {

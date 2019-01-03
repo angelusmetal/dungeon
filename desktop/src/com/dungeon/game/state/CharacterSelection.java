@@ -72,7 +72,7 @@ public class CharacterSelection {
 	public void confirmSelection(PlayerControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
 		List<Player> players = slots.stream().map(slot -> new Player(slot.playerId, slot.characterId, slot.control)).collect(Collectors.toList());
-		Engine.addRenderEffect(FadeEffect.fadeOut(Engine.time(), () -> Game.startNewGame(players)));
+		Engine.renderEffects.add(FadeEffect.fadeOut(Engine.time(), () -> Game.startNewGame(players)));
 	}
 
 	private Optional<Slot> getSlot(PlayerControlBundle control) {
