@@ -31,7 +31,7 @@ public class FurnitureFactory {
 					PathParticle particle = new PathParticle(path, getAnimation(),1f) {
 						Metronome sparkGenerator;
 						{
-							sparkGenerator = new Metronome(0.05f, () -> {
+							sparkGenerator = new Metronome(0.025f, () -> {
 								LinearParticle spark = new LinearParticle(this.origin, randVect(10, 30), this.animation, 0.5f) {
 									@Override public void update() {
 										getColor().a = (1 - (Engine.time() - startTime) / duration) * 0.1f;
