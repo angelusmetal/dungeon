@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.EntityMover;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
@@ -48,6 +49,7 @@ public class FireballWeapon extends ProjectileWeapon {
 				.speed(bulletSpeed)
 				.timeToLive(10)
 				.hitPredicate(PlayerEntity.HIT_PLAYERS)
+				.with(EntityMover.move())
 				.with(Traits.generator(0.1f, this::createTrail));
 		impact = new EntityPrototype()
 				.animation(explosionAnimation)

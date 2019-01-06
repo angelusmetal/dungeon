@@ -62,7 +62,7 @@ public class HudStage implements RenderStage {
 		if (enabled) {
 			viewportBuffer.render(batch -> {
 				layout.draw(batch);
-				particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired);
+				particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
 			});
 		}
 	}

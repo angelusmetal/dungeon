@@ -81,7 +81,6 @@ public class EntityRepository {
 		LinkedList<Entity> removed = new LinkedList<>();
 		stream.filter(Entity::isStatic).forEach(entity -> {
 			entity.doThink();
-			entity.move();
 			if (entity.isExpired()) {
 				removed.add(entity);
 				staticCount--;
@@ -93,7 +92,6 @@ public class EntityRepository {
 		for (Iterator<Entity> e = dynamic.iterator(); e.hasNext();) {
 			Entity entity = e.next();
 			entity.doThink();
-			entity.move();
 			if (entity.isExpired()) {
 				e.remove();
 			}

@@ -3,6 +3,7 @@ package com.dungeon.game.resource.loader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.EntityMover;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
@@ -119,6 +120,10 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getVector2(descriptor, "vOscillate").ifPresent(value -> prototype.with(Traits.vOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
 		ConfigUtil.getFloat(descriptor, "z").ifPresent(prototype::z);
+		// Physics are enabled by default
+		if (ConfigUtil.getBoolean(descriptor, "physics").orElse(true)) {
+			prototype.with(EntityMover.move());
+		}
 		ConfigUtil.getBoolean(descriptor, "noclip").ifPresent(prototype::noclip);
 		ConfigUtil.getBoolean(descriptor, "solid").ifPresent(value -> {
 			prototype.solid(value);

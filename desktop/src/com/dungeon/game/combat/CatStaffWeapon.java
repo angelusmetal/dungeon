@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.EntityMover;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.Light;
@@ -54,7 +55,8 @@ public class CatStaffWeapon extends ProjectileWeapon {
 				// TODO Should this use the radius filter instead?
 				.with(Traits.autoSeek(0.1f, 60, () -> Engine.entities.dynamic().filter(PlayerEntity.TARGET_NON_PLAYER_CHARACTERS)))
 				.with(Traits.animationByVector(Entity::getMovement, bulletFlySideAnimation, bulletFlyNorthAnimation, bulletFlySouthAnimation))
-				.with(Traits.generator(0.05f, this::createTrail));
+				.with(EntityMover.move())
+				.with(Traits.generator(1f / 30f, this::createTrail));
 		impact = new EntityPrototype()
 				.animation(bulletExplodeAnimation)
 				.boundingBox(bulletBoundingBox)
@@ -66,7 +68,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 				.drawOffset(bulletDrawOffset)
 				.light(bulletLight)
 				.timeToLive(0.4f)
-				.with(Traits.fadeOut(0.7f))
+				.with(Traits.fadeOut(0.3f))
 				.with(Traits.fadeOutLight())
 				.with(Traits.zAccel(100f));
 	}

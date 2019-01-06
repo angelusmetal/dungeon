@@ -120,7 +120,7 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void render() {
 		Engine.addTime(Gdx.graphics.getDeltaTime());
-		Engine.overlayTexts.update(OverlayText::think, OverlayText::isExpired);
+		Engine.overlayTexts.update(OverlayText::think, OverlayText::isExpired, o -> {});
 
 		// Render corresponding state
 		if (Game.getCurrentState() == Game.State.MENU) {
@@ -138,13 +138,7 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		// Render effects on top
-		Engine.renderEffects.update(effect -> {
-			// TODO Can we make these not disposable to simplify this?
-			effect.render();
-			if (effect.isExpired()) {
-				effect.dispose();
-			}
-		}, RenderEffect::isExpired);
+		Engine.renderEffects.update(RenderEffect::render, RenderEffect::isExpired, RenderEffect::dispose);
 
 		Engine.refresh();
 

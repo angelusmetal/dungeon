@@ -16,13 +16,14 @@ public class Repository<T> {
 		newObjects.add(newOne);
 	}
 
-	public void update(Consumer<T> updateAction, Predicate<T> removePredicate) {
+	public void update(Consumer<T> updateAction, Predicate<T> removePredicate, Consumer<T> removeAction) {
 		objects.addAll(newObjects);
 		newObjects.clear();
 		for (Iterator<T> iterator = objects.iterator(); iterator.hasNext();) {
 			T object = iterator.next();
 			updateAction.accept(object);
 			if (removePredicate.test(object)) {
+				removeAction.accept(object);
 				iterator.remove();
 			}
 		}

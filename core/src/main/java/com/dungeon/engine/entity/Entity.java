@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 public class Entity implements Drawable, Movable {
 
+	// TODO Clean this up (sort methods/attributes)
+
 	private static final AtomicInteger sequencer = new AtomicInteger();
 
 	private final int uniqueid = sequencer.getAndIncrement();
@@ -339,9 +341,13 @@ public class Entity implements Drawable, Movable {
 		return onSignalTraits;
 	}
 
-	private static final Vector2 frameMovement = new Vector2();
-	private static final Vector2 stepX = new Vector2();
-	private static final Vector2 stepY = new Vector2();
+	public float getBounciness() {
+		return bounciness;
+	}
+
+	public float getFriction() {
+		return friction;
+	}
 
 	public void spawn() {
 		// Detect collision against other entities upon spawning
@@ -353,105 +359,6 @@ public class Entity implements Drawable, Movable {
 				}
 			}
 		});
-	}
-
-	@Override
-	public void move() {
-
-		// Update movement
-		float oldLength = movement.len();
-		movement.add(selfImpulse.x * speed, selfImpulse.y * speed);
-		float newLength = movement.len();
-
-		// Even though an impulse can make the movement exceed the speed, selfImpulse should not help exceed it
-		// (otherwise, it would accelerate indefinitely), but it can still help decrease it
-		if (newLength > oldLength && newLength > speed) {
-			float diff = newLength - speed;
-			frameMovement.set(selfImpulse).setLength(diff);
-			movement.sub(frameMovement);
-		}
-
-		frameMovement.set(movement).scl(Engine.frameTime());
-
-		float distance = frameMovement.len();
-
-		// Split into 1 px steps, and decompose in axes
-		stepX.set(frameMovement).clamp(0,1);
-		stepY.set(stepX);
-		stepX.y = 0;
-		stepY.x = 0;
-
-		boolean collidedX = false;
-		boolean collidedY = false;
-		while (distance > 1 && !(collidedX && collidedY)) {
-			// do step
-			if (!collidedX) {
-				body.move(stepX);
-				collidedX = detectEntityCollision(stepX) && !noclip;
-			}
-			if (!collidedX) {
-				collidedX = detectTileCollision(stepX) && !noclip;
-			}
-			if (collidedX) {
-				movement.x *= -bounciness;
-			}
-			if (!collidedY) {
-				body.move(stepY);
-				collidedY = detectEntityCollision(stepY) && !noclip;
-			}
-			if (!collidedY) {
-				collidedY = detectTileCollision(stepY) && !noclip;
-			}
-			if (collidedY) {
-				movement.y *= -bounciness;
-			}
-			distance -= 1;
-		}
-		if (distance > 0) {
-			stepX.y *= distance;
-			stepY.x *= distance;
-			// do remainder
-			if (!collidedX) {
-				body.move(stepX);
-				collidedX = detectTileCollision(stepX) && !noclip;
-			}
-			if (!collidedX) {
-				detectEntityCollision(stepX);
-			}
-			if (!collidedY) {
-				body.move(stepY);
-				collidedY = detectTileCollision(stepY) && !noclip;
-			}
-			if (!collidedY) {
-				detectEntityCollision(stepY);
-			}
-		}
-
-		// Decrease speed
-		movement.scl(1 / (1 + (Engine.frameTime() * friction)));
-
-		// Round out very small values
-		if (Math.abs(movement.x) < 0.1f) {
-			movement.x = 0;
-		}
-		if (Math.abs(movement.y) < 0.1f) {
-			movement.y = 0;
-		}
-
-		// Handle vertical movement
-		if (!expired) {
-			z += zSpeed * Engine.frameTime();
-			if (z < 0) {
-				z = 0;
-				if (bounciness > 0 && Math.abs(zSpeed) > 10) {
-					zSpeed *= -bounciness;
-				} else {
-					zSpeed = 0;
-					onRestTraits.forEach(m -> m.accept(this));
-					onGroundRest();
-				}
-			}
-		}
 	}
 
 	/**
@@ -472,47 +379,6 @@ public class Entity implements Drawable, Movable {
 	 */
 	public void impulseTowards(Vector2 destination, float length2) {
 		impulse(destination.cpy().sub(getOrigin()).setLength2(length2));
-	}
-
-	private boolean detectTileCollision(Vector2 step) {
-		int tile_size = Engine.getLevelTiles().getTileSize();
-		int left = body.getLeftTile(tile_size);
-		int right = body.getRightTile(tile_size);
-		int bottom = body.getBottomTile(tile_size);
-		int top = body.getTopTile(tile_size);
-		for (int x = left; x <= right; ++x) {
-			for (int y = bottom; y <= top; ++y) {
-				if (Engine.getLevelTiles().isSolid(x, y) && body.intersectsTile(x, y, tile_size) && !noclip) {
-					body.move(step.scl(-1));
-					onTileCollision(Math.abs(step.x) > Math.abs(step.y));
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean detectEntityCollision(Vector2 step) {
-		// Ugh...
-		final boolean[] pushedBack = new boolean[1];
-		Engine.entities.colliding(this).forEach(entity -> {
-			if (entity != this) {
-				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
-				if (!onEntityCollision(entity)) {
-					entity.onEntityCollision(this);
-				}
-				// If collides with a solid entity, push back
-				if (isSolid() && !pushedBack[0] && entity.isSolid()) {
-					body.move(step.scl(-1));
-					pushedBack[0] = true;
-				}
-			}
-		});
-		return pushedBack[0];
-	}
-
-	public boolean collides(Vector2 pos) {
-		return body.intersects(pos);
 	}
 
 	public boolean collides(Body body) {
@@ -568,6 +434,9 @@ public class Entity implements Drawable, Movable {
 	public boolean isSolid() {
 		return solid;
 	}
+	public boolean isNoclip() {
+		return noclip;
+	}
 	public boolean canBeHit() {
 		return canBeHit;
 	}
@@ -621,4 +490,5 @@ public class Entity implements Drawable, Movable {
 	public int hashCode() {
 		return Objects.hash(uniqueid);
 	}
+
 }
