@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.entity.Metronome;
+import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
 
 import java.util.Arrays;

@@ -6,8 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Metronome;
+import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.ui.particle.LinearParticle;
+import com.dungeon.engine.util.TimeGradient;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.engine.ui.particle.PathParticle;
@@ -31,10 +32,11 @@ public class FurnitureFactory {
 					PathParticle particle = new PathParticle(path, getAnimation(),1f) {
 						Metronome sparkGenerator;
 						{
-							sparkGenerator = new Metronome(0.025f, () -> {
+							sparkGenerator = new Metronome(1f / 30f, () -> {
+								TimeGradient gradient = TimeGradient.fadeOut(startTime, duration);
 								LinearParticle spark = new LinearParticle(this.origin, randVect(10, 30), this.animation, 0.5f) {
 									@Override public void update() {
-										getColor().a = (1 - (Engine.time() - startTime) / duration) * 0.1f;
+										getColor().a = gradient.get() * 0.1f;
 									}
 								};
 								character.getPlayer().getRenderer().getHudStage().addParticle(spark);

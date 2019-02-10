@@ -3,11 +3,11 @@ package com.dungeon.game.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.entity.CooldownTrigger;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.TimeGate;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 import java.util.List;
@@ -17,7 +17,7 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 	private Vector2 aim = new Vector2(1, 0);
 	private float nextTalk = 0;
 
-	protected CooldownTrigger fireCooldown = new CooldownTrigger(0.25f); // Default is fire every 0.25 seconds
+	protected TimeGate actionGate = new TimeGate(); // Default is fire every 0.25 seconds
 
 	public CreatureEntity(Vector2 origin, EntityPrototype prototype) {
 		super(prototype, origin);

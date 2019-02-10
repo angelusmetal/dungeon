@@ -13,9 +13,7 @@ import com.dungeon.game.resource.Resources;
 
 public class PlayerCharacterFactory {
 
-	public static final String ASSASSIN_WALK = "assassin_walk";
-	private static final String ASSASSIN_ATTACK = "assassin_attack";
-	private static final String ASSASSIN_IDLE = "assassin_idle";
+	public static final String ASSASSIN_WALK = "assassin_walk_down";
 
 	public static final String THIEF_WALK = "thief_walk";
 	private static final String THIEF_ATTACK = "thief_attack";
@@ -26,7 +24,55 @@ public class PlayerCharacterFactory {
 	private static final String WITCH_IDLE = "witch_idle";
 
 	public Entity assassin(Vector2 origin, EntityPrototype prototype) {
-		return factory(ASSASSIN_IDLE, ASSASSIN_WALK, ASSASSIN_ATTACK, prototype, origin);
+		final Animation<TextureRegion> idleUpAnimation = Resources.animations.get("assassin_idle_up");
+		final Animation<TextureRegion> idleDownAnimation = Resources.animations.get("assassin_idle_down");
+		final Animation<TextureRegion> idleRightAnimation = Resources.animations.get("assassin_idle_right");
+		final Animation<TextureRegion> walkUpAnimation = Resources.animations.get("assassin_walk_up");
+		final Animation<TextureRegion> walkDownAnimation = Resources.animations.get("assassin_walk_down");
+		final Animation<TextureRegion> walkRightAnimation = Resources.animations.get("assassin_walk_right");
+		final Animation<TextureRegion> attackUpAnimation = Resources.animations.get("assassin_attack_up");
+		final Animation<TextureRegion> attackDownAnimation = Resources.animations.get("assassin_attack_down");
+		final Animation<TextureRegion> attackRightAnimation = Resources.animations.get("assassin_attack_right");
+
+		return new PlayerEntity(prototype, origin) {
+			@Override protected Animation<TextureRegion> getAttackAnimation() {
+				if (Math.abs(getAim().y) >= Math.abs(getAim().x)) {
+					if (getAim().y > 0) {
+						return attackUpAnimation;
+					} else {
+						return attackDownAnimation;
+					}
+				} else {
+					return attackRightAnimation;
+				}
+			}
+			@Override protected Animation<TextureRegion> getIdleAnimation() {
+				if (Math.abs(getAim().y) >= Math.abs(getAim().x)) {
+					if (getAim().y > 0) {
+						return idleUpAnimation;
+					} else {
+						return idleDownAnimation;
+					}
+				} else {
+					return idleRightAnimation;
+				}
+			}
+			@Override protected Animation<TextureRegion> getWalkAnimation() {
+				if (Math.abs(getAim().y) >= Math.abs(getAim().x)) {
+					if (getAim().y > 0) {
+						return walkUpAnimation;
+					} else {
+						return walkDownAnimation;
+					}
+				} else {
+					return walkRightAnimation;
+				}
+			}
+			@Override protected void onExpire() {
+				super.onExpire();
+				Engine.entities.add(Game.build(EntityType.TOMBSTONE, getOrigin()));
+			}
+		};
 	}
 
 	public Entity thief(Vector2 origin, EntityPrototype prototype) {

@@ -3,7 +3,7 @@ package com.dungeon.game.character.ghost;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Metronome;
+import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;

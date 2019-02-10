@@ -19,7 +19,7 @@ import com.dungeon.game.render.stage.ViewPortRenderer;
 public class Player implements Disposable {
 
 	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
-	private static Weapon[] PLAYER_WEAPONS = {new CatStaffWeapon(), new GreenStaffWeapon(), new SwordWeapon()};
+	private static Weapon[] PLAYER_WEAPONS = {new CatStaffWeapon(), new GreenStaffWeapon(), new GreenStaffWeapon()};
 
 	private int playerId;
 	private int characterId;

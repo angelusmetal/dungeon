@@ -1,7 +1,6 @@
-package com.dungeon.engine.entity;
+package com.dungeon.engine.util;
 
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.util.Util;
 
 public interface TimeGradient {
 	float get();

@@ -2,7 +2,7 @@ package com.dungeon.game.resource.loader;
 
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.Metronome;
+import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;

@@ -1,4 +1,4 @@
-package com.dungeon.engine.entity;
+package com.dungeon.engine.util;
 
 import com.dungeon.engine.Engine;
 
@@ -19,7 +19,7 @@ public class Metronome {
 	public void doAtInterval() {
 		if (Engine.time() > expiration) {
 			action.run();
-			expiration += interval;
+			expiration = Engine.time() + interval;
 		}
 	}
 }

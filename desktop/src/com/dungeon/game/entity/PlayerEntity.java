@@ -8,9 +8,11 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
+import com.dungeon.game.resource.Resources;
 
 import java.util.function.Predicate;
 
@@ -19,9 +21,12 @@ public abstract class PlayerEntity extends CreatureEntity {
 //	static private Light TORCH_LIGHT = new Light(160, new Color(0.25f, 0.2f, 0.1f, 0.2f), Lights.NORMAL, Light.torchlight());
 
 	private int playerId;
+	private Metronome stepMetronome;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
+		EntityPrototype dust_cloud = Resources.prototypes.get("dust_cloud_2");
+		stepMetronome = new Metronome(0.4f, () -> Engine.entities.add(new Entity(dust_cloud, this.getOrigin())));
 //		light = TORCH_LIGHT;
 	}
 
@@ -47,6 +52,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 			}
 		} else {
 			updateAnimation(getWalkAnimation());
+			stepMetronome.doAtInterval();
 		}
 	}
 
@@ -57,8 +63,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	public void fire() {
 		if (!expired) {
-			fireCooldown.attempt(Engine.time(), () -> {
-				getPlayer().getWeapon().spawnEntities(getOrigin(), getAim());
+			actionGate.attempt(0.25f, () -> {
+				// FIXME Adding y=2 to prevent projectile from spawning inside bottom wall
+				getPlayer().getWeapon().spawnEntities(getOrigin().cpy().add(0, 2), getAim());
 				updateAnimation(getAttackAnimation());
 			});
 		}
