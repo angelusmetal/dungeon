@@ -5,20 +5,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HLayout extends AbstractWidget implements Widget {
+public class VLayout extends AbstractWidget implements Widget {
 
-	public enum Alignment { TOP, BOTTOM }
+	public enum Alignment { LEFT, RIGHT }
 
 	private final List<Widget> children = new ArrayList<>();
 	private int padding;
 	private Alignment alignment;
 
-	public HLayout pad(int padding) {
+	public VLayout pad(int padding) {
 		this.padding = padding;
 		return this;
 	}
 
-	public HLayout align(Alignment alignment) {
+	public VLayout align(Alignment alignment) {
 		this.alignment = alignment;
 		return this;
 	}
@@ -31,14 +31,14 @@ public class HLayout extends AbstractWidget implements Widget {
 	}
 
 	private void place(Widget widget) {
-		widget.setX(x + width);
-		widget.setY(alignment == Alignment.BOTTOM ? y : y + height - widget.getHeight());
-		width += widget.getWidth() + padding;
+		widget.setY(y + height);
+		widget.setX(alignment == Alignment.LEFT ? x : x + width - widget.getWidth());
+		height += widget.getHeight() + padding;
 	}
 
 	private void reset() {
-		width = 0;
-		height = children.stream().map(Widget::getHeight).max(Integer::compareTo).orElse(0);
+		height = 0;
+		width = children.stream().map(Widget::getWidth).max(Integer::compareTo).orElse(0);
 		children.forEach(this::place);
 	}
 

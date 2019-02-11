@@ -51,4 +51,29 @@ public class Util {
 	public static Vector2 randVect(float minLength, float maxLength) {
 		return new Vector2(Rand.between(minLength, maxLength), 0).rotate(Rand.nextFloat(360));
 	}
+
+	public static String nanosToString(int nanos) {
+		if (nanos < 1000) {
+			return nanos + " ns";
+		} else if (nanos < 1000_000) {
+			return (nanos / 1000) + " us";
+		} else if (nanos < 1000_000_000) {
+			return (nanos / 1000_000) + " ms";
+		} else {
+			return (nanos / 1000_000_000) + " s";
+		}
+	}
+
+	public static String nanosToString(double nanos) {
+		if (nanos < 1000) {
+			return (int) nanos + " ns";
+		} else if (nanos < 1000_000) {
+			return (int) (nanos / 1000) + " us";
+		} else if (nanos < 1000_000_000) {
+			return (int) (nanos / 1000_000) + " ms";
+		} else {
+			return (int) (nanos / 1000_000_000) + " s";
+		}
+	}
+
 }

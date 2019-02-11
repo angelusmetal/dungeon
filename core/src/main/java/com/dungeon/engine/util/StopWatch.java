@@ -12,6 +12,13 @@ public class StopWatch {
 		start = System.nanoTime();
 	}
 
+	public long getAndReset() {
+		long nanos = System.nanoTime();
+		long e = nanos - start;
+		start = nanos;
+		return e;
+	}
+
 	public void stop() {
 		elapsed = System.nanoTime() - start;
 	}

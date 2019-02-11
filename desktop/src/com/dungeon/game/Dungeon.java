@@ -6,6 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
@@ -16,7 +18,12 @@ import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.engine.ui.widget.SamplerVisualizer;
+import com.dungeon.engine.ui.widget.VLayout;
 import com.dungeon.engine.util.ConfigUtil;
+import com.dungeon.engine.util.CyclicSampler;
+import com.dungeon.engine.util.StopWatch;
+import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.game.controller.ControllerPlayerControlBundle;
 import com.dungeon.game.controller.KeyboardPlayerControlBundle;
@@ -32,13 +39,19 @@ import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.SelectionPlayerControlListener;
 import com.moandjiezana.toml.Toml;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Dungeon extends ApplicationAdapter {
+
+	public static CyclicSampler entitiesSampler = new CyclicSampler(200);
+	public static CyclicSampler renderSampler = new CyclicSampler(200);
+	public static CyclicSampler movementSampler = new CyclicSampler(200);
+	private StopWatch stopWatch = new StopWatch();
+	private VLayout profilerWidget = new VLayout();
+
 	private final Toml configuration;
 	private InputMultiplexer inputMultiplexer;
 	private CharacterViewPortTracker characterViewPortTracker;
@@ -95,6 +108,22 @@ public class Dungeon extends ApplicationAdapter {
 
 		characterViewPortTracker = new CharacterViewPortTracker();
 
+		// Add visual profiler stuff
+		profilerWidget.add(
+				new SamplerVisualizer(entitiesSampler, "upd")
+						.color(new Color(0f, 0f, 1f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(renderSampler, "ren")
+						.color(new Color(1f, 0f, 0f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(movementSampler, "mov")
+						.color(new Color(0f, 1f, 0f, 0.5f))
+						.formatter(String::valueOf));
+		profilerWidget.setX(Gdx.graphics.getWidth() - 150);
+		profilerWidget.setY(500);
+
 	}
 
 	private void initResources() {
@@ -119,6 +148,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		stopWatch.start();
 		Engine.addTime(Gdx.graphics.getDeltaTime());
 		Engine.overlayTexts.update(OverlayText::think, OverlayText::isExpired, o -> {});
 
@@ -130,11 +160,13 @@ public class Dungeon extends ApplicationAdapter {
 			// We need to pick up stuff that fits in all viewports & merge them with a set
 			Stream<Entity> entitiesInAllViewPorts = Players.all().stream().flatMap(player -> Engine.entities.inViewPort(player.getViewPort(), 100f)).collect(Collectors.toSet()).stream();
 			Engine.entities.update(entitiesInAllViewPorts);
+			entitiesSampler.sample((int) stopWatch.getAndReset());
 
 			Players.all().forEach(player -> {
 				characterViewPortTracker.refresh(player.getViewPort(), player.getAvatar());
 				player.getRenderer().render();
 			});
+			renderSampler.sample((int) stopWatch.getAndReset());
 		}
 
 		// Render effects on top
@@ -149,6 +181,15 @@ public class Dungeon extends ApplicationAdapter {
 				Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
 				fading = false;
 			}));
+		}
+
+		SpriteBatch batch = new SpriteBatch();
+		batch.begin();
+		profilerWidget.draw(batch);
+		batch.end();
+
+		if (Players.count() > 0) {
+			movementSampler.sample((int) Players.get(0).getAvatar().getMovement().len());
 		}
 
 		this.frame += 1;
