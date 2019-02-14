@@ -93,8 +93,9 @@ public class Entity implements Drawable, Movable {
 	/** zIndex for ordering sprites */
 	private float zIndex;
 
-	protected boolean solid;
-	protected boolean noclip;
+	protected boolean canBlock;
+	protected boolean canBeBlockedByEntities;
+	protected boolean canBeBlockedByTiles;
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
 	protected boolean castsShadow;
@@ -138,8 +139,9 @@ public class Entity implements Drawable, Movable {
 		this.onSignalTraits = prototype.onSignalTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.maxHealth = prototype.health.get();
 		this.health = maxHealth;
-		this.solid = prototype.solid;
-		this.noclip = prototype.noclip;
+		this.canBlock = prototype.canBlock;
+		this.canBeBlockedByEntities = prototype.canBeBlockedByEntities;
+		this.canBeBlockedByTiles = prototype.canBeBlockedByTiles;
 		this.canBeHit = prototype.canBeHit;
 		this.canBeHurt = prototype.canBeHurt;
 		this.castsShadow = prototype.castsShadow;
@@ -174,8 +176,9 @@ public class Entity implements Drawable, Movable {
 		this.onSignalTraits = new ArrayList<>();
 		this.maxHealth = other.getMaxHealth();
 		this.health = other.health;
-		this.solid = other.solid;
-		this.noclip = other.noclip;
+		this.canBlock = other.canBlock;
+		this.canBeBlockedByEntities = other.canBeBlockedByEntities;
+		this.canBeBlockedByTiles = other.canBeBlockedByTiles;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
 		this.castsShadow = other.castsShadow;
@@ -431,11 +434,14 @@ public class Entity implements Drawable, Movable {
 		return expired;
 	}
 
-	public boolean isSolid() {
-		return solid;
+	public boolean canBlock() {
+		return canBlock;
 	}
-	public boolean isNoclip() {
-		return noclip;
+	public boolean canBeBlockedByEntities() {
+		return canBeBlockedByEntities;
+	}
+	public boolean canBeBlockedByTiles() {
+		return canBeBlockedByTiles;
 	}
 	public boolean canBeHit() {
 		return canBeHit;

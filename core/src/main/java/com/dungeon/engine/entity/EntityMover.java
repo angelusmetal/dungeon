@@ -5,7 +5,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.physics.Body;
 
 /**
- * Moves entities and handles collision against solid tiles and entities
+ * Moves entities and handles collision against canBlock tiles and entities
  */
 public class EntityMover {
 
@@ -53,20 +53,20 @@ public class EntityMover {
 				// do step
 				if (!collidedX) {
 					body.move(stepX);
-					collidedX = detectEntityCollision(entity, stepX) && !entity.isNoclip();
+					collidedX = detectEntityCollision(entity, stepX);
 				}
 				if (!collidedX) {
-					collidedX = detectTileCollision(entity, stepX) && !entity.isNoclip();
+					collidedX = entity.canBeBlockedByTiles() && detectTileCollision(entity, stepX);
 				}
 				if (collidedX) {
 					movement.x *= -entity.getBounciness();
 				}
 				if (!collidedY) {
 					body.move(stepY);
-					collidedY = detectEntityCollision(entity, stepY) && !entity.isNoclip();
+					collidedY = detectEntityCollision(entity, stepY);
 				}
 				if (!collidedY) {
-					collidedY = detectTileCollision(entity, stepY) && !entity.isNoclip();
+					collidedY = entity.canBeBlockedByTiles() && detectTileCollision(entity, stepY);
 				}
 				if (collidedY) {
 					movement.y *= -entity.getBounciness();
@@ -79,14 +79,14 @@ public class EntityMover {
 				// do remainder
 				if (!collidedX) {
 					body.move(stepX);
-					collidedX = detectTileCollision(entity, stepX) && !entity.isNoclip();
+					collidedX = entity.canBeBlockedByTiles() && detectTileCollision(entity, stepX);
 				}
 				if (!collidedX) {
 					detectEntityCollision(entity, stepX);
 				}
 				if (!collidedY) {
 					body.move(stepY);
-					collidedY = detectTileCollision(entity, stepY) && !entity.isNoclip();
+					collidedY = entity.canBeBlockedByTiles() && detectTileCollision(entity, stepY);
 				}
 				if (!collidedY) {
 					detectEntityCollision(entity, stepY);
@@ -126,13 +126,14 @@ public class EntityMover {
 	}
 
 	private static boolean detectTileCollision(Entity entity, Vector2 step) {
-		int tile_size = Engine.getLevelTiles().getTileSize();
+		// Iterate from bottom left to upper right intersecting tiles and negate movement if any of them are solid
+		int tileSize = Engine.getLevelTiles().getTileSize();
 		Body body = entity.getBody();
-		for (int x = body.getLeftTile(tile_size); x <= body.getRightTile(tile_size); ++x) {
-			for (int y = body.getBottomTile(tile_size); y <= body.getTopTile(tile_size); ++y) {
-				if (Engine.getLevelTiles().isSolid(x, y) && body.intersectsTile(x, y, tile_size) && !entity.isNoclip()) {
-					body.move(step.scl(-1));
+		for (int x = body.getLeftTile(tileSize); x <= body.getRightTile(tileSize); ++x) {
+			for (int y = body.getBottomTile(tileSize); y <= body.getTopTile(tileSize); ++y) {
+				if (Engine.getLevelTiles().isSolid(x, y) && body.intersectsTile(x, y, tileSize)) {
 					entity.onTileCollision(Math.abs(step.x) > Math.abs(step.y));
+					body.move(step.scl(-1));
 					return true;
 				}
 			}
@@ -149,8 +150,8 @@ public class EntityMover {
 				if (!entity.onEntityCollision(other)) {
 					other.onEntityCollision(entity);
 				}
-				// If collides with a solid entity, push back
-				if (entity.isSolid() && !pushedBack[0] && other.isSolid()) {
+				// If collides with an entity that can block (and this can be blocked by entities) push back
+				if (entity.canBeBlockedByEntities() && !pushedBack[0] && other.canBlock()) {
 					entity.getBody().move(step.scl(-1));
 					pushedBack[0] = true;
 				}

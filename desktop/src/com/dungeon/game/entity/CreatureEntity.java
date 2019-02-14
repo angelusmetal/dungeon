@@ -21,7 +21,6 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	public CreatureEntity(Vector2 origin, EntityPrototype prototype) {
 		super(prototype, origin);
-		solid = true;
 		canBeHit = true;
 		canBeHurt = true;
 	}

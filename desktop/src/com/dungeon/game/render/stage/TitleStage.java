@@ -65,7 +65,7 @@ public class TitleStage implements RenderStage {
 			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
-			titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - titleLayout.width / 2, viewPort.cameraHeight / 2 + titleLayout.height);
+			titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2, viewPort.cameraHeight / 2f + titleLayout.height);
 		});
 	}
 
@@ -76,8 +76,8 @@ public class TitleStage implements RenderStage {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
 			GlyphLayout subtitleLayout = new GlyphLayout(subtitleFont, subtitle);
-			titleFont.draw(batch, title,  viewPort.cameraWidth / 2 - titleLayout.width / 2, viewPort.cameraHeight / 2 + titleLayout.height);
-			subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2 - subtitleLayout.width / 2, viewPort.cameraHeight / 2 - subtitleLayout.height);
+			titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2, viewPort.cameraHeight / 2f + titleLayout.height);
+			subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2f - subtitleLayout.width / 2, viewPort.cameraHeight / 2f - subtitleLayout.height);
 //			batch.draw(ornament, viewPort.cameraWidth / 2 - ornament.getWidth() / 2, viewPort.cameraHeight / 2 - subtitleLayout.height * 2 - ornament.getHeight());
 		});
 	}

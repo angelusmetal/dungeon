@@ -32,8 +32,9 @@ public class EntityPrototype {
 	Predicate<Entity> hitPredicate = entity -> false;
 	Supplier<Float> timeToLive = () -> null;
 	Supplier<Integer> health = () -> 100;
-	boolean solid = false;
-	boolean noclip;
+	boolean canBlock = false;
+	boolean canBeBlockedByEntities = false;
+	boolean canBeBlockedByTiles = true;
 	boolean canBeHit = false;
 	boolean canBeHurt = false;
 	boolean castsShadow = false;
@@ -69,8 +70,9 @@ public class EntityPrototype {
 		this.boundingBox = other.boundingBox.cpy();
 		this.boundingBoxOffset = other.boundingBoxOffset.cpy();
 		this.drawOffset = other.drawOffset.cpy();
-		this.solid = other.solid;
-		this.noclip = other.noclip;
+		this.canBlock = other.canBlock;
+		this.canBeBlockedByEntities = other.canBeBlockedByEntities;
+		this.canBeBlockedByTiles = other.canBeBlockedByTiles;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
 		this.castsShadow = other.castsShadow;
@@ -217,13 +219,18 @@ public class EntityPrototype {
 		return this;
 	}
 
-	public EntityPrototype solid(boolean solid) {
-		this.solid = solid;
+	public EntityPrototype canBlock(boolean canBlock) {
+		this.canBlock = canBlock;
 		return this;
 	}
 
-	public EntityPrototype noclip(boolean noclip) {
-		this.noclip = noclip;
+	public EntityPrototype canBeBlockedByEntities(boolean canBeBlockedByEntities) {
+		this.canBeBlockedByEntities = canBeBlockedByEntities;
+		return this;
+	}
+
+	public EntityPrototype canBeBlockedByTiles(boolean canBeBlockedByTiles) {
+		this.canBeBlockedByTiles = canBeBlockedByTiles;
 		return this;
 	}
 

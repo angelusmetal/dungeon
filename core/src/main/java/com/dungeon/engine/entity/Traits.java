@@ -156,7 +156,7 @@ public class Traits {
         return e -> entity -> {
             Entity clone = new Entity(entity);
             clone.isStatic = true;
-            clone.solid = false;
+            clone.canBlock = false;
             clone.expirationTime = Engine.time() + timeToLive;
             clone.traits.add(expireByTime().get(clone));
             clone.traits.add(fadeOut(1f).get(clone));

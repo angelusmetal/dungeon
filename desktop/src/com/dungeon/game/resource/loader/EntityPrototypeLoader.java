@@ -16,7 +16,6 @@ import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.resource.Lights;
 import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
@@ -124,9 +122,10 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		if (ConfigUtil.getBoolean(descriptor, "physics").orElse(true)) {
 			prototype.with(EntityMover.move());
 		}
-		ConfigUtil.getBoolean(descriptor, "noclip").ifPresent(prototype::noclip);
-		ConfigUtil.getBoolean(descriptor, "solid").ifPresent(value -> {
-			prototype.solid(value);
+		ConfigUtil.getBoolean(descriptor, "canBeBlockedByEntities").ifPresent(prototype::canBeBlockedByEntities);
+		ConfigUtil.getBoolean(descriptor, "canBeBlockedByTiles").ifPresent(prototype::canBeBlockedByTiles);
+		ConfigUtil.getBoolean(descriptor, "canBlock").ifPresent(value -> {
+			prototype.canBlock(value);
 			prototype.canBeHit(value);
 			prototype.canBeHurt(value);
 		});
