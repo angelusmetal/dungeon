@@ -25,6 +25,11 @@ public abstract class Projectile extends DungeonEntity implements Movable, Drawa
 		this.attackSupplier = attackSupplier;
 	}
 
+	 @Override
+	 protected void onMovementUpdate() {
+		setRotation(getMovement().angle());
+	}
+
 	@Override
 	protected void onTileCollision(boolean horizontal) {
 		if (bounciness == 0) {

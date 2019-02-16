@@ -103,6 +103,12 @@ public class EntityMover {
 			if (Math.abs(movement.y) < 0.1f) {
 				movement.y = 0;
 			}
+
+			if (collidedX || collidedY) {
+				// Notify that movement has been updated
+				entity.onMovementUpdate();
+			}
+
 		}
 
 		// Handle vertical movement

@@ -65,7 +65,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 		if (!expired) {
 			actionGate.attempt(0.25f, () -> {
 				// FIXME Adding y=2 to prevent projectile from spawning inside bottom wall
-				getPlayer().getWeapon().spawnEntities(getOrigin().cpy().add(0, 2), getAim());
+				getPlayer().getWeapon().spawnEntities(getBody().getCenter(), getAim());
 				updateAnimation(getAttackAnimation());
 			});
 		}

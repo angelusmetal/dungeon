@@ -14,13 +14,11 @@ import java.util.function.Supplier;
 public class GreenStaffWeapon extends ProjectileWeapon {
 
 	private final EntityPrototype projectile;
-	private final EntityPrototype impact;
 
 	public GreenStaffWeapon() {
 		super("Green staff", damageSupplier(), DamageType.ELEMENTAL, 0);
 
-		projectile = Resources.prototypes.get("green_staff_projectile");
-		impact = Resources.prototypes.get("green_staff_projectile_impact");
+		projectile = Resources.prototypes.get("venom_bullet");
 	}
 
 	@Override
@@ -30,16 +28,7 @@ public class GreenStaffWeapon extends ProjectileWeapon {
 
 	@Override
 	protected Entity createProjectile(Vector2 origin, Vector2 aim) {
-		return new Projectile(origin, projectile, this::createAttack) {
-			@Override
-			protected void onExpire() {
-				Engine.entities.add(createImpact(getOrigin()));
-			}
-		};
-	}
-
-	private Entity createImpact(Vector2 origin) {
-		return new Entity(impact, origin);
+		return new Projectile(origin, projectile, this::createAttack) {};
 	}
 
 	private static Supplier<Float> damageSupplier() {

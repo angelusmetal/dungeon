@@ -113,6 +113,7 @@ public class TraitLoader {
 		Optional<Supplier<Integer>> impulseY = ConfigUtil.getIntegerRange(config, "impulseY");
 		Optional<Supplier<Integer>> impulseZ = ConfigUtil.getIntegerRange(config, "impulseZ");
 		boolean inheritColor = ConfigUtil.getBoolean(config, "inheritColor").orElse(false);
+		String rotation = ConfigUtil.getString(config, "rotation").orElse("none");
 		// List of initialization steps (like offset & impulse)
 		List<Consumer<Entity>> traits = new ArrayList<>();
 		x.ifPresent(v -> traits.add(particle -> particle.getOrigin().x += v.get()));
@@ -124,6 +125,9 @@ public class TraitLoader {
 			traits.add(particle -> particle.impulse(xSupplier.get(), ySupplier.get()));
 		}
 		impulseZ.ifPresent(v -> traits.add(particle -> particle.setZSpeed(particle.getZSpeed() + v.get())));
+		if (rotation.equals("movement")) {
+			traits.add(particle -> particle.setRotation(particle.getMovement().angle()));
+		}
 		return generator -> {
 			Entity particle = Game.build(prototype, generator.getOrigin());
 			// Inherit generator properties

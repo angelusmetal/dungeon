@@ -94,4 +94,8 @@ public class Body {
 	public int getTopTile(int tile_size) {
 		return (int) (topRight.y / tile_size);
 	}
+
+	public Vector2 getCenter() {
+		return new Vector2((bottomLeft.x + topRight.x) / 2, (bottomLeft.y + topRight.y) / 2);
+	}
 }

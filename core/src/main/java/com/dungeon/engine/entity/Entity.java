@@ -294,6 +294,7 @@ public class Entity implements Drawable, Movable {
 
 	public void impulse(Vector2 vector) {
 		movement.add(vector);
+		onMovementUpdate();
 	}
 
 	public void impulse(float x, float y) {
@@ -382,6 +383,7 @@ public class Entity implements Drawable, Movable {
 	 */
 	public void impulseTowards(Vector2 destination, float length2) {
 		impulse(destination.cpy().sub(getOrigin()).setLength2(length2));
+		onMovementUpdate();
 	}
 
 	public boolean collides(Body body) {
@@ -453,6 +455,7 @@ public class Entity implements Drawable, Movable {
 		return isStatic;
 	}
 
+	protected void onMovementUpdate() {}
 	/** Handle entity collision; true if handled; false otherwise */
 	protected boolean onEntityCollision(Entity entity) {return false;}
 	protected void onHit() {}
