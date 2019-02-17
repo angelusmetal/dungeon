@@ -48,6 +48,21 @@ public class Traits {
         };
     }
 
+    /** Oscillate sideways relative to the movement vector */
+    static public <T extends Entity> TraitSupplier<T> movOscillate(float frequency, float amplitude) {
+		return e -> {
+			// Randomize phase so each particle oscillates differently
+			float start = Engine.time() + (float) Math.PI;//Rand.nextFloat(SPIN);
+			return entity -> {
+				float o = MathUtils.sin((Engine.time() - start) * SPIN * frequency);
+				Vector2 impulse = entity.getMovement().cpy().rotate90(o > 0 ? 1:-1).setLength(o * amplitude);
+				entity.impulse(impulse);
+				// TODO Can we use impulse instead of body.move()?
+//				entity.getBody().move(impulse);
+			};
+		};
+ 	}
+
     /** Accelerate/decelerate particle in its current direction */
     static public <T extends Entity> TraitSupplier<T> accel(float acceleration) {
         return e -> entity -> entity.speed += acceleration * Engine.frameTime();

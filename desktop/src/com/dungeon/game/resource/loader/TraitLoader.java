@@ -1,5 +1,6 @@
 package com.dungeon.game.resource.loader;
 
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.util.Metronome;
@@ -112,6 +113,7 @@ public class TraitLoader {
 		Optional<Supplier<Integer>> impulseX = ConfigUtil.getIntegerRange(config, "impulseX");
 		Optional<Supplier<Integer>> impulseY = ConfigUtil.getIntegerRange(config, "impulseY");
 		Optional<Supplier<Integer>> impulseZ = ConfigUtil.getIntegerRange(config, "impulseZ");
+		Optional<Vector2> impulseAngle = ConfigUtil.getVector2(config, "impulseAngle");
 		boolean inheritColor = ConfigUtil.getBoolean(config, "inheritColor").orElse(false);
 		String rotation = ConfigUtil.getString(config, "rotation").orElse("none");
 		// List of initialization steps (like offset & impulse)
@@ -140,6 +142,10 @@ public class TraitLoader {
 				// TODO This probably doesn't belong here
 				particle.setZPos(generator.getZPos());
 			}
+			// Apply angle
+			impulseAngle.ifPresent(v -> {
+				particle.impulse(generator.getMovement().cpy().rotate(v.x).setLength(v.y));
+			});
 			// Run initialization steps
 			traits.forEach(trait -> trait.accept(particle));
 			return particle;

@@ -117,6 +117,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getVector2(descriptor, "hOscillate").ifPresent(value -> prototype.with(Traits.hOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "vOscillate").ifPresent(value -> prototype.with(Traits.vOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
+		ConfigUtil.getVector2(descriptor, "movOscillate").ifPresent(value -> prototype.with(Traits.movOscillate(value.x, value.y)));
 		ConfigUtil.getFloat(descriptor, "z").ifPresent(prototype::z);
 		// Physics are enabled by default
 		if (ConfigUtil.getBoolean(descriptor, "physics").orElse(true)) {
