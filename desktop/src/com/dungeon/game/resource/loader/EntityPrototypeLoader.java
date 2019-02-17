@@ -151,6 +151,8 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getString(descriptor, "hits").ifPresent(predicate -> {
 			if ("nonPlayers".equals(predicate)) {
 				prototype.hitPredicate(PlayerEntity.HIT_NON_PLAYERS);
+			} else if ("players".equals(predicate)) {
+				prototype.hitPredicate(PlayerEntity.HIT_PLAYERS);
 			} else {
 				throw new LoadingException("Invalid value '" + predicate + "' for hits");
 			}
