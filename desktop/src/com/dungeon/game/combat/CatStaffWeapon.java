@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 public class CatStaffWeapon extends ProjectileWeapon {
 
 	private final EntityPrototype projectile;
+	private final int tier = (int) Game.getDifficultyTier();
 
 	public CatStaffWeapon() {
 		super("Cat staff", damageSupplier(), DamageType.ELEMENTAL, 0);
@@ -24,13 +25,8 @@ public class CatStaffWeapon extends ProjectileWeapon {
 	}
 
 	@Override
-	protected float getSpawnDistance() {
-		return 2;
-	}
-
-	@Override
-	protected Entity createProjectile(Vector2 origin, Vector2 aim) {
-		return new Projectile(origin, projectile, this::createAttack) {};
+	public void spawnEntities(Vector2 origin, Vector2 aim) {
+		createProjectileFan(projectile, this::createAttack, origin, aim, tier, 10);
 	}
 
 	private static Supplier<Float> damageSupplier() {

@@ -50,11 +50,12 @@ public class Traits {
 
     /** Oscillate sideways relative to the movement vector */
     static public <T extends Entity> TraitSupplier<T> movOscillate(float frequency, float amplitude) {
+        float sign = amplitude > 0 ? 1 : -1;
 		return e -> {
 			// Randomize phase so each particle oscillates differently
 			float start = Engine.time() + (float) Math.PI;//Rand.nextFloat(SPIN);
 			return entity -> {
-				float o = MathUtils.sin((Engine.time() - start) * SPIN * frequency);
+				float o = MathUtils.sin((Engine.time() - start) * SPIN * frequency) * sign;
 				Vector2 impulse = entity.getMovement().cpy().rotate90(o > 0 ? 1:-1).setLength(o * amplitude);
 				entity.impulse(impulse);
 				// TODO Can we use impulse instead of body.move()?

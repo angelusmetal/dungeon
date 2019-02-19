@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.combat.CatStaffWeapon;
-import com.dungeon.game.combat.GreenStaffWeapon;
+import com.dungeon.game.combat.VenomStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.entity.DungeonEntity;
@@ -24,7 +24,7 @@ public class WeaponFactory {
 	}
 
 	public Entity greenStaff(Vector2 origin, EntityPrototype prototype) {
-		return buildWeaponEntity(origin, prototype, GreenStaffWeapon::new);
+		return buildWeaponEntity(origin, prototype, VenomStaffWeapon::new);
 	}
 
 	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Supplier<Weapon> weaponSupplier) {

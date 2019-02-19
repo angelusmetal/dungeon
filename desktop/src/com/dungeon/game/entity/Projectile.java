@@ -13,7 +13,7 @@ import java.util.function.Function;
 /**
  * Base class for all projectiles
  */
-public abstract class Projectile extends DungeonEntity implements Movable, Drawable {
+public class Projectile extends DungeonEntity implements Movable, Drawable {
 
 	public static final Function<DungeonEntity, Boolean> NO_FRIENDLY_FIRE = entity -> !(entity instanceof PlayerEntity) && entity.canBlock();
 

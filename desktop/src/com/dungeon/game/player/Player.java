@@ -8,8 +8,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.CatStaffWeapon;
-import com.dungeon.game.combat.GreenStaffWeapon;
-import com.dungeon.game.combat.SwordWeapon;
+import com.dungeon.game.combat.VenomStaffWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.controller.PlayerControlBundle;
 import com.dungeon.game.entity.PlayerEntity;
@@ -19,7 +18,7 @@ import com.dungeon.game.render.stage.ViewPortRenderer;
 public class Player implements Disposable {
 
 	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
-	private static Weapon[] PLAYER_WEAPONS = {new CatStaffWeapon(), new GreenStaffWeapon(), new GreenStaffWeapon()};
+	private static Weapon[] PLAYER_WEAPONS = {new CatStaffWeapon(), new VenomStaffWeapon(), new VenomStaffWeapon()};
 
 	private int playerId;
 	private int characterId;
