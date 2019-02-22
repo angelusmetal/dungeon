@@ -11,6 +11,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.resource.Resources;
 
 import java.util.Comparator;
 
@@ -36,12 +37,7 @@ public class OverlayTextStage implements RenderStage {
 	}
 
 	private void loadShader() {
-		String vertexShader;
-		String fragmentShader;
-		vertexShader = Gdx.files.internal("df_vertex.glsl").readString();
-		fragmentShader = Gdx.files.internal("outline_border_fragment.glsl").readString();
-		shaderOutline = new ShaderProgram(vertexShader, fragmentShader);
-		if (!shaderOutline.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shaderOutline.getLog());
+		shaderOutline = Resources.shaders.get("df_vertex.glsl|outline_border_fragment.glsl");
 	}
 
 	@Override

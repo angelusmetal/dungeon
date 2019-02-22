@@ -1,6 +1,8 @@
 package com.dungeon.game.entity;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -9,12 +11,19 @@ import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
+import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
+import com.dungeon.game.resource.Resources;
 
 import static com.dungeon.game.Game.text;
 
 public class DungeonEntity extends Entity implements Drawable, Movable {
+
+	private static ShaderProgram shader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
+
+	// Hackish way to do control the solid shader duration
+	private float whiteUntil = 0f;
 
 	/**
 	 * Create an entity at origin, from the specified prototype
@@ -33,11 +42,30 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 		super(other);
 	}
 
+	@Override
+	public void draw(SpriteBatch batch, ViewPort viewPort) {
+		if (whiteUntil > Engine.time()) {
+			batch.end();
+			shader.begin();
+			shader.setUniformf("u_color", new Color(1f, 1f, 1f, 1f));
+			shader.end();
+			batch.setShader(shader);
+			batch.begin();
+			super.draw(batch, viewPort);
+			batch.end();
+			batch.setShader(null);
+			batch.begin();
+		} else {
+			super.draw(batch, viewPort);
+		}
+	}
+
 	public void hit(Attack attack) {
 		if (canBeHurt()) {
 			health -= attack.getDamage();
 			onHitTraits.forEach(m -> m.accept(this));
 			onHit();
+			whiteUntil = Engine.time() + 0.1f;
 			if (attack.getDamage() > 1) {
 				Engine.overlayTexts.add(text(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
 			}

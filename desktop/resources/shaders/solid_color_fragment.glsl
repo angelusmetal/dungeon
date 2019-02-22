@@ -1,0 +1,45 @@
+#ifdef GL_ES
+precision mediump float;
+precision mediump int;
+#endif
+
+uniform sampler2D u_texture;
+
+// Solid color
+uniform vec4 u_color;
+
+varying vec4 v_color;
+varying vec2 v_texCoord;
+
+void main() {
+   vec2 T = v_texCoord.xy;
+
+   gl_FragColor = vec4(u_color.r, u_color.g, u_color.b, texture2D(u_texture, v_texCoord.xy).a * u_color.a);
+//   if (texture2D(u_texture, v_texCoord.xy).a > ALPHA_THRESHOLD) {
+//      gl_FragColor = vec4(u_color.r, u_color.g, u_color.b, 1.0);
+//   } else {
+//      gl_FragColor = vec4(u_color.r, u_color.g, u_color.b, 1.0);
+//   }
+//
+//   float alpha = 0.0;
+//   bool allin = true;
+//   for( float ix = -u_offset; ix < u_offset; ix += u_step )
+//   {
+//      for( float iy = -u_offset; iy < u_offset; iy += u_step )
+//       {
+//          float newAlpha = texture2D(u_texture, T + vec2(ix, iy) * u_viewportInverse).a;
+//          allin = allin && newAlpha > ALPHA_VALUE_BORDER;
+//          if (newAlpha > ALPHA_VALUE_BORDER && newAlpha >= alpha)
+//          {
+//             alpha = newAlpha;
+//          }
+//      }
+//   }
+//   if (allin)
+//   {
+//      alpha = 0.0;
+//   }
+//   alpha = clamp(alpha, 0.0, u_color.a);
+//
+//   gl_FragColor = vec4(u_color.r, u_color.g, u_color.b, alpha);
+}

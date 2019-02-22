@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.ResourceManagerLoader;
 import com.dungeon.engine.resource.ResourceRepository;
@@ -27,6 +29,7 @@ public class Resources {
 	public static final ResourceRepository<Tileset> tilesets = new ResourceRepository<>();
 	public static final ResourceRepository<RoomPrototype> rooms = new ResourceRepository<>();
 	public static final ResourceRepository<Environment> environments = new ResourceRepository<>();
+	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);
 
 	public static void load() {
 		ResourceManagerLoader loader = new ResourceManagerLoader();
@@ -42,6 +45,13 @@ public class Resources {
 		return new BitmapFont(Gdx.files.internal(name + ".fnt"), Gdx.files.internal( name + ".png"), false, true);
 	}
 
+	private static ShaderProgram computeShader(String name) {
+		String[] scripts = name.split("\\|");
+		ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/" + scripts[0]).readString(), Gdx.files.internal("shaders/" + scripts[1]).readString());
+		if (!shaderProgram.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shaderProgram.getLog());
+		return shaderProgram;
+	}
+
 	public static void dispose() {
 		textures.dispose();
 		animations.dispose();
@@ -50,6 +60,7 @@ public class Resources {
 		tilesets.dispose();
 		rooms.dispose();
 		environments.dispose();
+		shaders.dispose();
 	}
 
 }
