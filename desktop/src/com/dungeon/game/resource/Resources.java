@@ -48,7 +48,9 @@ public class Resources {
 	private static ShaderProgram computeShader(String name) {
 		String[] scripts = name.split("\\|");
 		ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/" + scripts[0]).readString(), Gdx.files.internal("shaders/" + scripts[1]).readString());
-		if (!shaderProgram.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + shaderProgram.getLog());
+		if (!shaderProgram.isCompiled()) {
+			throw new GdxRuntimeException("Couldn't compile shader: " + shaderProgram.getLog());
+		}
 		return shaderProgram;
 	}
 

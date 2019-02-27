@@ -10,6 +10,7 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.TimeGate;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
+
 import java.util.List;
 
 public abstract class CreatureEntity extends DungeonEntity implements Movable, Drawable {

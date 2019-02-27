@@ -23,7 +23,11 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	private static ShaderProgram shader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
 
 	// Hackish way to do control the solid shader duration
-	private float whiteUntil = 0f;
+	protected static final float HIGHLIGHT_DURATION = 0.2f;
+	protected static final Color[] HIGHLIGHT_COLORS = new Color[] {new Color(0xb222228f), new Color(0xffffff8f), new Color(0xb222228f)};
+//	protected static final Color[] HIGHLIGHT_COLORS = new Color[] {new Color(0xffffff10)};
+	protected static final float COLOR_DURATION = HIGHLIGHT_DURATION / HIGHLIGHT_COLORS.length;
+	protected float highlightUntil = 0f;
 
 	/**
 	 * Create an entity at origin, from the specified prototype
@@ -44,10 +48,11 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		if (whiteUntil > Engine.time()) {
+		if (highlightUntil > Engine.time()) {
 			batch.end();
 			shader.begin();
-			shader.setUniformf("u_color", new Color(1f, 1f, 1f, 1f));
+			Color highlight = HIGHLIGHT_COLORS[(int) ((Engine.time() - (highlightUntil - HIGHLIGHT_DURATION)) / COLOR_DURATION)];
+			shader.setUniformf("u_color", highlight);
 			shader.end();
 			batch.setShader(shader);
 			batch.begin();
@@ -64,8 +69,8 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 		if (canBeHurt()) {
 			health -= attack.getDamage();
 			onHitTraits.forEach(m -> m.accept(this));
+			highlightUntil = Engine.time() + HIGHLIGHT_DURATION;
 			onHit();
-			whiteUntil = Engine.time() + 0.1f;
 			if (attack.getDamage() > 1) {
 				Engine.overlayTexts.add(text(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
 			}
