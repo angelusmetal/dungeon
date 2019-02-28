@@ -25,7 +25,6 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	// Hackish way to do control the solid shader duration
 	protected static final float HIGHLIGHT_DURATION = 0.2f;
 	protected static final Color[] HIGHLIGHT_COLORS = new Color[] {new Color(0xb222228f), new Color(0xffffff8f), new Color(0xb222228f)};
-//	protected static final Color[] HIGHLIGHT_COLORS = new Color[] {new Color(0xffffff10)};
 	protected static final float COLOR_DURATION = HIGHLIGHT_DURATION / HIGHLIGHT_COLORS.length;
 	protected float highlightUntil = 0f;
 

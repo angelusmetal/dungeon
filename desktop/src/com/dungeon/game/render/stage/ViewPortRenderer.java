@@ -21,10 +21,11 @@ public class ViewPortRenderer implements Disposable {
 	private int renderCalls = 0;
 	private float frameTime;
 
-	private final MapStage mapStage;
-	private final ShadowsStage shadowsStage;
-	private final EntitiesStage entitiesStage;
-	private final LightStage lightStage;
+//	private final MapStage mapStage;
+//	private final ShadowsStage shadowsStage;
+//	private final EntitiesStage entitiesStage;
+	private final SceneStage sceneStage;
+//	private final LightStage lightStage;
 	private final HealthbarStage healthbarStage;
 	private final CollisionStage collisionStage;
 	private final NoiseStage noiseStage;
@@ -42,10 +43,11 @@ public class ViewPortRenderer implements Disposable {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.batch = new SpriteBatch();
 
-		mapStage = new MapStage(viewPort, viewportBuffer);
-		shadowsStage = new ShadowsStage(viewPort, viewportBuffer);
-		entitiesStage = new EntitiesStage(viewPort, viewportBuffer);
-		lightStage = new LightStage(viewPort, viewportBuffer);
+//		mapStage = new MapStage(viewPort, viewportBuffer);
+//		shadowsStage = new ShadowsStage(viewPort, viewportBuffer);
+//		entitiesStage = new EntitiesStage(viewPort, viewportBuffer);
+		sceneStage = new SceneStage(viewPort, viewportBuffer);
+//		lightStage = new LightStage(viewPort, viewportBuffer);
 		healthbarStage = new HealthbarStage(viewPort, viewportBuffer);
 		collisionStage = new CollisionStage(viewPort, viewportBuffer);
 		noiseStage = new NoiseStage(viewPort, viewportBuffer);
@@ -58,10 +60,11 @@ public class ViewPortRenderer implements Disposable {
 		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
-		pipeline.add(mapStage);
-		pipeline.add(shadowsStage);
-		pipeline.add(entitiesStage);
-		pipeline.add(lightStage);
+//		pipeline.add(mapStage);
+//		pipeline.add(shadowsStage);
+//		pipeline.add(entitiesStage);
+		pipeline.add(sceneStage);
+//		pipeline.add(lightStage);
 		pipeline.add(healthbarStage);
 		pipeline.add(collisionStage);
 		pipeline.add(noiseStage);
@@ -103,12 +106,12 @@ public class ViewPortRenderer implements Disposable {
 	}
 
 	public void toggleScene() {
-		mapStage.toggle();
-		entitiesStage.toggle();
+//		mapStage.toggle();
+//		entitiesStage.toggle();
 	}
 
 	public void toggleLighting() {
-		lightStage.toggle();
+//		lightStage.toggle();
 	}
 
 	public void toggleHealthbars() {

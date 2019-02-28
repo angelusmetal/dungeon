@@ -44,7 +44,7 @@ public class Ghost extends CreatureEntity {
 		// Re-target periodically
 		targettingMetronome.doAtInterval();
 		// Set transparency based on invulnerability
-		color.a = Util.clamp(visibleUntil - Engine.time(), 0.1f, 0.5f);
+		color.a = Util.clamp(visibleUntil - Engine.time(), 0.4f, 0.8f);
 		speed = Engine.time() > visibleUntil ? factory.stealthSpeed : factory.visibleSpeed;
 	}
 

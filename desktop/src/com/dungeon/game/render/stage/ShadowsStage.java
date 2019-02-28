@@ -17,7 +17,7 @@ public class ShadowsStage implements RenderStage {
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final TextureRegion texture;
-	private boolean enabled = true;
+	private boolean enabled = false;
 	private final Color color = new Color(1, 1, 1, SHADOW_INTENSITY);
 
 	public ShadowsStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
