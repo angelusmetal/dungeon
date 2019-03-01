@@ -22,6 +22,9 @@ import java.util.Comparator;
 
 public class SceneStage implements RenderStage {
 
+	// Entities need to be rendered with premultiplied alpha onto the alpha-enabled buffer
+	private static ShaderProgram entityShader = Resources.shaders.get("df_vertex.glsl|premultiplied_alpha_fragment.glsl");
+
 	private final Comparator<? super Entity> comp = (e1, e2) ->
 			e1.getZIndex() > e2.getZIndex() ? 1 :
 			e1.getZIndex() < e2.getZIndex() ? -1 :
@@ -37,6 +40,7 @@ public class SceneStage implements RenderStage {
 	private final ViewPortBuffer current;
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
+	private final BlendFunctionContext blendSprites;
 	private final float gamma;
 	private boolean enabled = true;
 	private final TextureRegion shadow;
@@ -62,6 +66,7 @@ public class SceneStage implements RenderStage {
 		this.current.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		this.combineLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
+		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		this.gamma = Game.getConfiguration().getDouble("viewport.gamma", 1.0d).floatValue();
 		this.shadow = new TextureRegion(Resources.textures.get("shadow.png"));
 	}
@@ -75,36 +80,38 @@ public class SceneStage implements RenderStage {
 			});
 			return;
 		}
-		// Clear lights buffer
-		lights.render(batch -> {
-			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
 		// Draw tiles
 		base.render(this::drawMap);
 		// Render lights (with shadows)
-		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, true));
-		// Combine tiles with lighting
-		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
-		output.render(base::draw);
-
-		// Clear lights & base buffer
 		lights.render(batch -> {
 			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		});
+		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, true));
+		// Combine tiles with lighting
+		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+		// Output lit tiles
+		output.render(base::draw);
+
+		// Render entities in base buffer
 		base.render(batch -> {
 			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		});
-		// Render entities in base buffer
-		base.render(batch -> {
+		base.render(batch -> blendSprites.run(batch, () -> {
+			batch.setShader(entityShader);
 			// Iterate entities in render order and draw them
 			Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
+		}));
+		// Render lights (without shadows; don't want them to project over entities)
+		lights.render(batch -> {
+			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		});
-		// Render lights (without shadows)
 		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, false));
+		// Combine tiles with lighting
 		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+		// Output lit entities
 		output.render(base::draw);
 
 	}

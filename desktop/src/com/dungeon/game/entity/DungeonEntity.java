@@ -23,7 +23,7 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	private static ShaderProgram shader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
 
 	// Hackish way to do control the solid shader duration
-	protected static final float HIGHLIGHT_DURATION = 0.2f;
+	protected static final float HIGHLIGHT_DURATION = 0.15f;
 	protected static final Color[] HIGHLIGHT_COLORS = new Color[] {new Color(0xb222228f), new Color(0xffffff8f), new Color(0xb222228f)};
 	protected static final float COLOR_DURATION = HIGHLIGHT_DURATION / HIGHLIGHT_COLORS.length;
 	protected float highlightUntil = 0f;
@@ -53,11 +53,12 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 			Color highlight = HIGHLIGHT_COLORS[(int) ((Engine.time() - (highlightUntil - HIGHLIGHT_DURATION)) / COLOR_DURATION)];
 			shader.setUniformf("u_color", highlight);
 			shader.end();
+			ShaderProgram otherShader = batch.getShader();
 			batch.setShader(shader);
 			batch.begin();
 			super.draw(batch, viewPort);
 			batch.end();
-			batch.setShader(null);
+			batch.setShader(otherShader);
 			batch.begin();
 		} else {
 			super.draw(batch, viewPort);
