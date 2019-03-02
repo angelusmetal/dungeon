@@ -50,6 +50,11 @@ public class SceneStage implements RenderStage {
 	private static final float MAX_HEIGHT_ATTENUATION = 100;
 	private static final int VERTICAL_OFFSET = -2;
 
+	private boolean drawTiles = true;
+	private boolean drawEntities = true;
+	private boolean drawShadows = true;
+	private boolean drawLights = true;
+
 	public SceneStage(ViewPort viewPort, ViewPortBuffer output) {
 		this.viewPort = viewPort;
 		// Output buffer
@@ -80,39 +85,47 @@ public class SceneStage implements RenderStage {
 			});
 			return;
 		}
-		// Draw tiles
-		base.render(this::drawMap);
-		// Render lights (with shadows)
-		lights.render(batch -> {
-			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
-		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, true));
-		// Combine tiles with lighting
-		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
-		// Output lit tiles
-		output.render(base::draw);
+		if (drawTiles) {
+			// Draw tiles
+			base.render(this::drawTiles);
+			if (drawLights) {
+				// Render lights (with shadows)
+				lights.render(batch -> {
+					Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
+					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				});
+				Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, drawShadows));
+				// Combine tiles with lighting
+				base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+			}
+			// Output lit tiles
+			output.render(base::draw);
+		}
 
-		// Render entities in base buffer
-		base.render(batch -> {
-			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
-		base.render(batch -> blendSprites.run(batch, () -> {
-			batch.setShader(entityShader);
-			// Iterate entities in render order and draw them
-			Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
-		}));
-		// Render lights (without shadows; don't want them to project over entities)
-		lights.render(batch -> {
-			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
-		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, false));
-		// Combine tiles with lighting
-		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
-		// Output lit entities
-		output.render(base::draw);
+		if (drawEntities) {
+			// Render entities in base buffer
+			base.render(batch -> {
+				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
+			base.render(batch -> blendSprites.run(batch, () -> {
+				batch.setShader(entityShader);
+				// Iterate entities in render order and draw them
+				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
+			}));
+			if (drawLights) {
+				// Render lights (without shadows; don't want them to project over entities)
+				lights.render(batch -> {
+					Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
+					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				});
+				Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, false));
+				// Combine tiles with lighting
+				base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+			}
+			// Output lit entities
+			output.render(base::draw);
+		}
 
 	}
 
@@ -121,7 +134,7 @@ public class SceneStage implements RenderStage {
 		enabled = !enabled;
 	}
 
-	private void drawMap(SpriteBatch batch) {
+	private void drawTiles(SpriteBatch batch) {
 		// Only render the visible portion of the map
 		int tSize = Game.getEnvironment().getTileset().tile_size;
 		int minX = Math.max(0, viewPort.cameraX / tSize);
@@ -171,6 +184,22 @@ public class SceneStage implements RenderStage {
 		});
 		// And then combine that into the main buffer
 		lights.render(batch -> combineLights.run(batch, () -> current.draw(batch)));
+	}
+
+	public void toggleDrawTiles() {
+		drawTiles = !drawTiles;
+	}
+
+	public void toggleDrawEntities() {
+		drawEntities = !drawEntities;
+	}
+
+	public void toggleDrawShadows() {
+		drawShadows = !drawShadows;
+	}
+
+	public void toggleDrawLights() {
+		drawLights = !drawLights;
 	}
 
 	@Override

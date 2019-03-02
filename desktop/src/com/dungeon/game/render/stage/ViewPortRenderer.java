@@ -1,9 +1,6 @@
 package com.dungeon.game.render.stage;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
@@ -21,11 +18,7 @@ public class ViewPortRenderer implements Disposable {
 	private int renderCalls = 0;
 	private float frameTime;
 
-//	private final MapStage mapStage;
-//	private final ShadowsStage shadowsStage;
-//	private final EntitiesStage entitiesStage;
 	private final SceneStage sceneStage;
-//	private final LightStage lightStage;
 	private final HealthbarStage healthbarStage;
 	private final CollisionStage collisionStage;
 	private final NoiseStage noiseStage;
@@ -43,11 +36,7 @@ public class ViewPortRenderer implements Disposable {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.batch = new SpriteBatch();
 
-//		mapStage = new MapStage(viewPort, viewportBuffer);
-//		shadowsStage = new ShadowsStage(viewPort, viewportBuffer);
-//		entitiesStage = new EntitiesStage(viewPort, viewportBuffer);
 		sceneStage = new SceneStage(viewPort, viewportBuffer);
-//		lightStage = new LightStage(viewPort, viewportBuffer);
 		healthbarStage = new HealthbarStage(viewPort, viewportBuffer);
 		collisionStage = new CollisionStage(viewPort, viewportBuffer);
 		noiseStage = new NoiseStage(viewPort, viewportBuffer);
@@ -60,11 +49,7 @@ public class ViewPortRenderer implements Disposable {
 		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
-//		pipeline.add(mapStage);
-//		pipeline.add(shadowsStage);
-//		pipeline.add(entitiesStage);
 		pipeline.add(sceneStage);
-//		pipeline.add(lightStage);
 		pipeline.add(healthbarStage);
 		pipeline.add(collisionStage);
 		pipeline.add(noiseStage);
@@ -105,13 +90,20 @@ public class ViewPortRenderer implements Disposable {
 
 	}
 
-	public void toggleScene() {
-//		mapStage.toggle();
-//		entitiesStage.toggle();
+	public void toggleTiles() {
+		sceneStage.toggleDrawTiles();
+	}
+
+	public void toggleEntities() {
+		sceneStage.toggleDrawEntities();
 	}
 
 	public void toggleLighting() {
-//		lightStage.toggle();
+		sceneStage.toggleDrawLights();
+	}
+
+	public void toggleShadows() {
+		sceneStage.toggleDrawShadows();
 	}
 
 	public void toggleHealthbars() {
