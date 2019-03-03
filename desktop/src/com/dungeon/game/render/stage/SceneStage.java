@@ -133,7 +133,7 @@ public class SceneStage implements RenderStage {
 
 		// Draw flares
 		output.render(batch -> combineLights.run(batch, () -> {
-			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::isInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
+			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				batch.setColor(lightColor);
 				// Draw light texture

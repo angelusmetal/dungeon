@@ -105,6 +105,15 @@ public class ViewPort {
 						e.getOrigin().y + e.getLight().diameter > cameraY;
 	}
 
+	public boolean flareIsInViewPort(Entity e) {
+		return
+				e.getFlare() != null &&
+						e.getOrigin().x - e.getFlare().diameter < cameraX + cameraWidth &&
+						e.getOrigin().x + e.getFlare().diameter > cameraX &&
+						e.getOrigin().y - e.getFlare().diameter < cameraY + cameraHeight &&
+						e.getOrigin().y + e.getFlare().diameter > cameraY;
+	}
+
 	public Vector2 worldToScreen(Vector2 vector2) {
 		return new Vector2(vector2.x - cameraX, vector2.y - cameraY);
 	}
