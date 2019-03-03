@@ -1,5 +1,6 @@
 package com.dungeon.game.level;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.generator.ModularLevelGenerator;
@@ -42,7 +43,8 @@ public class Room {
 			placeholders.add(new EntityPlaceholder(placeholder.getType(), new Vector2(placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom), placeholder.getChance()));
 		}
 		for (ModularLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
-			connectionPoints.add(new ModularLevelGenerator.ConnectionPoint((int) (connection.coords.x + left), (int) (connection.coords.y + bottom), connection.direction));
+			GridPoint2 newOrigin = connection.origin.cpy().add(left, bottom);
+			connectionPoints.add(new ModularLevelGenerator.ConnectionPoint(newOrigin, connection.direction));
 		}
 	}
 

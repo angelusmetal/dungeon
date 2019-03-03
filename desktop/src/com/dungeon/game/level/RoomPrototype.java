@@ -1,5 +1,6 @@
 package com.dungeon.game.level;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.generator.ModularLevelGenerator;
@@ -13,42 +14,40 @@ public class RoomPrototype {
 	private final List<Vector2> spawnPoints;
 	private final List<EntityPlaceholder> placeholders;
 
-	public RoomPrototype(TileType[][] tiles, List<Vector2> connections, List<Vector2> spawnPoints, List<EntityPlaceholder> placeholders) {
+	public RoomPrototype(TileType[][] tiles, List<GridPoint2> connections, List<Vector2> spawnPoints, List<EntityPlaceholder> placeholders) {
 		this.tiles = tiles;
 		this.connections = connections.stream().map(this::point).collect(Collectors.toList());
 		this.spawnPoints = spawnPoints;
 		this.placeholders = placeholders;
 	}
 
-	private ModularLevelGenerator.ConnectionPoint point(Vector2 coords) {
-		int x = (int) coords.x;
-		int y = (int) coords.y;
+	private ModularLevelGenerator.ConnectionPoint point(GridPoint2 origin) {
 		int width = tiles.length;
 		int height = tiles[0].length;
-		if (x < 0 || y < 0 || x >= width || y >= height) {
-			throw new IllegalArgumentException("Invalid connection point coordinates: " + coords);
+		if (origin.x < 0 || origin.y < 0 || origin.x >= width || origin.y >= height) {
+			throw new IllegalArgumentException("Invalid connection point coordinates: " + origin);
 		}
 		ModularLevelGenerator.Direction direction;
-		if (x == 0) {
+		if (origin.x == 0) {
 			direction = ModularLevelGenerator.Direction.LEFT;
-		} else if (x == width - 1) {
+		} else if (origin.x == width - 1) {
 			direction = ModularLevelGenerator.Direction.RIGHT;
-		} else if (y == 0) {
+		} else if (origin.y == 0) {
 			direction = ModularLevelGenerator.Direction.DOWN;
-		} else if (y == height -1) {
+		} else if (origin.y == height -1) {
 			direction = ModularLevelGenerator.Direction.UP;
-		} else if (tiles[x - 1][y] == TileType.FLOOR) {
+		} else if (tiles[origin.x - 1][origin.y] == TileType.FLOOR) {
 			direction = ModularLevelGenerator.Direction.RIGHT;
-		} else if (tiles[x + 1][y] == TileType.FLOOR) {
+		} else if (tiles[origin.x + 1][origin.y] == TileType.FLOOR) {
 			direction = ModularLevelGenerator.Direction.LEFT;
-		} else if (tiles[x][y - 1] == TileType.FLOOR) {
+		} else if (tiles[origin.x][origin.y - 1] == TileType.FLOOR) {
 			direction = ModularLevelGenerator.Direction.UP;
-		} else if (tiles[x][y + 1] == TileType.FLOOR) {
+		} else if (tiles[origin.x][origin.y + 1] == TileType.FLOOR) {
 			direction = ModularLevelGenerator.Direction.DOWN;
 		} else {
-			throw new IllegalArgumentException("Invalid connection point coordinates: " + coords);
+			throw new IllegalArgumentException("Invalid connection point coordinates: " + origin);
 		}
-		return new ModularLevelGenerator.ConnectionPoint(x, y, direction);
+		return new ModularLevelGenerator.ConnectionPoint(origin, direction);
 	}
 
 	public TileType[][] getTiles() {

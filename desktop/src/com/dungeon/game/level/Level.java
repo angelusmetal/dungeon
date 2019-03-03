@@ -13,16 +13,16 @@ import java.util.List;
 public class Level implements LevelTiles {
 	private final int width;
 	private final int height;
-	private final Tile[] map;
+	private final Tile[] tiles;
 	private final List<EntityPlaceholder> entityPlaceholders = new ArrayList<>();
 	private List<Room> rooms = Collections.emptyList();
 
 	public Level(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.map = new Tile[width * height];
-		for (int i = 0; i < map.length; ++i) {
-			map[i] = new Tile();
+		this.tiles = new Tile[width * height];
+		for (int i = 0; i < tiles.length; ++i) {
+			tiles[i] = new Tile();
 		}
 	}
 
@@ -80,7 +80,7 @@ public class Level implements LevelTiles {
 	}
 
 	private Tile getTile(int x, int y) {
-		return map[x * height + y];
+		return tiles[x * height + y];
 	}
 
 	private static class Tile {
