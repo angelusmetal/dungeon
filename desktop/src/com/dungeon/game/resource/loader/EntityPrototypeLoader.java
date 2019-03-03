@@ -94,6 +94,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
 		ConfigUtil.getFloat(descriptor, "speed").ifPresent(prototype::speed);
 		getLight(descriptor, "light").ifPresent(prototype::light);
+		getLight(descriptor, "flare").ifPresent(prototype::flare);
 
 		if (descriptor.hasPath("timeToLive")) {
 			if (descriptor.getValue("timeToLive").valueType() == ConfigValueType.NUMBER) {

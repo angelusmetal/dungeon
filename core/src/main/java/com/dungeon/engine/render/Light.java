@@ -24,7 +24,6 @@ public class Light {
 	public float dim = 1;
 	/** Light angle */
 	public float angle;
-	private final Metronome metronome;
 
 	private final List<Consumer<Light>> traits;
 
@@ -54,7 +53,7 @@ public class Light {
 		this.diameter = diameter;
 		this.angle = 0;
 		this.traits = traits;
-		this.metronome = new Metronome(0.05f, () -> traits.forEach(t -> t.accept(this)));
+//		this.metronome = new Metronome(0.001f, () -> traits.forEach(t -> t.accept(this)));
 	}
 
 	public Light cpy() {
@@ -62,7 +61,7 @@ public class Light {
 	}
 
 	public void update() {
-		metronome.doAtInterval();
+		traits.forEach(t -> t.accept(this));
 	}
 
 	public static Consumer<Light> torchlight() {
@@ -72,7 +71,11 @@ public class Light {
 	public static Consumer<Light> torchlight(float delta) {
 		float min = 1 - delta;
 		float max = 1 + delta;
-		return light -> light.dim = Rand.between(min, max);
+		return light -> {
+			if (Engine.time() % 0.05f < 0.01f) {
+				light.dim = Rand.between(min, max);
+			}
+		};
 	}
 
 	public static Consumer<Light> oscillate() {

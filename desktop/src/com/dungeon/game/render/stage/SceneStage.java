@@ -16,7 +16,6 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
-import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.resource.Resources;
 
 import java.util.Comparator;
@@ -42,12 +41,12 @@ public class SceneStage implements RenderStage {
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
 	private final BlendFunctionContext blendSprites;
-	private final float gamma;
 	private boolean enabled = true;
 	private final TextureRegion shadow;
 
 	private static final float SHADOW_INTENSITY = 0.6f;
 	private final Color shadowColor = new Color(1, 1, 1, SHADOW_INTENSITY);
+	private final Color lightColor = Color.WHITE.cpy();
 	private static final float MAX_HEIGHT_ATTENUATION = 100;
 	private static final int VERTICAL_OFFSET = -2;
 
@@ -73,7 +72,6 @@ public class SceneStage implements RenderStage {
 		this.combineLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		this.gamma = Game.getConfiguration().getDouble("viewport.gamma", 1.0d).floatValue();
 		this.shadow = new TextureRegion(Resources.textures.get("shadow.png"));
 	}
 
@@ -133,6 +131,16 @@ public class SceneStage implements RenderStage {
 			output.render(base::draw);
 		}
 
+		// Draw flares
+		output.render(batch -> combineLights.run(batch, () -> {
+			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::isInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
+				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
+				batch.setColor(lightColor);
+				// Draw light texture
+				viewPort.draw(batch, flare.getFlare().texture, flare.getOrigin().x, flare.getOrigin().y + flare.getZPos(), flare.getFlare().diameter * flare.getFlare().dim, flare.getFlare().angle);
+			});
+		}));
+
 	}
 
 	@Override
@@ -163,11 +171,8 @@ public class SceneStage implements RenderStage {
 			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			// Set light color
-			batch.setColor(
-					Util.clamp(light.getLight().color.r * light.getLight().dim),
-					Util.clamp(light.getLight().color.g * light.getLight().dim),
-					Util.clamp(light.getLight().color.b * light.getLight().dim),
-					Util.clamp(light.getLight().color.a * light.getLight().dim));
+			lightColor.set(light.getLight().color).premultiplyAlpha().mul(light.getLight().dim);
+			batch.setColor(lightColor);
 			// Draw light texture
 			viewPort.draw(batch, light.getLight().texture, light.getOrigin().x, light.getOrigin().y + light.getZPos(), light.getLight().diameter * light.getLight().dim, light.getLight().angle);
 			// Draw shadows
@@ -210,9 +215,6 @@ public class SceneStage implements RenderStage {
 							shadow.getRegionHeight(),
 							false,
 							false);
-					if (blocker instanceof PlayerEntity) {
-						System.out.println("len: " + shadowLen + ", a: " + Util.clamp(1 - shadowLen / 100f));
-					}
 				});
 			}
 		});
