@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
@@ -115,6 +116,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "fadeIn").ifPresent(value -> prototype.with(Traits.fadeIn(value)));
 		ConfigUtil.getFloat(descriptor, "fadeOut").ifPresent(value -> prototype.with(Traits.fadeOut(value)));
 		ConfigUtil.getBoolean(descriptor, "fadeOutLight").ifPresent(value -> prototype.with(Traits.fadeOutLight()));
+		ConfigUtil.getBoolean(descriptor, "fadeOutFlare").ifPresent(value -> prototype.with(Traits.fadeOutFlare()));
 		ConfigUtil.getVector2(descriptor, "hOscillate").ifPresent(value -> prototype.with(Traits.hOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "vOscillate").ifPresent(value -> prototype.with(Traits.vOscillate(value.x, value.y)));
 		ConfigUtil.getVector2(descriptor, "zOscillate").ifPresent(value -> prototype.with(Traits.zOscillate(value.x, value.y)));
@@ -178,14 +180,14 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 			Color color = ConfigUtil.requireColor(lightConfig, "color");
 			Texture texture = Resources.textures.get(ConfigUtil.requireString(lightConfig, "texture"));
 			List<Consumer<Light>> traits = new ArrayList<>();
-			ConfigUtil.getStringList(lightConfig, "traits").ifPresent(list -> list.stream().map(EntityPrototypeLoader::getLightTrait).forEach(traits::add));
+			ConfigUtil.getStringList(lightConfig, "traits").ifPresent(list -> list.stream().map(EntityPrototypeLoader::getLightTrait).forEach(trait -> traits.add(trait.get())));
 			return Optional.of(new Light(diameter, color, texture, traits));
 		} else {
 			return Optional.empty();
 		}
 	}
 
-	private static Consumer<Light> getLightTrait(String name) {
+	private static Supplier<Consumer<Light>> getLightTrait(String name) {
 		if ("torchlight".equals(name)) {
 			return Light.torchlight();
 		} else if ("rotateSlow".equals(name)) {

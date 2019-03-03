@@ -139,6 +139,7 @@ public class SceneStage implements RenderStage {
 				// Draw light texture
 				viewPort.draw(batch, flare.getFlare().texture, flare.getOrigin().x, flare.getOrigin().y + flare.getZPos(), flare.getFlare().diameter * flare.getFlare().dim, flare.getFlare().angle);
 			});
+			batch.setColor(Color.WHITE);
 		}));
 
 	}

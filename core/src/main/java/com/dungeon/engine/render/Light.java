@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Light {
 
@@ -53,7 +54,6 @@ public class Light {
 		this.diameter = diameter;
 		this.angle = 0;
 		this.traits = traits;
-//		this.metronome = new Metronome(0.001f, () -> traits.forEach(t -> t.accept(this)));
 	}
 
 	public Light cpy() {
@@ -64,37 +64,34 @@ public class Light {
 		traits.forEach(t -> t.accept(this));
 	}
 
-	public static Consumer<Light> torchlight() {
+	public static Supplier<Consumer<Light>> torchlight() {
 		return torchlight(0.05f);
 	}
 
-	public static Consumer<Light> torchlight(float delta) {
+	public static Supplier<Consumer<Light>> torchlight(float delta) {
 		float min = 1 - delta;
 		float max = 1 + delta;
-		return light -> {
-			if (Engine.time() % 0.05f < 0.01f) {
-				light.dim = Rand.between(min, max);
-			}
-		};
+		Metronome metronome = new Metronome(delta);
+		return () -> light -> metronome.doAtInterval(() -> light.dim = Rand.between(min, max));
 	}
 
-	public static Consumer<Light> oscillate() {
+	public static Supplier<Consumer<Light>> oscillate() {
 		return oscillate(0.5f, 1.5f);
 	}
 
-	public static Consumer<Light> oscillate(float delta, float frequency) {
-		return light -> light.dim = 1 + MathUtils.sin(Engine.time() * frequency) * delta;
+	public static Supplier<Consumer<Light>> oscillate(float delta, float frequency) {
+		return () -> light -> light.dim = 1 + MathUtils.sin(Engine.time() * frequency) * delta;
 	}
 
-	public static Consumer<Light> rotateSlow() {
-		return light -> light.angle = Engine.time() % 360 * 20;
+	public static Supplier<Consumer<Light>> rotateSlow() {
+		return () -> light -> light.angle = Engine.time() % 360 * 20;
 	}
 
-	public static Consumer<Light> rotateMedium() {
-		return light -> light.angle = Engine.time() % 360 * 50;
+	public static Supplier<Consumer<Light>> rotateMedium() {
+		return () -> light -> light.angle = Engine.time() % 360 * 50;
 	}
 
-	public static Consumer<Light> rotateFast() {
-		return light -> light.angle = Engine.time() % 360 * 80;
+	public static Supplier<Consumer<Light>> rotateFast() {
+		return () -> light -> light.angle = Engine.time() % 360 * 80;
 	}
 }
