@@ -7,7 +7,7 @@ import com.dungeon.engine.entity.EntityMover;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.render.Light;
+import com.dungeon.engine.render.LightPrototype;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
@@ -24,8 +24,6 @@ import com.typesafe.config.ConfigValueType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
@@ -173,31 +171,31 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		throw new RuntimeException("Unknown onRest type '" + onRest + "'");
 	}
 
-	private static Optional<Light> getLight(Config config, String key) {
+	private static Optional<LightPrototype> getLight(Config config, String key) {
 		if (config.hasPath(key)) {
 			Config lightConfig = config.getConfig(key);
 			float diameter = ConfigUtil.requireFloat(lightConfig, "diameter");
 			Color color = ConfigUtil.requireColor(lightConfig, "color");
 			Texture texture = Resources.textures.get(ConfigUtil.requireString(lightConfig, "texture"));
-			List<Consumer<Light>> traits = new ArrayList<>();
-			ConfigUtil.getStringList(lightConfig, "traits").ifPresent(list -> list.stream().map(EntityPrototypeLoader::getLightTrait).forEach(trait -> traits.add(trait.get())));
-			return Optional.of(new Light(diameter, color, texture, traits));
+			LightPrototype lightPrototype = new LightPrototype(diameter, color, texture);
+			ConfigUtil.getStringList(lightConfig, "traits").ifPresent(list -> list.forEach(trait -> getLightTrait(lightPrototype, trait)));
+			return Optional.of(lightPrototype);
 		} else {
 			return Optional.empty();
 		}
 	}
 
-	private static Supplier<Consumer<Light>> getLightTrait(String name) {
+	private static void getLightTrait(LightPrototype lightPrototype, String name) {
 		if ("torchlight".equals(name)) {
-			return Light.torchlight();
+			lightPrototype.torchlight();
 		} else if ("rotateSlow".equals(name)) {
-			return Light.rotateSlow();
+			lightPrototype.rotateSlow();
 		} else if ("rotateMedium".equals(name)) {
-			return Light.rotateMedium();
+			lightPrototype.rotateMedium();
 		} else if ("rotateFast".equals(name)) {
-			return Light.rotateFast();
+			lightPrototype.rotateFast();
 		} else if ("oscillate".equals(name)) {
-			return Light.oscillate();
+			lightPrototype.oscillate();
 		} else {
 			throw new RuntimeException("light trait '" + name + "' not recognized");
 		}

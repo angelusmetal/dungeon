@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.render.LightPrototype;
 import com.dungeon.engine.util.Util;
 
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class EntityPrototype {
 	Supplier<Color> color = Color.WHITE::cpy;
 	Supplier<Float> knockback = () -> 0f;
 	Supplier<Float> friction = () -> 0f;
-	Light light = null;
-	Light flare = null;
+	LightPrototype light = null;
+	LightPrototype flare = null;
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onHitTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onExpireTraits = new ArrayList<>();
@@ -171,12 +172,12 @@ public class EntityPrototype {
 		return this;
 	}
 
-	public EntityPrototype light(Light light) {
+	public EntityPrototype light(LightPrototype light) {
 		this.light = light;
 		return this;
 	}
 
-	public EntityPrototype flare(Light flare) {
+	public EntityPrototype flare(LightPrototype flare) {
 		this.flare = flare;
 		return this;
 	}
