@@ -45,7 +45,7 @@ public class SceneStage implements RenderStage {
 	private final TextureRegion shadow;
 
 	private static final float SHADOW_INTENSITY = 0.6f;
-	private final Color shadowColor = new Color(1, 1, 1, SHADOW_INTENSITY);
+	private final Color shadowColor = new Color(0, 0, 0, SHADOW_INTENSITY);
 	private final Color lightColor = Color.WHITE.cpy();
 	private static final float MAX_HEIGHT_ATTENUATION = 100;
 	private static final int VERTICAL_OFFSET = -2;
@@ -72,7 +72,7 @@ public class SceneStage implements RenderStage {
 		this.combineLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		this.shadow = new TextureRegion(Resources.textures.get("shadow.png"));
+		this.shadow = new TextureRegion(Resources.textures.get("circle_diffuse.png"));
 	}
 
 	@Override
