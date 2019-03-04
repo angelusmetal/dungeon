@@ -12,7 +12,7 @@ import java.util.Stack;
 
 public class AudioManager {
 
-	boolean enabled = false;
+	boolean enabled = true;
 
 	private static class MusicTrack {
 		Music music;
