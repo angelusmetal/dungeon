@@ -18,16 +18,13 @@ import java.util.function.Predicate;
 
 public abstract class PlayerEntity extends CreatureEntity {
 
-//	static private Light TORCH_LIGHT = new Light(160, new Color(0.25f, 0.2f, 0.1f, 0.2f), Lights.NORMAL, Light.torchlight());
-
 	private int playerId;
 	private Metronome stepMetronome;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
 		EntityPrototype dust_cloud = Resources.prototypes.get("dust_cloud_2");
-		stepMetronome = new Metronome(0.4f, () -> Engine.entities.add(new Entity(dust_cloud, this.getOrigin())));
-//		light = TORCH_LIGHT;
+		stepMetronome = new Metronome(0.4f, () -> Engine.entities.add(new Entity(dust_cloud, this.getOrigin().cpy().add(0, 1))));
 	}
 
 	public void setPlayerId(int playerId) {
