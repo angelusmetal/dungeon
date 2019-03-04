@@ -31,6 +31,8 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,11 +81,22 @@ public class Game {
 	private static Environment environment;
 	private static State currentState = State.MENU;
 
+	// List of level music...
+	private static List<String> levelMusic = Arrays.asList(
+			"audio/shy.ogg",
+			"audio/roaming.ogg",
+			"audio/street_dancing.wav",
+			"audio/the_course.wav",
+			"audio/the_crystal_chamber.wav",
+			"audio/the_halls_of_nowhere.ogg"
+	);
+
 	public static void initialize(Toml configuration) {
 		Game.configuration = configuration;
 		entityFactory = new EntityFactory();
 		initEntityFactories(entityFactory);
 		lootSet = configuration.getList("map.items");
+		Collections.shuffle(levelMusic);
 	}
 	private static void initEntityFactories(EntityFactory entityFactory) {
 		Map<String, Object> factoryObjects = new HashMap<>();
@@ -176,6 +189,9 @@ public class Game {
 		setCurrentState(State.INGAME);
 
 		Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
+
+		// Start playing new music
+		Engine.audio.playMusic(Gdx.files.internal(levelMusic.get((levelCount - 1) % levelMusic.size())));
 
 		// Add watches
 		Players.all().forEach(player -> {

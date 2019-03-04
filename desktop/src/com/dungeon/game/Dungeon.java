@@ -124,6 +124,8 @@ public class Dungeon extends ApplicationAdapter {
 		profilerWidget.setX(Gdx.graphics.getWidth() - 150);
 		profilerWidget.setY(500);
 
+		// Start playing character selection music
+		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
 	}
 
 	private void initResources() {
@@ -180,6 +182,8 @@ public class Dungeon extends ApplicationAdapter {
 				Game.setCurrentState(Game.State.MENU);
 				Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
 				fading = false;
+				// Start playing character selection music
+ 				Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
 			}));
 		}
 
