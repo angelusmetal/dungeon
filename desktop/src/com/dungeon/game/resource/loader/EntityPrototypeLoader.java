@@ -68,7 +68,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	}
 
 	@Override
-	public EntityPrototype read(Config descriptor) {
+	public EntityPrototype read(String identifier, Config descriptor) {
 		EntityPrototype prototype = new EntityPrototype();
 
 		try {

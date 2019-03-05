@@ -7,13 +7,12 @@ import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.dungeon.engine.viewport.AudioManager;
 
 public class Engine {
 
 	public static EntityRepository entities = new EntityRepository();
+	public static AudioManager audio = new AudioManager();
 
 	private static float stateTime = 0;
 	private static float frameTime;
@@ -39,6 +38,8 @@ public class Engine {
 	public static void addTime(float frameTime) {
 		stateTime += frameTime;
 		Engine.frameTime = frameTime;
+		// TODO is this the right place?
+		audio.update();
 	}
 
 	public static void setLevelTiles(LevelTiles levelTiles) {
@@ -64,4 +65,5 @@ public class Engine {
 	public static void setBaseLight(Color color) {
 		baseLight.set(color);
 	}
+
 }

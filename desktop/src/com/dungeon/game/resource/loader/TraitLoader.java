@@ -80,6 +80,7 @@ public class TraitLoader {
 
 	private static <T extends Entity> TraitSupplier<T> generate(Config config) {
 		Optional<Supplier<Float>> frequency = ConfigUtil.getFloatRange(config, "frequency");
+		boolean strongUpdate = ConfigUtil.getBoolean(config, "strongUpdate").orElse(false);
 		Supplier<Integer> count = ConfigUtil.getIntegerRange(config, "count").orElse(() -> 1);
 
 		// The particle factory generates a single particle
@@ -96,11 +97,24 @@ public class TraitLoader {
 		// If frequency is specified, wrap in a timer object
 		if (frequency.isPresent()) {
 			Supplier<Float> freq = frequency.get();
-			return e -> {
-				Metronome metronome = new Metronome(freq.get(), () -> generator.accept(e));
-				return entity -> metronome.doAtInterval();
-			};
+			if (strongUpdate) {
+				return e -> {
+					Metronome metronome = new Metronome(freq.get(), () -> generator.accept(e));
+					return entity -> metronome.doAtInterval();
+				};
+			} else {
+				return e -> {
+					Metronome metronome = new Metronome(freq.get(), () -> {
+						// Unless strongUpdate is set, generator only applies within player viewport
+						if (e instanceof DungeonEntity && ((DungeonEntity) e).inPlayerViewport()) {
+							generator.accept(e);
+						}
+					});
+					return entity -> metronome.doAtInterval();
+				};
+			}
 		} else {
+			// TODO Apply strongUpdate here as well
 			return e -> generator::accept;
 		}
 	}

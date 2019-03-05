@@ -41,7 +41,7 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	}
 
 	@Override
-	public Environment read(Config config) {
+	public Environment read(String identifier, Config config) {
 		Tileset tileset = Resources.tilesets.get(ConfigUtil.requireString(config, "tileset"));
 		Color lightColor = ConfigUtil.requireColor(config, "light");
 		List<RoomPrototype> rooms = ConfigUtil.requireStringList(config, "rooms").stream().map(Resources.rooms::get).collect(Collectors.toList());

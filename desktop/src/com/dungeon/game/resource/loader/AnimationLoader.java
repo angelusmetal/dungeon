@@ -31,7 +31,7 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 	}
 
 	@Override
-	public Animation<TextureRegion> read(Config config) {
+	public Animation<TextureRegion> read(String identifier, Config config) {
 		return AnimationLoader.readFrom(config);
 	}
 

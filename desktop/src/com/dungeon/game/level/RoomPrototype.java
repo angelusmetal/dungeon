@@ -9,16 +9,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RoomPrototype {
+	private final String name;
 	private final TileType[][] tiles;
 	private final List<ModularLevelGenerator.ConnectionPoint> connections;
 	private final List<Vector2> spawnPoints;
 	private final List<EntityPlaceholder> placeholders;
+	private final int maxOccurrences;
 
-	public RoomPrototype(TileType[][] tiles, List<GridPoint2> connections, List<Vector2> spawnPoints, List<EntityPlaceholder> placeholders) {
+	public RoomPrototype(String name, TileType[][] tiles, List<GridPoint2> connections, List<Vector2> spawnPoints, List<EntityPlaceholder> placeholders, int maxOccurrences) {
+		this.name = name;
 		this.tiles = tiles;
 		this.connections = connections.stream().map(this::point).collect(Collectors.toList());
 		this.spawnPoints = spawnPoints;
 		this.placeholders = placeholders;
+		this.maxOccurrences = maxOccurrences;
 	}
 
 	private ModularLevelGenerator.ConnectionPoint point(GridPoint2 origin) {
@@ -50,6 +54,10 @@ public class RoomPrototype {
 		return new ModularLevelGenerator.ConnectionPoint(origin, direction);
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	public TileType[][] getTiles() {
 		return tiles;
 	}
@@ -66,4 +74,7 @@ public class RoomPrototype {
 		return placeholders;
 	}
 
+	public int getMaxOccurrences() {
+		return maxOccurrences;
+	}
 }

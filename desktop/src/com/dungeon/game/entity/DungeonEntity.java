@@ -14,6 +14,8 @@ import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
+import com.dungeon.game.player.Player;
+import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
 
 import static com.dungeon.game.Game.text;
@@ -93,6 +95,16 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	}
 
 	protected boolean onEntityCollision(DungeonEntity entity) {
+		return false;
+	}
+
+	/** Returns true if this entity is within any player's viewport */
+	public boolean inPlayerViewport() {
+		for (Player p : Players.all()) {
+			if (p.getViewPort().isInViewPort(this)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
