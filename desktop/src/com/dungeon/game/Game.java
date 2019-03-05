@@ -280,7 +280,8 @@ public class Game {
 		LevelGenerator generator;
 		// TODO Wire the corresponding generator in the environment definition
 		if (env.equals("dungeon")) {
-			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+//			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
+			generator = new ModularLevelGenerator(environment, 200, 200);
 		} else {
 //			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
 			generator = new ForestLevelGenerator(environment, 500, 500, 4d);

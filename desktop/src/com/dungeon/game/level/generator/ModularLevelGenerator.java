@@ -17,7 +17,9 @@ import com.dungeon.game.tileset.Tileset;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -33,6 +35,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
 	private Environment environment;
+	private Map<String, Integer> roomOccurrences = new HashMap<>();
 
 	public enum Direction {
 		UP (0, 1),
@@ -89,7 +92,13 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 	public Level generateLevel() {
 		// Generate rooms
-		while (rooms.isEmpty()) {
+		while (
+				// repeat if no rooms could be placed
+				rooms.isEmpty() ||
+				// or no exit could be placed
+				roomOccurrences.getOrDefault("exit_room", 0) == 0) {
+
+			roomOccurrences.clear();
 			// Pick a random position to start (excluding border rows/columns)
 			GridPoint2 start = new GridPoint2(
 					Rand.between(5, width - 5),
@@ -140,11 +149,6 @@ public class ModularLevelGenerator implements LevelGenerator {
 			placeholders.addAll(room.placeholders);
 		}
 
-		// Pick one of the furthest-placed rooms and place the exit there
-		int farthest = rooms.stream().map(r -> r.generation).max(Integer::compareTo).orElseThrow(() -> new RuntimeException("Could not find farthest room"));
-		Room exitRoom = rooms.stream().filter(r -> r.generation == farthest).findFirst().orElseThrow(() -> new RuntimeException("Could not find farthest room"));
-		Vector2 exitPosition = Rand.pick(exitRoom.spawnPoints);
-		placeholders.add(new EntityPlaceholder(EntityType.EXIT, exitPosition));
 	}
 
 	private Animation<TextureRegion> getTile(int x, int y, Tileset tileset) {
@@ -298,11 +302,16 @@ public class ModularLevelGenerator implements LevelGenerator {
 				}
 			}
 		}
+		// If the max amount of this type of room has been placed, then it cannot be placed
+		if (roomOccurrences.getOrDefault(room.prototype.getName(), 0) >= room.prototype.getMaxOccurrences()) {
+			return false;
+		}
 		return true;
 	}
 
 	private void placeRoom(Room room) {
 		rooms.add(room);
+		roomOccurrences.compute(room.prototype.getName(), (name, occurrences) -> occurrences == null ? 1 : occurrences + 1);
 		for (int x = 0; x < room.width; ++x) {
 			if (room.height >= 0)
 				System.arraycopy(room.tiles[x], 0, tiles[x + room.left], room.bottom, room.height);

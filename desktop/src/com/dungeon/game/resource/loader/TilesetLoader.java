@@ -39,7 +39,7 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 	}
 
 	@Override
-	public Tileset read(Config descriptor) {
+	public Tileset read(String identifier, Config descriptor) {
 		String texture = ConfigUtil.requireString(descriptor, "texture");
 		Texture tex = Resources.textures.get(texture);
 		int tilesize = ConfigUtil.requireInteger(descriptor, "tilesize");

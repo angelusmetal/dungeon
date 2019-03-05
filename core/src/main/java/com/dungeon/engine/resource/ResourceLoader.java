@@ -30,11 +30,11 @@ public interface ResourceLoader<T> {
 	 * @param descriptor Config blob
 	 * @return An instance of the appropriate type
 	 */
-	T read(Config descriptor);
+	T read(String identifier, Config descriptor);
 
 	default void load(ResourceDescriptor descriptor) {
 		System.out.println("Loading " + descriptor.getIdentifier().getType() + " '" + descriptor.getIdentifier().getKey() + "'...");
-		getRepository().put(descriptor.getIdentifier().getKey(), read(descriptor.getBlob()));
+		getRepository().put(descriptor.getIdentifier().getKey(), read(descriptor.getIdentifier().getKey(), descriptor.getBlob()));
 	}
 
 }

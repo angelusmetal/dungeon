@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
+	public final RoomPrototype prototype;
 	public final int left;
 	public final int bottom;
 	public final int width;
@@ -20,16 +21,8 @@ public class Room {
 
 	public final TileType[][] tiles;
 
-	public Room(int left, int bottom, int width, int height, int generation) {
-		tiles = new TileType[width][height];
-		this.left = left;
-		this.bottom = bottom;
-		this.width = width;
-		this.height = height;
-		this.generation = generation;
-	}
-
 	public Room(int left, int bottom, int generation, RoomPrototype prototype) {
+		this.prototype = prototype;
 		this.tiles = prototype.getTiles();
 		this.left = left;
 		this.bottom = bottom;

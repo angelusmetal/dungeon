@@ -40,8 +40,8 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 	}
 
 	@Override
-	public RoomPrototype read(Config config) {
-		return new RoomPrototype(getTiles(config), getConnections(config), getSpawns(config), getPlaceholders(config));
+	public RoomPrototype read(String identifier, Config config) {
+		return new RoomPrototype(identifier, getTiles(config), getConnections(config), getSpawns(config), getPlaceholders(config), ConfigUtil.getInteger(config, "maxOccurrences").orElse(Integer.MAX_VALUE));
 	}
 
 	private static TileType[][] getTiles(Config config) {
