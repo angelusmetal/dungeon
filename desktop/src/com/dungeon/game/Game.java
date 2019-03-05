@@ -180,7 +180,7 @@ public class Game {
 		// Add watches
 		Players.all().forEach(player -> {
 			player.getConsole().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
-//			GameState.console().watch("Time", () -> Float.toString(GameState.time()));
+			player.getConsole().watch("Time", () -> Float.toString(Engine.time()));
 			player.getConsole().watch("Level", () -> Integer.toString(Game.getLevelCount()));
 			player.getConsole().watch("Origin", () -> player.getAvatar().getOrigin().toString());
 			player.getConsole().watch("Static Entities", () -> Integer.toString(Engine.entities.staticCount()));

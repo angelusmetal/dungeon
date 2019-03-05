@@ -41,14 +41,19 @@ public class SceneStage implements RenderStage {
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
 	private final BlendFunctionContext blendSprites;
-	private final float gamma;
 	private boolean enabled = true;
 	private final TextureRegion shadow;
 
 	private static final float SHADOW_INTENSITY = 0.6f;
-	private final Color color = new Color(1, 1, 1, SHADOW_INTENSITY);
+	private final Color shadowColor = new Color(1, 1, 1, SHADOW_INTENSITY);
+	private final Color lightColor = Color.WHITE.cpy();
 	private static final float MAX_HEIGHT_ATTENUATION = 100;
 	private static final int VERTICAL_OFFSET = -2;
+
+	private boolean drawTiles = true;
+	private boolean drawEntities = true;
+	private boolean drawShadows = true;
+	private boolean drawLights = true;
 
 	public SceneStage(ViewPort viewPort, ViewPortBuffer output) {
 		this.viewPort = viewPort;
@@ -67,7 +72,6 @@ public class SceneStage implements RenderStage {
 		this.combineLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		this.gamma = Game.getConfiguration().getDouble("viewport.gamma", 1.0d).floatValue();
 		this.shadow = new TextureRegion(Resources.textures.get("shadow.png"));
 	}
 
@@ -80,39 +84,63 @@ public class SceneStage implements RenderStage {
 			});
 			return;
 		}
-		// Draw tiles
-		base.render(this::drawMap);
-		// Render lights (with shadows)
-		lights.render(batch -> {
-			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
-		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, true));
-		// Combine tiles with lighting
-		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+		if (drawTiles) {
+			// Draw tiles
+			base.render(this::drawTiles);
+		} else {
+			base.render(batch -> {
+				Gdx.gl.glClearColor(1, 1, 1, 1);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
+		}
+		if (drawLights) {
+			// Render lights (with shadows)
+			lights.render(batch -> {
+				Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
+			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, drawShadows));
+			// Combine tiles with lighting
+			base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+		}
 		// Output lit tiles
 		output.render(base::draw);
 
-		// Render entities in base buffer
-		base.render(batch -> {
-			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
-		base.render(batch -> blendSprites.run(batch, () -> {
-			batch.setShader(entityShader);
-			// Iterate entities in render order and draw them
-			Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
+		if (drawEntities) {
+			// Render entities in base buffer
+			base.render(batch -> {
+				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
+			base.render(batch -> blendSprites.run(batch, () -> {
+				batch.setShader(entityShader);
+				// Iterate entities in render order and draw them
+				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
+			}));
+			if (drawLights) {
+				// Render lights (without shadows; don't want them to project over entities)
+				lights.render(batch -> {
+					Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
+					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				});
+				Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, false));
+				// Combine tiles with lighting
+				base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
+			}
+			// Output lit entities
+			output.render(base::draw);
+		}
+
+		// Draw flares
+		output.render(batch -> combineLights.run(batch, () -> {
+			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
+				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
+				batch.setColor(lightColor);
+				// Draw light texture
+				viewPort.draw(batch, flare.getFlare().texture, flare.getOrigin().x, flare.getOrigin().y + flare.getZPos(), flare.getFlare().diameter * flare.getFlare().dim, flare.getFlare().angle);
+			});
+			batch.setColor(Color.WHITE);
 		}));
-		// Render lights (without shadows; don't want them to project over entities)
-		lights.render(batch -> {
-			Gdx.gl.glClearColor(Engine.getBaseLight().r, Engine.getBaseLight().g, Engine.getBaseLight().b, 1f);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		});
-		Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, false));
-		// Combine tiles with lighting
-		base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
-		// Output lit entities
-		output.render(base::draw);
 
 	}
 
@@ -121,7 +149,7 @@ public class SceneStage implements RenderStage {
 		enabled = !enabled;
 	}
 
-	private void drawMap(SpriteBatch batch) {
+	private void drawTiles(SpriteBatch batch) {
 		// Only render the visible portion of the map
 		int tSize = Game.getEnvironment().getTileset().tile_size;
 		int minX = Math.max(0, viewPort.cameraX / tSize);
@@ -137,40 +165,78 @@ public class SceneStage implements RenderStage {
 		}
 	}
 
-	private void drawLight(Entity e, ViewPort viewPort, boolean drawShadows) {
+	private void drawLight(Entity light, ViewPort viewPort, boolean drawShadows) {
 		// Draw each light in a separate buffer
 		current.render(batch -> {
 			// Clear the buffer (black)
 			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			// Set light color
-			batch.setColor(
-					Util.clamp(e.getLight().color.r * e.getLight().dim),
-					Util.clamp(e.getLight().color.g * e.getLight().dim),
-					Util.clamp(e.getLight().color.b * e.getLight().dim),
-					Util.clamp(e.getLight().color.a * e.getLight().dim));
+			lightColor.set(light.getLight().color).premultiplyAlpha().mul(light.getLight().dim);
+			batch.setColor(lightColor);
 			// Draw light texture
-			viewPort.draw(batch, e.getLight().texture, e.getOrigin().x, e.getOrigin().y + e.getZPos(), e.getLight().diameter * e.getLight().dim, e.getLight().angle);
+			viewPort.draw(batch, light.getLight().texture, light.getOrigin().x, light.getOrigin().y + light.getZPos(), light.getLight().diameter * light.getLight().dim, light.getLight().angle);
 			// Draw shadows
 			if (drawShadows) {
-				Vector2 origin = e.getOrigin().cpy().add(0, e.getZPos());
-				Engine.entities.radius(origin, e.getLight().diameter / 2).filter(Entity::castsShadow).forEach(blocker -> {
-					color.a = SHADOW_INTENSITY * blocker.getColor().a;
-					batch.setColor(color);
+				Vector2 origin = light.getOrigin().cpy().add(0, light.getZPos());
+				Engine.entities.radius(origin, light.getLight().diameter / 2).filter(Entity::castsShadow).forEach(blocker -> {
+					// Draw shadow at the feet of the entity
+					shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
+					batch.setColor(shadowColor);
 					float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
 					float width = blocker.getBody().getBoundingBox().x * attenuation;
 					float height = width / 3 * attenuation;
+
 					viewPort.draw(batch,
 							shadow,
 							blocker.getBody().getBottomLeft().x,
 							blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
 							width,
 							height);
+
+					// Draw projected shadow
+					Vector2 offset = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos());
+					float shadowLen = offset.len();
+					shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
+					batch.setColor(shadowColor);
+					batch.draw(
+							shadow.getTexture(),
+							blocker.getBody().getCenter().x - viewPort.cameraX,
+							blocker.getBody().getBottomLeft().y - viewPort.cameraY,
+							0,
+							width / 2,
+							width,
+							width,
+							shadowLen / 10f,
+							1 + shadowLen / 100f,
+							offset.angle(),
+							0,
+							0,
+							shadow.getRegionWidth(),
+							shadow.getRegionHeight(),
+							false,
+							false);
 				});
 			}
 		});
 		// And then combine that into the main buffer
 		lights.render(batch -> combineLights.run(batch, () -> current.draw(batch)));
+	}
+
+	public void toggleDrawTiles() {
+		drawTiles = !drawTiles;
+	}
+
+	public void toggleDrawEntities() {
+		drawEntities = !drawEntities;
+	}
+
+	public void toggleDrawShadows() {
+		drawShadows = !drawShadows;
+	}
+
+	public void toggleDrawLights() {
+		drawLights = !drawLights;
 	}
 
 	@Override

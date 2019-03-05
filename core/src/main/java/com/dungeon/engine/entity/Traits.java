@@ -126,6 +126,13 @@ public class Traits {
         };
     }
 
+    public static <T extends Entity> TraitSupplier<T> fadeOutFlare() {
+        return e -> {
+            TimeGradient gradient = TimeGradient.fadeOut(e.getStartTime(), e.getExpirationTime() - e.getStartTime());
+            return entity -> entity.flare.dim = gradient.get();
+        };
+    }
+
     public static <T extends Entity> TraitSupplier<T> expireByTime() {
         return e -> entity -> {
             if (Engine.time() > entity.expirationTime) {

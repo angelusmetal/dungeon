@@ -2,6 +2,7 @@ package com.dungeon.game.level.generator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
@@ -59,18 +60,18 @@ public class ModularLevelGenerator implements LevelGenerator {
 	}
 
 	public static class ConnectionPoint {
-		public Vector2 coords;
+		public GridPoint2 origin;
 		public Direction direction;
 		public boolean visited = false;
 		public boolean active = false;
-		public ConnectionPoint (int x, int y, Direction direction) {
-			this.coords = new Vector2(x, y);
+		public ConnectionPoint (GridPoint2 origin, Direction direction) {
+			this.origin = origin;
 			this.direction = direction;
 		}
 
 		@Override
 		public String toString() {
-			return "coords: [" + coords + "], visited: " + visited + ", active: " + active;
+			return "origin: [" + origin + "], visited: " + visited + ", active: " + active;
 		}
 	}
 
@@ -90,19 +91,21 @@ public class ModularLevelGenerator implements LevelGenerator {
 		// Generate rooms
 		while (rooms.isEmpty()) {
 			// Pick a random position to start (excluding border rows/columns)
-			int startX = Rand.between(5, width - 5);
-			int startY = Rand.between(5, height - 5);
+			GridPoint2 start = new GridPoint2(
+					Rand.between(5, width - 5),
+					Rand.between(5, height - 5));
 
 			// Depending on the closest edge (bottom, left, right, up) pick the opposite edge as search direction to grow the room
 			Direction direction;
-			int closestEdgeX = Math.min(startX, width - startX);
-			int closestEdgeY = Math.min(startY, height - startY);
+			int closestEdgeX = Math.min(start.x, width - start.x);
+			int closestEdgeY = Math.min(start.y, height - start.y);
 			if (closestEdgeX < closestEdgeY) {
-				direction = closestEdgeX == startX ? Direction.RIGHT : Direction.LEFT;
+				direction = closestEdgeX == start.x ? Direction.RIGHT : Direction.LEFT;
 			} else {
-				direction = closestEdgeY == startY ? Direction.UP : Direction.DOWN;
+				direction = closestEdgeY == start.y ? Direction.UP : Direction.DOWN;
 			}
-			generateRooms(startX, startY, direction);
+			// Generate rooms
+			generateRooms(start, direction);
 		}
 
 		Level level = new Level(width, height);
@@ -203,15 +206,13 @@ public class ModularLevelGenerator implements LevelGenerator {
 	}
 
 	private static class Frame {
-		final int x;
-		final int y;
+		final GridPoint2 origin;
 		final Direction direction;
 		final ConnectionPoint originPoint;
 		final int roomSeparation;
 		final int generation;
-		Frame(int x, int y, Direction direction, ConnectionPoint originPoint, int roomSeparation, int generation) {
-			this.x = x;
-			this.y = y;
+		Frame(GridPoint2 origin, Direction direction, ConnectionPoint originPoint, int roomSeparation, int generation) {
+			this.origin = origin;
 			this.direction = direction;
 			this.originPoint = originPoint;
 			this.roomSeparation = roomSeparation;
@@ -219,13 +220,13 @@ public class ModularLevelGenerator implements LevelGenerator {
 		}
 	}
 
-	private void generateRooms(int x, int y, Direction direction) {
+	private void generateRooms(GridPoint2 origin, Direction direction) {
 		Stack<Frame> stack = new Stack<>();
-		stack.push(new Frame(x, y, direction, null, 0, 1));
+		stack.push(new Frame(origin, direction, null, 0, 1));
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();
 			// Check the available size, depending on the direction
-			Room room = attemptRoom(frame.x, frame.y, frame.generation, frame.direction);
+			Room room = attemptRoom(frame.origin, frame.generation, frame.direction);
 			if (room != null) {
 				if (frame.originPoint != null) {
 					// Add props
@@ -235,14 +236,15 @@ public class ModularLevelGenerator implements LevelGenerator {
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					// Attempt to generate a room in that direction (at a random separation)
 					int roomSeparation = Rand.between(minRoomSeparation, maxRoomSeparation);
-					stack.push(new Frame((int) point.coords.x + point.direction.x * roomSeparation, (int) point.coords.y + point.direction.y * roomSeparation, point.direction, point, roomSeparation, frame.generation + 1));
+					GridPoint2 newOrigin = point.origin.cpy().add(point.direction.x * roomSeparation, point.direction.y * roomSeparation);
+					stack.push(new Frame(newOrigin, point.direction, point, roomSeparation, frame.generation + 1));
 				});
 				if (frame.originPoint != null) {
 					frame.originPoint.active = true;
 					// Make the connecting tile walkable
 					for (int i = 0; i <= frame.roomSeparation; ++i) {
-						int xi = (int) frame.originPoint.coords.x + frame.originPoint.direction.x * i;
-						int yi = (int) frame.originPoint.coords.y + frame.originPoint.direction.y * i;
+						int xi = frame.originPoint.origin.x + frame.originPoint.direction.x * i;
+						int yi = frame.originPoint.origin.y + frame.originPoint.direction.y * i;
 						tiles[xi][yi] = TileType.FLOOR;
 						if (i % 2 == 0) {
 							room.placeholders.add(new EntityPlaceholder("gold_light_small", new Vector2(xi + 0.5f, yi + 0.5f)));
@@ -256,14 +258,14 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 	private void addDoor(Frame frame, Room room) {
 		String doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
-		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f, frame.originPoint.coords.y));
+		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f, frame.originPoint.origin.y));
 		room.placeholders.add(door);
-		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.coords.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.coords.y + frame.roomSeparation * frame.direction.y));
+		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y + frame.roomSeparation * frame.direction.y));
 		room.placeholders.add(door);
 	}
 
-	private Room attemptRoom(int x, int y, int generation, Direction direction) {
-		if (x < 2 || x >= width - 2 || y < 2 || y >= height - 2) {
+	private Room attemptRoom(GridPoint2 origin, int generation, Direction direction) {
+		if (origin.x < 2 || origin.x >= width - 2 || origin.y < 2 || origin.y >= height - 2) {
 			return null;
 		}
 
@@ -273,7 +275,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 			Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
 			if (entryPoint.isPresent()) {
 				ConnectionPoint p = entryPoint.get();
-				Room room = new Room((int) (x - p.coords.x), (int) (y - p.coords.y), generation + 1, prototype);
+				Room room = new Room(origin.x - p.origin.x, origin.y - p.origin.y, generation + 1, prototype);
 				if (canPlaceRoom(room)) {
 					placeRoom(room);
 					return room;

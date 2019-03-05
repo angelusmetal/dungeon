@@ -68,6 +68,7 @@ public class Entity implements Drawable, Movable {
 	protected int maxHealth;
 
 	protected Light light;
+	protected Light flare;
 	protected DrawContext drawContext;
 	private final Vector2 drawOffset;
 	private Vector2 drawScale = new Vector2(1, 1);
@@ -123,7 +124,8 @@ public class Entity implements Drawable, Movable {
 		this.bounciness = prototype.bounciness;
 		this.hitPredicate = prototype.hitPredicate;
 		this.color = prototype.color.get();
-		this.light = prototype.light != null ? prototype.light.cpy() : null; // TODO Check this null...
+		this.light = prototype.light != null ? new Light(prototype.light) : null; // TODO Check this null...
+		this.flare = prototype.flare != null ? new Light(prototype.flare) : null; // TODO Check this null...
 		this.drawContext = new ColorContext(this.color);
 		this.zIndex = prototype.zIndex;
 		this.z = prototype.z;
@@ -166,6 +168,7 @@ public class Entity implements Drawable, Movable {
 		this.hitPredicate = other.hitPredicate;
 		this.color = other.color;
 		this.light = other.light != null ? other.light.cpy(): null;
+		this.flare = other.flare != null ? other.flare.cpy(): null;
 		this.drawContext = other.drawContext;
 		this.zIndex = other.zIndex;
 		this.expirationTime = other.expirationTime;
@@ -408,20 +411,11 @@ public class Entity implements Drawable, Movable {
 		drawContext.run(batch, () -> viewPort.drawEntity(batch, this));
 	}
 
-	public void drawLight(SpriteBatch batch, ViewPort viewPort) {
-		if (light != null) {
-			batch.setColor(
-					Util.clamp(light.color.r * light.dim),
-					Util.clamp(light.color.g * light.dim),
-					Util.clamp(light.color.b * light.dim),
-					Util.clamp(light.color.a * light.dim));
-			viewPort.draw(batch, light.texture, getOrigin().x, getOrigin().y + z, light.diameter * light.dim, light.angle);
-//			batch.setColor(1, 1, 1, 1);
-		}
-	}
-
 	public Light getLight() {
 		return light;
+	}
+	public Light getFlare() {
+		return flare;
 	}
 
 	public void expire() {
@@ -471,6 +465,9 @@ public class Entity implements Drawable, Movable {
 		// Update light
 		if (light != null) {
 			light.update();
+		}
+		if (flare != null) {
+			flare.update();
 		}
 	}
 

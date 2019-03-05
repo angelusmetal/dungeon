@@ -1,5 +1,6 @@
 package com.dungeon.game.resource.loader;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
@@ -44,23 +45,17 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 	}
 
 	private static TileType[][] getTiles(Config config) {
-		Vector2 size = ConfigUtil.requireVector2(config, "size");
+		GridPoint2 size = ConfigUtil.requireGridPoint2(config, "size");
 		List<String> tiles = ConfigUtil.requireStringList(config, "tiles");
 		if (tiles.size() == 0) {
 			throw new RuntimeException("'tiles' cannot be empty");
 		}
-		int width = (int) size.x;
-		int height = (int) size.y;
-//		int x = 0, y = 0;
+		int width = size.x;
+		int height = size.y;
 		if (width * height != tiles.size()) {
 			throw new RuntimeException("'tiles' must have as many elements as size indicates, but has " + tiles.size() + " instead of " + (width * height));
 		}
 
-//		TileType[][] array = new TileType[width][];
-//		for (String tile : tiles) {
-//			array[x] = new
-//		}
-//
 		// Invert coordinates
 		TileType[][] array = new TileType[width][];
 		for (int x = 0; x < width; ++x) {
@@ -72,11 +67,11 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 		return array;
 	}
 
-	private static List<Vector2> getConnections(Config config) {
+	private static List<GridPoint2> getConnections(Config config) {
 		return config.getConfigList("connections").stream().map(t -> {
 			int x = ConfigUtil.requireInteger(t, "x");
 			int y = ConfigUtil.requireInteger(t, "y");
-			return new Vector2(x, y);
+			return new GridPoint2(x, y);
 		}).collect(Collectors.toList());
 	}
 

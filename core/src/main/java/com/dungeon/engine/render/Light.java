@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Light {
 
@@ -23,29 +25,15 @@ public class Light {
 	/** Light dim; affects intensity of color and diameter */
 	public float dim = 1;
 	/** Light angle */
-	public float angle;
-	private final Metronome metronome;
+	public float angle = 0;
 
 	private final List<Consumer<Light>> traits;
 
-	public Light(float diameter, Color color, Texture texture) {
-		this(diameter, color, texture, Collections.emptyList());
-	}
-
-	public Light(float diameter, Color color, Texture texture, Consumer<Light> trait) {
-		this(diameter, color, texture, Collections.singletonList(trait));
-	}
-
-	public Light(float diameter, Color color, Texture texture, Consumer<Light> trait1, Consumer<Light> trait2) {
-		this(diameter, color, texture, Arrays.asList(trait1, trait2));
-	}
-
-	public Light(float diameter, Color color, Texture texture, Consumer<Light> trait1, Consumer<Light> trait2, Consumer<Light> trait3) {
-		this(diameter, color, texture, Arrays.asList(trait1, trait2, trait3));
-	}
-
-	public Light(float diameter, Color color, Texture texture, Consumer<Light> trait1, Consumer<Light> trait2, Consumer<Light> trait3, Consumer<Light> trait4) {
-		this(diameter, color, texture, Arrays.asList(trait1, trait2, trait3, trait4));
+	public Light(LightPrototype prototype) {
+		this.texture = prototype.texture;
+		this.color = prototype.color;
+		this.diameter = prototype.diameter;
+		this.traits = prototype.traits.stream().map(Supplier::get).collect(Collectors.toList());
 	}
 
 	public Light(float diameter, Color color, Texture texture, List<Consumer<Light>> traits) {
@@ -54,44 +42,15 @@ public class Light {
 		this.diameter = diameter;
 		this.angle = 0;
 		this.traits = traits;
-		this.metronome = new Metronome(0.05f, () -> traits.forEach(t -> t.accept(this)));
 	}
 
 	public Light cpy() {
+		// TODO Sounds like copying traits can cause problems...
 		return new Light(diameter, color.cpy(), texture, traits);
 	}
 
 	public void update() {
-		metronome.doAtInterval();
+		traits.forEach(t -> t.accept(this));
 	}
 
-	public static Consumer<Light> torchlight() {
-		return torchlight(0.05f);
-	}
-
-	public static Consumer<Light> torchlight(float delta) {
-		float min = 1 - delta;
-		float max = 1 + delta;
-		return light -> light.dim = Rand.between(min, max);
-	}
-
-	public static Consumer<Light> oscillate() {
-		return oscillate(0.5f, 1.5f);
-	}
-
-	public static Consumer<Light> oscillate(float delta, float frequency) {
-		return light -> light.dim = 1 + MathUtils.sin(Engine.time() * frequency) * delta;
-	}
-
-	public static Consumer<Light> rotateSlow() {
-		return light -> light.angle = Engine.time() % 360 * 20;
-	}
-
-	public static Consumer<Light> rotateMedium() {
-		return light -> light.angle = Engine.time() % 360 * 50;
-	}
-
-	public static Consumer<Light> rotateFast() {
-		return light -> light.angle = Engine.time() % 360 * 80;
-	}
 }

@@ -1,6 +1,7 @@
 package com.dungeon.engine.util;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.resource.LoadingException;
 import com.moandjiezana.toml.Toml;
@@ -406,6 +407,22 @@ public class ConfigUtil {
 
 	public static Vector2 requireVector2(Config config, String key) {
 		return getVector2(config, key).orElseThrow(missing(key));
+	}
+
+	public static Optional<GridPoint2> getGridPoint2(Config config, String key) {
+		if (config.hasPath(key)) {
+			List<Integer> ints = config.getIntList(key);
+			if (ints.size() != 2) {
+				throw new RuntimeException("Expected GridPoint2 (2 numerical values) at key '" + key + "'");
+			}
+			return Optional.of(new GridPoint2(ints.get(0), ints.get(1)));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static GridPoint2 requireGridPoint2(Config config, String key) {
+		return getGridPoint2(config, key).orElseThrow(missing(key));
 	}
 
 	public static Optional<Supplier<Float>> getFloatRange(Config config, String key) {
