@@ -264,8 +264,10 @@ public class ModularLevelGenerator implements LevelGenerator {
 		String doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
 		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f, frame.originPoint.origin.y));
 		room.placeholders.add(door);
-		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y + frame.roomSeparation * frame.direction.y));
-		room.placeholders.add(door);
+		if (frame.roomSeparation > 0) {
+			door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y + frame.roomSeparation * frame.direction.y));
+			room.placeholders.add(door);
+		}
 	}
 
 	private Room attemptRoom(GridPoint2 origin, int generation, Direction direction) {
@@ -304,6 +306,10 @@ public class ModularLevelGenerator implements LevelGenerator {
 		}
 		// If the max amount of this type of room has been placed, then it cannot be placed
 		if (roomOccurrences.getOrDefault(room.prototype.getName(), 0) >= room.prototype.getMaxOccurrences()) {
+			return false;
+		}
+		// If the minimum depth for this room has not yet been reached, it cannot be placed
+		if (room.generation < room.prototype.getMinDepth()) {
 			return false;
 		}
 		return true;

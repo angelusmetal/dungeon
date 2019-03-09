@@ -15,14 +15,16 @@ public class RoomPrototype {
 	private final List<Vector2> spawnPoints;
 	private final List<EntityPlaceholder> placeholders;
 	private final int maxOccurrences;
+	private final int minDepth;
 
-	public RoomPrototype(String name, TileType[][] tiles, List<GridPoint2> connections, List<Vector2> spawnPoints, List<EntityPlaceholder> placeholders, int maxOccurrences) {
-		this.name = name;
-		this.tiles = tiles;
-		this.connections = connections.stream().map(this::point).collect(Collectors.toList());
-		this.spawnPoints = spawnPoints;
-		this.placeholders = placeholders;
-		this.maxOccurrences = maxOccurrences;
+	private RoomPrototype(Builder builder) {
+		name = builder.name;
+		tiles = builder.tiles;
+		connections = builder.connections.stream().map(this::point).collect(Collectors.toList());;
+		spawnPoints = builder.spawnPoints;
+		placeholders = builder.placeholders;
+		maxOccurrences = builder.maxOccurrences;
+		minDepth = builder.minDepth;
 	}
 
 	private ModularLevelGenerator.ConnectionPoint point(GridPoint2 origin) {
@@ -76,5 +78,69 @@ public class RoomPrototype {
 
 	public int getMaxOccurrences() {
 		return maxOccurrences;
+	}
+
+	public int getMinDepth() {
+		return minDepth;
+	}
+
+	public static final class Builder {
+		private String name;
+		private TileType[][] tiles;
+		private List<GridPoint2> connections;
+		private List<Vector2> spawnPoints;
+		private List<EntityPlaceholder> placeholders;
+		private int maxOccurrences;
+		private int minDepth;
+
+//		public Builder() { }
+//
+//		public Builder(RoomPrototype copy) {
+//			this.name = copy.getName();
+//			this.tiles = copy.getTiles();
+//			this.connections = copy.getConnections();
+//			this.spawnPoints = copy.getSpawnPoints();
+//			this.placeholders = copy.getPlaceholders();
+//			this.maxOccurrences = copy.getMaxOccurrences();
+//		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder tiles(TileType[][] tiles) {
+			this.tiles = tiles;
+			return this;
+		}
+
+		public Builder connections(List<GridPoint2> connections) {
+			this.connections = connections;
+			return this;
+		}
+
+		public Builder spawnPoints(List<Vector2> spawnPoints) {
+			this.spawnPoints = spawnPoints;
+			return this;
+		}
+
+		public Builder placeholders(List<EntityPlaceholder> placeholders) {
+			this.placeholders = placeholders;
+			return this;
+		}
+
+		public Builder maxOccurrences(int maxOccurrences) {
+			this.maxOccurrences = maxOccurrences;
+			return this;
+		}
+
+		public Builder minDepth(int minDepth) {
+			this.minDepth = minDepth;
+			return this;
+		}
+
+		public RoomPrototype build() {
+			return new RoomPrototype(this);
+		}
 	}
 }
