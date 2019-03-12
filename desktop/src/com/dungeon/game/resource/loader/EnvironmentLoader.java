@@ -10,6 +10,7 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
+import com.dungeon.game.tileset.WallTileset;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	public ResourceDescriptor scan(String key, Config config) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
 		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "tileset")));
+		dependencies.add(new ResourceIdentifier("wallTileset", ConfigUtil.requireString(config, "wallTileset")));
 		ConfigUtil.requireStringList(config, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
 		ConfigUtil.requireStringList(config, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, dependencies);
@@ -43,10 +45,11 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	@Override
 	public Environment read(String identifier, Config config) {
 		Tileset tileset = Resources.tilesets.get(ConfigUtil.requireString(config, "tileset"));
+		WallTileset wallTileset = Resources.wallTilesets.get(ConfigUtil.requireString(config, "wallTileset"));
 		Color lightColor = ConfigUtil.requireColor(config, "light");
 		List<RoomPrototype> rooms = ConfigUtil.requireStringList(config, "rooms").stream().map(Resources.rooms::get).collect(Collectors.toList());
 		List<String> monsters = ConfigUtil.requireStringList(config, "monsters");
-		return new Environment(tileset, () -> lightColor, rooms, monsters);
+		return new Environment(tileset, wallTileset, () -> lightColor, rooms, monsters);
 	}
 
 }
