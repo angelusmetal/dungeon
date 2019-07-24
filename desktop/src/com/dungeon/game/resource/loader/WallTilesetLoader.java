@@ -76,10 +76,25 @@ public class WallTilesetLoader implements ResourceLoader<WallTileset> {
 		List<Animation<TextureRegion>> cornerBCD = getFrames(descriptor, "cornerBCD", tex, tilesize, columns);
 		List<Animation<TextureRegion>> cornerABCD = getFrames(descriptor, "cornerABCD", tex, tilesize, columns);
 		List<Animation<TextureRegion>> none = getFrames(descriptor, "none", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerABRight = getFrames(descriptor, "cornerABRight", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerBCDown = getFrames(descriptor, "cornerBCDown", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerCDLeft = getFrames(descriptor, "cornerCDLeft", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerADUp = getFrames(descriptor, "cornerADUp", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerARight = getFrames(descriptor, "cornerARight", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerBRight = getFrames(descriptor, "cornerBRight", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerBDown = getFrames(descriptor, "cornerBDown", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerCDown = getFrames(descriptor, "cornerCDown", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerDLeft = getFrames(descriptor, "cornerDLeft", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerCLeft = getFrames(descriptor, "cornerCLeft", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerAUp = getFrames(descriptor, "cornerAUp", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerDUp = getFrames(descriptor, "cornerDUp", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerBDownRight = getFrames(descriptor, "cornerBDownRight", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerCDownLeft = getFrames(descriptor, "cornerCDownLeft", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerDUpLeft = getFrames(descriptor, "cornerDUpLeft", tex, tilesize, columns);
+		List<Animation<TextureRegion>> cornerAUpRight = getFrames(descriptor, "cornerAUpRight", tex, tilesize, columns);
 		List<Animation<TextureRegion>> decor1 = getFrames(descriptor, "decor1", tex, tilesize, columns);
 		List<Animation<TextureRegion>> decor2 = getFrames(descriptor, "decor2", tex, tilesize, columns);
 		List<Animation<TextureRegion>> decor3 = getFrames(descriptor, "decor3", tex, tilesize, columns);
-		List<Animation<TextureRegion>> decor4 = getFrames(descriptor, "decor4", tex, tilesize, columns);
 		return new WallTileset(tex, tilesize) {
 			@Override public Animation<TextureRegion> down() {
 				return Rand.pick(down);
@@ -174,6 +189,54 @@ public class WallTilesetLoader implements ResourceLoader<WallTileset> {
 			@Override public Animation<TextureRegion> none() {
 				return Rand.pick(none);
 			}
+			@Override public Animation<TextureRegion> cornerABRight() {
+				return Rand.pick(cornerABRight);
+			}
+			@Override public Animation<TextureRegion> cornerBCDown() {
+				return Rand.pick(cornerBCDown);
+			}
+			@Override public Animation<TextureRegion> cornerCDLeft() {
+				return Rand.pick(cornerCDLeft);
+			}
+			@Override public Animation<TextureRegion> cornerADUp() {
+				return Rand.pick(cornerADUp);
+			}
+			@Override public Animation<TextureRegion> cornerARight() {
+				return Rand.pick(cornerARight);
+			}
+			@Override public Animation<TextureRegion> cornerBRight() {
+				return Rand.pick(cornerBRight);
+			}
+			@Override public Animation<TextureRegion> cornerBDown() {
+				return Rand.pick(cornerBDown);
+			}
+			@Override public Animation<TextureRegion> cornerCDown() {
+				return Rand.pick(cornerCDown);
+			}
+			@Override public Animation<TextureRegion> cornerDLeft() {
+				return Rand.pick(cornerDLeft);
+			}
+			@Override public Animation<TextureRegion> cornerCLeft() {
+				return Rand.pick(cornerCLeft);
+			}
+			@Override public Animation<TextureRegion> cornerAUp() {
+				return Rand.pick(cornerAUp);
+			}
+			@Override public Animation<TextureRegion> cornerDUp() {
+				return Rand.pick(cornerDUp);
+			}
+			@Override public Animation<TextureRegion> cornerBDownRight() {
+				return Rand.pick(cornerBDownRight);
+			}
+			@Override public Animation<TextureRegion> cornerCDownLeft() {
+				return Rand.pick(cornerCDownLeft);
+			}
+			@Override public Animation<TextureRegion> cornerDUpLeft() {
+				return Rand.pick(cornerDUpLeft);
+			}
+			@Override public Animation<TextureRegion> cornerAUpRight() {
+				return Rand.pick(cornerAUpRight);
+			}
 			@Override public Animation<TextureRegion> wallDecoration1() {
 				return Rand.pick(decor1);
 			}
@@ -182,9 +245,6 @@ public class WallTilesetLoader implements ResourceLoader<WallTileset> {
 			}
 			@Override public Animation<TextureRegion> wallDecoration3() {
 				return Rand.pick(decor3);
-			}
-			@Override public Animation<TextureRegion> wallDecoration4() {
-				return Rand.pick(decor4);
 			}
 		};
 

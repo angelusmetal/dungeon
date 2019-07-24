@@ -393,7 +393,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					// Attempt to generate a room in that direction (at a random separation)
-					int roomSeparation = 0;//Rand.between(minRoomSeparation, maxRoomSeparation);
+					int roomSeparation = 2;//Rand.between(minRoomSeparation, maxRoomSeparation);
 					GridPoint2 newOrigin = point.origin.cpy().add(point.direction.x * roomSeparation, point.direction.y * roomSeparation);
 					stack.push(new Frame(newOrigin, point.direction, point, roomSeparation, frame.generation + 1));
 				});

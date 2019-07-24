@@ -42,8 +42,23 @@ public abstract class WallTileset extends TileSheet {
 	public abstract Animation<TextureRegion> cornerBCD();
 	public abstract Animation<TextureRegion> cornerABCD();
 	public abstract Animation<TextureRegion> none();
+	public abstract Animation<TextureRegion> cornerABRight();
+	public abstract Animation<TextureRegion> cornerBCDown();
+	public abstract Animation<TextureRegion> cornerCDLeft();
+	public abstract Animation<TextureRegion> cornerADUp();
+	public abstract Animation<TextureRegion> cornerARight();
+	public abstract Animation<TextureRegion> cornerBRight();
+	public abstract Animation<TextureRegion> cornerBDown();
+	public abstract Animation<TextureRegion> cornerCDown();
+	public abstract Animation<TextureRegion> cornerDLeft();
+	public abstract Animation<TextureRegion> cornerCLeft();
+	public abstract Animation<TextureRegion> cornerAUp();
+	public abstract Animation<TextureRegion> cornerDUp();
+	public abstract Animation<TextureRegion> cornerBDownRight();
+	public abstract Animation<TextureRegion> cornerCDownLeft();
+	public abstract Animation<TextureRegion> cornerDUpLeft();
+	public abstract Animation<TextureRegion> cornerAUpRight();
 	public abstract Animation<TextureRegion> wallDecoration1();
 	public abstract Animation<TextureRegion> wallDecoration2();
 	public abstract Animation<TextureRegion> wallDecoration3();
-	public abstract Animation<TextureRegion> wallDecoration4();
 }
