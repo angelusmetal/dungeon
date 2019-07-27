@@ -12,10 +12,8 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
-import com.dungeon.game.tileset.WallTileset;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +36,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	private List<Room> rooms = new ArrayList<>();
 	private Environment environment;
 	private Map<String, Integer> roomOccurrences = new HashMap<>();
+	private final WallTilesetSolver tileSolver = new WallTilesetSolver();
 
 	public enum Direction {
 		UP (0, 1),
@@ -123,7 +122,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				level.setFloorAnimation(x, y, getTile(x, y, environment.getTileset()));
-				level.setWallAnimation(x, y, getTile(x, y, environment.getWallTileset()));
+				level.setWallAnimation(x, y, tileSolver.getTile(tiles, x, y, width, height, environment.getWallTileset()));
 				level.setSolid(x, y, !tiles[x][y].isFloor());
 			}
 		}
@@ -162,205 +161,6 @@ public class ModularLevelGenerator implements LevelGenerator {
 		} else {
 			return tileset.out();
 		}
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_1) {
-//			return tileset.wallDecoration1();
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_2) {
-//			return tileset.wallDecoration2();
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_3) {
-//			return tileset.wallDecoration3();
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_4) {
-//			return tileset.wallDecoration4();
-//		}
-//
-//		boolean freeUp = y > 0 && tiles[x][y-1].isFloor();
-//		boolean freeDown = y < height - 1 && tiles[x][y+1].isFloor();
-//		boolean freeLeft = x > 0 && tiles[x-1][y].isFloor();
-//		boolean freeRight = x < width - 1 && tiles[x+1][y].isFloor();
-//		boolean freeUpLeft = y > 0 && x > 0 && tiles[x-1][y-1].isFloor();
-//		boolean freeUpRight = y > 0 && x < width - 1 && tiles[x+1][y-1].isFloor();
-//		boolean freeDownLeft = y < height - 1 && x > 0 && tiles[x-1][y+1].isFloor();
-//		boolean freeDownRight = y < height - 1 && x < width - 1 && tiles[x+1][y+1].isFloor();
-//
-//		if (freeUp) {
-//			if (freeLeft) {
-//				return tileset.convexUpperRight();
-//			} else if (freeRight) {
-//				return tileset.convexUpperLeft();
-//			} else {
-//				return tileset.concaveUpper();
-//			}
-//		} else if (freeLeft) {
-//			if (freeDown) {
-//				return tileset.convexLowerRight();
-//			} else {
-//				return tileset.concaveRight();
-//			}
-//		} else if (freeDown) {
-//			if (freeRight) {
-//				return tileset.convexLowerLeft();
-//			} else {
-//				return tileset.concaveLower();
-//			}
-//		} else if (freeRight) {
-//			return tileset.concaveLeft();
-//		} else if (freeUpLeft) {
-//			return tileset.concaveUpperRight();
-//		} else if (freeUpRight) {
-//			return tileset.concaveUpperLeft();
-//		} else if (freeDownLeft) {
-//			return tileset.concaveLowerRight();
-//		} else if (freeDownRight) {
-//			return tileset.concaveLowerLeft();
-//		}
-//		return tileset.out();
-	}
-
-	private Animation<TextureRegion> getTile(int x, int y, WallTileset tileset) {
-		// TODO Make this work with level itself
-
-		if (tiles[x][y] == TileType.FLOOR) {
-			return Resources.animations.get("invisible");
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_1) {
-//			return tileset.wallDecoration1();
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_2) {
-//			return tileset.wallDecoration2();
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_3) {
-//			return tileset.wallDecoration3();
-//		} else if (tiles[x][y] == TileType.WALL_DECORATION_4) {
-//			return tileset.wallDecoration4();
-		}
-
-		boolean freeUp = y < height - 1 && tiles[x][y+1].isFloor();
-		boolean freeDown = y > 0 && tiles[x][y-1].isFloor();
-		boolean freeLeft = x > 0 && tiles[x-1][y].isFloor();
-		boolean freeRight = x < width - 1 && tiles[x+1][y].isFloor();
-		boolean freeUpLeft = y < height - 1 && x > 0 && tiles[x-1][y+1].isFloor();
-		boolean freeUpRight = y < height - 1 && x < width - 1 && tiles[x+1][y+1].isFloor();
-		boolean freeDownLeft = y > 0 && x > 0 && tiles[x-1][y-1].isFloor();
-		boolean freeDownRight = y > 0 && x < width - 1 && tiles[x+1][y-1].isFloor();
-
-		if (freeUp) {
-			if (freeLeft) {
-				if (freeRight) {
-					if (freeDown) {
-						return tileset.all();
-					} else {
-						return tileset.upLeftRight();
-					}
-				} else {
-					if (freeDown) {
-						return tileset.upDownLeft();
-					} else {
-						return tileset.upLeft();
-					}
-				}
-			} else {
-				if (freeRight) {
-					if (freeDown) {
-						return tileset.upDownRight();
-					} else {
-						return tileset.upRight();
-					}
-				} else {
-					if (freeDown) {
-						return tileset.upDown();
-					} else {
-						return tileset.up();
-					}
-				}
-			}
-		} else {
-			if (freeLeft) {
-				if (freeRight) {
-					if (freeDown) {
-						return tileset.downLeftRight();
-					} else {
-						return tileset.leftRight();
-					}
-				} else {
-					if (freeDown) {
-						return tileset.downLeft();
-					} else {
-						return tileset.left();
-					}
-				}
-			} else {
-				if (freeRight) {
-					if (freeDown) {
-						return tileset.downRight();
-					} else {
-						return tileset.right();
-					}
-				} else {
-					if (freeDown) {
-						return tileset.down();
-					} else {
-						if (freeDownLeft) {
-							if (freeUpLeft) {
-								if (freeUpRight) {
-									if (freeDownRight) {
-										return tileset.cornerABCD();
-									} else {
-										return tileset.cornerABC();
-									}
-								} else {
-									if (freeDownRight) {
-										return tileset.cornerABD();
-									} else {
-										return tileset.cornerAB();
-									}
-								}
-							} else {
-								if (freeUpRight) {
-									if (freeDownRight) {
-										return tileset.cornerACD();
-									} else {
-										return tileset.cornerAC();
-									}
-								} else {
-									if (freeDownRight) {
-										return tileset.cornerAD();
-									} else {
-										return tileset.cornerA();
-									}
-								}
-							}
-						} else {
-							if (freeUpLeft) {
-								if (freeUpRight) {
-									if (freeDownRight) {
-										return tileset.cornerBCD();
-									} else {
-										return tileset.cornerBC();
-									}
-								} else {
-									if (freeDownRight) {
-										return tileset.cornerBD();
-									} else {
-										return tileset.cornerB();
-									}
-								}
-							} else {
-								if (freeUpRight) {
-									if (freeDownRight) {
-										return tileset.cornerCD();
-									} else {
-										return tileset.cornerC();
-									}
-								} else {
-									if (freeDownRight) {
-										return tileset.cornerD();
-									} else {
-										return tileset.none();
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
 	}
 
 	private static class Frame {
@@ -393,7 +193,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					// Attempt to generate a room in that direction (at a random separation)
-					int roomSeparation = 2;//Rand.between(minRoomSeparation, maxRoomSeparation);
+					int roomSeparation = 0;//Rand.between(minRoomSeparation, maxRoomSeparation);
 					GridPoint2 newOrigin = point.origin.cpy().add(point.direction.x * roomSeparation, point.direction.y * roomSeparation);
 					stack.push(new Frame(newOrigin, point.direction, point, roomSeparation, frame.generation + 1));
 				});
