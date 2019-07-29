@@ -34,12 +34,20 @@ public class Level implements LevelTiles {
 		return height;
 	}
 
-	public void setAnimation(int x, int y, Animation<TextureRegion> animation) {
-		getTile(x, y).animation = animation;
+	public void setFloorAnimation(int x, int y, Animation<TextureRegion> animation) {
+		getTile(x, y).floorAnimation = animation;
 	}
 
-	public Animation<TextureRegion> getAnimation(int x, int y) {
-		return getTile(x, y).animation;
+	public Animation<TextureRegion> getFloorAnimation(int x, int y) {
+		return getTile(x, y).floorAnimation;
+	}
+
+	public void setWallAnimation(int x, int y, Animation<TextureRegion> animation) {
+		getTile(x, y).wallAnimation = animation;
+	}
+
+	public Animation<TextureRegion> getWallAnimation(int x, int y) {
+		return getTile(x, y).wallAnimation;
 	}
 
 	public void setSolid(int x, int y, boolean solid) {
@@ -84,7 +92,8 @@ public class Level implements LevelTiles {
 	}
 
 	private static class Tile {
-		Animation<TextureRegion> animation;
+		Animation<TextureRegion> floorAnimation;
+		Animation<TextureRegion> wallAnimation;
 		boolean solid = false;
 		boolean discovered = false;
 	}
