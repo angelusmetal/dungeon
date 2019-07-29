@@ -36,6 +36,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	private List<Room> rooms = new ArrayList<>();
 	private Environment environment;
 	private Map<String, Integer> roomOccurrences = new HashMap<>();
+	private final WallTilesetSolver tileSolver = new WallTilesetSolver();
 
 	public enum Direction {
 		UP (0, 1),
@@ -120,7 +121,8 @@ public class ModularLevelGenerator implements LevelGenerator {
 		Level level = new Level(width, height);
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				level.setAnimation(x, y, getTile(x, y, environment.getTileset()));
+				level.setFloorAnimation(x, y, getTile(x, y, environment.getTileset()));
+				level.setWallAnimation(x, y, tileSolver.getTile(tiles, x, y, width, height, environment.getWallTileset()));
 				level.setSolid(x, y, !tiles[x][y].isFloor());
 			}
 		}
@@ -156,57 +158,9 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 		if (tiles[x][y] == TileType.FLOOR) {
 			return tileset.floor();
-		} else if (tiles[x][y] == TileType.WALL_DECORATION_1) {
-			return tileset.wallDecoration1();
-		} else if (tiles[x][y] == TileType.WALL_DECORATION_2) {
-			return tileset.wallDecoration2();
-		} else if (tiles[x][y] == TileType.WALL_DECORATION_3) {
-			return tileset.wallDecoration3();
-		} else if (tiles[x][y] == TileType.WALL_DECORATION_4) {
-			return tileset.wallDecoration4();
+		} else {
+			return tileset.out();
 		}
-
-		boolean freeUp = y > 0 && tiles[x][y-1].isFloor();
-		boolean freeDown = y < height - 1 && tiles[x][y+1].isFloor();
-		boolean freeLeft = x > 0 && tiles[x-1][y].isFloor();
-		boolean freeRight = x < width - 1 && tiles[x+1][y].isFloor();
-		boolean freeUpLeft = y > 0 && x > 0 && tiles[x-1][y-1].isFloor();
-		boolean freeUpRight = y > 0 && x < width - 1 && tiles[x+1][y-1].isFloor();
-		boolean freeDownLeft = y < height - 1 && x > 0 && tiles[x-1][y+1].isFloor();
-		boolean freeDownRight = y < height - 1 && x < width - 1 && tiles[x+1][y+1].isFloor();
-
-		if (freeUp) {
-			if (freeLeft) {
-				return tileset.convexUpperRight();
-			} else if (freeRight) {
-				return tileset.convexUpperLeft();
-			} else {
-				return tileset.concaveUpper();
-			}
-		} else if (freeLeft) {
-			if (freeDown) {
-				return tileset.convexLowerRight();
-			} else {
-				return tileset.concaveRight();
-			}
-		} else if (freeDown) {
-			if (freeRight) {
-				return tileset.convexLowerLeft();
-			} else {
-				return tileset.concaveLower();
-			}
-		} else if (freeRight) {
-			return tileset.concaveLeft();
-		} else if (freeUpLeft) {
-			return tileset.concaveUpperRight();
-		} else if (freeUpRight) {
-			return tileset.concaveUpperLeft();
-		} else if (freeDownLeft) {
-			return tileset.concaveLowerRight();
-		} else if (freeDownRight) {
-			return tileset.concaveLowerLeft();
-		}
-		return tileset.out();
 	}
 
 	private static class Frame {
@@ -239,7 +193,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 				// Pick each connection point and attempt to place a room
 				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
 					// Attempt to generate a room in that direction (at a random separation)
-					int roomSeparation = Rand.between(minRoomSeparation, maxRoomSeparation);
+					int roomSeparation = 0;//Rand.between(minRoomSeparation, maxRoomSeparation);
 					GridPoint2 newOrigin = point.origin.cpy().add(point.direction.x * roomSeparation, point.direction.y * roomSeparation);
 					stack.push(new Frame(newOrigin, point.direction, point, roomSeparation, frame.generation + 1));
 				});
@@ -264,8 +218,10 @@ public class ModularLevelGenerator implements LevelGenerator {
 		String doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
 		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f, frame.originPoint.origin.y));
 		room.placeholders.add(door);
-		door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y + frame.roomSeparation * frame.direction.y));
-		room.placeholders.add(door);
+		if (frame.roomSeparation > 0) {
+			door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y + frame.roomSeparation * frame.direction.y));
+			room.placeholders.add(door);
+		}
 	}
 
 	private Room attemptRoom(GridPoint2 origin, int generation, Direction direction) {
@@ -295,8 +251,8 @@ public class ModularLevelGenerator implements LevelGenerator {
 			return false;
 		}
 
-		for (int x = room.left - 2; x <= room.left + room.width + 2; ++x) {
-			for (int y = room.bottom - 2; y <= room.bottom + room.height + 2; ++y) {
+		for (int x = room.left; x <= room.left + room.width; ++x) {
+			for (int y = room.bottom; y <= room.bottom + room.height; ++y) {
 				if (tiles[x][y] != TileType.VOID) {
 					return false;
 				}
@@ -304,6 +260,10 @@ public class ModularLevelGenerator implements LevelGenerator {
 		}
 		// If the max amount of this type of room has been placed, then it cannot be placed
 		if (roomOccurrences.getOrDefault(room.prototype.getName(), 0) >= room.prototype.getMaxOccurrences()) {
+			return false;
+		}
+		// If the minimum depth for this room has not yet been reached, it cannot be placed
+		if (room.generation < room.prototype.getMinDepth()) {
 			return false;
 		}
 		return true;

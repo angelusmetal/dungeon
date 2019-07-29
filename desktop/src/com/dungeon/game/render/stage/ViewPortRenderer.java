@@ -3,7 +3,10 @@ package com.dungeon.game.render.stage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.util.CyclicSampler;
+import com.dungeon.engine.util.StopWatch;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.Dungeon;
 import com.dungeon.game.player.Player;
 
 import java.util.ArrayList;
@@ -30,7 +33,17 @@ public class ViewPortRenderer implements Disposable {
 	private final ScaleStage scaleStage;
 	private final ConsoleStage consoleStage;
 	private final TitleStage titleStage;
-	private final List<RenderStage> pipeline = new ArrayList<>();
+	private final List<Stage> pipeline = new ArrayList<>();
+
+	private final StopWatch stopWatch = new StopWatch();
+	private static class Stage {
+		RenderStage stage;
+		CyclicSampler sampler;
+		Stage(RenderStage stage, CyclicSampler sampler) {
+			this.stage = stage;
+			this.sampler = sampler;
+		}
+	}
 
 	public ViewPortRenderer(ViewPort viewPort, Player player) {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
@@ -49,18 +62,18 @@ public class ViewPortRenderer implements Disposable {
 		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
-		pipeline.add(sceneStage);
-		pipeline.add(healthbarStage);
-		pipeline.add(collisionStage);
-		pipeline.add(noiseStage);
-		pipeline.add(motionBlurStage);
-		pipeline.add(overlayTextStage);
-		pipeline.add(playerArrowsStage);
-		pipeline.add(hudStage);
-		pipeline.add(miniMapStage);
-		pipeline.add(titleStage);
-		pipeline.add(scaleStage);
-		pipeline.add(consoleStage);
+		pipeline.add(new Stage(sceneStage, Dungeon.sceneSampler));
+		pipeline.add(new Stage(healthbarStage, Dungeon.healthbarSampler));
+		pipeline.add(new Stage(collisionStage, Dungeon.collisionSampler));
+		pipeline.add(new Stage(noiseStage, Dungeon.noiseSampler));
+		pipeline.add(new Stage(motionBlurStage, Dungeon.motionBlurSampler));
+		pipeline.add(new Stage(overlayTextStage, Dungeon.overlayTextSampler));
+		pipeline.add(new Stage(playerArrowsStage, Dungeon.playerArrowsSampler));
+		pipeline.add(new Stage(hudStage, Dungeon.hudSampler));
+		pipeline.add(new Stage(miniMapStage, Dungeon.miniMapSampler));
+		pipeline.add(new Stage(titleStage, Dungeon.titleSampler));
+		pipeline.add(new Stage(scaleStage, Dungeon.scaleSampler));
+		pipeline.add(new Stage(consoleStage, Dungeon.consoleSampler));
 
 		// Disable some default disabled
 		healthbarStage.toggle();
@@ -79,7 +92,11 @@ public class ViewPortRenderer implements Disposable {
 		int currentRenderCalls = 0;
 		long start = System.nanoTime();
 
-		pipeline.forEach(RenderStage::render);
+		stopWatch.start();
+		pipeline.forEach(stage -> {
+			stage.stage.render();
+			stage.sampler.sample((int) stopWatch.getAndReset());
+		});
 
 //		currentRenderCalls += lightingBuffer.getLastRenderCalls();
 //		lightingBuffer.resetLastRenderCalls();
@@ -118,6 +135,10 @@ public class ViewPortRenderer implements Disposable {
 		noiseStage.toggle();
 	}
 
+	public void toggleConsole() {
+		consoleStage.toggle();
+	}
+
 	public void beginMotionBlur() {
 		motionBlurStage.begin();
 	}
@@ -146,7 +167,7 @@ public class ViewPortRenderer implements Disposable {
 	public void dispose() {
 		batch.dispose();
 		viewportBuffer.dispose();
-		pipeline.forEach(Disposable::dispose);
+		pipeline.forEach(element -> element.stage.dispose());
 	}
 
 }

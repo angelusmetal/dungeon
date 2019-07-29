@@ -8,12 +8,14 @@ import java.util.function.Supplier;
 
 public class Environment {
 	private final Tileset tileset;
+	private final WallTileset wallTileset;
 	private final Supplier<Color> light;
 	private final List<RoomPrototype> rooms;
 	private final List<String> monsters;
 
-	public Environment(Tileset tileset, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
+	public Environment(Tileset tileset, WallTileset wallTileset, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
 		this.tileset = tileset;
+		this.wallTileset = wallTileset;
 		this.light = light;
 		this.rooms = rooms;
 		this.monsters = monsters;
@@ -21,6 +23,10 @@ public class Environment {
 
 	public Tileset getTileset() {
 		return tileset;
+	}
+
+	public WallTileset getWallTileset() {
+		return wallTileset;
 	}
 
 	public Supplier<Color> getLight() {

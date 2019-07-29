@@ -16,7 +16,9 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
+import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
+import com.dungeon.game.tileset.WallTileset;
 
 import java.util.Comparator;
 
@@ -55,6 +57,14 @@ public class SceneStage implements RenderStage {
 	private boolean drawShadows = true;
 	private boolean drawLights = true;
 
+	// These are for rendering the tiles
+	private int tSize;
+	private int minX;
+	private int maxX;
+	private int minY;
+	private int maxY;
+	private int wallY;
+
 	public SceneStage(ViewPort viewPort, ViewPortBuffer output) {
 		this.viewPort = viewPort;
 		// Output buffer
@@ -84,9 +94,18 @@ public class SceneStage implements RenderStage {
 			});
 			return;
 		}
+
+		// Tiling variables (they keep track of tile rendering)
+		tSize = Game.getEnvironment().getTileset().tile_size;
+		minX = Math.max(0, viewPort.cameraX / tSize);
+		maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + 1;
+		minY = Math.max(0, viewPort.cameraY / tSize - 1);
+		maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize);
+		wallY = maxY + 1;
+
 		if (drawTiles) {
 			// Draw tiles
-			base.render(this::drawTiles);
+			base.render(this::drawFloorTiles);
 		} else {
 			base.render(batch -> {
 				Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -115,7 +134,13 @@ public class SceneStage implements RenderStage {
 			base.render(batch -> blendSprites.run(batch, () -> {
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
-				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> e.draw(batch, viewPort));
+				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> {
+					if (e.getZIndex() == 0) {
+						drawWallTilesUntil(batch, e.getOrigin().y);
+					}
+					e.draw(batch, viewPort);
+				});
+				drawWallTilesUntil(batch, viewPort.cameraY - tSize);
 			}));
 			if (drawLights) {
 				// Render lights (without shadows; don't want them to project over entities)
@@ -149,20 +174,40 @@ public class SceneStage implements RenderStage {
 		enabled = !enabled;
 	}
 
-	private void drawTiles(SpriteBatch batch) {
+	private void drawFloorTiles(SpriteBatch batch) {
 		// Only render the visible portion of the map
-		int tSize = Game.getEnvironment().getTileset().tile_size;
-		int minX = Math.max(0, viewPort.cameraX / tSize);
-		int maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + 1;
-		int minY = Math.max(0, viewPort.cameraY / tSize - 1);
-		int maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize);
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
-				TextureRegion textureRegion = Game.getLevel().getAnimation(x, y).getKeyFrame(Engine.time(), true);
+				TextureRegion textureRegion = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true);
 				batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 				Game.getLevel().setDiscovered(x, y);
 			}
 		}
+	}
+
+	private void drawWallTilesUntil(SpriteBatch batch, float pointY) {
+		int eY = (int) (pointY / tSize);
+		if (wallY == eY) {
+			return;
+		}
+
+		// If possible, continue with the following vertical stripes, from the top
+		for (int y = wallY - 1; y >= eY; y--) {
+			for (int x = minX; x < maxX; x++) {
+				TextureRegion textureRegion = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true);
+				// If it partially occludes a non-solid tile, it is rendered semi-transparent
+				if (!Game.getLevel().isSolid(x, y + 1)) {
+					batch.setColor(1, 1, 1, 0.8f);
+					batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+					batch.setColor(1, 1, 1, 1);
+				} else {
+					batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				}
+				Game.getLevel().setDiscovered(x, y);
+			}
+		}
+		// Record the last reached coordinate
+		wallY = eY;
 	}
 
 	private void drawLight(Entity light, ViewPort viewPort, boolean drawShadows) {

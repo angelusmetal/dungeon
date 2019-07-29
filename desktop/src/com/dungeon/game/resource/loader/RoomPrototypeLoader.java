@@ -41,7 +41,15 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 
 	@Override
 	public RoomPrototype read(String identifier, Config config) {
-		return new RoomPrototype(identifier, getTiles(config), getConnections(config), getSpawns(config), getPlaceholders(config), ConfigUtil.getInteger(config, "maxOccurrences").orElse(Integer.MAX_VALUE));
+		return new RoomPrototype.Builder()
+				.name(identifier)
+				.tiles(getTiles(config))
+				.connections(getConnections(config))
+				.spawnPoints(getSpawns(config))
+				.placeholders(getPlaceholders(config))
+				.maxOccurrences(ConfigUtil.getInteger(config, "maxOccurrences").orElse(Integer.MAX_VALUE))
+				.minDepth(ConfigUtil.getInteger(config, "minDepth").orElse(0))
+				.build();
 	}
 
 	private static TileType[][] getTiles(Config config) {

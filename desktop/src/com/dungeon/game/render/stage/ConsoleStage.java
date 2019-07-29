@@ -41,7 +41,7 @@ public class ConsoleStage implements RenderStage {
 
 			font.setColor(Color.WHITE);
 
-			x = viewPort.posX + viewPort.width - 200;
+			x = viewPort.posX + viewPort.width - 300;
 			y = viewPort.posY + viewPort.height - 10;
 			for (Map.Entry<String, Supplier<String>> watch : console.getWatches().entrySet()) {
 				font.draw(batch, watch.getKey() + ": " + watch.getValue().get(), x, y);
