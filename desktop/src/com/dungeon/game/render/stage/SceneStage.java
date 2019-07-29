@@ -16,6 +16,7 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
+import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.WallTileset;
 
@@ -194,7 +195,14 @@ public class SceneStage implements RenderStage {
 		for (int y = wallY - 1; y >= eY; y--) {
 			for (int x = minX; x < maxX; x++) {
 				TextureRegion textureRegion = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true);
-				batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				// If it partially occludes a non-solid tile, it is rendered semi-transparent
+				if (!Game.getLevel().isSolid(x, y + 1)) {
+					batch.setColor(1, 1, 1, 0.8f);
+					batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+					batch.setColor(1, 1, 1, 1);
+				} else {
+					batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				}
 				Game.getLevel().setDiscovered(x, y);
 			}
 		}
