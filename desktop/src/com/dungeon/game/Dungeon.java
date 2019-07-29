@@ -46,9 +46,23 @@ import java.util.stream.Stream;
 
 public class Dungeon extends ApplicationAdapter {
 
+	public static CyclicSampler movementSampler = new CyclicSampler(200);
 	public static CyclicSampler entitiesSampler = new CyclicSampler(200);
 	public static CyclicSampler renderSampler = new CyclicSampler(200);
-	public static CyclicSampler movementSampler = new CyclicSampler(200);
+	public static CyclicSampler sceneSampler = new CyclicSampler(200);
+	public static CyclicSampler healthbarSampler = new CyclicSampler(200);
+	public static CyclicSampler collisionSampler = new CyclicSampler(200);
+	public static CyclicSampler noiseSampler = new CyclicSampler(200);
+	public static CyclicSampler motionBlurSampler = new CyclicSampler(200);
+	public static CyclicSampler overlayTextSampler = new CyclicSampler(200);
+	public static CyclicSampler playerArrowsSampler = new CyclicSampler(200);
+	public static CyclicSampler hudSampler = new CyclicSampler(200);
+	public static CyclicSampler miniMapSampler = new CyclicSampler(200);
+	public static CyclicSampler titleSampler = new CyclicSampler(200);
+	public static CyclicSampler scaleSampler = new CyclicSampler(200);
+	public static CyclicSampler consoleSampler = new CyclicSampler(200);
+	public static CyclicSampler profilerSampler = new CyclicSampler(200);
+
 	private StopWatch stopWatch = new StopWatch();
 	private VLayout profilerWidget = new VLayout();
 
@@ -60,6 +74,7 @@ public class Dungeon extends ApplicationAdapter {
 	private boolean fading = false;
 
 	private long frame = 0;
+	private boolean drawProfiler = false;
 
 	public Dungeon(Toml configuration) {
 		this.configuration = configuration;
@@ -121,8 +136,60 @@ public class Dungeon extends ApplicationAdapter {
 				new SamplerVisualizer(movementSampler, "mov")
 						.color(new Color(0f, 1f, 0f, 0.5f))
 						.formatter(String::valueOf));
+		profilerWidget.add(
+				new SamplerVisualizer(sceneSampler, "scene")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(healthbarSampler, "healthbar")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(collisionSampler, "collision")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(noiseSampler, "noise")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(motionBlurSampler, "motionBlur")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(overlayTextSampler, "overlayText")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(playerArrowsSampler, "playerArrow")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(hudSampler, "hud")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(miniMapSampler, "miniMap")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(titleSampler, "title")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(scaleSampler, "scale")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(consoleSampler, "console")
+						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
+						.formatter(Util::nanosToString));
+		profilerWidget.add(
+				new SamplerVisualizer(profilerSampler, "profiler")
+						.color(new Color(0.4f, 0.4f, 0.4f, 0.5f))
+						.formatter(Util::nanosToString));
 		profilerWidget.setX(Gdx.graphics.getWidth() - 150);
-		profilerWidget.setY(500);
+		profilerWidget.setY(0);
 
 		// Start playing character selection music
 		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
@@ -139,6 +206,8 @@ public class Dungeon extends ApplicationAdapter {
 		addDeveloperHotkey(Input.Keys.F4, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleShadows));
 		addDeveloperHotkey(Input.Keys.F5, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleBoundingBox));
 		addDeveloperHotkey(Input.Keys.F6, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleNoise));
+		addDeveloperHotkey(Input.Keys.F7, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleConsole));
+		addDeveloperHotkey(Input.Keys.F12, () -> drawProfiler = !drawProfiler);
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {
@@ -187,10 +256,14 @@ public class Dungeon extends ApplicationAdapter {
 			}));
 		}
 
-		SpriteBatch batch = new SpriteBatch();
-		batch.begin();
-		profilerWidget.draw(batch);
-		batch.end();
+		if (drawProfiler) {
+			stopWatch.start();
+			SpriteBatch batch = new SpriteBatch();
+			batch.begin();
+			profilerWidget.draw(batch);
+			batch.end();
+			profilerSampler.sample((int) stopWatch.getAndReset());
+		}
 
 		if (Players.count() > 0) {
 			movementSampler.sample((int) Players.get(0).getAvatar().getMovement().len());
