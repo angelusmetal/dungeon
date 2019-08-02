@@ -161,8 +161,14 @@ public class SceneStage implements RenderStage {
 			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				batch.setColor(lightColor);
+				Vector2 offset = flare.getLight() != null ? flare.getLight().offset : Vector2.Zero;
 				// Draw light texture
-				viewPort.draw(batch, flare.getFlare().texture, flare.getOrigin().x, flare.getOrigin().y + flare.getZPos(), flare.getFlare().diameter * flare.getFlare().dim, flare.getFlare().angle);
+				viewPort.draw(batch,
+						flare.getFlare().texture,
+						flare.getOrigin().x + offset.x,
+						flare.getOrigin().y + offset.y + flare.getZPos(),
+						flare.getFlare().diameter * flare.getFlare().dim,
+						flare.getFlare().angle);
 			});
 			batch.setColor(Color.WHITE);
 		}));
@@ -219,11 +225,18 @@ public class SceneStage implements RenderStage {
 			// Set light color
 			lightColor.set(light.getLight().color).premultiplyAlpha().mul(light.getLight().dim);
 			batch.setColor(lightColor);
+			Vector2 offset = light.getLight() != null ? light.getLight().offset : Vector2.Zero;
 			// Draw light texture
-			viewPort.draw(batch, light.getLight().texture, light.getOrigin().x, light.getOrigin().y + light.getZPos(), light.getLight().diameter * light.getLight().dim, light.getLight().angle);
+			viewPort.draw(
+					batch,
+					light.getLight().texture,
+					light.getOrigin().x + offset.x,
+					light.getOrigin().y + offset.y + light.getZPos(),
+					light.getLight().diameter * light.getLight().dim,
+					light.getLight().angle);
 			// Draw shadows
 			if (drawShadows) {
-				Vector2 origin = light.getOrigin().cpy().add(0, light.getZPos());
+				Vector2 origin = light.getOrigin().cpy().add(0, light.getZPos()).add(offset);
 				Engine.entities.radius(origin, light.getLight().diameter / 2).filter(Entity::castsShadow).forEach(blocker -> {
 					// Draw shadow at the feet of the entity
 					shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
@@ -240,27 +253,22 @@ public class SceneStage implements RenderStage {
 							height);
 
 					// Draw projected shadow
-					Vector2 offset = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos());
-					float shadowLen = offset.len();
+					Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
+					float shadowLen = o.len();
 					shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
 					batch.setColor(shadowColor);
 					batch.draw(
-							shadow.getTexture(),
-							blocker.getBody().getCenter().x - viewPort.cameraX,
-							blocker.getBody().getBottomLeft().y - viewPort.cameraY,
+							shadow,
+							blocker.getOrigin().x - viewPort.cameraX,
+							blocker.getOrigin().y /*- width / 2*/ - viewPort.cameraY,
 							0,
 							width / 2,
 							width,
 							width,
 							shadowLen / 10f,
 							1 + shadowLen / 100f,
-							offset.angle(),
-							0,
-							0,
-							shadow.getRegionWidth(),
-							shadow.getRegionHeight(),
-							false,
-							false);
+							o.angle(),
+							true);
 				});
 			}
 		});

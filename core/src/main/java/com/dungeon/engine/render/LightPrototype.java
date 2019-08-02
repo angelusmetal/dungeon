@@ -41,7 +41,10 @@ public class LightPrototype {
 		float max = 1 + delta;
 		traits.add(() -> {
 			Metronome metronome = new Metronome(delta);
-			return light -> metronome.doAtInterval(() -> light.dim = Rand.between(min, max));
+			return light -> metronome.doAtInterval(() -> {
+				light.dim = Rand.between(min, max);
+				light.offset.set(Rand.between(-1, 1), Rand.between(-1, 1));
+			});
 		});
 		return this;
 	}
