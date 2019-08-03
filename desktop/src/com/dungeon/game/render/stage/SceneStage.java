@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
+import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
@@ -237,7 +238,7 @@ public class SceneStage implements RenderStage {
 			// Draw shadows
 			if (drawShadows) {
 				Vector2 origin = light.getOrigin().cpy().add(0, light.getZPos()).add(offset);
-				Engine.entities.radius(origin, light.getLight().diameter / 2).filter(Entity::castsShadow).forEach(blocker -> {
+				Engine.entities.radius(origin, light.getLight().diameter / 2).filter(e -> e.shadowType() != ShadowType.NONE).forEach(blocker -> {
 					// Draw shadow at the feet of the entity
 					shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
 					batch.setColor(shadowColor);

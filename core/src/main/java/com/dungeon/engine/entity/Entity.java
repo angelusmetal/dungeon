@@ -12,8 +12,8 @@ import com.dungeon.engine.render.ColorContext;
 import com.dungeon.engine.render.DrawContext;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.ArrayList;
@@ -99,8 +99,8 @@ public class Entity implements Drawable, Movable {
 	protected boolean canBeBlockedByTiles;
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
-	protected boolean castsShadow;
 	protected boolean isStatic;
+	protected ShadowType shadowType;
 
 	/**
 	 * Create an entity at origin, from the specified prototype
@@ -146,7 +146,7 @@ public class Entity implements Drawable, Movable {
 		this.canBeBlockedByTiles = prototype.canBeBlockedByTiles;
 		this.canBeHit = prototype.canBeHit;
 		this.canBeHurt = prototype.canBeHurt;
-		this.castsShadow = prototype.castsShadow;
+		this.shadowType = prototype.shadowType;
 		this.isStatic = prototype.isStatic;
 	}
 
@@ -184,7 +184,7 @@ public class Entity implements Drawable, Movable {
 		this.canBeBlockedByTiles = other.canBeBlockedByTiles;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
-		this.castsShadow = other.castsShadow;
+		this.shadowType = other.shadowType;
 		this.isStatic = other.isStatic;
 	}
 
@@ -316,8 +316,8 @@ public class Entity implements Drawable, Movable {
 		return color;
 	}
 
-	public boolean castsShadow() {
-		return castsShadow;
+	public ShadowType shadowType() {
+		return shadowType;
 	}
 
 	public float getHealth() {

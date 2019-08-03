@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.LightPrototype;
+import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.util.Util;
 
 import java.util.ArrayList;
@@ -39,8 +39,8 @@ public class EntityPrototype {
 	boolean canBeBlockedByTiles = true;
 	boolean canBeHit = false;
 	boolean canBeHurt = false;
-	boolean castsShadow = false;
 	boolean isStatic = false;
+	ShadowType shadowType = ShadowType.NONE;
 
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
@@ -78,7 +78,7 @@ public class EntityPrototype {
 		this.canBeBlockedByTiles = other.canBeBlockedByTiles;
 		this.canBeHit = other.canBeHit;
 		this.canBeHurt = other.canBeHurt;
-		this.castsShadow = other.castsShadow;
+		this.shadowType = other.shadowType;
 		this.factory = other.factory;
 		this.isStatic = other.isStatic;
 	}
@@ -117,8 +117,8 @@ public class EntityPrototype {
 		return this;
 	}
 
-	public EntityPrototype castsShadow(boolean castsShadow) {
-		this.castsShadow = castsShadow;
+	public EntityPrototype shadowType(ShadowType shadowType) {
+		this.shadowType = shadowType;
 		return this;
 	}
 
