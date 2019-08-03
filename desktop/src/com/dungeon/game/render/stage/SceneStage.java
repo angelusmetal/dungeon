@@ -17,11 +17,10 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
-import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
-import com.dungeon.game.tileset.WallTileset;
 
 import java.util.Comparator;
+import java.util.EnumMap;
 
 public class SceneStage implements RenderStage {
 
@@ -66,6 +65,12 @@ public class SceneStage implements RenderStage {
 	private int maxY;
 	private int wallY;
 
+	@FunctionalInterface
+	private interface ShadowRenderer {
+		void renderShadow(Entity light, Entity blocker, ViewPort viewPort, SpriteBatch batch, Vector2 offset);
+	}
+	private final EnumMap<ShadowType, ShadowRenderer> shadowRenderer;
+
 	public SceneStage(ViewPort viewPort, ViewPortBuffer output) {
 		this.viewPort = viewPort;
 		// Output buffer
@@ -84,6 +89,10 @@ public class SceneStage implements RenderStage {
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		this.shadow = new TextureRegion(Resources.textures.get("circle_diffuse.png"));
+		this.shadowRenderer = new EnumMap<>(ShadowType.class);
+		this.shadowRenderer.put(ShadowType.NONE, (a, b, c, d, e) -> {});
+		this.shadowRenderer.put(ShadowType.CIRCLE, this::circleShadow);
+		this.shadowRenderer.put(ShadowType.RECTANGLE, this::rectangleShadow);
 	}
 
 	@Override
@@ -237,44 +246,87 @@ public class SceneStage implements RenderStage {
 					light.getLight().angle);
 			// Draw shadows
 			if (drawShadows) {
+				// TODO double check whether we still need origin & zpos here
 				Vector2 origin = light.getOrigin().cpy().add(0, light.getZPos()).add(offset);
-				Engine.entities.radius(origin, light.getLight().diameter / 2).filter(e -> e.shadowType() != ShadowType.NONE).forEach(blocker -> {
-					// Draw shadow at the feet of the entity
-					shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
-					batch.setColor(shadowColor);
-					float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
-					float width = blocker.getBody().getBoundingBox().x * attenuation;
-					float height = width / 3 * attenuation;
-
-					viewPort.draw(batch,
-							shadow,
-							blocker.getBody().getBottomLeft().x,
-							blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
-							width,
-							height);
-
-					// Draw projected shadow
-					Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
-					float shadowLen = o.len();
-					shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
-					batch.setColor(shadowColor);
-					batch.draw(
-							shadow,
-							blocker.getOrigin().x - viewPort.cameraX,
-							blocker.getOrigin().y /*- width / 2*/ - viewPort.cameraY,
-							0,
-							width / 2,
-							width,
-							width,
-							shadowLen / 10f,
-							1 + shadowLen / 100f,
-							o.angle(),
-							true);
-				});
+				Engine.entities
+						.radius(origin, light.getLight().diameter / 2)
+						.filter(e -> e.shadowType() != ShadowType.NONE)
+						.forEach(blocker -> shadowRenderer.get(blocker.shadowType()).renderShadow(light, blocker, viewPort, batch, offset));
 			}
 		});
 		// And then combine that into the main buffer
 		lights.render(batch -> combineLights.run(batch, () -> current.draw(batch)));
+	}
+
+	/** Draws a circular shadow */
+	private void circleShadow(Entity light, Entity blocker, ViewPort viewPort, SpriteBatch batch, Vector2 offset) {
+		// Draw shadow at the feet of the entity
+		shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
+		batch.setColor(shadowColor);
+		float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
+		float width = blocker.getBody().getBoundingBox().x * attenuation;
+		float height = width / 3 * attenuation;
+
+		viewPort.draw(batch,
+				shadow,
+				blocker.getBody().getBottomLeft().x,
+				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
+				width,
+				height);
+
+		// Draw projected shadow
+		// TODO double check whether we still need origin & zpos here
+		Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
+		float shadowLen = o.len();
+		shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
+		batch.setColor(shadowColor);
+		batch.draw(
+				shadow,
+				blocker.getOrigin().x - viewPort.cameraX,
+				blocker.getOrigin().y /*- width / 2*/ - viewPort.cameraY,
+				0,
+				width / 2,
+				width,
+				width,
+				shadowLen / 10f,
+				1 + shadowLen / 100f,
+				o.angle(),
+				true);
+	}
+
+	private void rectangleShadow(Entity light, Entity blocker, ViewPort viewPort, SpriteBatch batch, Vector2 offset) {
+		// Draw shadow at the feet of the entity
+		shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
+		batch.setColor(shadowColor);
+		float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
+		float width = blocker.getBody().getBoundingBox().x * attenuation;
+		float height = width / 3 * attenuation;
+
+		viewPort.draw(batch,
+				shadow,
+				blocker.getBody().getBottomLeft().x,
+				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
+				width,
+				height);
+
+		// Draw projected shadow
+		// TODO double check whether we still need origin & zpos here
+		Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
+		float shadowLen = o.len();
+		shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
+		batch.setColor(shadowColor);
+		batch.draw(
+				shadow,
+				blocker.getOrigin().x - viewPort.cameraX,
+				blocker.getOrigin().y /*- width / 2*/ - viewPort.cameraY,
+				0,
+				width / 2,
+				width,
+				width,
+				shadowLen / 10f,
+				1 + shadowLen / 100f,
+				o.angle(),
+				true);
 	}
 
 	public void toggleDrawTiles() {

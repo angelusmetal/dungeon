@@ -97,7 +97,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 				// repeat if no rooms could be placed
 				rooms.isEmpty() ||
 				// or no exit could be placed
-				roomOccurrences.getOrDefault("exit_room", 0) == 0) {
+				(environment.getRooms().size() > 1 && roomOccurrences.getOrDefault("exit_room", 0) == 0)) {
 
 			roomOccurrences.clear();
 			// Pick a random position to start (excluding border rows/columns)
