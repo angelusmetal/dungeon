@@ -253,11 +253,23 @@ public class SceneStage implements RenderStage {
 			// Draw shadows
 			if (drawShadows) {
 				// TODO double check whether we still need origin & zpos here
+				// Cast shadows from entities
 				Vector2 origin = light.getOrigin().cpy().add(0, light.getZPos()).add(offset);
 				Engine.entities
 						.radius(origin, light.getLight().diameter / 2)
 						.filter(e -> e.shadowType() != ShadowType.NONE)
 						.forEach(blocker -> shadowRenderer.get(blocker.shadowType()).renderShadow(light, blocker, viewPort, batch, offset));
+				// Cast shadows from solid tiles
+				int rightTile = (int) (light.getOrigin().x + light.getLight().diameter / 2) / tSize;
+				int topTile = (int) (light.getOrigin().y + light.getLight().diameter / 2) / tSize;
+				int tiles = (int) (light.getLight().diameter / tSize) + 1;
+				for (int tx = rightTile - tiles; tx < rightTile; ++tx) {
+					for (int ty = topTile - tiles; ty < topTile; ++ty) {
+						if (Game.getLevel().isSolid(tx, ty)) {
+							rectangleShadow(light, viewPort, batch, tx * tSize, (tx + 1) * tSize, (ty + 1) * tSize, ty * tSize, shadowColor);
+						}
+					}
+				}
 			}
 		});
 		// And then combine that into the main buffer
@@ -302,18 +314,28 @@ public class SceneStage implements RenderStage {
 
 	private void rectangleShadow(Entity light, Entity blocker, ViewPort viewPort, SpriteBatch batch, Vector2 offset) {
 		shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
-		// Draw shadow at the feet of the entity
-		batch.setColor(shadowColor);
-		float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
-		float width = blocker.getBody().getBoundingBox().x * attenuation;
-		float height = width / 3 * attenuation;
-
-		viewPort.draw(batch,
-				shadow,
+		rectangleShadow(light, viewPort, batch,
 				blocker.getBody().getBottomLeft().x,
-				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
-				width,
-				height);
+				blocker.getBody().getTopRight().x,
+				blocker.getBody().getTopRight().y,
+				blocker.getBody().getBottomLeft().y,
+				shadowColor);
+	}
+
+	private void rectangleShadow(Entity light, ViewPort viewPort, SpriteBatch batch, float left, float right, float top, float bottom, Color color) {
+//		shadowColor.a = SHADOW_INTENSITY * intensity;
+		// Draw shadow at the feet of the entity
+//		batch.setColor(shadowColor);
+//		float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
+//		float width = blocker.getBody().getBoundingBox().x * attenuation;
+//		float height = width / 3 * attenuation;
+//
+//		viewPort.draw(batch,
+//				shadow,
+//				blocker.getBody().getBottomLeft().x,
+//				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
+//				width,
+//				height);
 		batch.end();
 
 		// Draw entity in shadow
@@ -330,126 +352,86 @@ public class SceneStage implements RenderStage {
 //		batch.begin();
 
 		Vector2 project = new Vector2();
-		if (light.getOrigin().x < blocker.getBody().getBottomLeft().x) {
+		if (light.getOrigin().x < left) {
 			// Light's left
-			if (light.getOrigin().y < blocker.getBody().getBottomLeft().y) {
+			if (light.getOrigin().y < bottom) {
 				// Light's below
-				float x1 = blocker.getBody().getBottomLeft().x;
-				float y1 = blocker.getBody().getTopRight().y;
-				float x2 = blocker.getBody().getBottomLeft().x;
-				float y2 = blocker.getBody().getBottomLeft().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x3 = project.x;
 				float y3 = project.y;
-				float x4 = blocker.getBody().getTopRight().x;
-				float y4 = blocker.getBody().getBottomLeft().y;
-				project.set(x4, y4).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x5 = project.x;
 				float y5 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5);
-			} else if (light.getOrigin().y > blocker.getBody().getTopRight().y) {
+				drawTriangles(color, left, top, left, bottom, x3, y3, right, bottom, x5, y5);
+			} else if (light.getOrigin().y > top) {
 				// Light's above
-				float x1 = blocker.getBody().getBottomLeft().x;
-				float y1 = blocker.getBody().getBottomLeft().y;
-				float x2 = blocker.getBody().getBottomLeft().x;
-				float y2 = blocker.getBody().getTopRight().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x3 = project.x;
 				float y3 = project.y;
-				float x4 = blocker.getBody().getTopRight().x;
-				float y4 = blocker.getBody().getTopRight().y;
-				project.set(x4, y4).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x5 = project.x;
 				float y5 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5);
+				drawTriangles(color, left, bottom, left, top, x3, y3, right, top, x5, y5);
 			} else {
 				// Light's within
-				float x1 = blocker.getBody().getBottomLeft().x;
-				float y1 = blocker.getBody().getTopRight().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x2 = project.x;
 				float y2 = project.y;
-				float x3 = blocker.getBody().getBottomLeft().x;
-				float y3 = blocker.getBody().getBottomLeft().y;
-				project.set(x3, y3).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x4 = project.x;
 				float y4 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4);
+				drawTriangles(color, left, top, x2, y2, left, bottom, x4, y4);
 			}
-		} else if (light.getOrigin().x > blocker.getBody().getTopRight().x) {
+		} else if (light.getOrigin().x > right) {
 			// Light's left
-			if (light.getOrigin().y < blocker.getBody().getBottomLeft().y) {
+			if (light.getOrigin().y < bottom) {
 				// Light's below
-				float x1 = blocker.getBody().getTopRight().x;
-				float y1 = blocker.getBody().getTopRight().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x2 = project.x;
 				float y2 = project.y;
-				float x3 = blocker.getBody().getTopRight().x;
-				float y3 = blocker.getBody().getBottomLeft().y;
-				float x5 = blocker.getBody().getBottomLeft().x;
-				float y5 = blocker.getBody().getBottomLeft().y;
-				project.set(x5, y5).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x4 = project.x;
 				float y4 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5);
-			} else if (light.getOrigin().y > blocker.getBody().getTopRight().y) {
+				drawTriangles(color, right, top, x2, y2, right, bottom, x4, y4, left, bottom);
+			} else if (light.getOrigin().y > top) {
 				// Light's above
-				float x1 = blocker.getBody().getTopRight().x;
-				float y1 = blocker.getBody().getBottomLeft().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x2 = project.x;
 				float y2 = project.y;
-				float x3 = blocker.getBody().getTopRight().x;
-				float y3 = blocker.getBody().getTopRight().y;
-				float x5 = blocker.getBody().getBottomLeft().x;
-				float y5 = blocker.getBody().getTopRight().y;
-				project.set(x5, y5).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x4 = project.x;
 				float y4 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5);
+				drawTriangles(color, right, bottom, x2, y2, right, top, x4, y4, left, top);
 			} else {
 				// Light's within
-				float x1 = blocker.getBody().getTopRight().x;
-				float y1 = blocker.getBody().getTopRight().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x2 = project.x;
 				float y2 = project.y;
-				float x3 = blocker.getBody().getTopRight().x;
-				float y3 = blocker.getBody().getBottomLeft().y;
-				project.set(x3, y3).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x4 = project.x;
 				float y4 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4);
+				drawTriangles(color, right, top, x2, y2, right, bottom, x4, y4);
 			}
 		} else {
 			// Light's within
-			if (light.getOrigin().y < blocker.getBody().getBottomLeft().y) {
+			if (light.getOrigin().y < bottom) {
 				// Light's below
-				float x1 = blocker.getBody().getBottomLeft().x;
-				float y1 = blocker.getBody().getBottomLeft().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x2 = project.x;
 				float y2 = project.y;
-				float x3 = blocker.getBody().getTopRight().x;
-				float y3 = blocker.getBody().getBottomLeft().y;
-				project.set(x3, y3).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, bottom).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x4 = project.x;
 				float y4 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4);
-			} else if (light.getOrigin().y > blocker.getBody().getTopRight().y) {
+				drawTriangles(color, left, bottom, x2, y2, right, bottom, x4, y4);
+			} else if (light.getOrigin().y > top) {
 				// Light's above
-				float x1 = blocker.getBody().getBottomLeft().x;
-				float y1 = blocker.getBody().getTopRight().y;
-				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(left, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x2 = project.x;
 				float y2 = project.y;
-				float x3 = blocker.getBody().getTopRight().x;
-				float y3 = blocker.getBody().getTopRight().y;
-				project.set(x3, y3).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				project.set(right, top).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
 				float x4 = project.x;
 				float y4 = project.y;
-				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4);
+				drawTriangles(color, left, top, x2, y2, right, top, x4, y4);
 			} else {
 				// Light's within
 				// No shadows, for now
@@ -458,9 +440,9 @@ public class SceneStage implements RenderStage {
 		batch.begin();
 	}
 
-	private void drawTriangles(float... shadowVertexes) {
+	private void drawTriangles(Color color, float... shadowVertexes) {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(shadowColor);
+		shapeRenderer.setColor(color);
 		float x1, x2, x3, y1, y2, y3;
 		for (int i = 0; i < shadowVertexes.length - 5; i += 2) {
 			// TODO Why do we need to multiply by scale here?
