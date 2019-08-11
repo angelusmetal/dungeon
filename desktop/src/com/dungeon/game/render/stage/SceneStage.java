@@ -18,6 +18,7 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
+import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
 
 import java.util.Comparator;
@@ -27,6 +28,7 @@ public class SceneStage implements RenderStage {
 
 	// Entities need to be rendered with premultiplied alpha onto the alpha-enabled buffer
 	private static ShaderProgram entityShader = Resources.shaders.get("df_vertex.glsl|premultiplied_alpha_fragment.glsl");
+//	private static ShaderProgram colorShader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
 	public static final float SHADOW_PROJECT_DISTANCE = 2_000_000f;
 
 	private final Comparator<? super Entity> comp = (e1, e2) ->
@@ -312,6 +314,20 @@ public class SceneStage implements RenderStage {
 				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
 				width,
 				height);
+		batch.end();
+
+		// Draw entity in shadow
+//		batch.end();
+//		colorShader.begin();
+//		colorShader.setUniformf("u_color", shadowColor);
+//		colorShader.end();
+//		ShaderProgram otherShader = batch.getShader();
+//		batch.setShader(colorShader);
+//		batch.begin();
+//		viewPort.drawEntity(batch, blocker);
+//		batch.end();
+//		batch.setShader(otherShader);
+//		batch.begin();
 
 		Vector2 project = new Vector2();
 		if (light.getOrigin().x < blocker.getBody().getBottomLeft().x) {
@@ -320,16 +336,16 @@ public class SceneStage implements RenderStage {
 				// Light's below
 				float x1 = blocker.getBody().getBottomLeft().x;
 				float y1 = blocker.getBody().getTopRight().y;
+				float x2 = blocker.getBody().getBottomLeft().x;
+				float y2 = blocker.getBody().getBottomLeft().y;
 				project.set(x1, y1).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
-				float x2 = project.x;
-				float y2 = project.y;
-				float x3 = blocker.getBody().getBottomLeft().x;
-				float y3 = blocker.getBody().getBottomLeft().y;
-				float x5 = blocker.getBody().getTopRight().x;
-				float y5 = blocker.getBody().getBottomLeft().y;
-				project.set(x5, y5).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
-				float x4 = project.x;
-				float y4 = project.y;
+				float x3 = project.x;
+				float y3 = project.y;
+				float x4 = blocker.getBody().getTopRight().x;
+				float y4 = blocker.getBody().getBottomLeft().y;
+				project.set(x4, y4).sub(light.getOrigin()).setLength(SHADOW_PROJECT_DISTANCE).add(light.getOrigin());
+				float x5 = project.x;
+				float y5 = project.y;
 				drawTriangles(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5);
 			} else if (light.getOrigin().y > blocker.getBody().getTopRight().y) {
 				// Light's above
@@ -439,11 +455,12 @@ public class SceneStage implements RenderStage {
 				// No shadows, for now
 			}
 		}
+		batch.begin();
 	}
 
 	private void drawTriangles(float... shadowVertexes) {
-		shapeRenderer.setColor(shadowColor);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(shadowColor);
 		float x1, x2, x3, y1, y2, y3;
 		for (int i = 0; i < shadowVertexes.length - 5; i += 2) {
 			// TODO Why do we need to multiply by scale here?
