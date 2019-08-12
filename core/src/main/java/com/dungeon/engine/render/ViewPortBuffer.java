@@ -17,6 +17,8 @@ public class ViewPortBuffer implements Disposable {
 	private ViewPort viewPort;
 	private SpriteBatch batch;
 	private int renderCalls;
+	private Texture.TextureFilter minFilter = Texture.TextureFilter.Nearest;
+	private Texture.TextureFilter magFilter = Texture.TextureFilter.Nearest;
 
 	public ViewPortBuffer(ViewPort viewPort) {
 		this.viewPort = viewPort;
@@ -30,6 +32,11 @@ public class ViewPortBuffer implements Disposable {
 		this.format = format;
 	}
 
+	public void setFilters(Texture.TextureFilter minFilter, Texture.TextureFilter magFilter) {
+		this.minFilter = minFilter;
+		this.magFilter = magFilter;
+	}
+
 	public void reset() {
 		if (frameBuffer != null) {
 			frameBuffer.dispose();
@@ -37,7 +44,7 @@ public class ViewPortBuffer implements Disposable {
 		frameBuffer = new FrameBuffer(format, viewPort.cameraWidth, viewPort.cameraHeight, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
 		textureRegion.flip(false, true);
-		textureRegion.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+		textureRegion.getTexture().setFilter(minFilter, magFilter);
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 

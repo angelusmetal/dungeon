@@ -27,8 +27,8 @@ public class Light {
 	public float dim = 1;
 	/** Light angle */
 	public float angle = 0;
-	/** Light offset */
-	public Vector2 offset = new Vector2();
+	/** Light displacement */
+	public Vector2 displacement = new Vector2();
 
 	private final List<Consumer<Light>> traits;
 

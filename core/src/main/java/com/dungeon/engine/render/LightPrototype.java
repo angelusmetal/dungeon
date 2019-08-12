@@ -8,8 +8,6 @@ import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -43,7 +41,7 @@ public class LightPrototype {
 			Metronome metronome = new Metronome(delta);
 			return light -> metronome.doAtInterval(() -> {
 				light.dim = Rand.between(min, max);
-				light.offset.set(Rand.between(-1, 1), Rand.between(-1, 1));
+				light.displacement.set(Rand.between(-1, 1), Rand.between(-1, 1));
 			});
 		});
 		return this;

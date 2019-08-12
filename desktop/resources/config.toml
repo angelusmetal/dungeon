@@ -3,6 +3,7 @@
     width = 1600 # 1920
     height = 800 # 1080
     fullscreen = false
+    title = "Dungeon crawler :)"
     # Uncomment these if you want to unlock FPS...
     # foregroundFPS = 0
     # backgroundFPS = 0
