@@ -9,6 +9,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValueType;
 
 import java.lang.reflect.Field;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -338,6 +339,24 @@ public class ConfigUtil {
 
 	public static String requireString(Config config, String key) {
 		return config.getString(key);
+	}
+
+	public static <T extends Enum<T>> Optional<T> getEnum(Config config, String key, Class<T> enumType) {
+		if (config.hasPath(key)) {
+			String rawValue = config.getString(key).toUpperCase();
+			for (T constant : enumType.getEnumConstants()) {
+				if (constant.name().equals(rawValue)) {
+					return Optional.of(constant);
+				}
+			}
+			return Optional.empty();
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static <T extends Enum<T>> T requireEnum(Config config, String key, Class<T> enumType) {
+		return getEnum(config, key, enumType).orElseThrow(missing(key));
 	}
 
 	// TODO Keep on this one

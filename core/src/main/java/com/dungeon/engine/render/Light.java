@@ -3,6 +3,7 @@ package com.dungeon.engine.render;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
@@ -26,6 +27,8 @@ public class Light {
 	public float dim = 1;
 	/** Light angle */
 	public float angle = 0;
+	/** Light displacement */
+	public Vector2 displacement = new Vector2();
 
 	private final List<Consumer<Light>> traits;
 

@@ -8,6 +8,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.render.LightPrototype;
+import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
@@ -85,7 +86,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
 		ConfigUtil.getVector2(descriptor, "boundingBoxOffset").ifPresent(prototype::boundingBoxOffset);
-		ConfigUtil.getBoolean(descriptor, "castsShadow").ifPresent(prototype::castsShadow);
+		ConfigUtil.getEnum(descriptor, "shadow", ShadowType.class).ifPresent(prototype::shadowType);
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
 		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);
 		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
