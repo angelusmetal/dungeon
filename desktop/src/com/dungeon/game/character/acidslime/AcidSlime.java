@@ -36,7 +36,7 @@ public class AcidSlime extends CreatureEntity {
 	@Override
 	public void think() {
 		if (Engine.time() > nextThink) {
-			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
+			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				nextThink = Engine.time() + factory.attackFrequency;
 				// Aim towards target

@@ -32,12 +32,12 @@ public class FireSlime extends CreatureEntity {
 	@Override
 	public void think() {
 		if (Engine.time() > nextThink) {
-			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
+			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				nextThink = Engine.time() + factory.attackFrequency;
 				// Move towards target
 				speed = factory.attackSpeed;
-				impulseTowards(closest.getEntity().getOrigin(), speed);
+				moveStrictlyTowards(closest.getEntity().getOrigin());
 				// Fire a projectile
 				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
 				factory.getWeapon().spawnEntities(getOrigin(), aim);
