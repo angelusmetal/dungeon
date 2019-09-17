@@ -8,15 +8,19 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
+import com.dungeon.engine.console.AbstractInputProcessor;
+import com.dungeon.engine.console.InputProcessorStack;
 import com.dungeon.engine.controller.ControllerConfig;
 import com.dungeon.engine.controller.analog.DpadAnalogControl;
 import com.dungeon.engine.controller.analog.StickAnalogControl;
 import com.dungeon.engine.controller.toggle.KeyboardToggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.ui.widget.SamplerVisualizer;
 import com.dungeon.engine.ui.widget.VLayout;
@@ -25,6 +29,7 @@ import com.dungeon.engine.util.CyclicSampler;
 import com.dungeon.engine.util.StopWatch;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
+import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.controller.ControllerPlayerControlBundle;
 import com.dungeon.game.controller.KeyboardPlayerControlBundle;
 import com.dungeon.game.controller.PlayerControlBundle;
@@ -39,6 +44,7 @@ import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.SelectionPlayerControlListener;
 import com.moandjiezana.toml.Toml;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -68,6 +74,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	private final Toml configuration;
 	private InputMultiplexer inputMultiplexer;
+	private InputProcessorStack inputStack;
 	private CharacterViewPortTracker characterViewPortTracker;
 	private CharacterSelection characterSelection;
 
@@ -75,6 +82,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	private long frame = 0;
 	private boolean drawProfiler = false;
+	private Vector2 mouseOrigin = new Vector2();
 
 	public Dungeon(Toml configuration) {
 		this.configuration = configuration;
@@ -83,10 +91,29 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void create () {
 		initResources();
+		inputStack = new InputProcessorStack();
 		inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(new AbstractInputProcessor() {
+			@Override public boolean mouseMoved(int screenX, int screenY) {
+				mouseOrigin.set(screenX, Gdx.graphics.getHeight() - screenY);
+				return true;
+			}
+		});
+		inputStack.push(inputMultiplexer);
 //		inputMultiplexer.addProcessor(viewPortInputProcessor);
 //		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
-		Gdx.input.setInputProcessor(inputMultiplexer);
+		Gdx.input.setInputProcessor(inputStack);
+
+		// Set F12 to push & pop console input from the input processor
+		addDeveloperHotkey(Input.Keys.ENTER, () -> {
+			Game.setDisplayConsole(true);
+			inputStack.push(Game.getCommandConsole().getInputProcessor());
+		});
+		Game.getCommandConsole().bindKey(Input.Keys.ENTER, () -> {
+			Game.getCommandConsole().commandExecute();
+			Game.setDisplayConsole(false);
+			inputStack.pop();
+		});
 
 		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getListOf(configuration, "controllers", ControllerConfig.class)
 				.stream()
@@ -207,7 +234,29 @@ public class Dungeon extends ApplicationAdapter {
 		addDeveloperHotkey(Input.Keys.F5, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleBoundingBox));
 		addDeveloperHotkey(Input.Keys.F6, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleNoise));
 		addDeveloperHotkey(Input.Keys.F7, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleConsole));
-		addDeveloperHotkey(Input.Keys.F12, () -> drawProfiler = !drawProfiler);
+		addDeveloperHotkey(Input.Keys.F11, () -> drawProfiler = !drawProfiler);
+
+		// Add console commands
+		Game.getCommandConsole().bindCommand("play_music", this::playMusicCommand);
+		Game.getCommandConsole().bindCommand("spawn", this::spawnCommand);
+	}
+
+	private void playMusicCommand(List<String> tokens) {
+		String path = tokens.get(1);
+		Engine.audio.playMusic(Gdx.files.internal(path));
+	}
+	private void spawnCommand(List<String> tokens) {
+		String type = tokens.get(1);
+		try {
+			Engine.entities.add(Game.build(type, mouseAt()));
+		} catch (RuntimeException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	private Vector2 mouseAt() {
+		ViewPort viewPort = Players.get(0).getViewPort();
+		return mouseOrigin.cpy().scl(1 / viewPort.getScale()).add(viewPort.cameraX, viewPort.cameraY);
 	}
 
 	private void addDeveloperHotkey(int keycode, Runnable runnable) {

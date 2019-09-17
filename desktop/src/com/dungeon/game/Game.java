@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
+import com.dungeon.engine.console.CommandConsole;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
@@ -48,6 +49,8 @@ public class Game {
 	private static EntityFactory entityFactory;
 	private static Toml configuration;
 	private static List<String> lootSet;
+	private static CommandConsole commandConsole = new CommandConsole();
+	private static boolean displayConsole = false;
 
 	public static OverlayText text(Vector2 origin, String text) {
 		return text(origin, text, Color.WHITE);
@@ -150,6 +153,18 @@ public class Game {
 		Players.set(players);
 		levelCount = 0;
 		startNewLevel();
+	}
+
+	public static CommandConsole getCommandConsole() {
+		return commandConsole;
+	}
+
+	public static boolean displayConsole() {
+		return displayConsole;
+	}
+
+	public static void setDisplayConsole(boolean displayConsole) {
+		Game.displayConsole = displayConsole;
 	}
 
 	public static void exitLevel() {

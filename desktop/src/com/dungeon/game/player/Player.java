@@ -3,7 +3,7 @@ package com.dungeon.game.player;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-import com.dungeon.engine.Console;
+import com.dungeon.engine.OldConsole;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
@@ -30,7 +30,7 @@ public class Player implements Disposable {
 	private PlayerStats stats;
 	private Color color;
 	private Weapon weapon;
-	private Console console;
+	private OldConsole console;
 	private int gold;
 
 	public Player(int playerId, int characterId, PlayerControlBundle control) {
@@ -40,7 +40,7 @@ public class Player implements Disposable {
 		this.stats = new PlayerStats();
 		this.color = PLAYER_COLORS[playerId];
 		this.weapon = PLAYER_WEAPONS[characterId];
-		this.console = new Console(10, 3f);
+		this.console = new OldConsole(10, 3f);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Player implements Disposable {
 		this.weapon = weapon;
 	}
 
-	public Console getConsole() {
+	public OldConsole getConsole() {
 		return console;
 	}
 
