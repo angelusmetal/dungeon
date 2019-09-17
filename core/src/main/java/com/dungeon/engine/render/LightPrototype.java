@@ -41,7 +41,7 @@ public class LightPrototype {
 			Metronome metronome = new Metronome(delta);
 			return light -> metronome.doAtInterval(() -> {
 				light.dim = Rand.between(min, max);
-				light.displacement.set(Rand.between(-1, 1), Rand.between(-1, 1));
+				light.displacement.set(Rand.between(-1f, 1f), Rand.between(-1f, 1f));
 			});
 		});
 		return this;

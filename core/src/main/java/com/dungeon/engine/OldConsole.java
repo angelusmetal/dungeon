@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class Console {
+public class OldConsole {
 	private final int logSize;
 	private final float messageExpiration;
 	private final List<LogLine> log;
@@ -25,7 +25,7 @@ public class Console {
 		}
 	}
 
-	public Console(int logSize, float messageExpiration) {
+	public OldConsole(int logSize, float messageExpiration) {
 		this.logSize = logSize;
 		this.messageExpiration = messageExpiration;
 		this.log = new ArrayList<>(logSize);

@@ -326,7 +326,7 @@ public class SceneStage implements RenderStage {
 	private void rectangleShadow(Entity light, ViewPort viewPort, SpriteBatch batch, float left, float right, float top, float bottom, float z, Color color) {
 		//shadowColor.a = SHADOW_INTENSITY * intensity;
 		// Draw shadow at the feet of the entity
-		batch.setColor(shadowColor);
+		batch.setColor(color);
 		float attenuation = 1 - Math.min(z, MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
 		float width = (right - left) * attenuation;
 		float height = width / 3 * attenuation;
@@ -351,6 +351,10 @@ public class SceneStage implements RenderStage {
 //		batch.end();
 //		batch.setShader(otherShader);
 //		batch.begin();
+
+		// This is needed so that alpha channel is properly taken into account when blending projected shadows
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		Vector2 project = new Vector2();
 		// Using the center instead of the origin, to make sure displacement never moves it outside the bounding box

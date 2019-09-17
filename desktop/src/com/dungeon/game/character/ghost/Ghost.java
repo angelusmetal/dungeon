@@ -30,7 +30,7 @@ public class Ghost extends CreatureEntity {
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		this.targettingMetronome = new Metronome(0.2f, () -> {
-			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> new ClosestEntity(this), ClosestEntity::accept, ClosestEntity::combine);
+			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (closest.getDst2() < factory.maxTargetDistance) {
 				moveStrictlyTowards(closest.getEntity().getOrigin());
 			}

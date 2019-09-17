@@ -3,9 +3,10 @@ package com.dungeon.game.render.stage;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dungeon.engine.Console;
+import com.dungeon.engine.OldConsole;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.Game;
 import com.dungeon.game.resource.Resources;
 
 import java.util.Map;
@@ -16,10 +17,10 @@ public class ConsoleStage implements RenderStage {
 	private final ViewPort viewPort;
 	private final SpriteBatch batch;
 	private final BitmapFont font;
-	private final Console console;
+	private final OldConsole console;
 	private boolean enabled = true;
 
-	public ConsoleStage(ViewPort viewPort, SpriteBatch batch, Console console) {
+	public ConsoleStage(ViewPort viewPort, SpriteBatch batch, OldConsole console) {
 		this.viewPort = viewPort;
 		this.batch = batch;
 		this.font = Resources.fonts.get("alegreya-sans-sc-black-15");
@@ -32,7 +33,15 @@ public class ConsoleStage implements RenderStage {
 			batch.begin();
 			int x = viewPort.posX + 10;
 			int y = viewPort.posY + 10 + 16;
-			for (Console.LogLine log : console.getLog()) {
+			if (Game.displayConsole()) {
+				font.setColor(Color.WHITE);
+				String cursor = (int) (Engine.time() * 2f) % 2 == 0 ? "|" : "";
+				font.draw(batch, "> " + Game.getCommandConsole().getCurrentCommand() + cursor, x, y);
+			}
+
+			x = viewPort.posX + 10;
+			y = viewPort.posY + 10 + 32;
+			for (OldConsole.LogLine log : console.getLog()) {
 				log.color.a = Math.max((log.expiration - Engine.time()) / console.getMessageExpiration(), 0);
 				font.setColor(log.color);
 				font.draw(batch, log.message, x, y);

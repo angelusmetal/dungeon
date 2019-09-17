@@ -32,7 +32,7 @@
     maxTargetDistance = 300 # Targeting distance
     visibleTime = 2.0       # Visible time, in seconds
     visibleSpeed = 20       # Speed while visible
-    stealthSpeed = 40       # Speed while stealth
+    stealthSpeed = 50       # Speed while stealth
     damagePerSecond = 2     # Damage dealth per second upon contact
 [[creatures]]
     id = "SLIME"
@@ -45,14 +45,14 @@
     maxTargetDistance = 300 # Targeting distance
     dashDistance = 150      # Dashing distance
     poolSeparation = 15     # Separation between acid pools
-    poolDamage = 5          # Damage per second caused by the acid pool
+    poolDamage = 10         # Damage per second caused by the acid pool
     attackFrequency = 3.0   # Frequency of attacks, in seconds
-    damagePerSecond = 1     # Damage dealth per second upon contact
+    damagePerSecond = 5     # Damage dealth per second upon contact
 [[creatures]]
     id = "SLIME_FIRE"
     maxTargetDistance = 300 # Targeting distance
     attackFrequency = 1.5   # Frequency of attacks, in seconds
-    attackSpeed = 10        # Movement speed while attacking
+    attackSpeed = 50        # Movement speed while attacking
     idleSpeed = 5           # Movement speed while idle
     damagePerSecond = 1     # Damage dealth per second upon contact
 

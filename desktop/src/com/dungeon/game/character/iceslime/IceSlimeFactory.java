@@ -21,7 +21,7 @@ public class IceSlimeFactory {
 	final Animation<TextureRegion> hitAnimation;
 
 	final float maxTargetDistance = Util.length2(300f);
-	final float dashDistance = Util.length2(50f);
+	final float dashDistance = Util.length2(150f);
 	final float poolSeparation = Util.length2(15f);
 	final float attackFrequency = 3f;
 	final float damagePerSecond = 10f;
