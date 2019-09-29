@@ -45,6 +45,14 @@ public class ViewPortBuffer implements Disposable {
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
 		textureRegion.flip(false, true);
 		textureRegion.getTexture().setFilter(minFilter, magFilter);
+		projectToZero();
+	}
+
+	public void projectToViewPort() {
+		batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.cameraWidth, viewPort.cameraHeight);
+	}
+
+	public void projectToZero() {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 

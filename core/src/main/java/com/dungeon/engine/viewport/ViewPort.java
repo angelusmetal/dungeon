@@ -41,8 +41,8 @@ public class ViewPort {
 	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float width, float height) {
 		batch.draw(
 				textureRegion,
-				(x - cameraX),
-				(y - cameraY),
+				x,
+				y,
 				width,
 				height);
 	}
@@ -51,8 +51,8 @@ public class ViewPort {
 		TextureRegion frame = entity.getFrame();
 		batch.draw(
 				frame,
-				(int) (entity.getOrigin().x - cameraX) - entity.getDrawOffset().x,
-				(int) (entity.getOrigin().y - cameraY) - entity.getDrawOffset().y + entity.getZPos(),
+				(int) (entity.getOrigin().x - entity.getDrawOffset().x),
+				(int) (entity.getOrigin().y - entity.getDrawOffset().y + entity.getZPos()),
 				entity.getDrawOffset().x,
 				entity.getDrawOffset().y,
 				frame.getRegionWidth(),
@@ -66,8 +66,8 @@ public class ViewPort {
 		float radius = diameter / 2f;
 		batch.draw(
 				texture,
-				(x - cameraX) - radius,
-				(y - cameraY) - radius,
+				x - radius,
+				y - radius,
 				radius,
 				radius,
 				diameter,
@@ -85,7 +85,7 @@ public class ViewPort {
 
 	public void draw(SpriteBatch batch, BitmapFont font, float x, float y, String text, Color color) {
 		font.setColor(color);
-		font.draw(batch, text, x - cameraX, y - cameraY);
+		font.draw(batch, text, x, y);
 	}
 
 	public boolean isInViewPort(Entity e) {
