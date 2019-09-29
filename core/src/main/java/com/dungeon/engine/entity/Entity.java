@@ -408,7 +408,20 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		drawContext.run(batch, () -> viewPort.drawEntity(batch, this));
+		drawContext.run(batch, () -> {
+			TextureRegion frame = getFrame();
+			batch.draw(
+					frame,
+					(int) (getOrigin().x - getDrawOffset().x),
+					(int) (getOrigin().y - getDrawOffset().y + getZPos()),
+					getDrawOffset().x,
+					getDrawOffset().y,
+					frame.getRegionWidth(),
+					frame.getRegionHeight(),
+					getDrawScale().x,
+					getDrawScale().y,
+					getRotation());
+		});
 	}
 
 	public Light getLight() {

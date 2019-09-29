@@ -28,22 +28,12 @@ public class CollisionStage implements RenderStage {
 			viewportBuffer.render(batch -> {
 				batch.setColor(collision);
 				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).forEach(e ->
-						viewPort.draw(
-								batch,
-								fill,
-								e.getBody().getBottomLeft().x,
-								e.getBody().getBottomLeft().y,
-								e.getBody().getBoundingBox().x,
-								e.getBody().getBoundingBox().y));
+						batch.draw(fill, e.getBody().getBottomLeft().x, e.getBody().getBottomLeft().y, e.getBody().getBoundingBox().x, e.getBody().getBoundingBox().y)
+				);
 				batch.setColor(origin);
 				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).forEach(e ->
-					viewPort.draw(
-							batch,
-							fill,
-							e.getOrigin().x,
-							e.getOrigin().y,
-							1,
-							1));
+						batch.draw(fill, e.getOrigin().x, e.getOrigin().y, 1, 1)
+				);
 				batch.setColor(Color.WHITE);
 				});
 		}

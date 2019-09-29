@@ -300,12 +300,7 @@ public class SceneStage implements RenderStage {
 		float width = blocker.getBody().getBoundingBox().x * attenuation;
 		float height = width / 3 * attenuation;
 
-		viewPort.draw(batch,
-				shadow,
-				blocker.getBody().getBottomLeft().x,
-				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
-				width,
-				height);
+		batch.draw(shadow, blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
 
 		// Draw projected shadow
 		// TODO double check whether we still need origin & zpos here
@@ -346,12 +341,7 @@ public class SceneStage implements RenderStage {
 		float width = (right - left) * attenuation;
 		float height = width / 3 * attenuation;
 
-		viewPort.draw(batch,
-				shadow,
-				left,
-				bottom + VERTICAL_OFFSET,
-				width,
-				height);
+		batch.draw(shadow, left, bottom + VERTICAL_OFFSET, width, height);
 		batch.end();
 
 		// Draw entity in shadow

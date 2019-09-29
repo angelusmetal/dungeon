@@ -54,6 +54,7 @@ public class OverlayTextStage implements RenderStage {
 					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 					text.draw(batch, viewPort);
 				});
+				viewportBuffer.projectToZero();
 				viewportBuffer.render(batch -> {
 					Gdx.gl.glBlendFunc( GL20.GL_ONE,  GL20.GL_ONE_MINUS_SRC_ALPHA);
 					if (text.hasOutline()) {
