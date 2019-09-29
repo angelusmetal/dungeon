@@ -99,6 +99,7 @@ public class SceneStage implements RenderStage {
 		this.shadowRenderer.put(ShadowType.CIRCLE, this::circleShadow);
 		this.shadowRenderer.put(ShadowType.RECTANGLE, this::rectangleShadow);
 		this.shapeRenderer = new ShapeRenderer();
+		this.shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
 	@Override
@@ -452,13 +453,12 @@ public class SceneStage implements RenderStage {
 		shapeRenderer.setColor(color);
 		float x1, x2, x3, y1, y2, y3;
 		for (int i = 0; i < shadowVertexes.length - 5; i += 2) {
-			// TODO Why do we need to multiply by scale here?
-			x1 = (shadowVertexes[i] - viewPort.cameraX) * viewPort.getScale();
-			y1 = (shadowVertexes[i+1] - viewPort.cameraY) * viewPort.getScale();
-			x2 = (shadowVertexes[i+2] - viewPort.cameraX) * viewPort.getScale();
-			y2 = (shadowVertexes[i+3] - viewPort.cameraY) * viewPort.getScale();
-			x3 = (shadowVertexes[i+4] - viewPort.cameraX) * viewPort.getScale();
-			y3 = (shadowVertexes[i+5] - viewPort.cameraY) * viewPort.getScale();
+			x1 = shadowVertexes[i] - viewPort.cameraX;
+			y1 = shadowVertexes[i+1] - viewPort.cameraY;
+			x2 = shadowVertexes[i+2] - viewPort.cameraX;
+			y2 = shadowVertexes[i+3] - viewPort.cameraY;
+			x3 = shadowVertexes[i+4] - viewPort.cameraX;
+			y3 = shadowVertexes[i+5] - viewPort.cameraY;
 			shapeRenderer.triangle(x1, y1, x2, y2, x3, y3);
 		}
 		shapeRenderer.end();
