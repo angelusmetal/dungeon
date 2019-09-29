@@ -35,7 +35,7 @@ public class CommandConsole {
 			} else if (character == 9) {
 				List<String> options = commandAutocomplete();
 				if (options.size() > 1) {
-					options.forEach(opt -> System.out.println("  " + opt));
+					options.forEach(opt -> output.accept("  " + opt));
 				}
 			} else if (character == 13) {
 //				commandExecute();
@@ -45,6 +45,7 @@ public class CommandConsole {
 			return true;
 		}
 	};
+	private Consumer<String> output = System.out::println;
 
 	public void bindKey(int keycode, Runnable runnable) {
 		keyBindings.put(keycode, runnable);
@@ -80,6 +81,9 @@ public class CommandConsole {
 		if (matches.isEmpty()) {
 			// No match
 			return Collections.emptyList();
+		} else if (matches.size() == 1) {
+			commandSet(matches.get(0) + " ");
+			return Collections.emptyList();
 		}
 		String firstMatch = matches.get(0);
 		String prefix = command;
@@ -91,7 +95,7 @@ public class CommandConsole {
 			}
 			prefix = firstMatch.substring(0, index);
 		}
-		commandSet(prefix + " ");
+		commandSet(prefix);
 		final String commonPrefix = prefix;
 		// Return all the commands starting with the common prefix
 		return commands.keySet().stream().filter(c -> c.startsWith(commonPrefix)).collect(Collectors.toList());
@@ -108,10 +112,18 @@ public class CommandConsole {
 	}
 
 	private void commandUnknown(String command) {
-		System.err.println("Unknown command: " + command);
+		output.accept("Unknown command: " + command);
 	}
 
 	public InputProcessor getInputProcessor() {
 		return inputProcessor;
+	}
+
+	public void setOutput(Consumer<String> output) {
+		this.output = output;
+	}
+
+	public void print(String message) {
+		output.accept(message);
 	}
 }

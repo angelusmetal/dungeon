@@ -33,6 +33,8 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.controller.ControllerPlayerControlBundle;
 import com.dungeon.game.controller.KeyboardPlayerControlBundle;
 import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.developer.DevCommands;
+import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
@@ -50,27 +52,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.dungeon.game.developer.DevTools.*;
+
 public class Dungeon extends ApplicationAdapter {
 
-	public static CyclicSampler movementSampler = new CyclicSampler(200);
-	public static CyclicSampler entitiesSampler = new CyclicSampler(200);
-	public static CyclicSampler renderSampler = new CyclicSampler(200);
-	public static CyclicSampler sceneSampler = new CyclicSampler(200);
-	public static CyclicSampler healthbarSampler = new CyclicSampler(200);
-	public static CyclicSampler collisionSampler = new CyclicSampler(200);
-	public static CyclicSampler noiseSampler = new CyclicSampler(200);
-	public static CyclicSampler motionBlurSampler = new CyclicSampler(200);
-	public static CyclicSampler overlayTextSampler = new CyclicSampler(200);
-	public static CyclicSampler playerArrowsSampler = new CyclicSampler(200);
-	public static CyclicSampler hudSampler = new CyclicSampler(200);
-	public static CyclicSampler miniMapSampler = new CyclicSampler(200);
-	public static CyclicSampler titleSampler = new CyclicSampler(200);
-	public static CyclicSampler scaleSampler = new CyclicSampler(200);
-	public static CyclicSampler consoleSampler = new CyclicSampler(200);
-	public static CyclicSampler profilerSampler = new CyclicSampler(200);
-
 	private StopWatch stopWatch = new StopWatch();
-	private VLayout profilerWidget = new VLayout();
 
 	private final Toml configuration;
 	private InputMultiplexer inputMultiplexer;
@@ -81,8 +67,8 @@ public class Dungeon extends ApplicationAdapter {
 	private boolean fading = false;
 
 	private long frame = 0;
-	private boolean drawProfiler = false;
-	private Vector2 mouseOrigin = new Vector2();
+	private DevTools devTools;
+	private DevCommands devCommands;
 
 	public Dungeon(Toml configuration) {
 		this.configuration = configuration;
@@ -93,19 +79,13 @@ public class Dungeon extends ApplicationAdapter {
 		initResources();
 		inputStack = new InputProcessorStack();
 		inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new AbstractInputProcessor() {
-			@Override public boolean mouseMoved(int screenX, int screenY) {
-				mouseOrigin.set(screenX, Gdx.graphics.getHeight() - screenY);
-				return true;
-			}
-		});
+		devTools = new DevTools(inputMultiplexer);
+		devCommands = new DevCommands(devTools);
 		inputStack.push(inputMultiplexer);
-//		inputMultiplexer.addProcessor(viewPortInputProcessor);
-//		inputMultiplexer.addProcessor(new GestureDetector(viewPortInputProcessor));
 		Gdx.input.setInputProcessor(inputStack);
 
 		// Set F12 to push & pop console input from the input processor
-		addDeveloperHotkey(Input.Keys.ENTER, () -> {
+		devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
 			Game.setDisplayConsole(true);
 			inputStack.push(Game.getCommandConsole().getInputProcessor());
 		});
@@ -146,77 +126,10 @@ public class Dungeon extends ApplicationAdapter {
 		}
 
 		// Add developer hotkeys
-		addDeveloperHotkeys();
+		devTools.addDeveloperHotkeys();
+		devTools.addProfilerWidgets();
 
 		characterViewPortTracker = new CharacterViewPortTracker();
-
-		// Add visual profiler stuff
-		profilerWidget.add(
-				new SamplerVisualizer(entitiesSampler, "upd")
-						.color(new Color(0f, 0f, 1f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(renderSampler, "ren")
-						.color(new Color(1f, 0f, 0f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(movementSampler, "mov")
-						.color(new Color(0f, 1f, 0f, 0.5f))
-						.formatter(String::valueOf));
-		profilerWidget.add(
-				new SamplerVisualizer(sceneSampler, "scene")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(healthbarSampler, "healthbar")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(collisionSampler, "collision")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(noiseSampler, "noise")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(motionBlurSampler, "motionBlur")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(overlayTextSampler, "overlayText")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(playerArrowsSampler, "playerArrow")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(hudSampler, "hud")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(miniMapSampler, "miniMap")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(titleSampler, "title")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(scaleSampler, "scale")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(consoleSampler, "console")
-						.color(new Color(0.7f, 0.7f, 0.7f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.add(
-				new SamplerVisualizer(profilerSampler, "profiler")
-						.color(new Color(0.4f, 0.4f, 0.4f, 0.5f))
-						.formatter(Util::nanosToString));
-		profilerWidget.setX(Gdx.graphics.getWidth() - 150);
-		profilerWidget.setY(0);
 
 		// Start playing character selection music
 		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
@@ -224,46 +137,6 @@ public class Dungeon extends ApplicationAdapter {
 
 	private void initResources() {
 		Resources.load();
-	}
-
-	private void addDeveloperHotkeys() {
-		addDeveloperHotkey(Input.Keys.F1, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleTiles));
-		addDeveloperHotkey(Input.Keys.F2, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleEntities));
-		addDeveloperHotkey(Input.Keys.F3, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleLighting));
-		addDeveloperHotkey(Input.Keys.F4, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleShadows));
-		addDeveloperHotkey(Input.Keys.F5, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleBoundingBox));
-		addDeveloperHotkey(Input.Keys.F6, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleNoise));
-		addDeveloperHotkey(Input.Keys.F7, () -> Players.all().stream().map(Player::getRenderer).forEach(ViewPortRenderer::toggleConsole));
-		addDeveloperHotkey(Input.Keys.F11, () -> drawProfiler = !drawProfiler);
-
-		// Add console commands
-		Game.getCommandConsole().bindCommand("play_music", this::playMusicCommand);
-		Game.getCommandConsole().bindCommand("spawn", this::spawnCommand);
-	}
-
-	private void playMusicCommand(List<String> tokens) {
-		String path = tokens.get(1);
-		Engine.audio.playMusic(Gdx.files.internal(path));
-	}
-	private void spawnCommand(List<String> tokens) {
-		String type = tokens.get(1);
-		try {
-			Engine.entities.add(Game.build(type, mouseAt()));
-		} catch (RuntimeException e) {
-			System.err.println(e.getMessage());
-		}
-	}
-
-	private Vector2 mouseAt() {
-		ViewPort viewPort = Players.get(0).getViewPort();
-		return mouseOrigin.cpy().scl(1 / viewPort.getScale()).add(viewPort.cameraX, viewPort.cameraY);
-	}
-
-	private void addDeveloperHotkey(int keycode, Runnable runnable) {
-		KeyboardToggle keyboardToggle = new KeyboardToggle(keycode);
-		inputMultiplexer.addProcessor(keyboardToggle);
-		Trigger trigger = new Trigger(keyboardToggle);
-		trigger.addListener(runnable);
 	}
 
 	@Override
@@ -305,20 +178,13 @@ public class Dungeon extends ApplicationAdapter {
 			}));
 		}
 
-		if (drawProfiler) {
-			stopWatch.start();
-			SpriteBatch batch = new SpriteBatch();
-			batch.begin();
-			profilerWidget.draw(batch);
-			batch.end();
-			profilerSampler.sample((int) stopWatch.getAndReset());
-		}
+		devTools.draw();
 
 		if (Players.count() > 0) {
 			movementSampler.sample((int) Players.get(0).getAvatar().getMovement().len());
 		}
 
-		this.frame += 1;
+		this.frame++;
 	}
 
 	@Override
