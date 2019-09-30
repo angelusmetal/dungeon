@@ -39,9 +39,13 @@ public class SceneStage implements RenderStage {
 			e1.getOrigin().x > e2.getOrigin().x ? 1 : 0;
 
 	private final ViewPort viewPort;
+	/** Output (scaled) buffer */
 	private final ViewPortBuffer output;
+	/** Base (unlit) buffer */
 	private final ViewPortBuffer base;
+	/** Holds the currently rendered light mask*/
 	private final ViewPortBuffer lights;
+	/** Holds the currently rendered light */
 	private final ViewPortBuffer current;
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
@@ -99,6 +103,7 @@ public class SceneStage implements RenderStage {
 		this.shadowRenderer.put(ShadowType.CIRCLE, this::circleShadow);
 		this.shadowRenderer.put(ShadowType.RECTANGLE, this::rectangleShadow);
 		this.shapeRenderer = new ShapeRenderer();
+		this.shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
 	@Override
@@ -119,8 +124,14 @@ public class SceneStage implements RenderStage {
 		maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize);
 		wallY = maxY + 1;
 
+		current.projectToViewPort();
+		lights.projectToZero();
+		shapeRenderer.setProjectionMatrix(shapeRenderer.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.cameraWidth, viewPort.cameraHeight));
+		output.projectToZero();
+
 		if (drawTiles) {
 			// Draw tiles
+			base.projectToViewPort();
 			base.render(this::drawFloorTiles);
 		} else {
 			base.render(batch -> {
@@ -136,6 +147,7 @@ public class SceneStage implements RenderStage {
 			});
 			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, drawShadows));
 			// Combine tiles with lighting
+			base.projectToZero();
 			base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
 		}
 		// Output lit tiles
@@ -147,6 +159,7 @@ public class SceneStage implements RenderStage {
 				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			});
+			base.projectToViewPort();
 			base.render(batch -> blendSprites.run(batch, () -> {
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
@@ -166,6 +179,7 @@ public class SceneStage implements RenderStage {
 				});
 				Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).filter(e -> e.getLight() != null).forEach(e -> drawLight(e, viewPort, false));
 				// Combine tiles with lighting
+				base.projectToZero();
 				base.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
 			}
 			// Output lit entities
@@ -173,6 +187,7 @@ public class SceneStage implements RenderStage {
 		}
 
 		// Draw flares
+		output.projectToViewPort();
 		output.render(batch -> combineLights.run(batch, () -> {
 			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
@@ -201,7 +216,7 @@ public class SceneStage implements RenderStage {
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
 				TextureRegion textureRegion = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true);
-				batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				batch.draw(textureRegion, x * tSize, y * tSize, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 				Game.getLevel().setDiscovered(x, y);
 			}
 		}
@@ -220,10 +235,10 @@ public class SceneStage implements RenderStage {
 				// If it partially occludes a non-solid tile, it is rendered semi-transparent
 				if (!Game.getLevel().isSolid(x, y + 1)) {
 					batch.setColor(1, 1, 1, 0.8f);
-					batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+					batch.draw(textureRegion, x * tSize, y * tSize, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 					batch.setColor(1, 1, 1, 1);
 				} else {
-					batch.draw(textureRegion, (x * tSize - viewPort.cameraX), (y * tSize - viewPort.cameraY), textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+					batch.draw(textureRegion, x * tSize, y * tSize, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 				}
 				Game.getLevel().setDiscovered(x, y);
 			}
@@ -285,12 +300,7 @@ public class SceneStage implements RenderStage {
 		float width = blocker.getBody().getBoundingBox().x * attenuation;
 		float height = width / 3 * attenuation;
 
-		viewPort.draw(batch,
-				shadow,
-				blocker.getBody().getBottomLeft().x,
-				blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET,
-				width,
-				height);
+		batch.draw(shadow, blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
 
 		// Draw projected shadow
 		// TODO double check whether we still need origin & zpos here
@@ -300,8 +310,8 @@ public class SceneStage implements RenderStage {
 		batch.setColor(shadowColor);
 		batch.draw(
 				shadow,
-				blocker.getOrigin().x - viewPort.cameraX,
-				blocker.getOrigin().y /*- width / 2*/ - viewPort.cameraY,
+				blocker.getOrigin().x,
+				blocker.getOrigin().y /*- width / 2*/,
 				0,
 				width / 2,
 				width,
@@ -331,12 +341,7 @@ public class SceneStage implements RenderStage {
 		float width = (right - left) * attenuation;
 		float height = width / 3 * attenuation;
 
-		viewPort.draw(batch,
-				shadow,
-				left,
-				bottom + VERTICAL_OFFSET,
-				width,
-				height);
+		batch.draw(shadow, left, bottom + VERTICAL_OFFSET, width, height);
 		batch.end();
 
 		// Draw entity in shadow
@@ -452,13 +457,12 @@ public class SceneStage implements RenderStage {
 		shapeRenderer.setColor(color);
 		float x1, x2, x3, y1, y2, y3;
 		for (int i = 0; i < shadowVertexes.length - 5; i += 2) {
-			// TODO Why do we need to multiply by scale here?
-			x1 = (shadowVertexes[i] - viewPort.cameraX) * viewPort.getScale();
-			y1 = (shadowVertexes[i+1] - viewPort.cameraY) * viewPort.getScale();
-			x2 = (shadowVertexes[i+2] - viewPort.cameraX) * viewPort.getScale();
-			y2 = (shadowVertexes[i+3] - viewPort.cameraY) * viewPort.getScale();
-			x3 = (shadowVertexes[i+4] - viewPort.cameraX) * viewPort.getScale();
-			y3 = (shadowVertexes[i+5] - viewPort.cameraY) * viewPort.getScale();
+			x1 = shadowVertexes[i];
+			y1 = shadowVertexes[i+1];
+			x2 = shadowVertexes[i+2];
+			y2 = shadowVertexes[i+3];
+			x3 = shadowVertexes[i+4];
+			y3 = shadowVertexes[i+5];
 			shapeRenderer.triangle(x1, y1, x2, y2, x3, y3);
 		}
 		shapeRenderer.end();

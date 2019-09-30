@@ -1,12 +1,8 @@
 package com.dungeon.engine.viewport;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 
 public class ViewPort {
@@ -38,36 +34,13 @@ public class ViewPort {
 		this.cameraHeight = (int) (height / scale);
 	}
 
-	public void draw(SpriteBatch batch, TextureRegion textureRegion, float x, float y, float width, float height) {
-		batch.draw(
-				textureRegion,
-				(x - cameraX),
-				(y - cameraY),
-				width,
-				height);
-	}
-
-	public void drawEntity(SpriteBatch batch, Entity entity) {
-		TextureRegion frame = entity.getFrame();
-		batch.draw(
-				frame,
-				(int) (entity.getOrigin().x - cameraX) - entity.getDrawOffset().x,
-				(int) (entity.getOrigin().y - cameraY) - entity.getDrawOffset().y + entity.getZPos(),
-				entity.getDrawOffset().x,
-				entity.getDrawOffset().y,
-				frame.getRegionWidth(),
-				frame.getRegionHeight(),
-				entity.getDrawScale().x,
-				entity.getDrawScale().y,
-				entity.getRotation());
-	}
-
+	// TODO this method doesn't belong here
 	public void draw(SpriteBatch batch, Texture texture, float x, float y, float diameter, float rotation) {
 		float radius = diameter / 2f;
 		batch.draw(
 				texture,
-				(x - cameraX) - radius,
-				(y - cameraY) - radius,
+				x - radius,
+				y - radius,
 				radius,
 				radius,
 				diameter,
@@ -81,11 +54,6 @@ public class ViewPort {
 				texture.getHeight(),
 				false,
 				false);
-	}
-
-	public void draw(SpriteBatch batch, BitmapFont font, float x, float y, String text, Color color) {
-		font.setColor(color);
-		font.draw(batch, text, x - cameraX, y - cameraY);
 	}
 
 	public boolean isInViewPort(Entity e) {

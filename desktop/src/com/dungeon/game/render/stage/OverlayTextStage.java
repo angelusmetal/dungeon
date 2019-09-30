@@ -46,6 +46,7 @@ public class OverlayTextStage implements RenderStage {
 			Gdx.gl.glBlendFuncSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
 			// TODO only draw what's on the viewport
 			// Iterate texts in render order and draw them
+			labelBuffer.projectToViewPort();
 			Engine.overlayTexts.stream()/*.filter(viewPort::isInViewPort)*/.sorted(comp).forEach(text -> {
 				// Each text is rendered first in a separate buffer
 				labelBuffer.render(batch -> {
@@ -53,6 +54,7 @@ public class OverlayTextStage implements RenderStage {
 					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 					text.draw(batch, viewPort);
 				});
+				viewportBuffer.projectToZero();
 				viewportBuffer.render(batch -> {
 					Gdx.gl.glBlendFunc( GL20.GL_ONE,  GL20.GL_ONE_MINUS_SRC_ALPHA);
 					if (text.hasOutline()) {

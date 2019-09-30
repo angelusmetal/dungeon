@@ -47,20 +47,20 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 //		viewPort.draw(batch, GameState.getTilesetManager().getHudTileset().HEALTH_BAR, getOrigin().x - getBoundingBox().x / 2, getOrigin().y + getBoundingBox().y / 2 + 4 + z, getBoundingBox().x * health/maxHealth, 2);
 	}
 
-	protected void say(String text) {
+	public void say(String text) {
 		if (Engine.time() > nextTalk) {
 			nextTalk = Engine.time() + 4;
 			Game.say(this, text);
 		}
 	}
 
-	protected void say(String text, float chance) {
+	public void say(String text, float chance) {
 		if (Rand.chance(chance)) {
 			say(text);
 		}
 	}
 
-	protected void say(List<String> text) {
+	public void say(List<String> text) {
 		if (Engine.time() > nextTalk) {
 			nextTalk = Engine.time() + 4;
 			Game.say(this, Rand.pick(text));

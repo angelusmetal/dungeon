@@ -7,6 +7,7 @@ import com.dungeon.engine.util.CyclicSampler;
 import com.dungeon.engine.util.StopWatch;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Dungeon;
+import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.player.Player;
 
 import java.util.ArrayList;
@@ -62,18 +63,18 @@ public class ViewPortRenderer implements Disposable {
 		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
-		pipeline.add(new Stage(sceneStage, Dungeon.sceneSampler));
-		pipeline.add(new Stage(healthbarStage, Dungeon.healthbarSampler));
-		pipeline.add(new Stage(collisionStage, Dungeon.collisionSampler));
-		pipeline.add(new Stage(noiseStage, Dungeon.noiseSampler));
-		pipeline.add(new Stage(motionBlurStage, Dungeon.motionBlurSampler));
-		pipeline.add(new Stage(overlayTextStage, Dungeon.overlayTextSampler));
-		pipeline.add(new Stage(playerArrowsStage, Dungeon.playerArrowsSampler));
-		pipeline.add(new Stage(hudStage, Dungeon.hudSampler));
-		pipeline.add(new Stage(miniMapStage, Dungeon.miniMapSampler));
-		pipeline.add(new Stage(titleStage, Dungeon.titleSampler));
-		pipeline.add(new Stage(scaleStage, Dungeon.scaleSampler));
-		pipeline.add(new Stage(consoleStage, Dungeon.consoleSampler));
+		pipeline.add(new Stage(sceneStage, DevTools.sceneSampler));
+		pipeline.add(new Stage(healthbarStage, DevTools.healthbarSampler));
+		pipeline.add(new Stage(collisionStage, DevTools.collisionSampler));
+		pipeline.add(new Stage(noiseStage, DevTools.noiseSampler));
+		pipeline.add(new Stage(motionBlurStage, DevTools.motionBlurSampler));
+		pipeline.add(new Stage(overlayTextStage, DevTools.overlayTextSampler));
+		pipeline.add(new Stage(playerArrowsStage, DevTools.playerArrowsSampler));
+		pipeline.add(new Stage(hudStage, DevTools.hudSampler));
+		pipeline.add(new Stage(miniMapStage, DevTools.miniMapSampler));
+		pipeline.add(new Stage(titleStage, DevTools.titleSampler));
+		pipeline.add(new Stage(scaleStage, DevTools.scaleSampler));
+		pipeline.add(new Stage(consoleStage, DevTools.consoleSampler));
 
 		// Disable some default disabled
 		healthbarStage.toggle();

@@ -152,6 +152,7 @@ public class Game {
 	public static void startNewGame(List<Player> players) {
 		Players.set(players);
 		levelCount = 0;
+		getCommandConsole().setOutput(Players.get(0).getConsole()::log);
 		startNewLevel();
 	}
 

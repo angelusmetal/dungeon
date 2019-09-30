@@ -119,6 +119,6 @@ public class OverlayText {
         GlyphLayout local = (length < text.length())
                 ? new GlyphLayout(font, text.substring(0, length))
                 : layout;
-        font.draw(batch, local, origin.x - viewPort.cameraX - layout.width / 2, origin.y - viewPort.cameraY - layout.height / 2);
+        font.draw(batch, local, origin.x - layout.width / 2, origin.y - layout.height / 2);
     }
 }
