@@ -1,5 +1,6 @@
 package com.dungeon.game.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,6 +14,7 @@ public class HeartWidget extends AbstractWidget implements Widget {
 
 	private final float healthPerContainer;
 	private final Animation<TextureRegion> hearts;
+	private final TextureRegion energy;
 	private final Player player;
 	private final int heartTab;
 
@@ -23,6 +25,7 @@ public class HeartWidget extends AbstractWidget implements Widget {
 	public HeartWidget(Player player, float healthPerContainer) {
 		this.healthPerContainer = healthPerContainer;
 		hearts = Resources.animations.get("heart_container");
+		energy = Resources.animations.get("pixel").getKeyFrame(0f);
 		this.player = player;
 		heartTab = hearts.getKeyFrame(0).getRegionWidth() + 2;
 		height = hearts.getKeyFrame(0).getRegionHeight();
@@ -30,6 +33,7 @@ public class HeartWidget extends AbstractWidget implements Widget {
 
 	@Override public void draw(SpriteBatch batch) {
 		int containers = (int) Math.ceil(player.getAvatar().getMaxHealth() / healthPerContainer);
+		float energyFill = player.getAvatar().getEnergy() / player.getAvatar().getMaxEnergy();
 		int newWidth = hearts.getKeyFrame(0).getRegionWidth() * containers + 2 * (containers - 1);
 		if (newWidth != width) {
 			width = newWidth;
@@ -41,5 +45,8 @@ public class HeartWidget extends AbstractWidget implements Widget {
 			batch.draw(heart, x + i * heartTab, y);
 			remaining -= healthPerContainer;
 		}
+		batch.setColor(Color.BLUE);
+		batch.draw(energy, x, y - 4, width * energyFill, 2);
+		batch.setColor(Color.WHITE);
 	}
 }

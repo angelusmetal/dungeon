@@ -52,4 +52,12 @@ public abstract class Weapon {
 	public void setAnimation(Animation<TextureRegion> animation) {
 		this.animation = animation;
 	}
+
+	public float attackCooldown() {
+		return 0.25f;
+	}
+
+	public float energyDrain() {
+		return 20;
+	}
 }

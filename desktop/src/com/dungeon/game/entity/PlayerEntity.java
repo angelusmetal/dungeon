@@ -10,6 +10,7 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
@@ -22,8 +23,16 @@ public abstract class PlayerEntity extends CreatureEntity {
 	private Metronome stepMetronome;
 	private float slowUntil = 0f;
 
+	/** Current energy */
+	private float energy = 100;
+	/** Maximum energy recovery */
+	private float maxEnergy = 100;
+	/** How much energy is recovered per second */
+	private float energyRecovery = 20;
+
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
+		// Spawn cute dust clouds when walking
 		EntityPrototype dust_cloud = Resources.prototypes.get("dust_cloud_2");
 		stepMetronome = new Metronome(0.4f, () -> Engine.entities.add(new Entity(dust_cloud, this.getOrigin().cpy().add(0, 1))));
 	}
@@ -52,6 +61,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 			updateAnimation(getWalkAnimation());
 			stepMetronome.doAtInterval();
 		}
+		energy = Math.min(energy + energyRecovery * Engine.frameTime(), maxEnergy);
 	}
 
 	@Override
@@ -61,11 +71,16 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	public void fire() {
 		if (!expired) {
-			actionGate.attempt(0.25f, () -> {
-				getPlayer().getWeapon().spawnEntities(getBody().getCenter(), getAim());
-				updateAnimation(getAttackAnimation());
-				slowUntil = Engine.time() + 0.25f;
-			});
+			Weapon weapon = getPlayer().getWeapon();
+			// Attempt attack; will succeed only if cooldown is ready
+			if (energy > weapon.energyDrain()) {
+				actionGate.attempt(weapon.attackCooldown(), () -> {
+					weapon.spawnEntities(getBody().getCenter(), getAim());
+					updateAnimation(getAttackAnimation());
+					slowUntil = Engine.time() + weapon.attackCooldown();
+					energy -= weapon.energyDrain();
+				});
+			}
 		}
 	}
 
@@ -96,5 +111,13 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	public Vector2 getEffectiveSelfImpulse() {
 		return Engine.time() < slowUntil ? Vector2.Zero : getSelfImpulse();
+	}
+
+	public float getEnergy() {
+		return energy;
+	}
+
+	public float getMaxEnergy() {
+		return maxEnergy;
 	}
 }
