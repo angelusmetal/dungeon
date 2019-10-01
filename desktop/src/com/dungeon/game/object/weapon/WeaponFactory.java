@@ -30,7 +30,7 @@ public class WeaponFactory {
 	private Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Supplier<Weapon> weaponSupplier) {
 		Weapon weapon = weaponSupplier.get();
 		return new DungeonEntity(prototype, origin) {
-			@Override public boolean onEntityCollision(Entity other) {
+			@Override protected boolean onEntityCollision(Entity other) {
 				if (!expired && other instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) other;
 					weapon.setAnimation(getAnimation());

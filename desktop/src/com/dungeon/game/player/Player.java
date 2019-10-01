@@ -1,6 +1,8 @@
 package com.dungeon.game.player;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.OldConsole;
@@ -8,17 +10,19 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.CatStaffWeapon;
+import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.VenomStaffWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.controller.PlayerControlBundle;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.render.stage.ViewPortRenderer;
+import com.dungeon.game.resource.Resources;
 
 public class Player implements Disposable {
 
 	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
-	private static Weapon[] PLAYER_WEAPONS = {new CatStaffWeapon(), new VenomStaffWeapon(), new VenomStaffWeapon()};
 
 	private int playerId;
 	private int characterId;
@@ -39,8 +43,30 @@ public class Player implements Disposable {
 		this.control = control;
 		this.stats = new PlayerStats();
 		this.color = PLAYER_COLORS[playerId];
-		this.weapon = PLAYER_WEAPONS[characterId];
+		this.weapon = createWeapon(playerId);
 		this.console = new OldConsole(10, 3f);
+	}
+
+	private Weapon createWeapon(int playerId) {
+		// TODO This is awful...
+		if (playerId == 0) {
+			Weapon w = new CatStaffWeapon();
+			Animation<TextureRegion> animation = new WeaponFactory().catStaff(Vector2.Zero, Resources.prototypes.get("weapon_cat_staff")).getAnimation();
+			w.setAnimation(animation);
+			return w;
+		} else if (playerId == 1) {
+			Weapon w = new VenomStaffWeapon();
+			Animation<TextureRegion> animation = new WeaponFactory().greenStaff(Vector2.Zero, Resources.prototypes.get("weapon_green_staff")).getAnimation();
+			w.setAnimation(animation);
+			return w;
+		} else if (playerId == 2) {
+			Weapon w = new SwordWeapon();
+			Animation<TextureRegion> animation = new WeaponFactory().sword(Vector2.Zero, Resources.prototypes.get("weapon_sword")).getAnimation();
+			w.setAnimation(animation);
+			return w;
+		}
+		// Hmmm
+		return new SwordWeapon();
 	}
 
 	/**
