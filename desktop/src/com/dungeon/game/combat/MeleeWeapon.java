@@ -50,14 +50,16 @@ public abstract class MeleeWeapon extends Weapon {
 	@Override
 	public void spawnEntities(Vector2 origin, Vector2 aim) {
 		Vector2 hitOrigin = shift(origin, aim, getSpawnDistance());
-		Engine.entities.add(createSlash(hitOrigin, aim));
+		Engine.entities.add(createSlash(origin, aim));
 		Engine.entities.add(createHit(hitOrigin));
 	}
 
 	private Entity createHit(Vector2 origin) {
-		return new Projectile(origin, hit, this::createAttack) {
+		Projectile projectile = new Projectile(origin, hit, this::createAttack) {
 			@Override protected void onTileCollision(boolean horizontal) {}
 		};
+		projectile.spawn();
+		return projectile;
 	}
 
 	private Entity createSlash(Vector2 origin, Vector2 aim) {

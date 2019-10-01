@@ -27,7 +27,7 @@ public class SwordWeapon extends MeleeWeapon {
 
 	@Override
 	protected Vector2 getHitBox() {
-		return new Vector2(20, 20);
+		return new Vector2(32, 32);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class SwordWeapon extends MeleeWeapon {
 
 	@Override
 	protected float getSpawnDistance() {
-		return 20;
+		return 16;
 	}
 
 	private static Supplier<Float> damageSupplier() {

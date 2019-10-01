@@ -22,19 +22,17 @@ public class EntityMover {
 		float speed = entity.getSpeed();
 
 		// Update movement with self impulse
-		float oldLength = movement.len();
-		movement.add(entity.getSelfImpulse().x * speed, entity.getSelfImpulse().y * speed);
+		movement.add(entity.getEffectiveSelfImpulse().x * speed, entity.getEffectiveSelfImpulse().y * speed);
+
+		// Decrease speed if on floor due to friction
+		if (entity.getZPos() == 0) {
+			movement.scl(1 - entity.getFriction());
+		}
 
 		if (movement.len2() > 0) {
-			float newLength = movement.len();
-
 			// Even though an impulse can make the movement exceed the speed, selfImpulse should not help exceed it
 			// (otherwise, it would accelerate indefinitely), but it can still help decrease it
-			if (newLength > oldLength && newLength > speed) {
-				float diff = newLength - speed;
-				frameMovement.set(entity.getSelfImpulse()).setLength(diff);
-				movement.sub(frameMovement);
-			}
+			movement.clamp(0f, speed);
 
 			frameMovement.set(movement).scl(Engine.frameTime());
 
@@ -92,9 +90,6 @@ public class EntityMover {
 					detectEntityCollision(entity, stepY);
 				}
 			}
-
-			// Decrease speed
-			movement.scl(1 / (1 + (Engine.frameTime() * entity.getFriction())));
 
 			// Round out very small values
 			if (Math.abs(movement.x) < 0.1f) {

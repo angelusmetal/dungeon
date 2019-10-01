@@ -52,9 +52,6 @@ public class Slime extends CreatureEntity {
 					updateAnimation(factory.blinkAnimation);
 				}
 			}
-		} else {
-			// No friction while in the air
-			friction = z > 0 ? 0 : 8;
 		}
 	}
 

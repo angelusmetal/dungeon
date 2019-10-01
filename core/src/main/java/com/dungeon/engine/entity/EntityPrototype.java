@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.dungeon.engine.util.Util.clamp;
+
 public class EntityPrototype {
 	Supplier<Animation<TextureRegion>> animation = () -> null;
 	boolean offsetAnimation;
@@ -103,7 +105,7 @@ public class EntityPrototype {
 	}
 
 	public EntityPrototype bounciness(float bounciness) {
-		this.bounciness = Util.clamp(bounciness);
+		this.bounciness = clamp(bounciness);
 		return this;
 	}
 
@@ -158,7 +160,8 @@ public class EntityPrototype {
 	}
 
 	public EntityPrototype friction(float friction) {
-		this.friction = () -> friction;
+		final float f = clamp(friction);
+		this.friction = () -> f;
 		return this;
 	}
 

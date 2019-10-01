@@ -47,7 +47,6 @@ public class IceSlime extends CreatureEntity {
 				shout(attackPhrases, 0.02f);
 			} else {
 				nextThink = Engine.time() + Rand.between(2, 3);
-				speed = 5f;
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
