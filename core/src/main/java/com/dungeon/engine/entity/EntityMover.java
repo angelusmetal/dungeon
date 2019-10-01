@@ -23,7 +23,7 @@ public class EntityMover {
 
 		// Update movement with self impulse
 		float oldLength = movement.len();
-		movement.add(entity.getSelfImpulse().x * speed, entity.getSelfImpulse().y * speed);
+		movement.add(entity.getEffectiveSelfImpulse().x * speed, entity.getEffectiveSelfImpulse().y * speed);
 
 		if (movement.len2() > 0) {
 			float newLength = movement.len();

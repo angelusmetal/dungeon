@@ -296,6 +296,11 @@ public class Entity implements Drawable, Movable {
 		return selfImpulse;
 	}
 
+	/** This method returns the effective self impulse (after all gameplay modifiers) */
+	public Vector2 getEffectiveSelfImpulse() {
+		return selfImpulse;
+	}
+
 	public void impulse(Vector2 vector) {
 		movement.add(vector);
 		onMovementUpdate();

@@ -20,6 +20,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	private int playerId;
 	private Metronome stepMetronome;
+	private float slowUntil = 0f;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
@@ -61,9 +62,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public void fire() {
 		if (!expired) {
 			actionGate.attempt(0.25f, () -> {
-				// FIXME Adding y=2 to prevent projectile from spawning inside bottom wall
 				getPlayer().getWeapon().spawnEntities(getBody().getCenter(), getAim());
 				updateAnimation(getAttackAnimation());
+				slowUntil = Engine.time() + 0.25f;
 			});
 		}
 	}
@@ -93,4 +94,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
+	public Vector2 getEffectiveSelfImpulse() {
+		return Engine.time() < slowUntil ? Vector2.Zero : getSelfImpulse();
+	}
 }
