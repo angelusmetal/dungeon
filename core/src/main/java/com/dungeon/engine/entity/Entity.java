@@ -39,6 +39,7 @@ public class Entity implements Drawable, Movable {
 	 * second.
 	 */
 	private final Vector2 selfImpulse = new Vector2();
+	private final boolean canSelfImpulse = true;
 	/** Movement vector */
 	private final Vector2 movement = new Vector2();
 	/** Physics body */
@@ -71,7 +72,7 @@ public class Entity implements Drawable, Movable {
 	protected Light flare;
 	protected DrawContext drawContext;
 	private final Vector2 drawOffset;
-	private Vector2 drawScale = new Vector2(1, 1);
+	protected Vector2 drawScale = new Vector2(1, 1);
 	private float rotation = 0;
 
 	/** Aspects */
