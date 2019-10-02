@@ -28,8 +28,8 @@ public class StickAnalogControl extends AnalogControl implements ControllerListe
 	 * @param xAxis index of the X axis of the controller. If negative, the axis will be inverted.
 	 * @param yAxis index of the Y axis of the controller. If negative, the axis will be inverted.
 	 */
-	public StickAnalogControl(int xAxis, int yAxis) {
-		this(xAxis, yAxis, DEFAULT_MIN_AXIS_THRESHOLD);
+	public StickAnalogControl(int xAxis, int yAxis, boolean invertX, boolean invertY) {
+		this(xAxis, yAxis, invertX, invertY, DEFAULT_MIN_AXIS_THRESHOLD);
 	}
 
 	/**
@@ -40,11 +40,11 @@ public class StickAnalogControl extends AnalogControl implements ControllerListe
 	 * @param minThreshold indicates the minimum axis threshold; any value below that will be truncated to zero (center
 	 *                     dead zone)
 	 */
-	public StickAnalogControl(int xAxis, int yAxis, float minThreshold) {
+	public StickAnalogControl(int xAxis, int yAxis, boolean invertX, boolean invertY, float minThreshold) {
 		this.xAxis = Math.abs(xAxis);
 		this.yAxis = Math.abs(yAxis);
-		this.xMultiplier = this.xAxis / xAxis;
-		this.yMultiplier = this.yAxis / yAxis;
+		this.xMultiplier = invertX ? -1 : 1;
+		this.yMultiplier = invertY ? -1 : 1;
 		this.direction = new Vector2();
 		this.minThreshold = minThreshold;
 	}

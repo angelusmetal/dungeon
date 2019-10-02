@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.Engine;
 import com.dungeon.game.Game;
 import com.dungeon.game.character.player.PlayerCharacterFactory;
-import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.effect.FadeEffect;
 import com.dungeon.game.resource.Resources;
@@ -30,10 +30,10 @@ public class CharacterSelection {
 	 * control bundle.
 	 */
 	public static class Slot {
-		public PlayerControlBundle control;
+		public ControlBundle control;
 		int playerId;
 		int characterId = 0;
-		Slot(PlayerControlBundle control, int playerId) {
+		Slot(ControlBundle control, int playerId) {
 			this.control = control;
 			this.playerId = playerId;
 		}
@@ -52,7 +52,7 @@ public class CharacterSelection {
 		batch.dispose();
 	}
 
-	public boolean addControl(PlayerControlBundle control) {
+	public boolean addControl(ControlBundle control) {
 		if (slots.size() < 4) {
 			slots.add(new Slot(control, currentPlayer++));
 			return true;
@@ -61,21 +61,21 @@ public class CharacterSelection {
 		}
 	}
 
-	public void selectNextCharacter(PlayerControlBundle control) {
+	public void selectNextCharacter(ControlBundle control) {
 		getSlot(control).ifPresent(s -> s.characterId = (s.characterId + 1) % CHARACTER_COUNT);
 	}
 
-	public void selectPrevCharacter(PlayerControlBundle control) {
+	public void selectPrevCharacter(ControlBundle control) {
 		getSlot(control).ifPresent(s -> s.characterId = (s.characterId - 1 + CHARACTER_COUNT) % CHARACTER_COUNT);
 	}
 
-	public void confirmSelection(PlayerControlBundle control) {
+	public void confirmSelection(ControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
 		List<Player> players = slots.stream().map(slot -> new Player(slot.playerId, slot.characterId, slot.control)).collect(Collectors.toList());
 		Engine.renderEffects.add(FadeEffect.fadeOut(Engine.time(), () -> Game.startNewGame(players)));
 	}
 
-	private Optional<Slot> getSlot(PlayerControlBundle control) {
+	private Optional<Slot> getSlot(ControlBundle control) {
 		for (Slot s : slots) {
 			if (s.control == control) {
 				return Optional.of(s);

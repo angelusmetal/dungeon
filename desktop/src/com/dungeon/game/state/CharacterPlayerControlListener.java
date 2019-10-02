@@ -1,15 +1,16 @@
 package com.dungeon.game.state;
 
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.controller.AbstractControlBundleListener;
+import com.dungeon.game.controller.ControlBundle;
+import com.dungeon.game.controller.ControlBundleListener;
 import com.dungeon.game.entity.PlayerEntity;
 
-public class CharacterPlayerControlListener implements PlayerControlBundle.Listener {
+public class CharacterPlayerControlListener extends AbstractControlBundleListener implements ControlBundleListener {
 
-	private final PlayerControlBundle control;
+	private final ControlBundle control;
 
-	public CharacterPlayerControlListener(PlayerControlBundle control) {
+	public CharacterPlayerControlListener(ControlBundle control) {
 		this.control = control;
 	}
 
@@ -22,54 +23,20 @@ public class CharacterPlayerControlListener implements PlayerControlBundle.Liste
 	}
 
 	@Override
-	public void povTrigger(PovDirection pov) {
-
-	}
-
-	@Override
-	public void toggle1(boolean on) {
-
-	}
-
-	@Override
-	public void toggle2(boolean on) {
-
-	}
-
-	@Override
-	public void toggle3(boolean on) {
-
-	}
-
-	@Override
-	public void toggle4(boolean on) {
-
-	}
-
-	@Override
-	public void trigger1() {
+	public void updateAim(Vector2 vector) {
 		PlayerEntity character = control.getEntity();
 		if (character != null) {
-			character.fire();
+			character.aim(vector);
+			character.setFiring(vector.len() > 0.5);
 		}
 	}
 
 	@Override
-	public void trigger2() {
+	public void triggerA() {
 		PlayerEntity character = control.getEntity();
 		if (character != null) {
 			character.interact();
 		}
-	}
-
-	@Override
-	public void trigger3() {
-		trigger1();
-	}
-
-	@Override
-	public void trigger4() {
-		trigger1();
 	}
 
 }

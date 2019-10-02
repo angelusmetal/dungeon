@@ -26,13 +26,13 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 		canBeHurt = true;
 	}
 
-	@Override
-	public void think() {
-		if (getSelfImpulse().len() > 0.5) {
-			aim(getSelfImpulse());
-		}
-	}
-
+//	@Override
+//	public void think() {
+//		if (getSelfImpulse().len() > 0.5) {
+//			aim(getSelfImpulse());
+//		}
+//	}
+//
 	public void aim(Vector2 vector) {
 		aim.set(vector);
 	}

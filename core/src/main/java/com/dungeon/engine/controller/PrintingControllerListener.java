@@ -1,4 +1,4 @@
-package com.dungeon.game;
+package com.dungeon.engine.controller;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;

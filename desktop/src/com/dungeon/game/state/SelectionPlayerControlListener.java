@@ -2,24 +2,21 @@ package com.dungeon.game.state;
 
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.controller.AbstractControlBundleListener;
+import com.dungeon.game.controller.ControlBundleListener;
+import com.dungeon.game.controller.ControlBundle;
 
-public class SelectionPlayerControlListener implements PlayerControlBundle.Listener {
+public class SelectionPlayerControlListener extends AbstractControlBundleListener implements ControlBundleListener {
 
-	private final PlayerControlBundle control;
+	private final ControlBundle control;
 	private final CharacterSelection characterSelection;
 	private boolean added;
 
-	public SelectionPlayerControlListener(PlayerControlBundle control, CharacterSelection characterSelection) {
+	public SelectionPlayerControlListener(ControlBundle control, CharacterSelection characterSelection) {
 		this.control = control;
 		this.characterSelection = characterSelection;
 	}
 	
-	@Override
-	public void updateDirection(Vector2 vector) {
-
-	}
-
 	@Override
 	public void povTrigger(PovDirection pov) {
 		if (pov == PovDirection.east) {
@@ -30,27 +27,7 @@ public class SelectionPlayerControlListener implements PlayerControlBundle.Liste
 	}
 
 	@Override
-	public void toggle1(boolean on) {
-
-	}
-
-	@Override
-	public void toggle2(boolean on) {
-
-	}
-
-	@Override
-	public void toggle3(boolean on) {
-
-	}
-
-	@Override
-	public void toggle4(boolean on) {
-
-	}
-
-	@Override
-	public void trigger1() {
+	public void triggerA() {
 		if (!added) {
 			added = characterSelection.addControl(control);
 		} else {
@@ -59,18 +36,4 @@ public class SelectionPlayerControlListener implements PlayerControlBundle.Liste
 		}
 	}
 
-	@Override
-	public void trigger2() {
-
-	}
-
-	@Override
-	public void trigger3() {
-
-	}
-
-	@Override
-	public void trigger4() {
-
-	}
 }

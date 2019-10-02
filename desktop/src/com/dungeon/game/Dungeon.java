@@ -6,49 +6,35 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
-import com.dungeon.engine.console.AbstractInputProcessor;
 import com.dungeon.engine.console.InputProcessorStack;
 import com.dungeon.engine.controller.ControllerConfig;
-import com.dungeon.engine.controller.analog.DpadAnalogControl;
-import com.dungeon.engine.controller.analog.StickAnalogControl;
-import com.dungeon.engine.controller.toggle.KeyboardToggle;
-import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.render.effect.RenderEffect;
-import com.dungeon.engine.ui.widget.SamplerVisualizer;
-import com.dungeon.engine.ui.widget.VLayout;
 import com.dungeon.engine.util.ConfigUtil;
-import com.dungeon.engine.util.CyclicSampler;
 import com.dungeon.engine.util.StopWatch;
-import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.CharacterViewPortTracker;
-import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.controller.ControllerPlayerControlBundle;
-import com.dungeon.game.controller.KeyboardPlayerControlBundle;
-import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.controller.ControllerControlBundle;
+import com.dungeon.game.controller.KeyboardControlBundle;
+import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.developer.DevCommands;
 import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
-import com.dungeon.game.render.stage.ViewPortRenderer;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.SelectionPlayerControlListener;
 import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigValue;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,35 +81,12 @@ public class Dungeon extends ApplicationAdapter {
 			inputStack.pop();
 		});
 
-		Map<String, ControllerConfig> controllerConfigs = ConfigUtil.getListOf(configuration, "controllers", ControllerConfig.class)
-				.stream()
-				.collect(Collectors.toMap(ControllerConfig::getId, Function.identity()));
-
-		for (Controller controller : Controllers.getControllers()) {
-			System.out.println("Found controller: " + controller.getName());
-			ControllerConfig controllerConfig = controllerConfigs.getOrDefault(controller.getName(), ControllerConfig.DEFAULT);
-			DpadAnalogControl povControl = new DpadAnalogControl(controllerConfig.povControl);
-			StickAnalogControl analogControl = new StickAnalogControl(controllerConfig.analogControlX, controllerConfig.analogControlY);
-			controller.addListener(povControl);
-			controller.addListener(analogControl);
-		}
-
 		Game.initialize(configuration);
 
 		characterSelection = new CharacterSelection();
 		characterSelection.initialize();
 
-		// Add keyboard controller
-		PlayerControlBundle keyboardControl = new KeyboardPlayerControlBundle(inputMultiplexer);
-		keyboardControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(keyboardControl));
-		keyboardControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
-
-		// Add an extra controller for each physical one
-		for (Controller controller : Controllers.getControllers()) {
-			PlayerControlBundle controllerControl = new ControllerPlayerControlBundle(controller);
-			controllerControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(controllerControl));
-			controllerControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(controllerControl, characterSelection));
-		}
+		configureInput();
 
 		// Add developer hotkeys
 		devTools.addDeveloperHotkeys();
@@ -133,6 +96,59 @@ public class Dungeon extends ApplicationAdapter {
 
 		// Start playing character selection music
 		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
+	}
+
+	private void configureInput() {
+		Game.initialize(configuration);
+
+		characterSelection = new CharacterSelection();
+		characterSelection.initialize();
+
+		Map<String, ControllerConfig> controllerConfigs = readControllerConfigurations();
+
+		// Add keyboard controller
+		ControlBundle keyboardControl = new KeyboardControlBundle(inputMultiplexer);
+		keyboardControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(keyboardControl));
+		keyboardControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
+
+		// Add an extra controller for each physical one
+		for (Controller controller : Controllers.getControllers()) {
+			System.out.println("Detected controller '" + controller.getName() + (controllerConfigs.containsKey(controller.getName()) ? "' and found a configuration for it" : "' but found no configuration for it"));
+			ControlBundle controllerControl = new ControllerControlBundle(controller, controllerConfigs.get(controller.getName()));
+			controllerControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(controllerControl));
+			controllerControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(controllerControl, characterSelection));
+		}
+	}
+
+	private Map<String, ControllerConfig> readControllerConfigurations() {
+		Map<String, ControllerConfig> configurations = new HashMap<>();
+		Config config = ConfigFactory.load("config.conf");
+		if (config.hasPath("controller")) {
+			Config controllerConfig = config.getConfig("controller");
+			for (Map.Entry<String, ConfigValue> entry : controllerConfig.root().entrySet()) {
+				Config current = controllerConfig.getConfig(entry.getKey());
+				ControllerConfig.Builder builder = new ControllerConfig.Builder();
+				ConfigUtil.getInteger(current, "povControl").map(builder::povControl);
+				ConfigUtil.getInteger(current, "moveAxisX").map(builder::moveAxisX);
+				ConfigUtil.getBoolean(current, "moveAxisXInvert").map(builder::moveAxisXInvert);
+				ConfigUtil.getInteger(current, "moveAxisY").map(builder::moveAxisY);
+				ConfigUtil.getBoolean(current, "moveAxisYInvert").map(builder::moveAxisYInvert);
+				ConfigUtil.getInteger(current, "aimAxisX").map(builder::aimAxisX);
+				ConfigUtil.getBoolean(current, "aimAxisXInvert").map(builder::aimAxisXInvert);
+				ConfigUtil.getInteger(current, "aimAxisY").map(builder::aimAxisY);
+				ConfigUtil.getBoolean(current, "aimAxisYInvert").map(builder::aimAxisYInvert);
+				ConfigUtil.getInteger(current, "buttonA").map(builder::buttonA);
+				ConfigUtil.getInteger(current, "buttonB").map(builder::buttonB);
+				ConfigUtil.getInteger(current, "buttonX").map(builder::buttonX);
+				ConfigUtil.getInteger(current, "buttonY").map(builder::buttonY);
+				ConfigUtil.getInteger(current, "buttonL1").map(builder::buttonL1);
+				ConfigUtil.getInteger(current, "buttonL2").map(builder::buttonL2);
+				ConfigUtil.getInteger(current, "buttonR1").map(builder::buttonR1);
+				ConfigUtil.getInteger(current, "buttonR2").map(builder::buttonR2);
+				configurations.put(entry.getKey(), builder.build());
+			}
+		}
+		return configurations;
 	}
 
 	private void initResources() {

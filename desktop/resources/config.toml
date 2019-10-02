@@ -20,7 +20,7 @@
     items = ["weapon_sword", "weapon_cat_staff", "weapon_green_staff"]
     itemchance = 1.0
 [rendering]
-    noiseHidth = 128
+    noiseWidth = 128
     noiseHeight = 128
     noiseGrit = 0.2
     blurOpacity = 0.2
@@ -55,16 +55,3 @@
     attackSpeed = 50        # Movement speed while attacking
     idleSpeed = 5           # Movement speed while idle
     damagePerSecond = 1     # Damage dealth per second upon contact
-
-#
-# Configuration for controllers
-#
-# povControl - POV control
-# analogControlX - X analog axis (use negative value to invert axis)
-# analogControlY - Y analog axis (use negative value to invert axis)
-#
-[[controllers]]
-    id = "Logitech RumblePad 2 USB"
-	povControl = 0
-	analogControlX = 3
-	analogControlY = -2

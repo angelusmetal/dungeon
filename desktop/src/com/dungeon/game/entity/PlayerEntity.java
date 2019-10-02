@@ -29,6 +29,8 @@ public abstract class PlayerEntity extends CreatureEntity {
 	private float maxEnergy = 100;
 	/** How much energy is recovered per second */
 	private float energyRecovery = 20;
+	/** Indicate whether this character is continuously firing */
+	private boolean firing;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
@@ -60,6 +62,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 		} else {
 			updateAnimation(getWalkAnimation());
 			stepMetronome.doAtInterval();
+		}
+		if (firing) {
+			fire();
 		}
 		energy = Math.min(energy + energyRecovery * Engine.frameTime(), maxEnergy);
 	}
@@ -119,5 +124,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	public float getMaxEnergy() {
 		return maxEnergy;
+	}
+
+	public void setFiring(boolean firing) {
+		this.firing = firing;
 	}
 }

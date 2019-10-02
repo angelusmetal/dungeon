@@ -13,7 +13,7 @@ import com.dungeon.game.combat.CatStaffWeapon;
 import com.dungeon.game.combat.SwordWeapon;
 import com.dungeon.game.combat.VenomStaffWeapon;
 import com.dungeon.game.combat.Weapon;
-import com.dungeon.game.controller.PlayerControlBundle;
+import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.weapon.WeaponFactory;
@@ -27,7 +27,7 @@ public class Player implements Disposable {
 	private int playerId;
 	private int characterId;
 	private String name;
-	private PlayerControlBundle control;
+	private ControlBundle control;
 	private ViewPort viewPort;
 	private ViewPortRenderer renderer;
 	private PlayerEntity avatar;
@@ -37,7 +37,7 @@ public class Player implements Disposable {
 	private OldConsole console;
 	private int gold;
 
-	public Player(int playerId, int characterId, PlayerControlBundle control) {
+	public Player(int playerId, int characterId, ControlBundle control) {
 		this.playerId = playerId;
 		this.characterId = characterId;
 		this.control = control;
