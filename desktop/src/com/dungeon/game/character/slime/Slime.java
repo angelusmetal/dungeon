@@ -73,15 +73,9 @@ public class Slime extends CreatureEntity {
 	}
 
 	@Override
-	protected void onHit() {
-		Engine.audio.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
-	}
-
-	@Override
 	protected void onExpire() {
 		// TODO Move this as well to conf
 		Game.createCreatureLoot(getOrigin());
-		Engine.audio.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
 	}
 
 }

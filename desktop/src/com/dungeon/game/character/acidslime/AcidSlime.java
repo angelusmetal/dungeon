@@ -72,14 +72,8 @@ public class AcidSlime extends CreatureEntity {
 	}
 
 	@Override
-	protected void onHit() {
-		Engine.audio.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
-	}
-
-	@Override
 	protected void onExpire() {
 		Game.createCreatureLoot(getOrigin());
-		Engine.audio.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
 	}
 
 	@Override

@@ -38,8 +38,6 @@ public class SlimeFactory {
 	final float damagePerSecond;
 	final float attackFrequency;
 
-	Sound soundHit = Resources.sounds.get("audio/sound/slime.ogg");
-
 	public SlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));
@@ -75,11 +73,4 @@ public class SlimeFactory {
 		return new SlimeSpawn(origin, prototype, this);
 	}
 
-	public Entity blob(Vector2 origin, EntityPrototype prototype) {
-		return new DungeonEntity(prototype, origin) {
-			@Override public void onExpire() {
-				Engine.audio.playSound(soundHit, getOrigin(), 1f, 0.05f);
-			}
-		};
-	}
 }

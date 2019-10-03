@@ -21,8 +21,6 @@ import com.dungeon.game.ui.CoinsWidget;
 
 public class FurnitureFactory {
 
-	Sound soundCoin = Resources.sounds.get("audio/sound/coin.ogg");
-	Sound soundFurnitureHit = Resources.sounds.get("audio/sound/hit_dry.ogg");
 	Sound soundFurnitureBreak = Resources.sounds.get("audio/sound/break_wood.ogg");
 
 	public Entity coin(Vector2 origin, EntityPrototype prototype) {
@@ -61,20 +59,6 @@ public class FurnitureFactory {
 					return true;
 				}
 				return false;
-			}
-			@Override public void onGroundHit(float zSpeed) {
-				Engine.audio.playSound(soundCoin, getOrigin(), zSpeed / 100f, 0.05f);
-			}
-		};
-	}
-
-	public Entity furniture(Vector2 origin, EntityPrototype prototype) {
-		return new DungeonEntity(prototype, origin) {
-			@Override public void onHit() {
-				Engine.audio.playSound(soundFurnitureBreak, getOrigin(), 1f, 0.05f);
-			}
-			@Override public void onExpire() {
-				Engine.audio.playSound(soundFurnitureBreak, getOrigin(), 1f, 0.05f);
 			}
 		};
 	}
