@@ -18,10 +18,10 @@ import com.dungeon.game.tileset.Tileset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 
 /**
  * A level generator that generates levels by connecting a set of pre-built modules (rooms).
@@ -179,7 +179,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	}
 
 	private void generateRooms(GridPoint2 origin, Direction direction) {
-		Stack<Frame> stack = new Stack<>();
+		LinkedList<Frame> stack = new LinkedList<>();
 		stack.push(new Frame(origin, direction, null, 0, 1));
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();

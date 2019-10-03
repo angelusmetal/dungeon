@@ -2,10 +2,10 @@ package com.dungeon.engine.console;
 
 import com.badlogic.gdx.InputProcessor;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 public class InputProcessorStack implements InputProcessor {
-	Stack<InputProcessor> stack = new Stack<>();
+	LinkedList<InputProcessor> stack = new LinkedList<>();
 
 	public void push(InputProcessor processor) {
 		stack.push(processor);

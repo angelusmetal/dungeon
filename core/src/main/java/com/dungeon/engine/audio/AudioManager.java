@@ -2,18 +2,13 @@ package com.dungeon.engine.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.TimeGradient;
-import com.dungeon.engine.util.Util;
-import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.LinkedList;
 
 public class AudioManager {
 
@@ -25,7 +20,7 @@ public class AudioManager {
 		boolean ending;
 	}
 
-	private Stack<MusicTrack> currentTracks = new Stack<>();
+	private LinkedList<MusicTrack> currentTracks = new LinkedList<>();
 
 	public void playMusic(FileHandle file) {
 		playMusic(file, true, 4f);
@@ -50,7 +45,7 @@ public class AudioManager {
 		if (fade == 0) {
 			// If no fade, stop all previous tracks immediately
 			track.fade = () -> 1;
-			while (!currentTracks.empty()) {
+			while (!currentTracks.isEmpty()) {
 				MusicTrack previous = currentTracks.pop();
 				previous.music.stop();
 				previous.music.dispose();
@@ -60,7 +55,7 @@ public class AudioManager {
 			track.fade = TimeGradient.fadeIn(Engine.time(), fade);
 			track.music.setVolume(0f);
 			currentTracks.forEach(t -> {
-				t.fade = TimeGradient.fadeOut(Engine.time(), fade);//TimeGradient.crossFade(t.music.getVolume(), 0, Engine.time(), fade);
+				t.fade = TimeGradient.fadeOut(Engine.time(), fade);
 				t.ending = true;
 			});
 		}
@@ -70,7 +65,7 @@ public class AudioManager {
 	}
 
 	public void stopMusic() {
-		while (!currentTracks.empty()) {
+		while (!currentTracks.isEmpty()) {
 			MusicTrack previous = currentTracks.pop();
 			previous.music.stop();
 			previous.music.dispose();

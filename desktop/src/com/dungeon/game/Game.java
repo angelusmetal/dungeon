@@ -36,9 +36,9 @@ import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -262,7 +262,7 @@ public class Game {
 	public static void initViewPorts() {
 		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
 
-		Stack<ViewPort> viewPorts = new Stack<>();
+		LinkedList<ViewPort> viewPorts = new LinkedList<>();
 		if (Players.count() == 1) {
 			viewPorts.push(new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), scale));
 		} else if (Players.count() == 2) {
