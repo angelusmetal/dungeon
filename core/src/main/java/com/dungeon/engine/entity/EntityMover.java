@@ -115,6 +115,7 @@ public class EntityMover {
 				z = 0;
 				if (entity.getBounciness() > 0 && Math.abs(zSpeed) > 10) {
 					zSpeed *= -entity.getBounciness();
+					entity.onGroundBounce(zSpeed);
 				} else {
 					zSpeed = 0;
 					entity.getOnRestTraits().forEach(m -> m.accept(entity));

@@ -1,5 +1,6 @@
 package com.dungeon.game.combat;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -16,6 +17,7 @@ public class VenomStaffWeapon extends ProjectileWeapon {
 	private final EntityPrototype projectile;
 	private final EntityPrototype projectileInv;
 	private final float tier = Game.getDifficultyTier();
+	Sound soundAttack = Resources.sounds.get("audio/sound/magic_bolt.ogg");
 
 	public VenomStaffWeapon() {
 		super("Venom staff", damageSupplier(), DamageType.ELEMENTAL, 0);
@@ -29,6 +31,7 @@ public class VenomStaffWeapon extends ProjectileWeapon {
 		if (tier > 2) {
 			createProjectile(projectileInv, this::createAttack, origin, aim);
 		}
+		Game.playSound(soundAttack, origin, 1f, 0.05f);
 	}
 
 	private static Supplier<Float> damageSupplier() {

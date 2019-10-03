@@ -16,6 +16,7 @@ public class DevCommands {
 
 		// Add console commands
 		Game.getCommandConsole().bindCommand("play_music", this::playMusic);
+		Game.getCommandConsole().bindCommand("stop_music", this::stopMusic);
 		Game.getCommandConsole().bindCommand("say", this::say);
 		Game.getCommandConsole().bindCommand("spawn", this::spawn);
 	}
@@ -23,6 +24,10 @@ public class DevCommands {
 	public void playMusic(List<String> tokens) {
 		String path = tokens.get(1);
 		Engine.audio.playMusic(Gdx.files.internal(path));
+	}
+
+	public void stopMusic(List<String> tokens) {
+		Engine.audio.stopMusic();
 	}
 
 	public void say(List<String> tokens) {

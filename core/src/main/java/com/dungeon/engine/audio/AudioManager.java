@@ -1,11 +1,16 @@
-package com.dungeon.engine.viewport;
+package com.dungeon.engine.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.TimeGradient;
+import com.dungeon.engine.util.Util;
+import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -62,6 +67,14 @@ public class AudioManager {
 		track.music.play();
 		track.music.setLooping(loop);
 		currentTracks.push(track);
+	}
+
+	public void stopMusic() {
+		while (!currentTracks.empty()) {
+			MusicTrack previous = currentTracks.pop();
+			previous.music.stop();
+			previous.music.dispose();
+		}
 	}
 
 	public void update() {

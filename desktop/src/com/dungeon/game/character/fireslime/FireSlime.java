@@ -42,6 +42,8 @@ public class FireSlime extends CreatureEntity {
 				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
 				factory.getWeapon().spawnEntities(getOrigin(), aim);
 				shout(attackPhrases, 0.1f);
+				// TODO remove this once each weapon can play a sound
+				Game.playSound(factory.soundFirebolt, getOrigin(), 1f, 0.05f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
 				speed = factory.idleSpeed;
@@ -61,6 +63,11 @@ public class FireSlime extends CreatureEntity {
 	}
 
 	@Override
+	protected void onHit() {
+		Game.playSound(factory.soundFirebolt, getOrigin(), 1f, 0.05f);
+	}
+
+	@Override
 	protected void onExpire() {
 		int bullets = (Players.count() + Game.getLevelCount()) * 2;
 		Vector2 aim = new Vector2(0, 1);
@@ -71,6 +78,7 @@ public class FireSlime extends CreatureEntity {
 		shout(deathPhrases, 0.3f);
 		// Create loot
 		Game.createCreatureLoot(getOrigin());
+		Game.playSound(factory.soundFirebolt, getOrigin(), 1f, 0.05f);
 	}
 
 	@Override

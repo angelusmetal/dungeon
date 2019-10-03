@@ -1,5 +1,6 @@
 package com.dungeon.game.character.acidslime;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -34,6 +35,8 @@ public class AcidSlimeFactory {
 	final float damagePerSecond;
 
 	public final EntityTypeFactory pool;
+
+	Sound soundHit = Resources.sounds.get("audio/sound/slime.ogg");
 
 	public AcidSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME_ACID");

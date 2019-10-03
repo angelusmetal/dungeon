@@ -7,7 +7,7 @@ import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-import com.dungeon.engine.viewport.AudioManager;
+import com.dungeon.engine.audio.AudioManager;
 
 public class Engine {
 

@@ -474,6 +474,9 @@ public class Entity implements Drawable, Movable {
 	protected void onHit() {}
 	protected void onExpire() {}
 	protected void onTileCollision(boolean horizontal) {}
+	/** Bounces on the floor
+	 * @param zSpeed*/
+	public void onGroundBounce(float zSpeed) {}
 	/** Rest on the floor */
 	protected void onGroundRest() {}
 

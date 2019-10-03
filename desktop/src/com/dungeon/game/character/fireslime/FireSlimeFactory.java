@@ -1,5 +1,6 @@
 package com.dungeon.game.character.fireslime;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -28,6 +29,8 @@ public class FireSlimeFactory {
 	final float damagePerSecond;
 
 	final Weapon weapon;
+
+	Sound soundFirebolt = Resources.sounds.get("audio/sound/firebolt.ogg");
 
 	public FireSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME_FIRE");

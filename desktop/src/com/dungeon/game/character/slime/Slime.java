@@ -21,6 +21,7 @@ public class Slime extends CreatureEntity {
 
 	private final SlimeFactory factory;
 	private float nextThink;
+
 	Slime(Vector2 origin, EntityPrototype prototype, SlimeFactory factory) {
 		super(origin, prototype);
 		this.factory = factory;
@@ -72,9 +73,15 @@ public class Slime extends CreatureEntity {
 	}
 
 	@Override
+	protected void onHit() {
+		Game.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
+	}
+
+	@Override
 	protected void onExpire() {
 		// TODO Move this as well to conf
 		Game.createCreatureLoot(getOrigin());
+		Game.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
 	}
 
 }

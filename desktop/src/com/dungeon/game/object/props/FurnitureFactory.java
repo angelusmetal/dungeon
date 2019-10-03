@@ -1,22 +1,28 @@
 package com.dungeon.game.object.props;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.ui.particle.LinearParticle;
+import com.dungeon.engine.ui.particle.PathParticle;
+import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.TimeGradient;
+import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.engine.ui.particle.PathParticle;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.ui.CoinsWidget;
 
 import static com.dungeon.engine.util.Util.randVect;
 
 public class FurnitureFactory {
+
+	Sound soundCoin = Resources.sounds.get("audio/sound/coin.ogg");
+	Sound soundFurnitureHit = Resources.sounds.get("audio/sound/hit_dry.ogg");
+	Sound soundFurnitureBreak = Resources.sounds.get("audio/sound/break_wood.ogg");
 
 	public Entity coin(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
@@ -54,6 +60,20 @@ public class FurnitureFactory {
 					return true;
 				}
 				return false;
+			}
+			@Override public void onGroundBounce(float zSpeed) {
+				Game.playSound(soundCoin, getOrigin(), zSpeed / 100f, 0.05f);
+			}
+		};
+	}
+
+	public Entity furniture(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
+			@Override public void onHit() {
+				Game.playSound(soundFurnitureBreak, getOrigin(), 1f, 0.05f);
+			}
+			@Override public void onExpire() {
+				Game.playSound(soundFurnitureBreak, getOrigin(), 1f, 0.05f);
 			}
 		};
 	}

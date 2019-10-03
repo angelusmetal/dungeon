@@ -1,5 +1,6 @@
 package com.dungeon.game.character.slime;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +11,7 @@ import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
+import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
@@ -34,6 +36,8 @@ public class SlimeFactory {
 	final float jumpDistance;
 	final float damagePerSecond;
 	final float attackFrequency;
+
+	Sound soundHit = Resources.sounds.get("audio/sound/slime.ogg");
 
 	public SlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME");
@@ -70,4 +74,11 @@ public class SlimeFactory {
 		return new SlimeSpawn(origin, prototype, this);
 	}
 
+	public Entity blob(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
+			@Override public void onExpire() {
+				Game.playSound(soundHit, getOrigin(), 1f, 0.05f);
+			}
+		};
+	}
 }

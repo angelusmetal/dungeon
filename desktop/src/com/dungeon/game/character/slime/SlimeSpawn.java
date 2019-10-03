@@ -5,6 +5,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.CreatureEntity;
@@ -63,6 +64,16 @@ public class SlimeSpawn extends CreatureEntity {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	protected void onHit() {
+		Game.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
+	}
+
+	@Override
+	protected void onExpire() {
+		Game.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
 	}
 
 }

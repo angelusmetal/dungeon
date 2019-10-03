@@ -1,6 +1,7 @@
 package com.dungeon.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -78,6 +79,14 @@ public class Game {
 				.bindTo(emitter, SAY_OFFSET);
 		Engine.overlayTexts.add(overlayText);
 		return overlayText;
+	}
+
+	public static void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
+		ViewPort viewPort = Players.get(0).getViewPort();
+		Vector2 offset = origin.cpy().sub(Players.get(0).getAvatar().getOrigin());
+		float pan = offset.x / (viewPort.cameraWidth / 2f);
+		float vol = volume * (1 - offset.len() / viewPort.cameraWidth);
+		sound.play(Util.clamp(vol), Rand.between(1f - pitchVariance / 2f, 1f + pitchVariance * 2f), Util.clamp(pan, -1f, 1f));
 	}
 
 	private static Level level;

@@ -1,11 +1,13 @@
 package com.dungeon.game.combat;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.game.Game;
 import com.dungeon.game.entity.Projectile;
 import com.dungeon.game.resource.Resources;
 
@@ -18,6 +20,7 @@ public abstract class MeleeWeapon extends Weapon {
 
 	private final EntityPrototype hit;
 	private final EntityPrototype slash;
+	Sound soundAttack = Resources.sounds.get("audio/sound/slash.ogg");
 
 	public MeleeWeapon(String name, Supplier<Float> damage, DamageType damageType, float knockback) {
 		super(name, damage, damageType, knockback);
@@ -52,6 +55,7 @@ public abstract class MeleeWeapon extends Weapon {
 		Vector2 hitOrigin = shift(origin, aim, getSpawnDistance());
 		Engine.entities.add(createSlash(origin, aim));
 		Engine.entities.add(createHit(hitOrigin));
+		Game.playSound(soundAttack, origin, 1f, 0.05f);
 	}
 
 	private Entity createHit(Vector2 origin) {

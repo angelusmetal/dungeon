@@ -1,6 +1,7 @@
 package com.dungeon.game.resource;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +34,7 @@ public class Resources {
 	public static final ResourceRepository<RoomPrototype> rooms = new ResourceRepository<>();
 	public static final ResourceRepository<Environment> environments = new ResourceRepository<>();
 	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);
+	public static final ResourceRepository<Sound> sounds = new ResourceRepository<>(Resources::computeSound, Sound::dispose);
 
 	public static void load() {
 		ResourceManagerLoader loader = new ResourceManagerLoader();
@@ -58,6 +60,10 @@ public class Resources {
 		return shaderProgram;
 	}
 
+	private static Sound computeSound(String name) {
+		return Gdx.audio.newSound(Gdx.files.internal(name));
+	}
+
 	public static void dispose() {
 		textures.dispose();
 		animations.dispose();
@@ -68,6 +74,7 @@ public class Resources {
 		rooms.dispose();
 		environments.dispose();
 		shaders.dispose();
+		sounds.dispose();
 	}
 
 }

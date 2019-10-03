@@ -1,5 +1,6 @@
 package com.dungeon.game.combat;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -17,6 +18,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 
 	private final EntityPrototype projectile;
 	private final int tier = (int) Game.getDifficultyTier();
+	Sound soundAttack = Resources.sounds.get("audio/sound/magic_bolt.ogg");
 
 	public CatStaffWeapon() {
 		super("Cat staff", damageSupplier(), DamageType.ELEMENTAL, 0);
@@ -27,6 +29,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 	@Override
 	public void spawnEntities(Vector2 origin, Vector2 aim) {
 		createProjectileFan(projectile, this::createAttack, origin, aim, tier, 10);
+		Game.playSound(soundAttack, origin, 1f, 0.05f);
 	}
 
 	private static Supplier<Float> damageSupplier() {
