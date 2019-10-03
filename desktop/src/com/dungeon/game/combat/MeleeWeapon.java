@@ -55,7 +55,7 @@ public abstract class MeleeWeapon extends Weapon {
 		Vector2 hitOrigin = shift(origin, aim, getSpawnDistance());
 		Engine.entities.add(createSlash(origin, aim));
 		Engine.entities.add(createHit(hitOrigin));
-		Game.playSound(soundAttack, origin, 1f, 0.05f);
+		Engine.audio.playSound(soundAttack, origin, 1f, 0.05f);
 	}
 
 	private Entity createHit(Vector2 origin) {

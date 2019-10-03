@@ -68,12 +68,12 @@ public class SlimeSpawn extends CreatureEntity {
 
 	@Override
 	protected void onHit() {
-		Game.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
+		Engine.audio.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
 	}
 
 	@Override
 	protected void onExpire() {
-		Game.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
+		Engine.audio.playSound(factory.soundHit, getOrigin(), 1f, 0.05f);
 	}
 
 }

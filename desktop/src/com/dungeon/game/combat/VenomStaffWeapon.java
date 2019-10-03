@@ -31,7 +31,7 @@ public class VenomStaffWeapon extends ProjectileWeapon {
 		if (tier > 2) {
 			createProjectile(projectileInv, this::createAttack, origin, aim);
 		}
-		Game.playSound(soundAttack, origin, 1f, 0.05f);
+		Engine.audio.playSound(soundAttack, origin, 1f, 0.05f);
 	}
 
 	private static Supplier<Float> damageSupplier() {

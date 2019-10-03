@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.ConfigUtil;
@@ -77,7 +78,7 @@ public class SlimeFactory {
 	public Entity blob(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
 			@Override public void onExpire() {
-				Game.playSound(soundHit, getOrigin(), 1f, 0.05f);
+				Engine.audio.playSound(soundHit, getOrigin(), 1f, 0.05f);
 			}
 		};
 	}

@@ -81,14 +81,6 @@ public class Game {
 		return overlayText;
 	}
 
-	public static void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
-		ViewPort viewPort = Players.get(0).getViewPort();
-		Vector2 offset = origin.cpy().sub(Players.get(0).getAvatar().getOrigin());
-		float pan = offset.x / (viewPort.cameraWidth / 2f);
-		float vol = volume * (1 - offset.len() / viewPort.cameraWidth);
-		sound.play(Util.clamp(vol), Rand.between(1f - pitchVariance / 2f, 1f + pitchVariance * 2f), Util.clamp(pan, -1f, 1f));
-	}
-
 	private static Level level;
 	private static Environment environment;
 	private static State currentState = State.MENU;
@@ -285,6 +277,7 @@ public class Game {
 			p.setRenderer(new ViewPortRenderer(p.getViewPort(), p));
 			p.getRenderer().initialize();
 		});
+		Engine.setMainViewport(Players.get(0).getViewPort());
 	}
 
 	public static Environment getEnvironment() {
@@ -292,10 +285,6 @@ public class Game {
 	}
 
 	public static void generateNewLevel() {
-		int baseWidth = configuration.getLong("map.width", 40L).intValue();
-		int baseHeight = configuration.getLong("map.width", 40L).intValue();
-		int growth = configuration.getLong("map.growth", (long) 10).intValue();
-
 		// Pick a random environment
 		String env = Rand.pick(Resources.environments.getKeys());
 		env = "dungeon";

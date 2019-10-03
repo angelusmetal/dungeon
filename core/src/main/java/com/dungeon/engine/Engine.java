@@ -8,6 +8,7 @@ import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.audio.AudioManager;
+import com.dungeon.engine.viewport.ViewPort;
 
 public class Engine {
 
@@ -21,6 +22,7 @@ public class Engine {
 	public static Repository<RenderEffect> renderEffects = new Repository<>();
 
 	private static LevelTiles levelTiles;
+	private static ViewPort mainViewport;
 
 	// FIXME Does this belong here?
 	private static Color baseLight = Color.WHITE.cpy();
@@ -66,4 +68,17 @@ public class Engine {
 		baseLight.set(color);
 	}
 
+	/**
+	 * Gets the "main" viewport. Positional sound will be relative to the main viewport
+	 */
+	public static ViewPort getMainViewport() {
+		return mainViewport;
+	}
+
+	/**
+	 * Sets the "main" viewport.
+	 */
+	public static void setMainViewport(ViewPort mainViewport) {
+		Engine.mainViewport = mainViewport;
+	}
 }

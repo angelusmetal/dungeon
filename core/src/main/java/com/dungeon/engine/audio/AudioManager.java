@@ -2,10 +2,15 @@ package com.dungeon.engine.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.TimeGradient;
+import com.dungeon.engine.util.Util;
+import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -70,6 +75,15 @@ public class AudioManager {
 			previous.music.stop();
 			previous.music.dispose();
 		}
+	}
+
+	public static void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
+		// TODO keep track of all sounds being played so their volume and panning can be updated (and infinite loops can be paused & resumed)
+		ViewPort viewPort = Engine.getMainViewport();
+		Vector2 offset = origin.cpy().sub(viewPort.cameraX + viewPort.cameraWidth / 2f, viewPort.cameraY + viewPort.cameraHeight / 2f);
+		float pan = offset.x / (viewPort.cameraWidth / 2f);
+		float vol = volume * (1 - offset.len() / viewPort.cameraWidth);
+		sound.play(Util.clamp(vol), Rand.between(1f - pitchVariance / 2f, 1f + pitchVariance * 2f), Util.clamp(pan, -1f, 1f));
 	}
 
 	public void update() {
