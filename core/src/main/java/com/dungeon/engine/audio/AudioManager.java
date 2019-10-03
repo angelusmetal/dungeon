@@ -77,7 +77,7 @@ public class AudioManager {
 		}
 	}
 
-	public static void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
+	public void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
 		// TODO keep track of all sounds being played so their volume and panning can be updated (and infinite loops can be paused & resumed)
 		ViewPort viewPort = Engine.getMainViewport();
 		Vector2 offset = origin.cpy().sub(viewPort.cameraX + viewPort.cameraWidth / 2f, viewPort.cameraY + viewPort.cameraHeight / 2f);

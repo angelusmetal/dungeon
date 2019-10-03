@@ -1,15 +1,18 @@
 package com.dungeon.game.resource.loader;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.util.ConfigUtil;
+import com.dungeon.engine.util.Metronome;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -39,8 +42,10 @@ public class TraitLoader {
 			return xInvert(config);
 		} else if (type.equals("deathClone")){
 			return deathClone(config);
-		} else if (type.equals("fadeIn")){
+		} else if (type.equals("fadeIn")) {
 			return fadeIn(config);
+		} else if (type.equals("sound")) {
+			return sound(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
@@ -164,6 +169,14 @@ public class TraitLoader {
 			traits.forEach(trait -> trait.accept(particle));
 			return particle;
 		};
+	}
+
+	private static <T extends Entity> TraitSupplier<T> sound(Config config) {
+		String file = ConfigUtil.requireString(config, "file");
+		Sound sound = Resources.sounds.get(file);
+		float volume = ConfigUtil.getFloat(config, "volume").orElse(1f);
+		float pitchVariance = Util.clamp(ConfigUtil.getFloat(config, "pitchVariance").orElse(0f));
+		return Traits.playSound(sound, volume, pitchVariance);
 	}
 
 

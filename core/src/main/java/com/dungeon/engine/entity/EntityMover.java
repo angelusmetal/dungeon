@@ -113,9 +113,13 @@ public class EntityMover {
 			z += zSpeed * Engine.frameTime();
 			if (z < 0) {
 				z = 0;
+				// If entity was above ground, call onGroundHit()
+				if (entity.getZPos() > 0) {
+					entity.getOnGroundHitTraits().forEach(m -> m.accept(entity));
+					entity.onGroundHit(zSpeed);
+				}
 				if (entity.getBounciness() > 0 && Math.abs(zSpeed) > 10) {
 					zSpeed *= -entity.getBounciness();
-					entity.onGroundBounce(zSpeed);
 				} else {
 					zSpeed = 0;
 					entity.getOnRestTraits().forEach(m -> m.accept(entity));

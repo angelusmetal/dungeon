@@ -27,6 +27,7 @@ public class EntityPrototype {
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onHitTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onExpireTraits = new ArrayList<>();
+	List<TraitSupplier<Entity>> onGroundHitTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onRestTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onSignalTraits = new ArrayList<>();
 	Supplier<Float> speed = () -> 1f;
@@ -63,6 +64,7 @@ public class EntityPrototype {
 		this.traits = new ArrayList<>(other.traits);
 		this.onHitTraits = new ArrayList<>(other.onHitTraits);
 		this.onExpireTraits = new ArrayList<>(other.onExpireTraits);
+		this.onGroundHitTraits = new ArrayList<>(other.onGroundHitTraits);
 		this.onRestTraits = new ArrayList<>(other.onRestTraits);
 		this.onSignalTraits = new ArrayList<>(other.onSignalTraits);
 		this.speed = other.speed;
@@ -266,6 +268,11 @@ public class EntityPrototype {
 
 	public EntityPrototype onExpire(TraitSupplier<Entity> trait) {
 		this.onExpireTraits.add(trait);
+		return this;
+	}
+
+	public EntityPrototype onGroundHit(TraitSupplier<Entity> trait) {
+		this.onGroundHitTraits.add(trait);
 		return this;
 	}
 

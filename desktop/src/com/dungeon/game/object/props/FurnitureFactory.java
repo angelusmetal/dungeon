@@ -62,7 +62,7 @@ public class FurnitureFactory {
 				}
 				return false;
 			}
-			@Override public void onGroundBounce(float zSpeed) {
+			@Override public void onGroundHit(float zSpeed) {
 				Engine.audio.playSound(soundCoin, getOrigin(), zSpeed / 100f, 0.05f);
 			}
 		};
