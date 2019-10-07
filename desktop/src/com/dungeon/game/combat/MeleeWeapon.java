@@ -72,4 +72,8 @@ public abstract class MeleeWeapon extends Weapon {
 		return entity;
 	}
 
+	public float attackCooldown() {
+		return 0.5f;
+	}
+
 }

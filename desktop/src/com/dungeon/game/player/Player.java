@@ -43,25 +43,25 @@ public class Player implements Disposable {
 		this.control = control;
 		this.stats = new PlayerStats();
 		this.color = PLAYER_COLORS[playerId];
-		this.weapon = createWeapon(playerId);
+		this.weapon = createWeapon();
 		this.console = new OldConsole(10, 3f);
 	}
 
-	private Weapon createWeapon(int playerId) {
+	private Weapon createWeapon() {
 		// TODO This is awful...
-		if (playerId == 0) {
+		if (characterId == 0) {
 			Weapon w = new CatStaffWeapon();
 			Animation<TextureRegion> animation = new WeaponFactory().catStaff(Vector2.Zero, Resources.prototypes.get("weapon_cat_staff")).getAnimation();
 			w.setAnimation(animation);
 			return w;
-		} else if (playerId == 1) {
-			Weapon w = new VenomStaffWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().greenStaff(Vector2.Zero, Resources.prototypes.get("weapon_green_staff")).getAnimation();
-			w.setAnimation(animation);
-			return w;
-		} else if (playerId == 2) {
+		} else if (characterId == 1) {
 			Weapon w = new SwordWeapon();
 			Animation<TextureRegion> animation = new WeaponFactory().sword(Vector2.Zero, Resources.prototypes.get("weapon_sword")).getAnimation();
+			w.setAnimation(animation);
+			return w;
+		} else if (characterId == 2) {
+			Weapon w = new VenomStaffWeapon();
+			Animation<TextureRegion> animation = new WeaponFactory().greenStaff(Vector2.Zero, Resources.prototypes.get("weapon_green_staff")).getAnimation();
 			w.setAnimation(animation);
 			return w;
 		}
