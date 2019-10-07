@@ -83,11 +83,11 @@ public class Player implements Disposable {
 
 	private PlayerEntity createAvatar(int characterId, Vector2 origin) {
 		if (characterId == 0) {
-			return (PlayerEntity) Game.build(EntityType.WITCH, origin);
+			return (PlayerEntity) Game.build(EntityType.KARA, origin);
 		} else if (characterId == 1) {
-			return (PlayerEntity) Game.build(EntityType.THIEF, origin);
+			return (PlayerEntity) Game.build(EntityType.JACK, origin);
 		} else {
-			return (PlayerEntity) Game.build(EntityType.ASSASSIN, origin);
+			return (PlayerEntity) Game.build(EntityType.MORT, origin);
 		}
 	}
 

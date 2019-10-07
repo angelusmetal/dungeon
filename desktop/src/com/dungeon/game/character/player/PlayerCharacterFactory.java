@@ -13,74 +13,28 @@ import com.dungeon.game.resource.Resources;
 
 public class PlayerCharacterFactory {
 
-	public static final String ASSASSIN_WALK = "assassin_walk_down";
+	public static final String MORT_WALK = "mort_walk";
+	private static final String MORT_ATTACK = "mort_attack";
+	private static final String MORT_IDLE = "mort_idle";
 
-	public static final String THIEF_WALK = "thief_walk";
-	private static final String THIEF_ATTACK = "thief_attack";
-	private static final String THIEF_IDLE = "thief_idle";
+	public static final String JACK_WALK = "jack_walk";
+	private static final String JACK_ATTACK = "jack_attack";
+	private static final String JACK_IDLE = "jack_idle";
 
-	public static final String WITCH_WALK = "witch_walk";
-	private static final String WITCH_ATTACK = "witch_attack";
-	private static final String WITCH_IDLE = "witch_idle";
+	public static final String KARA_WALK = "kara_walk";
+	private static final String KARA_ATTACK = "kara_attack";
+	private static final String KARA_IDLE = "kara_idle";
 
-	public Entity assassin(Vector2 origin, EntityPrototype prototype) {
-		final Animation<TextureRegion> idleUpAnimation = Resources.animations.get("assassin_idle_up");
-		final Animation<TextureRegion> idleDownAnimation = Resources.animations.get("assassin_idle_down");
-		final Animation<TextureRegion> idleRightAnimation = Resources.animations.get("assassin_idle_right");
-		final Animation<TextureRegion> walkUpAnimation = Resources.animations.get("assassin_walk_up");
-		final Animation<TextureRegion> walkDownAnimation = Resources.animations.get("assassin_walk_down");
-		final Animation<TextureRegion> walkRightAnimation = Resources.animations.get("assassin_walk_right");
-		final Animation<TextureRegion> attackUpAnimation = Resources.animations.get("assassin_attack_up");
-		final Animation<TextureRegion> attackDownAnimation = Resources.animations.get("assassin_attack_down");
-		final Animation<TextureRegion> attackRightAnimation = Resources.animations.get("assassin_attack_right");
-
-		return new PlayerEntity(prototype, origin) {
-			@Override protected Animation<TextureRegion> getAttackAnimation() {
-				if (Math.abs(getAim().y) >= Math.abs(getAim().x)) {
-					if (getAim().y > 0) {
-						return attackUpAnimation;
-					} else {
-						return attackDownAnimation;
-					}
-				} else {
-					return attackRightAnimation;
-				}
-			}
-			@Override protected Animation<TextureRegion> getIdleAnimation() {
-				if (Math.abs(getAim().y) >= Math.abs(getAim().x)) {
-					if (getAim().y > 0) {
-						return idleUpAnimation;
-					} else {
-						return idleDownAnimation;
-					}
-				} else {
-					return idleRightAnimation;
-				}
-			}
-			@Override protected Animation<TextureRegion> getWalkAnimation() {
-				if (Math.abs(getAim().y) >= Math.abs(getAim().x)) {
-					if (getAim().y > 0) {
-						return walkUpAnimation;
-					} else {
-						return walkDownAnimation;
-					}
-				} else {
-					return walkRightAnimation;
-				}
-			}
-			@Override protected void onExpire() {
-				super.onExpire();
-				Engine.entities.add(Game.build(EntityType.TOMBSTONE, getOrigin()));
-			}
-		};
+	public Entity mort(Vector2 origin, EntityPrototype prototype) {
+		return factory(MORT_IDLE, MORT_WALK, MORT_ATTACK, prototype, origin);
 	}
 
-	public Entity thief(Vector2 origin, EntityPrototype prototype) {
-		return factory(THIEF_IDLE, THIEF_WALK, THIEF_ATTACK, prototype, origin);
+	public Entity jack(Vector2 origin, EntityPrototype prototype) {
+		return factory(JACK_IDLE, JACK_WALK, JACK_ATTACK, prototype, origin);
 	}
 
-	public Entity witch(Vector2 origin, EntityPrototype prototype) {
-		return factory(WITCH_IDLE, WITCH_WALK, WITCH_ATTACK, prototype, origin);
+	public Entity kara(Vector2 origin, EntityPrototype prototype) {
+		return factory(KARA_IDLE, KARA_WALK, KARA_ATTACK, prototype, origin);
 	}
 
 	private Entity factory(String idle, String walk, String attack, EntityPrototype prototype, Vector2 origin) {

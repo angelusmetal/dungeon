@@ -10,6 +10,7 @@ import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.entity.PlayerEntity;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -66,8 +67,10 @@ public class TraitLoader {
 		String vector = ConfigUtil.requireString(config, "vector");
 		if (vector.equals("movement")) {
 			return Traits.xInvertByVector(Entity::getMovement);
-//		} else if (vector.equals("aim")) {
-//			return Traits.xInvertByVector(PlayerEntity::getAim);
+//		} else if (vector.equals("aimAndImpulse")) {
+//			return Traits.xInvertByVector(
+//					e -> e instanceof PlayerEntity ? ((PlayerEntity) e).getAim() : e.getMovement(),
+//					Entity::getMovement);
 		} else {
 			throw new LoadingException("Invalid vector type " + vector);
 		}

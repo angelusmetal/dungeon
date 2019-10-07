@@ -86,11 +86,11 @@ public class CharacterSelection {
 
 	private Animation<TextureRegion> getAnimation(int characterId) {
 		if (characterId == 0) {
-			return Resources.animations.get(PlayerCharacterFactory.WITCH_WALK);
+			return Resources.animations.get(PlayerCharacterFactory.KARA_WALK);
 		} else if (characterId == 1) {
-			return Resources.animations.get(PlayerCharacterFactory.THIEF_WALK);
+			return Resources.animations.get(PlayerCharacterFactory.JACK_WALK);
 		} else {
-			return Resources.animations.get(PlayerCharacterFactory.ASSASSIN_WALK);
+			return Resources.animations.get(PlayerCharacterFactory.MORT_WALK);
 		}
 	}
 

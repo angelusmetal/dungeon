@@ -36,4 +36,8 @@ public class CatStaffWeapon extends ProjectileWeapon {
 		float tier = Game.getDifficultyTier();
 		return () -> tier * Rand.between(2f, 3f);
 	}
+
+	public float attackCooldown() {
+		return 0.35f;
+	}
 }

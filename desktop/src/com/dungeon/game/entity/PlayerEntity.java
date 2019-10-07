@@ -55,19 +55,30 @@ public abstract class PlayerEntity extends CreatureEntity {
 	@Override
 	public void think() {
 		super.think();
-		if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-			if (getAnimation() != getAttackAnimation() || isAnimationFinished()) {
+		if (getAnimation() != getAttackAnimation() || isAnimationFinished()) {
+			updateXScale();
+			if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
 				updateAnimation(getIdleAnimation());
+			} else {
+				updateAnimation(getWalkAnimation());
+				stepMetronome.doAtInterval();
 			}
-		} else {
-			updateAnimation(getWalkAnimation());
-			stepMetronome.doAtInterval();
 		}
 		if (firing) {
 			fire();
 		}
 		energy = Math.min(energy + energyRecovery * Engine.frameTime(), maxEnergy);
 	}
+
+	/** Inverts the horizontal draw scale based on the movement vector */
+	private void updateXScale() {
+		if (getAim().x != 0) {
+			getDrawScale().x = Math.abs(getDrawScale().x) * getAim().x < 0 ? -1 : 1;
+		} else if (getMovement().x != 0) {
+			getDrawScale().x = Math.abs(getDrawScale().x) * getMovement().x < 0 ? -1 : 1;
+		}
+	}
+
 
 	@Override
 	protected void onExpire() {

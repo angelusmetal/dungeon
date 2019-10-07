@@ -10,7 +10,7 @@
     # vSyncEnabled = false
 [viewport]
     # Scaling gives the blocky appeal
-    scale = 4.0
+    scale = 3.0
     gamma = 0.3
 [map]
     # Base dimensions

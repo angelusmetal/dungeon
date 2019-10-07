@@ -5,9 +5,9 @@ public interface EntityType {
 	String EXIT = "exit_platform";
 	// Player characters
 	String PLAYER_SPAWN = "player_spawn";
-	String WITCH = "player_witch";
-	String THIEF = "player_thief";
-	String ASSASSIN = "player_assassin";
+	String KARA = "player_kara";
+	String JACK = "player_jack";
+	String MORT = "player_mort";
 	// Props
 	String TOMBSTONE = "tombstone";
 	String DOOR_VERTICAL = "door_vertical";
