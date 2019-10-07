@@ -1,5 +1,6 @@
 package com.dungeon.engine.entity;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -11,6 +12,7 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.TimeGradient;
 import com.dungeon.engine.util.Util;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -200,6 +202,10 @@ public class Traits {
 
     static public <T extends Entity> TraitSupplier<T> rotateVector(Vector2 rotateVector) {
         return e -> entity -> entity.setRotation(rotateVector.angle());
+    }
+
+    static public <T extends Entity> TraitSupplier<T> playSound(Sound sound, float volume, float pitchVariance) {
+        return e -> entity -> Engine.audio.playSound(sound, entity.getOrigin(), volume, pitchVariance);
     }
 
 }

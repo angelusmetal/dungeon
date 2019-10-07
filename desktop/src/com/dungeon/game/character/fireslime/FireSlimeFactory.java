@@ -30,8 +30,6 @@ public class FireSlimeFactory {
 
 	final Weapon weapon;
 
-	Sound soundFirebolt = Resources.sounds.get("audio/sound/firebolt.ogg");
-
 	public FireSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME_FIRE");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));

@@ -1,6 +1,8 @@
 package com.dungeon.game.combat;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
@@ -14,6 +16,8 @@ public class FireballWeapon extends ProjectileWeapon {
 
 	private final EntityPrototype projectile;
 
+	Sound soundFirebolt = Resources.sounds.get("audio/sound/firebolt.ogg");
+
 	public FireballWeapon() {
 		super("Fireball", damageSupplier(), DamageType.ELEMENTAL, 0);
 		projectile = Resources.prototypes.get("slime_fireball");
@@ -22,6 +26,7 @@ public class FireballWeapon extends ProjectileWeapon {
 	@Override
 	public void spawnEntities(Vector2 origin, Vector2 aim) {
 		createProjectile(projectile, this::createAttack, origin, aim);
+		Engine.audio.playSound(soundFirebolt, origin, 1f, 0.05f);
 	}
 
 	private static Supplier<Float> damageSupplier() {

@@ -29,7 +29,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 	@Override
 	public void spawnEntities(Vector2 origin, Vector2 aim) {
 		createProjectileFan(projectile, this::createAttack, origin, aim, tier, 10);
-		Game.playSound(soundAttack, origin, 1f, 0.05f);
+		Engine.audio.playSound(soundAttack, origin, 1f, 0.05f);
 	}
 
 	private static Supplier<Float> damageSupplier() {

@@ -13,10 +13,6 @@
     scale = 3.0
     gamma = 0.3
 [map]
-    # Base dimensions
-    width = 40
-    height = 40
-    growth = 10
     items = ["weapon_sword", "weapon_cat_staff", "weapon_green_staff"]
     itemchance = 1.0
 [rendering]

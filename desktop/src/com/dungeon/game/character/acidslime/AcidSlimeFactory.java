@@ -36,8 +36,6 @@ public class AcidSlimeFactory {
 
 	public final EntityTypeFactory pool;
 
-	Sound soundHit = Resources.sounds.get("audio/sound/slime.ogg");
-
 	public AcidSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME_ACID");
 		maxTargetDistance = Util.length2(config.getLong("maxTargetDistance", 300L));

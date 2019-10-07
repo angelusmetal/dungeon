@@ -13,7 +13,7 @@ import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.LinkedList;
 
 public class AudioManager {
 
@@ -25,7 +25,7 @@ public class AudioManager {
 		boolean ending;
 	}
 
-	private Stack<MusicTrack> currentTracks = new Stack<>();
+	private LinkedList<MusicTrack> currentTracks = new LinkedList<>();
 
 	public void playMusic(FileHandle file) {
 		playMusic(file, true, 4f);
@@ -50,7 +50,7 @@ public class AudioManager {
 		if (fade == 0) {
 			// If no fade, stop all previous tracks immediately
 			track.fade = () -> 1;
-			while (!currentTracks.empty()) {
+			while (!currentTracks.isEmpty()) {
 				MusicTrack previous = currentTracks.pop();
 				previous.music.stop();
 				previous.music.dispose();
@@ -60,7 +60,7 @@ public class AudioManager {
 			track.fade = TimeGradient.fadeIn(Engine.time(), fade);
 			track.music.setVolume(0f);
 			currentTracks.forEach(t -> {
-				t.fade = TimeGradient.fadeOut(Engine.time(), fade);//TimeGradient.crossFade(t.music.getVolume(), 0, Engine.time(), fade);
+				t.fade = TimeGradient.fadeOut(Engine.time(), fade);
 				t.ending = true;
 			});
 		}
@@ -70,11 +70,20 @@ public class AudioManager {
 	}
 
 	public void stopMusic() {
-		while (!currentTracks.empty()) {
+		while (!currentTracks.isEmpty()) {
 			MusicTrack previous = currentTracks.pop();
 			previous.music.stop();
 			previous.music.dispose();
 		}
+	}
+
+	public void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
+		// TODO keep track of all sounds being played so their volume and panning can be updated (and infinite loops can be paused & resumed)
+		ViewPort viewPort = Engine.getMainViewport();
+		Vector2 offset = origin.cpy().sub(viewPort.cameraX + viewPort.cameraWidth / 2f, viewPort.cameraY + viewPort.cameraHeight / 2f);
+		float pan = offset.x / (viewPort.cameraWidth / 2f);
+		float vol = volume * (1 - offset.len() / viewPort.cameraWidth);
+		sound.play(Util.clamp(vol), Rand.between(1f - pitchVariance / 2f, 1f + pitchVariance * 2f), Util.clamp(pan, -1f, 1f));
 	}
 
 	public void update() {

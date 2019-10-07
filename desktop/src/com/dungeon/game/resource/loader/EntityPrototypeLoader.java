@@ -55,6 +55,8 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		ConfigUtil.getConfigList(descriptor, "onExpire").ifPresent(
 				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
+		ConfigUtil.getConfigList(descriptor, "onGroundHit").ifPresent(
+				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		ConfigUtil.getConfigList(descriptor, "onRest").ifPresent(
 				traits -> traits.forEach(conf -> getGeneratorDeps(conf, dependencies)));
 		ConfigUtil.getConfigList(descriptor, "onSignal").ifPresent(
@@ -143,6 +145,8 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onHit));
 		ConfigUtil.getConfigList(descriptor, "onExpire").ifPresent(
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onExpire));
+		ConfigUtil.getConfigList(descriptor, "onGroundHit").ifPresent(
+				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onGroundHit));
 		ConfigUtil.getConfigList(descriptor, "onRest").ifPresent(
 				traits -> traits.stream().map(TraitLoader::load).forEach(prototype::onRest));
 		ConfigUtil.getConfigList(descriptor, "onSignal").ifPresent(

@@ -79,6 +79,7 @@ public class Entity implements Drawable, Movable {
 	protected List<Trait<Entity>> traits;
 	protected List<Trait<Entity>> onHitTraits;
 	protected List<Trait<Entity>> onExpireTraits;
+	protected List<Trait<Entity>> onGroundHitTraits;
 	protected List<Trait<Entity>> onRestTraits;
 	protected List<Trait<Entity>> onSignalTraits;
 
@@ -138,6 +139,7 @@ public class Entity implements Drawable, Movable {
 		}
 		this.onHitTraits = prototype.onHitTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.onExpireTraits = prototype.onExpireTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
+		this.onGroundHitTraits = prototype.onGroundHitTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.onRestTraits = prototype.onRestTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.onSignalTraits = prototype.onSignalTraits.stream().map(m -> m.get(this)).collect(Collectors.toCollection(ArrayList::new));
 		this.maxHealth = prototype.health.get();
@@ -176,6 +178,7 @@ public class Entity implements Drawable, Movable {
 		this.traits = other.traits;
 		this.onHitTraits = new ArrayList<>();
 		this.onExpireTraits = new ArrayList<>();
+		this.onGroundHitTraits = new ArrayList<>();
 		this.onRestTraits = new ArrayList<>();
 		this.onSignalTraits = new ArrayList<>();
 		this.maxHealth = other.getMaxHealth();
@@ -346,6 +349,10 @@ public class Entity implements Drawable, Movable {
 		return onExpireTraits;
 	}
 
+	public List<Trait<Entity>> getOnGroundHitTraits() {
+		return onGroundHitTraits;
+	}
+
 	public List<Trait<Entity>> getOnRestTraits() {
 		return onRestTraits;
 	}
@@ -474,9 +481,8 @@ public class Entity implements Drawable, Movable {
 	protected void onHit() {}
 	protected void onExpire() {}
 	protected void onTileCollision(boolean horizontal) {}
-	/** Bounces on the floor
-	 * @param zSpeed*/
-	public void onGroundBounce(float zSpeed) {}
+	/** Bounces on the floor */
+	public void onGroundHit() {}
 	/** Rest on the floor */
 	protected void onGroundRest() {}
 

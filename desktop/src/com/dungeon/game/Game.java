@@ -36,9 +36,9 @@ import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -79,14 +79,6 @@ public class Game {
 				.bindTo(emitter, SAY_OFFSET);
 		Engine.overlayTexts.add(overlayText);
 		return overlayText;
-	}
-
-	public static void playSound(Sound sound, Vector2 origin, float volume, float pitchVariance) {
-		ViewPort viewPort = Players.get(0).getViewPort();
-		Vector2 offset = origin.cpy().sub(Players.get(0).getAvatar().getOrigin());
-		float pan = offset.x / (viewPort.cameraWidth / 2f);
-		float vol = volume * (1 - offset.len() / viewPort.cameraWidth);
-		sound.play(Util.clamp(vol), Rand.between(1f - pitchVariance / 2f, 1f + pitchVariance * 2f), Util.clamp(pan, -1f, 1f));
 	}
 
 	private static Level level;
@@ -263,7 +255,7 @@ public class Game {
 	public static void initViewPorts() {
 		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
 
-		Stack<ViewPort> viewPorts = new Stack<>();
+		LinkedList<ViewPort> viewPorts = new LinkedList<>();
 		if (Players.count() == 1) {
 			viewPorts.push(new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), scale));
 		} else if (Players.count() == 2) {
@@ -286,6 +278,7 @@ public class Game {
 			p.setRenderer(new ViewPortRenderer(p.getViewPort(), p));
 			p.getRenderer().initialize();
 		});
+		Engine.setMainViewport(Players.get(0).getViewPort());
 	}
 
 	public static Environment getEnvironment() {
@@ -293,10 +286,6 @@ public class Game {
 	}
 
 	public static void generateNewLevel() {
-		int baseWidth = configuration.getLong("map.width", 40L).intValue();
-		int baseHeight = configuration.getLong("map.width", 40L).intValue();
-		int growth = configuration.getLong("map.growth", (long) 10).intValue();
-
 		// Pick a random environment
 		String env = Rand.pick(Resources.environments.getKeys());
 		env = "dungeon";
