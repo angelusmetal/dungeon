@@ -9,6 +9,7 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Dungeon;
 import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.player.Player;
+import com.dungeon.game.player.Players;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ViewPortRenderer implements Disposable {
 		}
 	}
 
-	public ViewPortRenderer(ViewPort viewPort, Player player) {
+	public ViewPortRenderer(ViewPort viewPort, List<Player> players) {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
 		this.batch = new SpriteBatch();
 
@@ -56,10 +57,10 @@ public class ViewPortRenderer implements Disposable {
 		noiseStage = new NoiseStage(viewPort, viewportBuffer);
 		motionBlurStage = new MotionBlurStage(viewPort, viewportBuffer);
 		scaleStage = new ScaleStage(viewportBuffer, batch);
-		consoleStage = new ConsoleStage(viewPort, batch, player.getConsole());
+		consoleStage = new ConsoleStage(viewPort, batch, players.get(0).getConsole());
 		overlayTextStage = new OverlayTextStage(viewPort, viewportBuffer);
 		playerArrowsStage = new PlayerArrowsStage(viewPort, viewportBuffer);
-		hudStage = new HudStage(viewPort, viewportBuffer, player);
+		hudStage = new HudStage(viewPort, viewportBuffer, players);
 		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 

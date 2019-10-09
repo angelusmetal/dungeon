@@ -20,7 +20,7 @@ import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.render.stage.ViewPortRenderer;
 import com.dungeon.game.resource.Resources;
 
-public class Player implements Disposable {
+public class Player {
 
 	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
 
@@ -112,13 +112,6 @@ public class Player implements Disposable {
 
 	public Color getColor() {
 		return color;
-	}
-
-	@Override
-	public void dispose() {
-		if (renderer != null) {
-			renderer.dispose();
-		}
 	}
 
 	public PlayerEntity getAvatar() {

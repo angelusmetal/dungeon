@@ -10,7 +10,6 @@
     # vSyncEnabled = false
 [viewport]
     # Scaling gives the blocky appeal
-    scale = 3.0
     gamma = 0.3
 [map]
     items = ["weapon_sword", "weapon_cat_staff", "weapon_green_staff"]

@@ -1,7 +1,6 @@
 package com.dungeon.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -11,9 +10,10 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-import com.dungeon.engine.viewport.ViewPort;
+import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.entity.EntityPlaceholder;
@@ -24,10 +24,13 @@ import com.dungeon.game.level.generator.ModularLevelGenerator;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
-import com.dungeon.game.render.stage.ViewPortRenderer;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
+import com.dungeon.game.viewport.SharedScreenCreationStrategy;
+import com.dungeon.game.viewport.SplitScreenCreationStrategy;
 import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -36,7 +39,6 @@ import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +54,7 @@ public class Game {
 	private static List<String> lootSet;
 	private static CommandConsole commandConsole = new CommandConsole();
 	private static boolean displayConsole = false;
+	public static GameView gameView = new GameView();
 
 	public static OverlayText text(Vector2 origin, String text) {
 		return text(origin, text, Color.WHITE);
@@ -96,11 +99,20 @@ public class Game {
 	);
 
 	public static void initialize(Toml configuration) {
+		Config config = ConfigFactory.load("config.conf");
 		Game.configuration = configuration;
 		entityFactory = new EntityFactory();
 		initEntityFactories(entityFactory);
 		lootSet = configuration.getList("map.items");
 		Collections.shuffle(levelMusic);
+
+		float scale = ConfigUtil.getFloat(config, "viewport.scale").orElse(DEFAULT_SCALE);
+		String strategy = ConfigUtil.getString(config, "viewport.strategy").orElse("split");
+		if ("split".equals(strategy)) {
+			gameView.setCreationStrategy(new SplitScreenCreationStrategy(scale));
+		} else {
+			gameView.setCreationStrategy(new SharedScreenCreationStrategy(scale));
+		}
 	}
 	private static void initEntityFactories(EntityFactory entityFactory) {
 		Map<String, Object> factoryObjects = new HashMap<>();
@@ -181,8 +193,6 @@ public class Game {
 
 		levelCount++;
 
-		initViewPorts();
-
 		// Get starting room and spawn player there
 		List<EntityPlaceholder> playerSpawns = level.getEntityPlaceholders().stream().filter(ph -> ph.getType().equals(EntityType.PLAYER_SPAWN)).collect(Collectors.toList());
 		int i = 0;
@@ -190,7 +200,6 @@ public class Game {
 			EntityPlaceholder spawnPoint = playerSpawns.get(i++);
 			Vector2 origin = Util.floor(spawnPoint.getOrigin().cpy().scl(environment.getTileset().tile_size));
 			player.spawn(origin);
-			player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage());
 		}
 
 		// Instantiate entities for every placeholder
@@ -199,6 +208,9 @@ public class Game {
 				Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size))));
 			}
 		});
+
+		gameView.recreateViewPorts();
+		Players.all().forEach(player -> player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage()));
 
 		Engine.entities.commit(false);
 		System.out.println(Engine.entities.analysis());
@@ -247,39 +259,7 @@ public class Game {
 		}
 	}
 
-	private static final double DEFAULT_SCALE = 3;
-
-	/**
-	 * Creates a viewport and viewport renderer for each player (in split screen fashion).
-	 */
-	public static void initViewPorts() {
-		float scale = configuration.getDouble("viewport.scale", DEFAULT_SCALE).floatValue();
-
-		LinkedList<ViewPort> viewPorts = new LinkedList<>();
-		if (Players.count() == 1) {
-			viewPorts.push(new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), scale));
-		} else if (Players.count() == 2) {
-			scale -= 1;
-			int width = Gdx.graphics.getWidth() / 2;
-			int height = Gdx.graphics.getHeight();
-			viewPorts.add(new ViewPort(width, 0, width, height, scale));
-			viewPorts.add(new ViewPort(0, 0, width, height, scale));
-		} else  {
-			scale -= 2;
-			int width = Gdx.graphics.getWidth() / 2;
-			int height = Gdx.graphics.getHeight() / 2;
-			viewPorts.add(new ViewPort(width, 0, width, height, scale));
-			viewPorts.add(new ViewPort(0, 0, width, height, scale));
-			viewPorts.add(new ViewPort(width, height, width, height, scale));
-			viewPorts.add(new ViewPort(0, height, width, height, scale));
-		}
-		Players.all().forEach(p -> {
-			p.setViewPort(viewPorts.pop());
-			p.setRenderer(new ViewPortRenderer(p.getViewPort(), p));
-			p.getRenderer().initialize();
-		});
-		Engine.setMainViewport(Players.get(0).getViewPort());
-	}
+	private static final float DEFAULT_SCALE = 3;
 
 	public static Environment getEnvironment() {
 		return environment;

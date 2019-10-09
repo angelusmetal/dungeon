@@ -15,7 +15,6 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.StopWatch;
-import com.dungeon.engine.viewport.CharacterViewPortTracker;
 import com.dungeon.game.controller.ControllerControlBundle;
 import com.dungeon.game.controller.KeyboardControlBundle;
 import com.dungeon.game.controller.ControlBundle;
@@ -47,7 +46,6 @@ public class Dungeon extends ApplicationAdapter {
 	private final Toml configuration;
 	private InputMultiplexer inputMultiplexer;
 	private InputProcessorStack inputStack;
-	private CharacterViewPortTracker characterViewPortTracker;
 	private CharacterSelection characterSelection;
 
 	private boolean fading = false;
@@ -92,18 +90,11 @@ public class Dungeon extends ApplicationAdapter {
 		devTools.addDeveloperHotkeys();
 		devTools.addProfilerWidgets();
 
-		characterViewPortTracker = new CharacterViewPortTracker();
-
 		// Start playing character selection music
 		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
 	}
 
 	private void configureInput() {
-		Game.initialize(configuration);
-
-		characterSelection = new CharacterSelection();
-		characterSelection.initialize();
-
 		Map<String, ControllerConfig> controllerConfigs = readControllerConfigurations();
 
 		// Add keyboard controller
@@ -171,10 +162,8 @@ public class Dungeon extends ApplicationAdapter {
 			Engine.entities.update(entitiesInAllViewPorts);
 			entitiesSampler.sample((int) stopWatch.getAndReset());
 
-			Players.all().forEach(player -> {
-				characterViewPortTracker.refresh(player.getViewPort(), player.getAvatar());
-				player.getRenderer().render();
-			});
+			Game.gameView.updateCamera();
+			Game.gameView.render();
 			renderSampler.sample((int) stopWatch.getAndReset());
 		}
 
@@ -206,7 +195,7 @@ public class Dungeon extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		characterSelection.dispose();
-		Players.all().forEach(Disposable::dispose);
+		Game.gameView.dispose();
 		Resources.dispose();
 	}
 

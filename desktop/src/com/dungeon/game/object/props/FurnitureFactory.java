@@ -29,7 +29,7 @@ public class FurnitureFactory {
 				if (!expired && entity instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) entity;
 					character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
-					CoinsWidget coinsWidget = character.getPlayer().getRenderer().getHudStage().getCoinsWidget();
+					CoinsWidget coinsWidget = character.getPlayer().getRenderer().getHudStage().getCoinsWidget(character.getPlayer());
 					Vector2 origin = getOrigin().cpy().add(0, getZPos());
 					Vector2 destination = coinsWidget.getCenter();
 					Bezier<Vector2> path = character.getPlayer().getRenderer().getHudStage().randQuadratic(origin, destination);

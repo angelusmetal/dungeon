@@ -15,8 +15,10 @@ import com.dungeon.game.ui.HeartWidget;
 import com.dungeon.game.ui.WeaponWidget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class HudStage implements RenderStage {
 
@@ -24,24 +26,35 @@ public class HudStage implements RenderStage {
 	private final ViewPortBuffer viewportBuffer;
 	private boolean enabled = true;
 	private final HLayout layout = new HLayout();
-	private final CoinsWidget coinsWidget;
-	private final WeaponWidget weaponWidget;
-	private final HeartWidget heartWidget;
+	private final Map<Player, Hud> hudByPlayer = new HashMap<>();
 	private final Repository<Particle> particles = new Repository<>();
 
-	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, Player player) {
+	private static class Hud {
+		private final CoinsWidget coinsWidget;
+		private final WeaponWidget weaponWidget;
+		private final HeartWidget heartWidget;
+
+		public Hud(Player player) {
+			coinsWidget = new CoinsWidget(player);
+			weaponWidget = new WeaponWidget(player);
+			heartWidget = new HeartWidget(player);
+		}
+	}
+
+	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, List<Player> players) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
-		coinsWidget = new CoinsWidget(player);
-		weaponWidget = new WeaponWidget(player);
-		heartWidget = new HeartWidget(player);
 
 		layout.pad(4);
 		layout.align(HLayout.Alignment.TOP);
 		layout.setX(4);
-		layout.add(coinsWidget);
-		layout.add(weaponWidget);
-		layout.add(heartWidget);
+		players.forEach(player -> {
+			Hud hud = new Hud(player);
+			layout.add(hud.coinsWidget);
+			layout.add(hud.weaponWidget);
+			layout.add(hud.heartWidget);
+			hudByPlayer.put(player, hud);
+		});
 		layout.setY(viewPort.cameraHeight - layout.getHeight() - 4);
 	}
 
@@ -76,15 +89,15 @@ public class HudStage implements RenderStage {
 	@Override
 	public void dispose() {}
 
-	public CoinsWidget getCoinsWidget() {
-		return coinsWidget;
+	public CoinsWidget getCoinsWidget(Player player) {
+		return hudByPlayer.get(player).coinsWidget;
 	}
 
-	public WeaponWidget getWeaponWidget() {
-		return weaponWidget;
+	public WeaponWidget getWeaponWidget(Player player) {
+		return hudByPlayer.get(player).weaponWidget;
 	}
 
-	public HeartWidget getHeartWidget() {
-		return heartWidget;
+	public HeartWidget getHeartWidget(Player player) {
+		return hudByPlayer.get(player).heartWidget;
 	}
 }

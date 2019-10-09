@@ -30,8 +30,13 @@ public class ViewPort {
 
 	public void setScale(float scale) {
 		this.scale = scale;
-		this.cameraWidth = (int) (width / scale);
-		this.cameraHeight = (int) (height / scale);
+		cameraWidth = (int) (width / scale);
+		cameraHeight = (int) (height / scale);
+	}
+
+	public void centerAt(int centerX, int centerY) {
+		cameraX = centerX - cameraWidth / 2;
+		cameraY = centerY - cameraHeight / 2;
 	}
 
 	// TODO this method doesn't belong here
