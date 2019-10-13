@@ -34,10 +34,10 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
-		// Spawn cute dust clouds when walking
-		EntityPrototype dust_cloud = Resources.prototypes.get("dust_cloud_2");
-		stepMetronome = new Metronome(0.4f, () -> Engine.entities.add(new Entity(dust_cloud, this.getOrigin().cpy().add(0, 1))));
+		stepMetronome = getStepMetronome();
 	}
+
+	protected abstract Metronome getStepMetronome();
 
 	public void setPlayerId(int playerId) {
 		this.playerId = playerId;

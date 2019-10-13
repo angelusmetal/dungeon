@@ -52,9 +52,13 @@ public class Entity implements Drawable, Movable {
 	 */
 	protected float speed;
 	/**
-	 * Reduces speed
+	 * Reduces ground speed
 	 */
 	protected float friction;
+	/**
+	 * Reduces air speed
+	 */
+	protected float airFriction;
 	/**
 	 * How susceptible this entity is to knockback
 	 */
@@ -123,6 +127,7 @@ public class Entity implements Drawable, Movable {
 		this.zSpeed = prototype.zSpeed.get();
 		this.knockback = prototype.friction.get();
 		this.friction = prototype.friction.get();
+		this.airFriction = prototype.airFriction.get();
 		this.bounciness = prototype.bounciness;
 		this.hitPredicate = prototype.hitPredicate;
 		this.color = prototype.color.get();
@@ -167,6 +172,7 @@ public class Entity implements Drawable, Movable {
 		this.zSpeed = other.getZSpeed();
 		this.knockback = other.knockback;
 		this.friction = other.friction;
+		this.airFriction = other.airFriction;
 		this.bounciness = other.bounciness;
 		this.hitPredicate = other.hitPredicate;
 		this.color = other.color;
@@ -367,6 +373,10 @@ public class Entity implements Drawable, Movable {
 
 	public float getFriction() {
 		return friction;
+	}
+
+	public float getAirFriction() {
+		return airFriction;
 	}
 
 	public void spawn() {

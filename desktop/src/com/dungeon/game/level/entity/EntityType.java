@@ -8,6 +8,7 @@ public interface EntityType {
 	String KARA = "player_kara";
 	String JACK = "player_jack";
 	String MORT = "player_mort";
+	String ALMA = "player_alma";
 	// Props
 	String TOMBSTONE = "tombstone";
 	String DOOR_VERTICAL = "door_vertical";

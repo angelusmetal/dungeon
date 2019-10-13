@@ -92,6 +92,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
 		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);
 		ConfigUtil.getFloat(descriptor, "friction").ifPresent(prototype::friction);
+		ConfigUtil.getFloat(descriptor, "airFriction").ifPresent(prototype::airFriction);
 		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
 		ConfigUtil.getFloat(descriptor, "speed").ifPresent(prototype::speed);

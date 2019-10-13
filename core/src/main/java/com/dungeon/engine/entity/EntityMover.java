@@ -27,6 +27,8 @@ public class EntityMover {
 		// Decrease speed if on floor due to friction
 		if (entity.getZPos() == 0) {
 			movement.scl(1 - entity.getFriction());
+		} else {
+			movement.scl(1 - entity.getAirFriction());
 		}
 
 		if (movement.len2() > 0) {

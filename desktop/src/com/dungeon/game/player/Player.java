@@ -86,8 +86,10 @@ public class Player {
 			return (PlayerEntity) Game.build(EntityType.KARA, origin);
 		} else if (characterId == 1) {
 			return (PlayerEntity) Game.build(EntityType.JACK, origin);
-		} else {
+		} else if (characterId == 2) {
 			return (PlayerEntity) Game.build(EntityType.MORT, origin);
+		} else {
+			return (PlayerEntity) Game.build(EntityType.ALMA, origin);
 		}
 	}
 

@@ -22,6 +22,7 @@ public class EntityPrototype {
 	Supplier<Color> color = Color.WHITE::cpy;
 	Supplier<Float> knockback = () -> 0f;
 	Supplier<Float> friction = () -> 0f;
+	Supplier<Float> airFriction = () -> 0f;
 	LightPrototype light = null;
 	LightPrototype flare = null;
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
@@ -59,6 +60,7 @@ public class EntityPrototype {
 		this.color = other.color;
 		this.knockback = other.knockback;
 		this.friction = other.friction;
+		this.airFriction = other.airFriction;
 		this.light = other.light;
 		this.flare = other.flare;
 		this.traits = new ArrayList<>(other.traits);
@@ -169,6 +171,17 @@ public class EntityPrototype {
 
 	public EntityPrototype friction(Supplier<Float> friction) {
 		this.friction = friction;
+		return this;
+	}
+
+	public EntityPrototype airFriction(float airFriction) {
+		final float f = clamp(airFriction);
+		this.airFriction = () -> f;
+		return this;
+	}
+
+	public EntityPrototype airFriction(Supplier<Float> airFriction) {
+		this.airFriction = airFriction;
 		return this;
 	}
 

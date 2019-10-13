@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class CharacterSelection {
 
-	private static final int CHARACTER_COUNT = 3;
+	private static final int CHARACTER_COUNT = 4;
 	private int currentPlayer = 0;
 	private List<Slot> slots = new ArrayList<>(4);
 
@@ -89,8 +89,10 @@ public class CharacterSelection {
 			return Resources.animations.get(PlayerCharacterFactory.KARA_WALK);
 		} else if (characterId == 1) {
 			return Resources.animations.get(PlayerCharacterFactory.JACK_WALK);
-		} else {
+		} else if (characterId == 2) {
 			return Resources.animations.get(PlayerCharacterFactory.MORT_WALK);
+		} else {
+			return Resources.animations.get(PlayerCharacterFactory.ALMA_WALK);
 		}
 	}
 
