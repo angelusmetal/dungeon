@@ -11,6 +11,7 @@ import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.FireballWeapon;
 import com.dungeon.game.combat.Weapon;
+import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.Resources;
 import com.moandjiezana.toml.Toml;
 
@@ -47,6 +48,20 @@ public class FireSlimeFactory {
 
 	public Entity build(Vector2 origin, EntityPrototype prototype) {
 		return new FireSlime(origin, this);
+	}
+
+	public Entity buildExplosion(Vector2 origin, EntityPrototype prototype) {
+		return new Entity(prototype, origin) {
+			@Override
+			protected void onExpire() {
+				int bullets = (Players.count() + Game.getLevelCount()) * 2;
+				Vector2 aim = new Vector2(0, 1);
+				for (int i = 0; i < bullets; ++i) {
+					getWeapon().spawnEntities(getOrigin(), aim);
+					aim.rotate(360f / bullets);
+				}
+			}
+		};
 	}
 	public Weapon getWeapon() {
 		return weapon;

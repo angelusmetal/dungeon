@@ -61,7 +61,7 @@ public class ResourceManagerLoader {
 
 		// Scan dependencies and build the correct put order
 		Set<ResourceDescriptor> sequence = new LinkedHashSet<>();
-		descriptors.values().forEach(descriptor -> descriptor.scanDependencies(descriptors, sequence));
+		descriptors.values().forEach(descriptor -> descriptor.scanDependencies(descriptor, descriptors, sequence));
 
 		// Load resources in the correct order
 		sequence.forEach(descriptor -> loaders.get(descriptor.getIdentifier().getType()).load(descriptor));

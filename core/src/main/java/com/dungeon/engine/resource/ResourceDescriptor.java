@@ -29,13 +29,13 @@ public class ResourceDescriptor {
 		return blob;
 	}
 
-	public void scanDependencies(Map<ResourceIdentifier, ResourceDescriptor> descriptors, Set<ResourceDescriptor> sequence) {
+	public void scanDependencies(ResourceDescriptor source, Map<ResourceIdentifier, ResourceDescriptor> descriptors, Set<ResourceDescriptor> sequence) {
 		dependencies.forEach(depId -> {
 			ResourceDescriptor dependency = descriptors.get(depId);
 			if (dependency == null) {
-				throw new LoadingException("Dependency '" + depId + "' does not exist");
+				throw new LoadingException("Dependency '" + depId + "' does not exist; required by '" + source.getIdentifier() + "'");
 			}
-			dependency.scanDependencies(descriptors, sequence);
+			dependency.scanDependencies(dependency, descriptors, sequence);
 		});
 		sequence.add(this);
 	}

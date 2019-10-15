@@ -62,12 +62,6 @@ public class FireSlime extends CreatureEntity {
 
 	@Override
 	protected void onExpire() {
-		int bullets = (Players.count() + Game.getLevelCount()) * 2;
-		Vector2 aim = new Vector2(0, 1);
-		for (int i = 0; i < bullets; ++i) {
-			factory.getWeapon().spawnEntities(getOrigin(), aim);
-			aim.rotate(360f / bullets);
-		}
 		shout(deathPhrases, 0.3f);
 		// Create loot
 		Game.createCreatureLoot(getOrigin());
