@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.ui.particle.Particle;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
@@ -17,15 +18,17 @@ public class MiniMapStage implements RenderStage {
 	private final ViewPortBuffer viewportBuffer;
 	private final Pixmap miniMap;
 	private final Texture miniMapTexture;
+	private final SpriteBatch batch;
 	private boolean enabled = true;
 	private final int width = 60;
 	private final int height = 60;
 	private final Color background =  Color.valueOf("000000c0");
 	private final Color floor = Color.valueOf("a66620c0");
 
-	public MiniMapStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
+	public MiniMapStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, SpriteBatch batch) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
+		this.batch = batch;
 		// 100x100
 		this.miniMap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
 		this.miniMapTexture = new Texture(miniMap);
@@ -34,8 +37,10 @@ public class MiniMapStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
-			// Draw map
-			viewportBuffer.render(this::drawMap);
+			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width / HudStage.SCALE, viewPort.height / HudStage.SCALE);
+			batch.begin();
+			drawMap(batch);
+			batch.end();
 		}
 	}
 

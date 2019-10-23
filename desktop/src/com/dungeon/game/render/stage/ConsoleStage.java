@@ -30,6 +30,7 @@ public class ConsoleStage implements RenderStage {
 	@Override
 	public void render() {
 		if (enabled) {
+			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
 			batch.begin();
 			int x = viewPort.posX + 10;
 			int y = viewPort.posY + 10 + 16;

@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class HudStage implements RenderStage {
 
-	private static final float SCALE = 3f;
+	public static final float SCALE = 3f;
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -84,7 +84,6 @@ public class HudStage implements RenderStage {
 			layout.draw(batch);
 			particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
 			batch.end();
-			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
 			batch.setColor(Color.WHITE);
 		}
 	}

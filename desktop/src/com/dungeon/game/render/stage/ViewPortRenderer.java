@@ -18,6 +18,7 @@ public class ViewPortRenderer implements Disposable {
 
 	private SpriteBatch batch;
 
+	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 
 	private int renderCalls = 0;
@@ -49,6 +50,7 @@ public class ViewPortRenderer implements Disposable {
 
 	public ViewPortRenderer(ViewPort viewPort, List<Player> players) {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
+		this.viewPort = viewPort;
 		this.batch = new SpriteBatch();
 
 		sceneStage = new SceneStage(viewPort, viewportBuffer);
@@ -61,7 +63,7 @@ public class ViewPortRenderer implements Disposable {
 		overlayTextStage = new OverlayTextStage(viewPort, viewportBuffer);
 		playerArrowsStage = new PlayerArrowsStage(viewPort, viewportBuffer);
 		hudStage = new HudStage(viewPort, viewportBuffer, batch, players);
-		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
+		miniMapStage = new MiniMapStage(viewPort, viewportBuffer, batch);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
 		pipeline.add(new Stage(sceneStage, DevTools.sceneSampler));
@@ -71,10 +73,10 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.add(new Stage(motionBlurStage, DevTools.motionBlurSampler));
 		pipeline.add(new Stage(overlayTextStage, DevTools.overlayTextSampler));
 		pipeline.add(new Stage(playerArrowsStage, DevTools.playerArrowsSampler));
-		pipeline.add(new Stage(miniMapStage, DevTools.miniMapSampler));
 		pipeline.add(new Stage(titleStage, DevTools.titleSampler));
 		pipeline.add(new Stage(scaleStage, DevTools.scaleSampler));
 		pipeline.add(new Stage(hudStage, DevTools.hudSampler));
+		pipeline.add(new Stage(miniMapStage, DevTools.miniMapSampler));
 		pipeline.add(new Stage(consoleStage, DevTools.consoleSampler));
 
 		// Disable some default disabled
@@ -95,6 +97,7 @@ public class ViewPortRenderer implements Disposable {
 		long start = System.nanoTime();
 
 		stopWatch.start();
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
 		pipeline.forEach(stage -> {
 			stage.stage.render();
 			stage.sampler.sample((int) stopWatch.getAndReset());
