@@ -72,7 +72,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	/** Inverts the horizontal draw scale based on the movement vector */
 	private void updateXScale() {
-		if (getAim().x != 0) {
+		if (getAim().x != 0 && getAnimation() == getAttackAnimation()) {
 			getDrawScale().x = Math.abs(getDrawScale().x) * getAim().x < 0 ? -1 : 1;
 		} else if (getMovement().x != 0) {
 			getDrawScale().x = Math.abs(getDrawScale().x) * getMovement().x < 0 ? -1 : 1;
@@ -93,6 +93,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 				actionGate.attempt(weapon.attackCooldown(), () -> {
 					weapon.spawnEntities(getBody().getCenter(), getAim());
 					updateAnimation(getAttackAnimation());
+					updateXScale();
 					slowUntil = Engine.time() + weapon.attackCooldown();
 					energy -= weapon.energyDrain();
 				});

@@ -69,7 +69,6 @@ public class SharedScreenCreationStrategy implements GameView.CreationStrategy {
 				float newScale = Math.min(
 						Util.clamp(viewPort.width / width, 1, baseScale),
 						Util.clamp(viewPort.height / height, 1, baseScale));
-				//float newScale = viewPort.width / width;
 				viewPort.setScale(newScale);
 				viewPort.centerAt(centerX, centerY);
 			}
