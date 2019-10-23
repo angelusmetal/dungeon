@@ -66,7 +66,9 @@ public class SharedScreenCreationStrategy implements GameView.CreationStrategy {
 				int centerY = (int) (minY + height / 2f);
 
 				// Place camera in the middle of all entities
-				float newScale = Util.clamp(viewPort.width / width, 1, baseScale);
+				float newScale = Math.min(
+						Util.clamp(viewPort.width / width, 1, baseScale),
+						Util.clamp(viewPort.height / height, 1, baseScale));
 				//float newScale = viewPort.width / width;
 				viewPort.setScale(newScale);
 				viewPort.centerAt(centerX, centerY);
