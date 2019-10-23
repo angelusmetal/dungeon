@@ -103,7 +103,7 @@ public class SceneStage implements RenderStage {
 		this.shadowRenderer.put(ShadowType.CIRCLE, this::circleShadow);
 		this.shadowRenderer.put(ShadowType.RECTANGLE, this::rectangleShadow);
 		this.shapeRenderer = new ShapeRenderer();
-		this.shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
+		this.shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class SceneStage implements RenderStage {
 
 		current.projectToViewPort();
 		lights.projectToZero();
-		shapeRenderer.setProjectionMatrix(shapeRenderer.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.cameraWidth, viewPort.cameraHeight));
+		shapeRenderer.setProjectionMatrix(shapeRenderer.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.width, viewPort.height));
 		output.projectToZero();
 
 		if (drawTiles) {

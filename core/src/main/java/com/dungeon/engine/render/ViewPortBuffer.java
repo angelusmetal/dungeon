@@ -50,7 +50,7 @@ public class ViewPortBuffer implements Disposable {
 	}
 
 	public void projectToViewPort() {
-		batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.cameraWidth, viewPort.cameraHeight);
+		batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.width, viewPort.height);
 	}
 
 	public void projectToZero() {
@@ -78,8 +78,10 @@ public class ViewPortBuffer implements Disposable {
 	}
 
 	public void drawScaled(SpriteBatch batch) {
+		// Adjust the texture region size to the visible part (but never exceed the buffer size)
+		textureRegion.setRegionWidth(Math.min(viewPort.cameraWidth, viewPort.width));
+		textureRegion.setRegionHeight(Math.min(viewPort.cameraHeight, viewPort.height));
 		batch.draw(textureRegion, viewPort.posX, viewPort.posY, viewPort.width, viewPort.height);
-//		batch.draw(textureRegion, viewPort.posX, viewPort.posY, (viewPort.cameraWidth + 10) * viewPort.getScale(), (viewPort.cameraHeight + 10) * viewPort.getScale());
 	}
 
 	public int getLastRenderCalls() {
