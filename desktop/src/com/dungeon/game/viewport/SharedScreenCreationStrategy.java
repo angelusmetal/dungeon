@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 public class SharedScreenCreationStrategy implements GameView.CreationStrategy {
 
 	private final float baseScale;
+	private final float cameraMargin;
 
-	public SharedScreenCreationStrategy(float baseScale) {
+	public SharedScreenCreationStrategy(float baseScale, float cameraMargin) {
 		this.baseScale = baseScale;
+		this.cameraMargin = cameraMargin;
 	}
 
 	@Override
@@ -54,6 +56,10 @@ public class SharedScreenCreationStrategy implements GameView.CreationStrategy {
 					maxX = Math.max(maxX, c.getOrigin().x);
 					maxY = Math.max(maxY, c.getOrigin().y);
 				}
+				minX -= cameraMargin;
+				minY -= cameraMargin;
+				maxX += cameraMargin;
+				maxY += cameraMargin;
 				float width = maxX - minX;
 				float height = maxY - minY;
 				int centerX = (int) (minX + width / 2f);
@@ -61,6 +67,7 @@ public class SharedScreenCreationStrategy implements GameView.CreationStrategy {
 
 				// Place camera in the middle of all entities
 				float newScale = Util.clamp(viewPort.width / width, 1, baseScale);
+				//float newScale = viewPort.width / width;
 				viewPort.setScale(newScale);
 				viewPort.centerAt(centerX, centerY);
 			}

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -41,7 +42,7 @@ public class ViewPortBuffer implements Disposable {
 		if (frameBuffer != null) {
 			frameBuffer.dispose();
 		}
-		frameBuffer = new FrameBuffer(format, viewPort.cameraWidth, viewPort.cameraHeight, false);
+		frameBuffer = new FrameBuffer(format, viewPort.width, viewPort.height, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
 		textureRegion.flip(false, true);
 		textureRegion.getTexture().setFilter(minFilter, magFilter);
@@ -73,11 +74,12 @@ public class ViewPortBuffer implements Disposable {
 	}
 
 	public void draw(SpriteBatch batch) {
-		batch.draw(textureRegion, 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+		batch.draw(textureRegion, 0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
 	public void drawScaled(SpriteBatch batch) {
-		batch.draw(textureRegion, viewPort.posX, viewPort.posY, frameBuffer.getWidth() * viewPort.getScale(), frameBuffer.getHeight() * viewPort.getScale());
+		batch.draw(textureRegion, viewPort.posX, viewPort.posY, viewPort.width, viewPort.height);
+//		batch.draw(textureRegion, viewPort.posX, viewPort.posY, (viewPort.cameraWidth + 10) * viewPort.getScale(), (viewPort.cameraHeight + 10) * viewPort.getScale());
 	}
 
 	public int getLastRenderCalls() {

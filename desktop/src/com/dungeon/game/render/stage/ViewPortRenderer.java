@@ -60,7 +60,7 @@ public class ViewPortRenderer implements Disposable {
 		consoleStage = new ConsoleStage(viewPort, batch, players.get(0).getConsole());
 		overlayTextStage = new OverlayTextStage(viewPort, viewportBuffer);
 		playerArrowsStage = new PlayerArrowsStage(viewPort, viewportBuffer);
-		hudStage = new HudStage(viewPort, viewportBuffer, players);
+		hudStage = new HudStage(viewPort, viewportBuffer, batch, players);
 		miniMapStage = new MiniMapStage(viewPort, viewportBuffer);
 		titleStage = new TitleStage(viewPort, viewportBuffer);
 
@@ -71,10 +71,10 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.add(new Stage(motionBlurStage, DevTools.motionBlurSampler));
 		pipeline.add(new Stage(overlayTextStage, DevTools.overlayTextSampler));
 		pipeline.add(new Stage(playerArrowsStage, DevTools.playerArrowsSampler));
-		pipeline.add(new Stage(hudStage, DevTools.hudSampler));
 		pipeline.add(new Stage(miniMapStage, DevTools.miniMapSampler));
 		pipeline.add(new Stage(titleStage, DevTools.titleSampler));
 		pipeline.add(new Stage(scaleStage, DevTools.scaleSampler));
+		pipeline.add(new Stage(hudStage, DevTools.hudSampler));
 		pipeline.add(new Stage(consoleStage, DevTools.consoleSampler));
 
 		// Disable some default disabled

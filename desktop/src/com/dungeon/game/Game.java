@@ -107,11 +107,12 @@ public class Game {
 		Collections.shuffle(levelMusic);
 
 		float scale = ConfigUtil.getFloat(config, "viewport.scale").orElse(DEFAULT_SCALE);
+		float margin = ConfigUtil.getFloat(config, "viewport.margin").orElse(DEFAULT_MARGIN);
 		String strategy = ConfigUtil.getString(config, "viewport.strategy").orElse("split");
 		if ("split".equals(strategy)) {
 			gameView.setCreationStrategy(new SplitScreenCreationStrategy(scale));
 		} else {
-			gameView.setCreationStrategy(new SharedScreenCreationStrategy(scale));
+			gameView.setCreationStrategy(new SharedScreenCreationStrategy(scale, margin));
 		}
 	}
 	private static void initEntityFactories(EntityFactory entityFactory) {
@@ -260,6 +261,7 @@ public class Game {
 	}
 
 	private static final float DEFAULT_SCALE = 3;
+	private static final float DEFAULT_MARGIN = 100;
 
 	public static Environment getEnvironment() {
 		return environment;

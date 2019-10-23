@@ -1,5 +1,7 @@
 package com.dungeon.game.render.stage;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.repository.Repository;
@@ -22,8 +24,11 @@ import java.util.Map;
 
 public class HudStage implements RenderStage {
 
+	private static final float SCALE = 3f;
+
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
+	private final SpriteBatch batch;
 	private boolean enabled = true;
 	private final HLayout layout = new HLayout();
 	private final Map<Player, Hud> hudByPlayer = new HashMap<>();
@@ -41,9 +46,10 @@ public class HudStage implements RenderStage {
 		}
 	}
 
-	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, List<Player> players) {
+	public HudStage(ViewPort viewPort, ViewPortBuffer viewportBuffer, SpriteBatch batch, List<Player> players) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
+		this.batch = batch;
 
 		layout.pad(4);
 		layout.align(HLayout.Alignment.TOP);
@@ -65,19 +71,21 @@ public class HudStage implements RenderStage {
 	public Bezier<Vector2> randQuadratic(Vector2 origin, Vector2 destination) {
 		Vector2 rand = new Vector2(Rand.between(50, 150), 0).rotate(Rand.between(90, 270));
 		return new Bezier<>(
-				viewPort.worldToScreen(origin),
-				viewPort.worldToScreen(rand.add(origin)),
+				viewPort.worldToScreen(origin).scl(viewPort.getScale() / SCALE),
+				viewPort.worldToScreen(rand.add(origin)).scl(viewPort.getScale() / SCALE),
 				destination);
 	}
 
 	@Override
 	public void render() {
 		if (enabled) {
-			viewportBuffer.projectToZero();
-			viewportBuffer.render(batch -> {
-				layout.draw(batch);
-				particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
-			});
+			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width / SCALE, viewPort.height / SCALE);
+			batch.begin();
+			layout.draw(batch);
+			particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
+			batch.end();
+			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
+			batch.setColor(Color.WHITE);
 		}
 	}
 
