@@ -64,7 +64,7 @@ public class Game {
 		return new OverlayText(origin, text, color, Resources.fonts.get(Resources.DEFAULT_FONT));
 	}
 
-	private static Vector2 SAY_OFFSET = new Vector2(0, 20);
+	private static Vector2 SAY_OFFSET = new Vector2(0, 40);
 
 	public static OverlayText say(Entity emitter, String text) {
 		OverlayText overlayText = text(emitter.getOrigin(), text)

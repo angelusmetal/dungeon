@@ -52,7 +52,7 @@ public class OverlayTextStage implements RenderStage {
 				labelBuffer.render(batch -> {
 					Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-					text.draw(batch, viewPort);
+					text.draw(batch);
 				});
 				viewportBuffer.projectToZero();
 				viewportBuffer.render(batch -> {
@@ -60,14 +60,9 @@ public class OverlayTextStage implements RenderStage {
 					if (text.hasOutline()) {
 						// If outline is enabled, draw the text first using the outline shader
 						batch.end();
-						float width = viewPort.width;
-						float height = viewPort.height;
 						shaderOutline.begin();
-						shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / width, 1f / height));
-						// TODO Not sure why but these are the values that seem to work - need to find out why
-						shaderOutline.setUniformf("u_offset", viewPort.getScale() + 0.5f);
-						shaderOutline.setUniformf("u_step", Math.min(1f, width / 70f));
 						shaderOutline.setUniformf("u_color", new Color(0f, 0f, 0f, text.getColor().a));
+						shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / viewPort.width, 1f / viewPort.height));
 						shaderOutline.end();
 						batch.setShader(shaderOutline);
 						batch.begin();

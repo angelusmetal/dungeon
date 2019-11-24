@@ -114,7 +114,7 @@ public class OverlayText {
         return outline;
     }
 
-    public void draw(SpriteBatch batch, ViewPort viewPort) {
+    public void draw(SpriteBatch batch) {
         // Only create a new layout if we're chopping the texts
         GlyphLayout local = (length < text.length())
                 ? new GlyphLayout(font, text.substring(0, length))

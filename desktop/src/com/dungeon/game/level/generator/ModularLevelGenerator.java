@@ -263,7 +263,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 			return false;
 		}
 		// If the minimum depth for this room has not yet been reached, it cannot be placed
-		if (room.generation < room.prototype.getMinDepth()) {
+		if (rooms.size() > 1 && room.generation < room.prototype.getMinDepth()) {
 			return false;
 		}
 		return true;
