@@ -87,6 +87,7 @@ public class OverlayText {
 
     public OverlayText bindTo(Entity entity, Vector2 offset) {
         traits.add(() -> origin.set(entity.getOrigin().x + offset.x, entity.getBody().getTopRight().y + offset.y));
+        traits.add(() -> expired = entity.isExpired());
         return this;
     }
 

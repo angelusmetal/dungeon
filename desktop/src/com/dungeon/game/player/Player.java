@@ -136,6 +136,10 @@ public class Player {
 		gold += amount;
 	}
 
+	public void subtractGold(int amount) {
+		gold -= amount;
+	}
+
 	public int getGold() {
 		return gold;
 	}

@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class CreatureEntity extends DungeonEntity implements Movable, Drawable {
 
 	private Vector2 aim = new Vector2(0, 0);
-	private float nextTalk = 0;
+	protected float nextTalk = 0;
 
 	protected TimeGate actionGate = new TimeGate(); // Default is fire every 0.25 seconds
 

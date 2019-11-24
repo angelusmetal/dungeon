@@ -133,6 +133,11 @@ public class SceneStage implements RenderStage {
 			// Draw tiles
 			base.projectToViewPort();
 			base.render(this::drawFloorTiles);
+			// Draw entities with zIndex < 0 (floor entities)
+			base.render(batch -> blendSprites.run(batch, () -> {
+				batch.setShader(entityShader);
+				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).filter(e -> e.getZIndex() < 0).sorted(comp).forEach(e -> e.draw(batch, viewPort));
+			}));
 		} else {
 			base.render(batch -> {
 				Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -163,7 +168,7 @@ public class SceneStage implements RenderStage {
 			base.render(batch -> blendSprites.run(batch, () -> {
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
-				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).sorted(comp).forEach(e -> {
+				Engine.entities.inViewPort(viewPort).filter(viewPort::isInViewPort).filter(e -> e.getZIndex() >= 0).sorted(comp).forEach(e -> {
 					if (e.getZIndex() == 0) {
 						drawWallTilesUntil(batch, e.getOrigin().y);
 					}
