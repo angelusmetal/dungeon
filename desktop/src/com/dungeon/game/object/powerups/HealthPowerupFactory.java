@@ -16,7 +16,7 @@ public class HealthPowerupFactory {
 			protected boolean onEntityCollision(Entity entity) {
 				if (!expired && entity instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) entity;
-					int amount = 25;
+					int amount = 50;
 					character.heal(amount);
 					expire();
 					character.getPlayer().getConsole().log("Healed for " + amount, Color.GOLD);
