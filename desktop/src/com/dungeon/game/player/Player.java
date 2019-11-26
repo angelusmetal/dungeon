@@ -102,9 +102,6 @@ public class Player {
 	}
 
 	public void setRenderer(ViewPortRenderer renderer) {
-		if (this.renderer != null) {
-			this.renderer.dispose();
-		}
 		this.renderer = renderer;
 	}
 
