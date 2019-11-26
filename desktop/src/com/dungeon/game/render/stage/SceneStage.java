@@ -311,6 +311,9 @@ public class SceneStage implements RenderStage {
 		// TODO double check whether we still need origin & zpos here
 		Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
 		float shadowLen = o.len();
+		if (shadowLen < 2) {
+			return;
+		}
 		shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
 		batch.setColor(shadowColor);
 		batch.draw(
