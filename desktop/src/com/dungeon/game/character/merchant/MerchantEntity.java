@@ -19,7 +19,6 @@ public class MerchantEntity extends CreatureEntity {
 	private final List<String> greetPhrases;
 	private final List<String> buyPhrases;
 	private final List<String> cantBuyPhrases;
-	private final List<ShopItem> items;
 	private float talkUntil = 0f;
 
 	public MerchantEntity(Vector2 origin, EntityPrototype prototype,
@@ -32,7 +31,6 @@ public class MerchantEntity extends CreatureEntity {
 		this.greetPhrases = greetPhrases;
 		this.buyPhrases = buyPhrases;
 		this.cantBuyPhrases = cantBuyPhrases;
-		this.items = items;
 		Collections.shuffle(items);
 		ShopItemEntity item1 = new ShopItemEntity(items.get(0), origin.cpy().add(-20f, -30f), this);
 		ShopItemEntity item2 = new ShopItemEntity(items.get(1), origin.cpy().add(20f, -30f), this);

@@ -180,7 +180,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 	private void generateRooms(GridPoint2 origin, Direction direction) {
 		LinkedList<Frame> stack = new LinkedList<>();
-		stack.push(new Frame(origin, direction, null, 0, 1));
+		stack.push(new Frame(origin, direction, null, 0, 0));
 		while (!stack.isEmpty()) {
 			Frame frame = stack.pop();
 			// Check the available size, depending on the direction
@@ -263,7 +263,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 			return false;
 		}
 		// If the minimum depth for this room has not yet been reached, it cannot be placed
-		if (rooms.size() > 1 && room.generation < room.prototype.getMinDepth()) {
+		if (environment.getRooms().size() > 1 && room.generation < room.prototype.getMinDepth()) {
 			return false;
 		}
 		return true;
