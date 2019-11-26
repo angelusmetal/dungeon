@@ -18,6 +18,9 @@ public class CharacterPlayerControlListener extends AbstractControlBundleListene
 	public void updateDirection(Vector2 vector) {
 		PlayerEntity character = control.getEntity();
 		if (character != null) {
+			if (vector.len() > 0.5) {
+				character.face(vector);
+			}
 			character.setSelfImpulse(vector);
 		}
 	}

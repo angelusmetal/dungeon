@@ -16,6 +16,7 @@ import java.util.List;
 public abstract class CreatureEntity extends DungeonEntity implements Movable, Drawable {
 
 	private Vector2 aim = new Vector2(0, 0);
+	private Vector2 face = new Vector2(0, 0);
 	protected float nextTalk = 0;
 
 	protected TimeGate actionGate = new TimeGate(); // Default is fire every 0.25 seconds
@@ -39,6 +40,14 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	public Vector2 getAim() {
 		return aim;
+	}
+
+	public void face(Vector2 vector) {
+		face.set(vector);
+	}
+
+	public Vector2 getFace() {
+		return face;
 	}
 
 	public void drawHealthbar(SpriteBatch batch, ViewPort viewPort) {

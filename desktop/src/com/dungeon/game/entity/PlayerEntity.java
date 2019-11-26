@@ -102,11 +102,11 @@ public abstract class PlayerEntity extends CreatureEntity {
 	}
 
 	private final float interactDistance = Util.length2(20f);
-	private final Vector2 interactArea = new Vector2(40f, 40f);
+	private final Vector2 interactArea = new Vector2(30f, 30f);
 
 	public void interact() {
 		if (!expired) {
-			Body area = Body.centered(getAim().cpy().setLength2(interactDistance).add(getOrigin()), interactArea);
+			Body area = Body.centered(getFace().cpy().setLength2(interactDistance).add(getOrigin()), interactArea);
 			Engine.entities.area(area).forEach(e -> e.signal(this));
 		}
 	}

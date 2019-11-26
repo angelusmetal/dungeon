@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.util.Rand;
-import com.dungeon.game.Game;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.object.shop.ShopItem;
 
@@ -20,6 +18,7 @@ public class MerchantEntity extends CreatureEntity {
 	private final List<String> buyPhrases;
 	private final List<String> cantBuyPhrases;
 	private final List<ShopItem> items;
+	private float talkUntil = 0f;
 
 	public MerchantEntity(Vector2 origin, EntityPrototype prototype,
 						  Animation<TextureRegion> idleAnimation, Animation<TextureRegion> talkAnimation,
@@ -35,7 +34,7 @@ public class MerchantEntity extends CreatureEntity {
 	}
 
 	@Override protected void think() {
-		if (getAnimation() == talkAnimation && nextTalk < Engine.time()) {
+		if (getAnimation() == talkAnimation && talkUntil < Engine.time()) {
 			setAnimation(idleAnimation, 0f);
 		}
 	}
@@ -52,10 +51,13 @@ public class MerchantEntity extends CreatureEntity {
 	}
 
 	private void sayTo(Entity emitter, List<String> text) {
-		setAnimation(talkAnimation, 0f);
 		// Make the merchant look at the character who interacted with them
 		getDrawScale().x = emitter.getOrigin().x - getOrigin().x < 0 ? -1 : 1;
-		say(text);
+		if (nextTalk < Engine.time()) {
+			talkUntil = Engine.time() + 1f;
+			setAnimation(talkAnimation, 0f);
+			say(text);
+		}
 	}
 
 }

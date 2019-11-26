@@ -7,13 +7,12 @@ import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.game.Game;
 import com.dungeon.game.character.merchant.MerchantEntity;
-import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 
 public class ShopItemEntity extends DungeonEntity {
 
-	private static final Vector2 PRICE_OFFSET = new Vector2(0, -20);
+	private static final Vector2 PRICE_OFFSET = new Vector2(0, -15);
 	private final int price;
 	private final String item;
 	private final MerchantEntity merchant;
@@ -26,7 +25,7 @@ public class ShopItemEntity extends DungeonEntity {
 		this.merchant = merchant;
 
 		// But then make some tweaks
-		this.canBlock = true;
+		this.canBlock = false;
 		// Add text for price
 		OverlayText overlayText = Game.text(origin, "" + price, Color.GOLD)
 				.bindTo(this, PRICE_OFFSET);

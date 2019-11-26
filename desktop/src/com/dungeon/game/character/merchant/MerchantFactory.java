@@ -51,8 +51,8 @@ public class MerchantFactory {
 				items);
 		// Shuffle item collection and sell the first 2
 		Collections.shuffle(items);
-		ShopItemEntity item1 = new ShopItemEntity(items.get(0), origin.cpy().add(-20f, -20f), kat);
-		ShopItemEntity item2 = new ShopItemEntity(items.get(1), origin.cpy().add(20f, -20f), kat);
+		ShopItemEntity item1 = new ShopItemEntity(items.get(0), origin.cpy().add(-20f, -30f), kat);
+		ShopItemEntity item2 = new ShopItemEntity(items.get(1), origin.cpy().add(20f, -30f), kat);
 		Engine.entities.add(item1);
 		Engine.entities.add(item2);
 		return kat;
