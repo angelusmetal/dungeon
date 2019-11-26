@@ -8,7 +8,9 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.object.shop.ShopItem;
+import com.dungeon.game.object.shop.ShopItemEntity;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MerchantEntity extends CreatureEntity {
@@ -31,6 +33,11 @@ public class MerchantEntity extends CreatureEntity {
 		this.buyPhrases = buyPhrases;
 		this.cantBuyPhrases = cantBuyPhrases;
 		this.items = items;
+		Collections.shuffle(items);
+		ShopItemEntity item1 = new ShopItemEntity(items.get(0), origin.cpy().add(-20f, -30f), this);
+		ShopItemEntity item2 = new ShopItemEntity(items.get(1), origin.cpy().add(20f, -30f), this);
+		Engine.entities.add(item1);
+		Engine.entities.add(item2);
 	}
 
 	@Override protected void think() {
