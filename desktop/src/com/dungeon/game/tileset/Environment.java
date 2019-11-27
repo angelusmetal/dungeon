@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Environment {
+	private final int tilesize;
 	private final Tileset tileset;
-	private final WallTileset wallTileset;
+	private final Tileset wallTileset;
 	private final Supplier<Color> light;
 	private final List<RoomPrototype> rooms;
 	private final List<String> monsters;
 
-	public Environment(Tileset tileset, WallTileset wallTileset, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
+	public Environment(Tileset tileset, Tileset wallTileset, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
+		this.tilesize = 48; // FIXME make this configurable
 		this.tileset = tileset;
 		this.wallTileset = wallTileset;
 		this.light = light;
@@ -21,11 +23,15 @@ public class Environment {
 		this.monsters = monsters;
 	}
 
+	public int getTilesize() {
+		return tilesize;
+	}
+
 	public Tileset getTileset() {
 		return tileset;
 	}
 
-	public WallTileset getWallTileset() {
+	public Tileset getWallTileset() {
 		return wallTileset;
 	}
 

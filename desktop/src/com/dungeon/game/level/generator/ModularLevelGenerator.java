@@ -36,7 +36,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	private List<Room> rooms = new ArrayList<>();
 	private Environment environment;
 	private Map<String, Integer> roomOccurrences = new HashMap<>();
-	private final WallTilesetSolver tileSolver = new WallTilesetSolver();
+	private final TilesetSolver tileSolver = new TilesetSolver();
 
 	public enum Direction {
 		UP (0, 1),
@@ -122,7 +122,8 @@ public class ModularLevelGenerator implements LevelGenerator {
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				level.setFloorAnimation(x, y, getTile(x, y, environment.getTileset()));
-				level.setWallAnimation(x, y, tileSolver.getTile(tiles, x, y, width, height, environment.getWallTileset()));
+//				level.setFloorAnimation(x, y, tileSolver.getTile(tiles, TileType::isFloor, x, y, width, height, environment.getTileset()));
+				level.setWallAnimation(x, y, tileSolver.getTile(tiles, TileType::isFloor, x, y, width, height, environment.getWallTileset()));
 				level.setSolid(x, y, !tiles[x][y].isFloor());
 			}
 		}
@@ -157,9 +158,9 @@ public class ModularLevelGenerator implements LevelGenerator {
 		// TODO Make this work with level itself
 
 		if (tiles[x][y] == TileType.FLOOR) {
-			return tileset.floor();
+			return tileset.all();
 		} else {
-			return tileset.out();
+			return tileset.none();
 		}
 	}
 

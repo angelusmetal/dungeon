@@ -72,7 +72,7 @@ public class Level implements LevelTiles {
 
 	@Override
 	public int getTileSize() {
-		return Game.getEnvironment().getTileset().tile_size;
+		return Game.getEnvironment().getTilesize();
 	}
 
 	public void setRooms(List<Room> rooms) {

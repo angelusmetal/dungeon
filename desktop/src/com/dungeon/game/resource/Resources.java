@@ -17,10 +17,8 @@ import com.dungeon.game.resource.loader.EntityPrototypeLoader;
 import com.dungeon.game.resource.loader.EnvironmentLoader;
 import com.dungeon.game.resource.loader.RoomPrototypeLoader;
 import com.dungeon.game.resource.loader.TilesetLoader;
-import com.dungeon.game.resource.loader.WallTilesetLoader;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
-import com.dungeon.game.tileset.WallTileset;
 
 public class Resources {
 	public static final String DEFAULT_FONT = "alegreya-sans-sc-9";
@@ -30,7 +28,7 @@ public class Resources {
 	public static final ResourceRepository< EntityPrototype> prototypes = new ResourceRepository<>();
 	public static final ResourceRepository<BitmapFont> fonts = new ResourceRepository<>(Resources::computeFont, BitmapFont::dispose);
 	public static final ResourceRepository<Tileset> tilesets = new ResourceRepository<>();
-	public static final ResourceRepository<WallTileset> wallTilesets = new ResourceRepository<>();
+	public static final ResourceRepository<Tileset> wallTilesets = new ResourceRepository<>();
 	public static final ResourceRepository<RoomPrototype> rooms = new ResourceRepository<>();
 	public static final ResourceRepository<Environment> environments = new ResourceRepository<>();
 	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);
@@ -41,7 +39,7 @@ public class Resources {
 		loader.registerLoader("animation", new AnimationLoader(animations));
 		loader.registerLoader("prototype", new EntityPrototypeLoader(prototypes));
 		loader.registerLoader("tileset", new TilesetLoader(tilesets));
-		loader.registerLoader("wallTileset", new WallTilesetLoader(wallTilesets));
+		loader.registerLoader("wallTileset", new TilesetLoader(wallTilesets));
 		loader.registerLoader("room", new RoomPrototypeLoader(rooms));
 		loader.registerLoader("environment", new EnvironmentLoader(environments));
 		loader.load("assets/assets.conf");

@@ -50,7 +50,7 @@ public class MiniMapStage implements RenderStage {
 	}
 
 	private void drawMap(SpriteBatch batch) {
-		int tSize = Game.getEnvironment().getTileset().tile_size;
+		int tSize = Game.getEnvironment().getTilesize();
 		int minX = (viewPort.cameraX + viewPort.cameraWidth / 2) / tSize - width / 2;
 		int maxX = minX + width;
 		int minY = (viewPort.cameraY + viewPort.cameraHeight / 2) / tSize - height / 2;

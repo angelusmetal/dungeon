@@ -117,7 +117,7 @@ public class SceneStage implements RenderStage {
 		}
 
 		// Tiling variables (they keep track of tile rendering)
-		tSize = Game.getEnvironment().getTileset().tile_size;
+		tSize = Game.getEnvironment().getTilesize();
 		minX = Math.max(0, viewPort.cameraX / tSize);
 		maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + 1;
 		minY = Math.max(0, viewPort.cameraY / tSize - 1);

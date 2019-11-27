@@ -199,14 +199,14 @@ public class Game {
 		int i = 0;
 		for (Player player : Players.all()) {
 			EntityPlaceholder spawnPoint = playerSpawns.get(i++);
-			Vector2 origin = Util.floor(spawnPoint.getOrigin().cpy().scl(environment.getTileset().tile_size));
+			Vector2 origin = Util.floor(spawnPoint.getOrigin().cpy().scl(environment.getTilesize()));
 			player.spawn(origin);
 		}
 
 		// Instantiate entities for every placeholder
 		level.getEntityPlaceholders().stream().filter(ph -> !ph.getType().equals(EntityType.PLAYER_SPAWN)).forEach(placeholder -> {
 			if (Rand.chance(placeholder.getChance())) {
-				Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTileset().tile_size))));
+				Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTilesize()))));
 			}
 		});
 

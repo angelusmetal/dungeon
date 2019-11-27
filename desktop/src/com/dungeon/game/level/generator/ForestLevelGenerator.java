@@ -37,7 +37,7 @@ public class ForestLevelGenerator implements LevelGenerator {
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				level.setSolid(x, y, false);
-				level.setFloorAnimation(x, y, environment.getTileset().floor());
+				level.setFloorAnimation(x, y, environment.getTileset().none());
 			}
 		}
 		placePlayerSpawns(level);
