@@ -19,7 +19,7 @@ public class Room {
 	public final List<EntityPlaceholder> placeholders = new ArrayList<>();
 	public final List<ModularLevelGenerator.ConnectionPoint> connectionPoints = new ArrayList<>();
 
-	public final TileType[][] tiles;
+	public final Tile[][] tiles;
 
 	public Room(int left, int bottom, int generation, RoomPrototype prototype) {
 		this.prototype = prototype;

@@ -2,22 +2,23 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.Color;
 import com.dungeon.game.level.RoomPrototype;
+import com.dungeon.game.level.TilePrototype;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 public class Environment {
 	private final int tilesize;
-	private final Tileset tileset;
-	private final Tileset wallTileset;
+	private final TilePrototype fillTile;
+	private final TilePrototype voidTile;
 	private final Supplier<Color> light;
 	private final List<RoomPrototype> rooms;
 	private final List<String> monsters;
 
-	public Environment(Tileset tileset, Tileset wallTileset, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
-		this.tilesize = 48; // FIXME make this configurable
-		this.tileset = tileset;
-		this.wallTileset = wallTileset;
+	public Environment(int tilesize, TilePrototype fillTile, TilePrototype voidTile, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters) {
+		this.tilesize = tilesize;
+		this.fillTile = fillTile;
+		this.voidTile = voidTile;
 		this.light = light;
 		this.rooms = rooms;
 		this.monsters = monsters;
@@ -27,12 +28,12 @@ public class Environment {
 		return tilesize;
 	}
 
-	public Tileset getTileset() {
-		return tileset;
+	public TilePrototype getFillTile() {
+		return fillTile;
 	}
 
-	public Tileset getWallTileset() {
-		return wallTileset;
+	public TilePrototype getVoidTile() {
+		return voidTile;
 	}
 
 	public Supplier<Color> getLight() {

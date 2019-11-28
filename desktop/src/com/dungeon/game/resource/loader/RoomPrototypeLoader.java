@@ -8,8 +8,10 @@ import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.RoomPrototype;
+import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -35,8 +37,8 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 	@Override
 	public ResourceDescriptor scan(String key, Config config) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
-		getPlaceholders(config).stream().map(EntityPlaceholder::getType).forEach(prototype -> dependencies.add(new ResourceIdentifier("prototype", prototype)));
-		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, Collections.emptyList());
+		ConfigUtil.requireStringList(config, "tiles").forEach(tile -> dependencies.add(new ResourceIdentifier("tile", tile)));
+		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, dependencies);
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 				.build();
 	}
 
-	private static TileType[][] getTiles(Config config) {
+	private static Tile[][] getTiles(Config config) {
 		GridPoint2 size = ConfigUtil.requireGridPoint2(config, "size");
 		List<String> tiles = ConfigUtil.requireStringList(config, "tiles");
 		if (tiles.size() == 0) {
@@ -65,11 +67,11 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 		}
 
 		// Invert coordinates
-		TileType[][] array = new TileType[width][];
+		Tile[][] array = new Tile[width][];
 		for (int x = 0; x < width; ++x) {
-			array[x] = new TileType[height];
+			array[x] = new Tile[height];
 			for (int y = 0; y < height; ++y) {
-				array[x][height - y - 1] = TileType.valueOf(tiles.get(y * width + x).toUpperCase());
+				array[x][height - y - 1] = new Tile(Resources.tiles.get(tiles.get(y * width + x)));
 			}
 		}
 		return array;

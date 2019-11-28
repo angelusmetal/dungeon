@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class RoomPrototype {
 	private final String name;
-	private final TileType[][] tiles;
+	private final Tile[][] tiles;
 	private final List<ModularLevelGenerator.ConnectionPoint> connections;
 	private final List<Vector2> spawnPoints;
 	private final List<EntityPlaceholder> placeholders;
@@ -42,13 +42,13 @@ public class RoomPrototype {
 			direction = ModularLevelGenerator.Direction.DOWN;
 		} else if (origin.y == height -1) {
 			direction = ModularLevelGenerator.Direction.UP;
-		} else if (tiles[origin.x - 1][origin.y] == TileType.FLOOR) {
+		} else if (!tiles[origin.x - 1][origin.y].isSolid()) {
 			direction = ModularLevelGenerator.Direction.RIGHT;
-		} else if (tiles[origin.x + 1][origin.y] == TileType.FLOOR) {
+		} else if (!tiles[origin.x + 1][origin.y].isSolid()) {
 			direction = ModularLevelGenerator.Direction.LEFT;
-		} else if (tiles[origin.x][origin.y - 1] == TileType.FLOOR) {
+		} else if (!tiles[origin.x][origin.y - 1].isSolid()) {
 			direction = ModularLevelGenerator.Direction.UP;
-		} else if (tiles[origin.x][origin.y + 1] == TileType.FLOOR) {
+		} else if (!tiles[origin.x][origin.y + 1].isSolid()) {
 			direction = ModularLevelGenerator.Direction.DOWN;
 		} else {
 			throw new IllegalArgumentException("Invalid connection point coordinates: " + origin);
@@ -60,7 +60,7 @@ public class RoomPrototype {
 		return name;
 	}
 
-	public TileType[][] getTiles() {
+	public Tile[][] getTiles() {
 		return tiles;
 	}
 
@@ -86,7 +86,7 @@ public class RoomPrototype {
 
 	public static final class Builder {
 		private String name;
-		private TileType[][] tiles;
+		private Tile[][] tiles;
 		private List<GridPoint2> connections;
 		private List<Vector2> spawnPoints;
 		private List<EntityPlaceholder> placeholders;
@@ -109,7 +109,7 @@ public class RoomPrototype {
 			return this;
 		}
 
-		public Builder tiles(TileType[][] tiles) {
+		public Builder tiles(Tile[][] tiles) {
 			this.tiles = tiles;
 			return this;
 		}

@@ -1,7 +1,5 @@
 package com.dungeon.game.level.generator;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.util.Rand;
@@ -9,11 +7,11 @@ import com.dungeon.game.Game;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.RoomPrototype;
-import com.dungeon.game.level.TileType;
+import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
+import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
-import com.dungeon.game.tileset.Tileset;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +28,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 	private int width;
 	private int height;
-	private TileType[][] tiles;
+	private Tile[][] tiles;
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
@@ -83,10 +81,10 @@ public class ModularLevelGenerator implements LevelGenerator {
 		this.environment = environment;
 		this.width = width;
 		this.height = height;
-		this.tiles = new TileType[width][height];
+		this.tiles = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				tiles[x][y] = TileType.VOID;
+				tiles[x][y] = new Tile(environment.getFillTile());
 			}
 		}
 	}
@@ -121,10 +119,9 @@ public class ModularLevelGenerator implements LevelGenerator {
 		Level level = new Level(width, height);
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				level.setFloorAnimation(x, y, getTile(x, y, environment.getTileset()));
-//				level.setFloorAnimation(x, y, tileSolver.getTile(tiles, TileType::isFloor, x, y, width, height, environment.getTileset()));
-				level.setWallAnimation(x, y, tileSolver.getTile(tiles, TileType::isFloor, x, y, width, height, environment.getWallTileset()));
-				level.setSolid(x, y, !tiles[x][y].isFloor());
+				level.setFloorAnimation(x, y, tileSolver.getTile(tiles, (t1, t2) -> t1.getPrototype() != t2.getPrototype(), x, y, width, height, t -> t.getPrototype().getFloor()));
+				level.setWallAnimation(x, y, tileSolver.getTile(tiles, (t1, t2) -> t1.getPrototype() != t2.getPrototype(), x, y, width, height, t -> t.getPrototype().getWall()));
+				level.setTilePrototype(x, y, tiles[x][y].getPrototype());
 			}
 		}
 		level.setRooms(rooms);
@@ -152,16 +149,6 @@ public class ModularLevelGenerator implements LevelGenerator {
 			placeholders.addAll(room.placeholders);
 		}
 
-	}
-
-	private Animation<TextureRegion> getTile(int x, int y, Tileset tileset) {
-		// TODO Make this work with level itself
-
-		if (tiles[x][y] == TileType.FLOOR) {
-			return tileset.all();
-		} else {
-			return tileset.none();
-		}
 	}
 
 	private static class Frame {
@@ -204,7 +191,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 					for (int i = 0; i <= frame.roomSeparation; ++i) {
 						int xi = frame.originPoint.origin.x + frame.originPoint.direction.x * i;
 						int yi = frame.originPoint.origin.y + frame.originPoint.direction.y * i;
-						tiles[xi][yi] = TileType.FLOOR;
+						tiles[xi][yi].setPrototype(environment.getVoidTile());
 						if (i % 2 == 0) {
 							room.placeholders.add(new EntityPlaceholder("gold_light_small", new Vector2(xi + 0.5f, yi + 0.5f)));
 						}
@@ -254,7 +241,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 		for (int x = room.left; x <= room.left + room.width; ++x) {
 			for (int y = room.bottom; y <= room.bottom + room.height; ++y) {
-				if (tiles[x][y] != TileType.VOID) {
+				if (tiles[x][y].getPrototype() != environment.getFillTile()) {
 					return false;
 				}
 			}
@@ -274,8 +261,9 @@ public class ModularLevelGenerator implements LevelGenerator {
 		rooms.add(room);
 		roomOccurrences.compute(room.prototype.getName(), (name, occurrences) -> occurrences == null ? 1 : occurrences + 1);
 		for (int x = 0; x < room.width; ++x) {
-			if (room.height >= 0)
-				System.arraycopy(room.tiles[x], 0, tiles[x + room.left], room.bottom, room.height);
+			for (int y = 0; y < room.height; ++y) {
+				tiles[room.left + x][room.bottom + y].setPrototype(room.tiles[x][y].getPrototype());
+			}
 		}
 	}
 

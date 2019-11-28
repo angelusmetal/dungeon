@@ -1,15 +1,9 @@
 package com.dungeon.game.tileset;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.dungeon.engine.render.TileSheet;
 
-public abstract class Tileset extends TileSheet {
-
-	public Tileset(Texture texture, int tile_width, int tile_height) {
-		super(texture, tile_width, tile_height);
-	}
+public abstract class Tileset {
 
 	public abstract Animation<TextureRegion> down();
 	public abstract Animation<TextureRegion> left();

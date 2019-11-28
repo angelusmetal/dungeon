@@ -101,7 +101,7 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 		List<Animation<TextureRegion>> cornerCDownLeft = getFrames(descriptor, "cornerCDownLeft", tex, tile_width, tile_height, columns);
 		List<Animation<TextureRegion>> cornerDUpLeft = getFrames(descriptor, "cornerDUpLeft", tex, tile_width, tile_height, columns);
 		List<Animation<TextureRegion>> cornerAUpRight = getFrames(descriptor, "cornerAUpRight", tex, tile_width, tile_height, columns);
-		return new Tileset(tex, tile_width, tile_height) {
+		return new Tileset() {
 			@Override public Animation<TextureRegion> down() {
 				return Rand.pick(down);
 			}

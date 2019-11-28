@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.game.Game;
 import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +22,9 @@ public class Level implements LevelTiles {
 		this.width = width;
 		this.height = height;
 		this.tiles = new Tile[width * height];
+		TilePrototype solid = Resources.tiles.get("solid");
 		for (int i = 0; i < tiles.length; ++i) {
-			tiles[i] = new Tile();
+			tiles[i] = new Tile(solid);
 		}
 	}
 
@@ -50,16 +52,12 @@ public class Level implements LevelTiles {
 		return getTile(x, y).wallAnimation;
 	}
 
-	public void setSolid(int x, int y, boolean solid) {
-		getTile(x, y).solid = solid;
-	}
-
 	@Override
 	public boolean isSolid(int x, int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return true;
 		}
-		return getTile(x, y).solid;
+		return getTile(x, y).isSolid();
 	}
 
 	public boolean isDiscovered(int x, int y) {
@@ -91,10 +89,7 @@ public class Level implements LevelTiles {
 		return tiles[x * height + y];
 	}
 
-	private static class Tile {
-		Animation<TextureRegion> floorAnimation;
-		Animation<TextureRegion> wallAnimation;
-		boolean solid = false;
-		boolean discovered = false;
+	public void setTilePrototype(int x, int y, TilePrototype prototype) {
+		tiles[x * height + y].setPrototype(prototype);
 	}
 }

@@ -2,10 +2,12 @@ package com.dungeon.game.level.generator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Tileset;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -284,5 +286,18 @@ public class TilesetSolver {
 		int freeDownRight = y > 0 && x < width - 1 && predicate.test(tiles[x+1][y-1]) ? 0b10000000 : 0;
 		int index = freeUpLeft | freeUp | freeUpRight | freeLeft | freeRight | freeDownLeft | freeDown | freeDownRight;
 		return animations[index].apply(tileset);
+	}
+	public Animation<TextureRegion> getTile(Tile[][] tiles, BiFunction<Tile, Tile, Boolean> biFunction, int x, int y, int width, int height, Function<Tile,Tileset> tilesetFunction) {
+		Tile tile = tiles[x][y];
+		int freeUpLeft = y < height - 1 && x > 0 && biFunction.apply(tile, tiles[x-1][y+1]) ? 0b00000001 : 0;
+		int freeUp = y < height - 1 && biFunction.apply(tile, tiles[x][y+1]) ? 0b00000010 : 0;
+		int freeUpRight = y < height - 1 && x < width - 1 && biFunction.apply(tile, tiles[x+1][y+1]) ? 0b00000100 : 0;
+		int freeLeft = x > 0 && biFunction.apply(tile, tiles[x-1][y]) ? 0b00001000 : 0;
+		int freeRight = x < width - 1 && biFunction.apply(tile, tiles[x+1][y]) ? 0b00010000 : 0;
+		int freeDownLeft = y > 0 && x > 0 && biFunction.apply(tile, tiles[x-1][y-1]) ? 0b00100000 : 0;
+		int freeDown = y > 0 && biFunction.apply(tile, tiles[x][y-1]) ? 0b01000000 : 0;
+		int freeDownRight = y > 0 && x < width - 1 && biFunction.apply(tile, tiles[x+1][y-1]) ? 0b10000000 : 0;
+		int index = freeUpLeft | freeUp | freeUpRight | freeLeft | freeRight | freeDownLeft | freeDown | freeDownRight;
+		return animations[index].apply(tilesetFunction.apply(tile));
 	}
 }
