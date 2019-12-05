@@ -12,6 +12,7 @@ import com.dungeon.engine.ui.widget.HLayout;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
+import com.dungeon.game.ui.CharacterHudWidget;
 import com.dungeon.game.ui.CoinsWidget;
 import com.dungeon.game.ui.HeartWidget;
 import com.dungeon.game.ui.WeaponWidget;
@@ -35,14 +36,10 @@ public class HudStage implements RenderStage {
 	private final Repository<Particle> particles = new Repository<>();
 
 	private static class Hud {
-		private final CoinsWidget coinsWidget;
-		private final WeaponWidget weaponWidget;
-		private final HeartWidget heartWidget;
+		private final CharacterHudWidget characterHudWidget;
 
-		public Hud(Player player) {
-			coinsWidget = new CoinsWidget(player);
-			weaponWidget = new WeaponWidget(player);
-			heartWidget = new HeartWidget(player);
+		public Hud(Player player, ViewPort viewPort) {
+			characterHudWidget = new CharacterHudWidget(player, viewPort);
 		}
 	}
 
@@ -55,10 +52,8 @@ public class HudStage implements RenderStage {
 		layout.align(HLayout.Alignment.TOP);
 		layout.setX(4);
 		players.forEach(player -> {
-			Hud hud = new Hud(player);
-			layout.add(hud.coinsWidget);
-			layout.add(hud.weaponWidget);
-			layout.add(hud.heartWidget);
+			Hud hud = new Hud(player, viewPort);
+			layout.add(hud.characterHudWidget);
 			hudByPlayer.put(player, hud);
 		});
 		layout.setY(viewPort.cameraHeight - layout.getHeight() - 4);
@@ -96,15 +91,7 @@ public class HudStage implements RenderStage {
 	@Override
 	public void dispose() {}
 
-	public CoinsWidget getCoinsWidget(Player player) {
-		return hudByPlayer.get(player).coinsWidget;
-	}
-
-	public WeaponWidget getWeaponWidget(Player player) {
-		return hudByPlayer.get(player).weaponWidget;
-	}
-
-	public HeartWidget getHeartWidget(Player player) {
-		return hudByPlayer.get(player).heartWidget;
+	public CharacterHudWidget getHudWidget(Player player) {
+		return hudByPlayer.get(player).characterHudWidget;
 	}
 }

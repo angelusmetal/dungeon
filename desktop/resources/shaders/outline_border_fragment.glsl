@@ -10,7 +10,6 @@ uniform vec2 u_viewportInverse;
 
 //// Color of the outline
 uniform vec4 u_color;
-uniform float u_outLineSize;
 
 varying vec4 v_color;
 varying vec2 v_texCoord;

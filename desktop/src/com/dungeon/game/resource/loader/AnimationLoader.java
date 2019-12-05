@@ -8,8 +8,10 @@ import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +51,16 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 		if (config.hasPath("sequence")) {
 			sequence = config.getIntList("sequence");
 		}
-		int tilesize = config.getInt("tilesize");
+		int tile_width;
+		int tile_height;
+		try {
+			List<Integer> tilesize = ConfigUtil.requireIntList(config, "tilesize");
+			tile_width = tilesize.get(0);
+			tile_height = tilesize.get(1);
+		} catch (ConfigException.WrongType e) {
+			tile_width = ConfigUtil.requireInteger(config, "tilesize");
+			tile_height = tile_width;
+		}
 		String texture = config.getString("texture");
 		float frameDuration = (float) config.getDouble("frameDuration");
 
@@ -58,28 +69,28 @@ public class AnimationLoader implements ResourceLoader<Animation<TextureRegion>>
 		}
 
 		Texture tex = Resources.textures.get(texture);
-		if (tex.getHeight() % tilesize != 0 || tex.getWidth() % tilesize != 0) {
+		if (tex.getHeight() % tile_height != 0 || tex.getWidth() % tile_width != 0) {
 			throw new LoadingException("texture dimensions must be an exact multiple of the tilesize");
 		}
-		int columns = tex.getWidth() / tilesize;
+		int columns = tex.getWidth() / tile_width;
 		if (!loop.isEmpty()) {
-			List<TextureRegion> frames = getFrames(tex, loop, tilesize, columns);
+			List<TextureRegion> frames = getFrames(tex, loop, tile_width, tile_height, columns);
 			return loop(frameDuration, frames);
 		} else {
-			List<TextureRegion> frames = getFrames(tex, sequence, tilesize, columns);
+			List<TextureRegion> frames = getFrames(tex, sequence, tile_width, tile_height, columns);
 			return sequence(frameDuration, frames);
 		}
 	}
-	private static List<TextureRegion> getFrames(Texture tex, List<Integer> regions, int tilesize, int columns) {
+	private static List<TextureRegion> getFrames(Texture tex, List<Integer> regions, int tile_width, int tile_height, int columns) {
 		List<TextureRegion> frames = new ArrayList<>();
 		for (int frame : regions) {
-			frames.add(getFrame(tex, frame, tilesize, columns));
+			frames.add(getFrame(tex, frame, tile_width, tile_height, columns));
 		}
 		return frames;
 	}
 
-	private static TextureRegion getFrame(Texture tex, int frame, int tilesize, int columns) {
-		return new TextureRegion(tex, tilesize * (frame % columns), tilesize * (frame / columns), tilesize, tilesize);
+	private static TextureRegion getFrame(Texture tex, int frame, int tile_width, int tile_height, int columns) {
+		return new TextureRegion(tex, tile_width * (frame % columns), tile_height * (frame / columns), tile_width, tile_height);
 	}
 
 	public static Animation<TextureRegion> loop(float frameDuration, List<TextureRegion> frames) {

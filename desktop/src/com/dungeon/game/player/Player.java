@@ -22,7 +22,7 @@ import com.dungeon.game.resource.Resources;
 
 public class Player {
 
-	private static Color[] PLAYER_COLORS = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
+	private static Color[] PLAYER_COLORS = {new Color(0x5f9ff1ff), new Color(0xf1735fff), new Color(0x7ee740ff), new Color(0xebba52ff)};
 
 	private int playerId;
 	private int characterId;
@@ -44,7 +44,22 @@ public class Player {
 		this.stats = new PlayerStats();
 		this.color = PLAYER_COLORS[playerId];
 		this.weapon = createWeapon();
+		pickName();
 		this.console = new OldConsole(10, 3f);
+	}
+
+	private void pickName() {
+		if (characterId == 0) {
+			name = "KARA";
+		} else if (characterId == 1) {
+			name = "JACK";
+		} else if (characterId == 2) {
+			name = "MORT";
+		} else if (characterId == 3) {
+			name = "ALMA";
+		} else {
+			name = "????";
+		}
 	}
 
 	private Weapon createWeapon() {
@@ -139,5 +154,13 @@ public class Player {
 
 	public int getGold() {
 		return gold;
+	}
+
+	public int getCharacterId() {
+		return characterId;
+	}
+
+	public String getName() {
+		return name;
 	}
 }
