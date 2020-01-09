@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class HudStage implements RenderStage {
 
-	public static final float SCALE = 3f;
+	public static final float SCALE = 2f;
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -56,7 +56,7 @@ public class HudStage implements RenderStage {
 			layout.add(hud.characterHudWidget);
 			hudByPlayer.put(player, hud);
 		});
-		layout.setY(viewPort.cameraHeight - layout.getHeight() - 4);
+		layout.setY((int) (viewPort.height / SCALE) - layout.getHeight() - 4);
 	}
 
 	public void addParticle(Particle particle) {
