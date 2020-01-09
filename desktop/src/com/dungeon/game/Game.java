@@ -10,6 +10,7 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
+import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
@@ -206,7 +207,15 @@ public class Game {
 		// Instantiate entities for every placeholder
 		level.getEntityPlaceholders().stream().filter(ph -> !ph.getType().equals(EntityType.PLAYER_SPAWN)).forEach(placeholder -> {
 			if (Rand.chance(placeholder.getChance())) {
-				Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTilesize()))));
+				if (EntityType.LIGHT.equals(placeholder.getType())) {
+					// Light placeholder (which inlines light definition)
+					Entity light = entityFactory.build(EntityType.LIGHT, Util.floor(placeholder.getOrigin().cpy().scl(environment.getTilesize())));
+					light.setLight(new Light(placeholder.getLightPrototype()));
+					Engine.entities.add(light);
+				} else {
+					// Regular placeholder
+					Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTilesize()))));
+				}
 			}
 		});
 

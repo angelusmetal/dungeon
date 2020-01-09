@@ -177,15 +177,18 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		throw new RuntimeException("Unknown onRest type '" + onRest + "'");
 	}
 
-	private static Optional<LightPrototype> getLight(Config config, String key) {
+	public static LightPrototype getLight(Config config) {
+		float diameter = ConfigUtil.requireFloat(config, "diameter");
+		Color color = ConfigUtil.requireColor(config, "color");
+		Texture texture = Resources.textures.get(ConfigUtil.requireString(config, "texture"));
+		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture);
+		ConfigUtil.getStringList(config, "traits").ifPresent(list -> list.forEach(trait -> getLightTrait(lightPrototype, trait)));
+		return lightPrototype;
+	}
+
+	public static Optional<LightPrototype> getLight(Config config, String key) {
 		if (config.hasPath(key)) {
-			Config lightConfig = config.getConfig(key);
-			float diameter = ConfigUtil.requireFloat(lightConfig, "diameter");
-			Color color = ConfigUtil.requireColor(lightConfig, "color");
-			Texture texture = Resources.textures.get(ConfigUtil.requireString(lightConfig, "texture"));
-			LightPrototype lightPrototype = new LightPrototype(diameter, color, texture);
-			ConfigUtil.getStringList(lightConfig, "traits").ifPresent(list -> list.forEach(trait -> getLightTrait(lightPrototype, trait)));
-			return Optional.of(lightPrototype);
+			return Optional.of(getLight(config.getConfig(key)));
 		} else {
 			return Optional.empty();
 		}

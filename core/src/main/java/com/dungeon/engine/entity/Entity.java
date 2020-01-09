@@ -447,6 +447,9 @@ public class Entity implements Drawable, Movable {
 		});
 	}
 
+	public void setLight(Light light) {
+		this.light = light;
+	}
 	public Light getLight() {
 		return light;
 	}

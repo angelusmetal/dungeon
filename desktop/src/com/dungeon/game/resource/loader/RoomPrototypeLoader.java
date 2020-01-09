@@ -2,6 +2,7 @@ package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.render.LightPrototype;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
@@ -11,12 +12,14 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
+import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
@@ -99,7 +102,11 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 			float y = ConfigUtil.requireFloat(t, "y");
 			float chance = ConfigUtil.getFloat(t, "chance").orElse(1f);
 			String type = ConfigUtil.requireString(t, "type");
-			return new EntityPlaceholder(type, new Vector2(x, y), chance);
+			LightPrototype light = null;
+			if (EntityType.LIGHT.equals(type)) {
+				light = EntityPrototypeLoader.getLight(t);
+			}
+			return new EntityPlaceholder(type, new Vector2(x, y), chance, light);
 		}).collect(Collectors.toList());
 	}
 

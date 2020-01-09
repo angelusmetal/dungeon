@@ -14,4 +14,6 @@ public interface EntityType {
 	String DOOR_VERTICAL = "door_vertical";
 	String DOOR_HORIZONTAL = "door_horizontal";
 	String COIN = "coin";
+	// Light
+	String LIGHT = "light";
 }
