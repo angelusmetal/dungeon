@@ -23,6 +23,34 @@ public class FurnitureFactory {
 
 	Sound soundFurnitureBreak = Resources.sounds.get("audio/sound/break_wood.ogg");
 
+	public Entity doorHorizontal(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
+			private boolean opened = false;
+			@Override public void onSignal(Entity emitter) {
+				if (!opened) {
+					canBlock = false;
+					canBeHit = false;
+					opened = true;
+					Engine.entities.add(new DungeonEntity(Resources.prototypes.get("door_horizontal_open"), origin));
+				}
+			}
+		};
+	}
+
+	public Entity doorVertical(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
+			private boolean opened = false;
+			@Override public void onSignal(Entity emitter) {
+				setAnimation(Resources.animations.get("door_vertical_open"), Engine.time());
+				if (!opened) {
+					canBlock = false;
+					canBeHit = false;
+					opened = true;
+				}
+			}
+		};
+	}
+
 	public Entity coin(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
 			@Override public boolean onEntityCollision(Entity entity) {

@@ -2,6 +2,7 @@ package com.dungeon.game.level.generator;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.level.Level;
@@ -15,6 +16,7 @@ import com.dungeon.game.tileset.Environment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -179,7 +181,11 @@ public class ModularLevelGenerator implements LevelGenerator {
 					addDoor(frame, room);
 				}
 				// Pick each connection point and attempt to place a room
-				room.connectionPoints.stream().filter(point -> !point.visited).forEach(point -> {
+				room.connectionPoints.stream()
+						// Shuffle connection points
+						.sorted((k1, k2) -> Rand.between(-1, 1))
+						// Skip those already visiteds
+						.filter(point -> !point.visited).forEach(point -> {
 					// Attempt to generate a room in that direction (at a random separation)
 					int roomSeparation = 0;//Rand.between(minRoomSeparation, maxRoomSeparation);
 					GridPoint2 newOrigin = point.origin.cpy().add(point.direction.x * roomSeparation, point.direction.y * roomSeparation);
@@ -205,9 +211,12 @@ public class ModularLevelGenerator implements LevelGenerator {
 	private void addDoor(Frame frame, Room room) {
 		String doorType = frame.direction == Direction.UP || frame.direction == Direction.DOWN ? EntityType.DOOR_VERTICAL : EntityType.DOOR_HORIZONTAL;
 		EntityPlaceholder door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f, frame.originPoint.origin.y));
+		if (EntityType.DOOR_VERTICAL.equals(doorType)) {
+			door.getOrigin().y += 0.35f;
+		}
 		room.placeholders.add(door);
 		if (frame.roomSeparation > 0) {
-			door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y + frame.roomSeparation * frame.direction.y));
+			door = new EntityPlaceholder(doorType, new Vector2(frame.originPoint.origin.x + 0.5f + frame.roomSeparation * frame.direction.x, frame.originPoint.origin.y+ frame.roomSeparation * frame.direction.y));
 			room.placeholders.add(door);
 		}
 	}
