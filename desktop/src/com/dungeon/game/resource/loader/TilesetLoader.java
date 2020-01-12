@@ -54,53 +54,54 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 			tile_height = tile_width;
 		}
 		int columns = tex.getWidth() / tile_width;
-		List<Animation<TextureRegion>> down = getFrames(descriptor, "down", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> left = getFrames(descriptor, "left", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> up = getFrames(descriptor, "up", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> right = getFrames(descriptor, "right", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> downRight = getFrames(descriptor, "downRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> downLeft = getFrames(descriptor, "downLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> upLeft = getFrames(descriptor, "upLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> upRight = getFrames(descriptor, "upRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> upDown = getFrames(descriptor, "upDown", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> leftRight = getFrames(descriptor, "leftRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> downLeftRight = getFrames(descriptor, "downLeftRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> upDownLeft = getFrames(descriptor, "upDownLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> upLeftRight = getFrames(descriptor, "upLeftRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> upDownRight = getFrames(descriptor, "upDownRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> all = getFrames(descriptor, "all", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerA = getFrames(descriptor, "cornerA", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerB = getFrames(descriptor, "cornerB", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerAB = getFrames(descriptor, "cornerAB", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerC = getFrames(descriptor, "cornerC", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerAC = getFrames(descriptor, "cornerAC", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBC = getFrames(descriptor, "cornerBC", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerABC = getFrames(descriptor, "cornerABC", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerD = getFrames(descriptor, "cornerD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerAD = getFrames(descriptor, "cornerAD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBD = getFrames(descriptor, "cornerBD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerABD = getFrames(descriptor, "cornerABD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerCD = getFrames(descriptor, "cornerCD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerACD = getFrames(descriptor, "cornerACD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBCD = getFrames(descriptor, "cornerBCD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerABCD = getFrames(descriptor, "cornerABCD", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> none = getFrames(descriptor, "none", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerABRight = getFrames(descriptor, "cornerABRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBCDown = getFrames(descriptor, "cornerBCDown", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerCDLeft = getFrames(descriptor, "cornerCDLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerADUp = getFrames(descriptor, "cornerADUp", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerARight = getFrames(descriptor, "cornerARight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBRight = getFrames(descriptor, "cornerBRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBDown = getFrames(descriptor, "cornerBDown", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerCDown = getFrames(descriptor, "cornerCDown", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerDLeft = getFrames(descriptor, "cornerDLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerCLeft = getFrames(descriptor, "cornerCLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerAUp = getFrames(descriptor, "cornerAUp", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerDUp = getFrames(descriptor, "cornerDUp", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerBDownRight = getFrames(descriptor, "cornerBDownRight", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerCDownLeft = getFrames(descriptor, "cornerCDownLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerDUpLeft = getFrames(descriptor, "cornerDUpLeft", tex, tile_width, tile_height, columns);
-		List<Animation<TextureRegion>> cornerAUpRight = getFrames(descriptor, "cornerAUpRight", tex, tile_width, tile_height, columns);
+		Boolean animated = ConfigUtil.getBoolean(descriptor, "animated").orElse(false);
+		List<Animation<TextureRegion>> down = getAnimations(descriptor, "down", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> left = getAnimations(descriptor, "left", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> up = getAnimations(descriptor, "up", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> right = getAnimations(descriptor, "right", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> downRight = getAnimations(descriptor, "downRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> downLeft = getAnimations(descriptor, "downLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> upLeft = getAnimations(descriptor, "upLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> upRight = getAnimations(descriptor, "upRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> upDown = getAnimations(descriptor, "upDown", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> leftRight = getAnimations(descriptor, "leftRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> downLeftRight = getAnimations(descriptor, "downLeftRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> upDownLeft = getAnimations(descriptor, "upDownLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> upLeftRight = getAnimations(descriptor, "upLeftRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> upDownRight = getAnimations(descriptor, "upDownRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> all = getAnimations(descriptor, "all", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerA = getAnimations(descriptor, "cornerA", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerB = getAnimations(descriptor, "cornerB", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerAB = getAnimations(descriptor, "cornerAB", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerC = getAnimations(descriptor, "cornerC", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerAC = getAnimations(descriptor, "cornerAC", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBC = getAnimations(descriptor, "cornerBC", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerABC = getAnimations(descriptor, "cornerABC", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerD = getAnimations(descriptor, "cornerD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerAD = getAnimations(descriptor, "cornerAD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBD = getAnimations(descriptor, "cornerBD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerABD = getAnimations(descriptor, "cornerABD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerCD = getAnimations(descriptor, "cornerCD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerACD = getAnimations(descriptor, "cornerACD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBCD = getAnimations(descriptor, "cornerBCD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerABCD = getAnimations(descriptor, "cornerABCD", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> none = getAnimations(descriptor, "none", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerABRight = getAnimations(descriptor, "cornerABRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBCDown = getAnimations(descriptor, "cornerBCDown", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerCDLeft = getAnimations(descriptor, "cornerCDLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerADUp = getAnimations(descriptor, "cornerADUp", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerARight = getAnimations(descriptor, "cornerARight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBRight = getAnimations(descriptor, "cornerBRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBDown = getAnimations(descriptor, "cornerBDown", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerCDown = getAnimations(descriptor, "cornerCDown", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerDLeft = getAnimations(descriptor, "cornerDLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerCLeft = getAnimations(descriptor, "cornerCLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerAUp = getAnimations(descriptor, "cornerAUp", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerDUp = getAnimations(descriptor, "cornerDUp", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerBDownRight = getAnimations(descriptor, "cornerBDownRight", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerCDownLeft = getAnimations(descriptor, "cornerCDownLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerDUpLeft = getAnimations(descriptor, "cornerDUpLeft", tex, tile_width, tile_height, columns, animated);
+		List<Animation<TextureRegion>> cornerAUpRight = getAnimations(descriptor, "cornerAUpRight", tex, tile_width, tile_height, columns, animated);
 		return new Tileset() {
 			@Override public Animation<TextureRegion> down() {
 				return Rand.pick(down);
@@ -247,13 +248,23 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 
 	}
 
-	private static List<Animation<TextureRegion>> getFrames(Config config, String key, Texture tex, int tile_width, int tile_height, int columns) {
+	private static List<Animation<TextureRegion>> getAnimations(Config config, String key, Texture tex, int tile_width, int tile_height, int columns, boolean animated) {
 		List<Integer> regions = ConfigUtil.requireIntList(config, key).stream().map(Number::intValue).collect(Collectors.toList());
-		List<Animation<TextureRegion>> frames = new ArrayList<>();
-		for (int frame : regions) {
-			frames.add(getFrame(tex, frame, tile_width, tile_height, columns));
+		List<Animation<TextureRegion>> animations = new ArrayList<>();
+		if (animated) {
+			// If 'animated' is true, all frames are considered part of a single animation
+			List<TextureRegion> frames = new ArrayList<>();
+			for (int frame : regions) {
+				frames.add(getFrame(tex, frame, tile_width, tile_height, columns));
+			}
+			animations.add(new Animation<>(0.15f, frames.toArray(new TextureRegion[0])));
+		} else {
+			// If 'animated' is false, each frame is an animation (single frame) on its own
+			for (int frame : regions) {
+				animations.add(getAnimation(tex, frame, tile_width, tile_height, columns));
+			}
 		}
-		return frames;
+		return animations;
 	}
 
 	private static Animation<TextureRegion> getFrame(Texture tex, int frame, int tilesize, int columns) {
@@ -261,7 +272,11 @@ public class TilesetLoader implements ResourceLoader<Tileset> {
 		return new Animation<>(0f, new TextureRegion(tex, tilesize * (frame % columns), tilesize * (frame / columns), tilesize, tilesize));
 	}
 
-	private static Animation<TextureRegion> getFrame(Texture tex, int frame, int tile_width, int tile_height, int columns) {
+	private static TextureRegion getFrame(Texture tex, int frame, int tile_width, int tile_height, int columns) {
+		// TODO Use Resources here to reuse previously loaded animations??
+		return new TextureRegion(tex, tile_width * (frame % columns), tile_height * (frame / columns), tile_width, tile_height);
+	}
+	private static Animation<TextureRegion> getAnimation(Texture tex, int frame, int tile_width, int tile_height, int columns) {
 		// TODO Use Resources here to reuse previously loaded animations??
 		return new Animation<>(0f, new TextureRegion(tex, tile_width * (frame % columns), tile_height * (frame / columns), tile_width, tile_height));
 	}
