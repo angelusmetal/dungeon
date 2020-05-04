@@ -11,12 +11,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ShaderDebugger extends ApplicationAdapter implements InputProcessor {
 
@@ -32,13 +31,14 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 
 	ShaderProgram shaderProgram;
 	SpriteBatch batch;
-	Color color = Color.RED;
-	Texture pixel;
+	Color color = new Color(1.0f, 0.5f, 0.0f, 1.0f);
+	Color ambient = new Color(0.125f, 0.075f, 0.025f, 1.0f);
+	Texture normalMap;
 	Vector2 speed = new Vector2();
 	Vector2 lightOrigin = new Vector2();
 	float lightRadius = 10f;
 	private float lightRange = 1200f;
-	private int sampleCount = 30;
+	private int sampleCount = 1;
 	Vector2 bufferSize = new Vector2();
 	float time, lastLog;
 	float[] geometry = new float[1024];
@@ -49,7 +49,7 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	public void create () {
 //		shaderProgram = Resources.shaders.get("df_vertex.glsl|outline_border_fragment.glsl");
 		shaderProgram = Resources.shaders.get("df_vertex.glsl|test_shader.glsl");
-		pixel = new Texture("core/assets/fill.png");
+		normalMap = new Texture("core/assets/normal_map.png");
 		batch = new SpriteBatch();
 		speed.set(0.03f, 0.03f);
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -66,19 +66,18 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	@Override
 	public void render() {
 		shaderProgram.begin();
-		shaderProgram.setUniformf("u_bufferSize", bufferSize);
 		shaderProgram.setUniformf("u_lightColor", color);
-		shaderProgram.setUniformf("u_lightRadius", lightRadius);
-		shaderProgram.setUniformf("u_lightRange", lightRange);
+//		shaderProgram.setUniformf("u_lightRadius", lightRadius);
+		shaderProgram.setUniformf("u_lightRange", lightRange * (1 + 0.1f * MathUtils.sin(time * 30)));
 		shaderProgram.setUniformf("u_lightOrigin", lightOrigin);
-		shaderProgram.setUniform4fv("u_segments[0]", geometry, 0, geometry.length);
-		shaderProgram.setUniformi("u_segmentCount", geometry.length / 4);
-		shaderProgram.setUniformi("u_sampleCount", sampleCount);
+//		shaderProgram.setUniform4fv("u_segments[0]", geometry, 0, geometry.length);
+//		shaderProgram.setUniformi("u_segmentCount", geometry.length / 4);
+//		shaderProgram.setUniformi("u_sampleCount", sampleCount);
 		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
-		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1f));
-		batch.draw(pixel, 0, 0, bufferSize.x, bufferSize.y);
+//		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1.0f));
+		batch.draw(normalMap, 0, 0, bufferSize.x, bufferSize.y);
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.end();
@@ -111,9 +110,9 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.PLUS) {
-			sampleCount++;
+			sampleCount = Math.min(sampleCount + 1, 100);
 		} else if (keycode == Input.Keys.MINUS) {
-			sampleCount--;
+			sampleCount = Math.max(sampleCount - 1, 1);
 		}
 		return false;
 	}
@@ -150,7 +149,7 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		lightOrigin.set(screenX, screenY);
+		lightOrigin.set(screenX, bufferSize.y - screenY);
 		return true;
 	}
 
