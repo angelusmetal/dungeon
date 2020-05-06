@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
@@ -32,10 +33,10 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	ShaderProgram shaderProgram;
 	SpriteBatch batch;
 	Color color = new Color(1.0f, 0.5f, 0.0f, 1.0f);
-	Color ambient = new Color(0.125f, 0.075f, 0.025f, 1.0f);
+	Color ambient = new Color(0.1f, 0.2f, 0.3f, 1.0f);
 	Texture normalMap;
 	Vector2 speed = new Vector2();
-	Vector2 lightOrigin = new Vector2();
+	Vector3 lightOrigin = new Vector3();
 	float lightRadius = 10f;
 	private float lightRange = 1200f;
 	private int sampleCount = 1;
@@ -66,6 +67,8 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	@Override
 	public void render() {
 		shaderProgram.begin();
+		shaderProgram.setUniformf("u_ambientColor", ambient);
+		shaderProgram.setUniformf("u_lightHardness", 1.0f);
 		shaderProgram.setUniformf("u_lightColor", color);
 //		shaderProgram.setUniformf("u_lightRadius", lightRadius);
 		shaderProgram.setUniformf("u_lightRange", lightRange * (1 + 0.1f * MathUtils.sin(time * 30)));
@@ -97,7 +100,7 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public void resize(int width, int height) {
-		lightOrigin.set(Rand.nextFloat(width), Rand.nextFloat(height));
+		lightOrigin.set(Rand.nextFloat(width), Rand.nextFloat(height), 30f);
 		bufferSize.set(width, height);
 		System.out.println("Resolution: " + bufferSize);
 	}
@@ -109,10 +112,10 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Input.Keys.PLUS) {
-			sampleCount = Math.min(sampleCount + 1, 100);
-		} else if (keycode == Input.Keys.MINUS) {
-			sampleCount = Math.max(sampleCount - 1, 1);
+		if (keycode == Input.Keys.NUM_1) {
+			lightOrigin.z = Math.min(lightOrigin.z + 1, 100);
+		} else if (keycode == Input.Keys.NUM_2) {
+			lightOrigin.z = Math.max(lightOrigin.z - 1, 1);
 		}
 		return false;
 	}
@@ -149,7 +152,8 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		lightOrigin.set(screenX, bufferSize.y - screenY);
+		lightOrigin.x = screenX;
+		lightOrigin.y = bufferSize.y - screenY;
 		return true;
 	}
 

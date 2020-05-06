@@ -11,17 +11,14 @@ uniform vec2 u_bufferSize;
 // Light
 uniform float u_lightRange;
 uniform float u_lightRadius;
-uniform vec2 u_lightOrigin;
+uniform vec3 u_lightOrigin;
 uniform vec4 u_lightColor;
-uniform float lightHardness = 1.0;
+uniform float u_lightHardness;
 uniform vec4 u_ambientColor;
 
 // Geometry
 uniform vec4 u_segments[256];
 uniform int u_segmentCount;
-
-// Casting
-uniform int u_sampleCount;
 
 varying vec4 v_color;
 varying vec2 v_texCoord;
@@ -90,35 +87,35 @@ float sampleLight(vec2 coord, vec2 lightSampleOrigin) {
 	}
 	// No intersection; return light with appropriate attenuation
 	float dist = length(coord - lightSampleOrigin);
-	return clamp((1.0 - dist / u_lightRange) * lightHardness, 0.0, 1.0);
+	return clamp((1.0 - dist / u_lightRange) * u_lightHardness, 0.0, 1.0);
 }
 
 //8200
 void main() {
-	float lightPerSample = 1.0 / u_sampleCount;
+	float lightPerSample = 1.0;// / u_sampleCount;
 
-	vec2 normal = normalize(gl_FragCoord.xy - u_lightOrigin);
+	vec2 normal = normalize(gl_FragCoord.xy - u_lightOrigin.xy);
 	normal.yx = normal.xy;
-	normal.x *= -1;
-	float luminosity = 0;
+	normal.x *= -1.0;
+	float luminosity = 0.0;
 
-	vec2 spread = u_lightRadius * 2 / u_sampleCount * normal;
-	float offset = 0 - (u_sampleCount - 1) * 0.5;
+//	vec2 spread = u_lightRadius * 2.0 / u_sampleCount * normal;
+//	float offset = 0 - (u_sampleCount - 1) * 0.5;
 //	for (float s; s < u_sampleCount; ++s) {
 //		luminosity += sampleLight(gl_FragCoord.xy, u_lightOrigin + spread * (offset + s)) * lightPerSample;
 //	}
-	float dist = length(gl_FragCoord - u_lightOrigin);
-	luminosity = clamp((1.0 - dist / u_lightRange) * lightHardness, 0.0, 1.0);
+	float dist = length(gl_FragCoord.xy - u_lightOrigin.xy);
+	luminosity = clamp((1.0 - dist / u_lightRange) * u_lightHardness, 0.0, 1.0);
 
 	//RGBA of our diffuse color
 //	vec4 DiffuseColor = texture2D(u_texture, vTexCoord);
 
 	//RGB of our normal map
-	vec3 NormalMap = texture2D(u_texture, mod(gl_FragCoord.xy / 350, 1.0)).rgb;
+	vec3 NormalMap = texture2D(u_texture, mod(gl_FragCoord.xy / 350.0, 1.0)).rgb;
 	NormalMap.g = 1.0 - NormalMap.g;
 
 	//The delta position of light
-	vec3 LightDir = vec3(u_lightOrigin.xy - gl_FragCoord.xy, 10);
+	vec3 LightDir = vec3(u_lightOrigin.xy - gl_FragCoord.xy, u_lightOrigin.z);
 
 	//Determine distance (used for attenuation) BEFORE we normalize our LightDir
 	float D = length(LightDir);
