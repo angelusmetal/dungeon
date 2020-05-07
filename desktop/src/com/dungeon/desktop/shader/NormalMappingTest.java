@@ -1,4 +1,4 @@
-package com.dungeon.desktop;
+package com.dungeon.desktop.shader;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -14,45 +14,47 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
 
-public class ShaderDebugger extends ApplicationAdapter implements InputProcessor {
+public class NormalMappingTest extends ApplicationAdapter implements InputProcessor {
 
+	/**
+	 * Shader test for trying normal mapping.
+	 *
+	 * The controls are mouse drag to move the light.
+	 *
+	 * Keys 1 & 2 control the z coordinate (how apart from the wall the light is), while mouse wheel controls the light
+	 * range.
+	 * @param arg
+	 */
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.vSyncEnabled = false;
 		config.foregroundFPS = 0;
 		config.width = 1800;
 		config.height = 900;
-		new LwjglApplication(new ShaderDebugger(), config);
+		new LwjglApplication(new NormalMappingTest(), config);
 	}
 
-
-	ShaderProgram shaderProgram;
-	SpriteBatch batch;
-	Color color = new Color(1.0f, 0.5f, 0.0f, 1.0f);
-	Color ambient = new Color(0.1f, 0.2f, 0.3f, 1.0f);
-	Texture normalMap;
-	Vector2 speed = new Vector2();
-	Vector3 lightOrigin = new Vector3();
-	float lightRadius = 10f;
+	private ShaderProgram shaderProgram;
+	private SpriteBatch batch;
+	private Color color = new Color(1.0f, 0.5f, 0.0f, 1.0f);
+	private Color ambient = new Color(0.1f, 0.2f, 0.3f, 1.0f);
+	private Texture normalMap;
+	private Vector3 lightOrigin = new Vector3();
 	private float lightRange = 1200f;
-	private int sampleCount = 1;
-	Vector2 bufferSize = new Vector2();
-	float time, lastLog;
-	float[] geometry = new float[1024];
-	int nextGeometry = 16;
-	Vector2 startVector = new Vector2();
+	private Vector2 bufferSize = new Vector2();
+	private float time, lastLog;
+	private float[] geometry = new float[1024];
+	private int nextGeometry = 16;
+	private Vector2 startVector = new Vector2();
 
 	@Override
 	public void create () {
-//		shaderProgram = Resources.shaders.get("df_vertex.glsl|outline_border_fragment.glsl");
-		shaderProgram = Resources.shaders.get("df_vertex.glsl|test_shader.glsl");
+		shaderProgram = Resources.shaders.get("df_vertex.glsl|test/normal_mapping.glsl");
 		normalMap = new Texture("core/assets/normal_map.png");
 		batch = new SpriteBatch();
-		speed.set(0.03f, 0.03f);
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.input.setInputProcessor(this);
 		System.arraycopy(new float[] {
@@ -67,30 +69,18 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	@Override
 	public void render() {
 		shaderProgram.begin();
-		shaderProgram.setUniformf("u_ambientColor", ambient);
-		shaderProgram.setUniformf("u_lightHardness", 1.0f);
-		shaderProgram.setUniformf("u_lightColor", color);
-//		shaderProgram.setUniformf("u_lightRadius", lightRadius);
 		shaderProgram.setUniformf("u_lightRange", lightRange * (1 + 0.1f * MathUtils.sin(time * 30)));
 		shaderProgram.setUniformf("u_lightOrigin", lightOrigin);
-//		shaderProgram.setUniform4fv("u_segments[0]", geometry, 0, geometry.length);
-//		shaderProgram.setUniformi("u_segmentCount", geometry.length / 4);
-//		shaderProgram.setUniformi("u_sampleCount", sampleCount);
+		shaderProgram.setUniformf("u_lightColor", color);
+		shaderProgram.setUniformf("u_lightHardness", 1.0f);
+		shaderProgram.setUniformf("u_ambientColor", ambient);
 		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
-//		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1.0f));
 		batch.draw(normalMap, 0, 0, bufferSize.x, bufferSize.y);
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.end();
-//		lightOrigin.add(speed);
-		if (lightOrigin.x < 0 || lightOrigin.x > bufferSize.x) {
-			speed.x *= -1;
-		}
-		if (lightOrigin.y < 0 || lightOrigin.y > bufferSize.y) {
-			speed.y *= -1;
-		}
 		time += Gdx.graphics.getDeltaTime();
 		if (time > lastLog + 1.0) {
 			lastLog = time;
@@ -113,9 +103,9 @@ public class ShaderDebugger extends ApplicationAdapter implements InputProcessor
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.NUM_1) {
-			lightOrigin.z = Math.min(lightOrigin.z + 1, 100);
-		} else if (keycode == Input.Keys.NUM_2) {
 			lightOrigin.z = Math.max(lightOrigin.z - 1, 1);
+		} else if (keycode == Input.Keys.NUM_2) {
+			lightOrigin.z = Math.min(lightOrigin.z + 1, 100);
 		}
 		return false;
 	}
