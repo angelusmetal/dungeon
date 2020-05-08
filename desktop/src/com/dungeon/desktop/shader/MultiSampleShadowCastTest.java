@@ -49,12 +49,12 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 
 	private ShaderProgram shaderProgram;
 	private SpriteBatch batch;
-	private Color color = Color.RED;
 	private Texture pixel;
 	private Vector2 lightOrigin = new Vector2();
+	private Color lightColor = Color.RED;
 	private float lightRadius = 10f;
 	private float lightRange = 1200f;
-	private int sampleCount = 30;
+	private int sampleCount = 16;
 	private Vector2 bufferSize = new Vector2();
 	private float time, lastLog;
 	private float[] geometry = new float[1024];
@@ -81,13 +81,14 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 	public void render() {
 		shaderProgram.begin();
 		shaderProgram.setUniformf("u_bufferSize", bufferSize);
-		shaderProgram.setUniformf("u_lightColor", color);
+		shaderProgram.setUniformf("u_lightHardness", 1f);
+		shaderProgram.setUniformf("u_lightColor", lightColor);
 		shaderProgram.setUniformf("u_lightRadius", lightRadius);
 		shaderProgram.setUniformf("u_lightRange", lightRange);
 		shaderProgram.setUniformf("u_lightOrigin", lightOrigin);
 		shaderProgram.setUniform4fv("u_segments[0]", geometry, 0, geometry.length);
 		shaderProgram.setUniformi("u_segmentCount", geometry.length / 4);
-		shaderProgram.setUniformi("u_sampleCount", sampleCount);
+		shaderProgram.setUniformf("u_sampleCount", sampleCount);
 		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
@@ -117,10 +118,10 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Input.Keys.NUM_1) {
-			sampleCount--;
+		if (keycode == Input.Keys.NUM_1 && sampleCount > 1) {
+			sampleCount /= 2;
 		} else if (keycode == Input.Keys.NUM_2) {
-			sampleCount++;
+			sampleCount *= 2;
 		}
 		return false;
 	}

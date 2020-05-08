@@ -13,14 +13,14 @@ uniform float u_lightRange;
 uniform float u_lightRadius;
 uniform vec2 u_lightOrigin;
 uniform vec4 u_lightColor;
-uniform float lightHardness = 1.0;
+uniform float u_lightHardness;
 
 // Geometry
 uniform vec4 u_segments[256];
 uniform int u_segmentCount;
 
 // Casting
-uniform int u_sampleCount;
+uniform float u_sampleCount;
 
 varying vec4 v_color;
 varying vec2 v_texCoord;
@@ -91,7 +91,7 @@ float sampleLight(vec2 coord, vec2 lightSampleOrigin) {
 	}
 	// No intersection; return light with appropriate attenuation
 	float dist = length(coord - lightSampleOrigin);
-	return clamp((1.0 - dist / u_lightRange) * lightHardness, 0.0, 1.0);
+	return clamp((1.0 - dist / u_lightRange) * u_lightHardness, 0.0, 1.0);
 }
 
 //8200
@@ -101,12 +101,12 @@ void main() {
 
 	vec2 normal = normalize(coord - u_lightOrigin);
 	normal.yx = normal.xy;
-	normal.x *= -1;
-	float luminosity = 0;
+	normal.x *= -1.0;
+	float luminosity = 0.0;
 
-	vec2 spread = u_lightRadius * 2 / u_sampleCount * normal;
-	float offset = 0 - (u_sampleCount - 1) * 0.5;
-	for (float s; s < u_sampleCount; ++s) {
+	vec2 spread = u_lightRadius * 2.0 / u_sampleCount * normal;
+	float offset = 0.0 - (u_sampleCount - 1.0) * 0.5;
+	for (float s = 0.0; s < u_sampleCount; ++s) {
 		luminosity += sampleLight(coord, u_lightOrigin + spread * (offset + s)) * lightPerSample;
 	}
 	gl_FragColor = v_color * (1.0-luminosity) + u_lightColor * luminosity;
