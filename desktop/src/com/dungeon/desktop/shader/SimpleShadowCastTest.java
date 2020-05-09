@@ -17,11 +17,14 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class SimpleShadowCastTest extends ApplicationAdapter implements InputProcessor {
 
@@ -60,24 +63,68 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private ShaderProgram normalMapShader;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
-	private FrameBuffer shadowBuffer;
+	private FrameBuffer lightBuffer;
 	private Texture pixel;
 	private Texture normalMap;
 	private TextureRegion shadowTexture;
-	private Vector2 lightOrigin = new Vector2();
-	private float lightRadius = 10f;
-	private float lightRange = 1200f;
 	private Vector2 bufferSize = new Vector2();
 	private float time, lastLog;
 	private List<Float> geometry = new ArrayList<>();
 	private Vector2 startVector = new Vector2();
+	private Vector2 cursor = new Vector2();
+	// Currently dragging lights
+	private boolean dragging = false;
+	// Currently drawing geometry
 	private boolean drawing = false;
+	// Render geometry
+	private boolean renderGeometry = true;
 	private float[] shadowVertexes = new float[20];
 	private final float umbraColor = new Color(0, 0, 0, 1).toFloatBits();
 	private final float penumbraColor = new Color(0, 0, 0, 0).toFloatBits();
-	private Color lightColor = new Color(1.0f, 0.5f, 0.0f, 1.0f);
 	private Color ambient = Color.BLACK;//new Color(0.1f, 0.2f, 0.3f, 1.0f);
-	private Color segmentColor = Color.BLACK;
+	private Color segmentColor = Color.RED;
+	private LinkedList<Light> lights = new LinkedList<>();
+	private Light selectedLight;
+
+	private class Light {
+		Vector2 origin;
+		float radius;
+		float range;
+		Color color;
+
+		public Light(Vector2 origin, float radius, float range, Color color) {
+			this.origin = origin.cpy();
+			this.radius = radius;
+			this.range = range;
+			this.color = color;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Light light = (Light) o;
+			return Float.compare(light.radius, radius) == 0 &&
+					Float.compare(light.range, range) == 0 &&
+					Objects.equals(origin, light.origin) &&
+					Objects.equals(color, light.color);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(origin, radius, range, color);
+		}
+
+		@Override
+		public String toString() {
+			return "Light{" +
+					"origin=" + origin +
+					", radius=" + radius +
+					", range=" + range +
+					", color=" + color +
+					'}';
+		}
+	}
 
 	@Override
 	public void create () {
@@ -87,48 +134,77 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		pixel = new Texture("core/assets/fill.png");
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
-		shadowBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		shadowTexture = new TextureRegion(shadowBuffer.getColorBufferTexture());
+		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		shadowTexture = new TextureRegion(lightBuffer.getColorBufferTexture());
 		shadowTexture.flip(false, true);
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.input.setInputProcessor(this);
-		geometry.addAll(Arrays.asList(
-				800f, 350f, 1000f, 350f,
-				1000f, 350f, 1000f, 550f,
-				1000f, 550f, 800f, 550f,
-				800f, 550f, 800f, 350f
-		));
-
+		createRectangleGeometry(800f, 1000f, 350f, 550f);
+		createCircleGeometry(new Vector2(200f, 700f), 100f, 20);
+		createCircleGeometry(new Vector2(1400f, 300f), 50f, 20);
+		createCircleGeometry(new Vector2(1300f, 800f), 50f, 3);
+//		// Default light
+		lights.add(new Light(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f)));
+//		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
+//		lights.add(selectedLight);
 	}
 
 	@Override
 	public void render() {
+
+		// Clear main buffer
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		int oldSrcFunc = batch.getBlendSrcFunc();
+		int oldDstFunc = batch.getBlendDstFunc();
+
+		for (Light light : lights) {
+			drawLight(light);
+		}
+		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
+
+		if (renderGeometry) {
+			drawGeometry();
+		}
+
+		time += Gdx.graphics.getDeltaTime();
+		if (time > lastLog + 1.0) {
+			lastLog = time;
+			System.out.println(Gdx.graphics.getFramesPerSecond());
+			System.out.println("Lights: " + lights.size());
+			System.out.println("Selected Light: " + selectedLight);
+		}
+	}
+
+	private void drawLight(Light light) {
+		lightBuffer.begin();
+
+		// Clear light buffer
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
 		// Draw light with normal mapping
 		normalMapShader.begin();
-		normalMapShader.setUniformf("u_lightRange", lightRange * (1 + 0.1f * MathUtils.sin(time * 30)));
-		normalMapShader.setUniformf("u_lightOrigin", lightOrigin.x, lightOrigin.y, 50f);
-		normalMapShader.setUniformf("u_lightColor", lightColor);
+		normalMapShader.setUniformf("u_lightRange", light.range * (1 + 0.1f * MathUtils.sin(time * 30)));
+		normalMapShader.setUniformf("u_lightOrigin", light.origin.x, light.origin.y, 50f);
+		normalMapShader.setUniformf("u_lightColor", light.color);
 		normalMapShader.setUniformf("u_lightHardness", 1.0f);
 		normalMapShader.setUniformf("u_ambientColor", ambient);
 		normalMapShader.end();
 		batch.setShader(normalMapShader);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.begin();
 //		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1.0f));
 		batch.draw(normalMap, 0, 0, bufferSize.x, bufferSize.y);
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.end();
 
-		shadowBuffer.begin();
-		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+//		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Draw shadows
-		int oldSrcFunc = batch.getBlendSrcFunc();
-		int oldDstFunc = batch.getBlendDstFunc();
 		batch.begin();
 		batch.setShader(shadowShader);
-		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 		// Draw each shadow
 		Vector2 normal = new Vector2();
 		Vector2 s1 = new Vector2();
@@ -141,14 +217,14 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			s1.set(geometry.get(i), geometry.get(i+1));
 			s2.set(geometry.get(i+2), geometry.get(i+3));
 
-			u1.set(s1).sub(lightOrigin).scl(1000f).add(lightOrigin);
-			u2.set(s2).sub(lightOrigin).scl(1000f).add(lightOrigin);
+			u1.set(s1).sub(light.origin).scl(1000f).add(light.origin);
+			u2.set(s2).sub(light.origin).scl(1000f).add(light.origin);
 			// Shadows are only drawn one way - this reduces a lot of artifacts
-			if (orientation(s1, s2, lightOrigin) > 0) {
-				normal.set(s1).sub(lightOrigin).nor().rotate90(1).scl(lightRadius);
-				p1.set(s1).sub(lightOrigin).add(normal).scl(1000f).add(lightOrigin);
-				normal.set(s2).sub(lightOrigin).nor().rotate90(1).scl(lightRadius);
-				p2.set(s2).sub(lightOrigin).sub(normal).scl(1000f).add(lightOrigin);
+			if (orientation(s1, s2, light.origin) > 0) {
+				normal.set(s1).sub(light.origin).nor().rotate90(1).scl(light.radius);
+				p1.set(s1).sub(light.origin).add(normal).scl(1000f).add(light.origin);
+				normal.set(s2).sub(light.origin).nor().rotate90(1).scl(light.radius);
+				p2.set(s2).sub(light.origin).sub(normal).scl(1000f).add(light.origin);
 				shadowTriangle(p1.x, p1.y, s1.x, s1.y, u1.x, u1.y, penumbraColor, shadowVertexes);
 				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
 
@@ -163,13 +239,17 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		}
 
 		batch.end();
-		shadowBuffer.end();
+		lightBuffer.end();
+
+		// Blend the light buffer onto the scene
+		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 		batch.begin();
-		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
 		batch.setShader(null);
 		batch.draw(shadowTexture, 0, 0, bufferSize.x, bufferSize.y);
 		batch.end();
+	}
 
+	private void drawGeometry() {
 		// Draw geometry
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(segmentColor);
@@ -177,60 +257,52 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			shapeRenderer.line(geometry.get(i), geometry.get(i+1), geometry.get(i+2), geometry.get(i+3));
 		}
 		if (drawing) {
-			shapeRenderer.line(startVector.x, startVector.y, lightOrigin.x, lightOrigin.y);
+			shapeRenderer.line(startVector.x, startVector.y, cursor.x, cursor.y);
 		}
-		shapeRenderer.circle(lightOrigin.x, lightOrigin.y, lightRadius);
+		for (Light light : lights) {
+			shapeRenderer.circle(light.origin.x, light.origin.y, light.radius);
+		}
 		shapeRenderer.end();
-
-		time += Gdx.graphics.getDeltaTime();
-		if (time > lastLog + 1.0) {
-			lastLog = time;
-			System.out.println(Gdx.graphics.getFramesPerSecond());
-		}
 	}
 
-	// To find orientation of ordered triplet (p, q, r).
-	// The function returns following values
-	// 0 --> p, q and r are colinear
-	// 1 --> Clockwise
-	// 2 --> Counterclockwise
+	/**
+	 * Find orientation of ordered triplet (p, q, r)
+	 * See: https://www.geeksforgeeks.org/orientation-3-ordered-points/
+	 * @return 0 if colinear, > 0 if clockwise, < 0 if counter clockwise
+	 */
 	float orientation(Vector2 p, Vector2 q, Vector2 r) {
-		// See https://www.geeksforgeeks.org/orientation-3-ordered-points/
-		// for details of below formula.
 		return  (q.y - p.y) * (r.x - q.x) -
 				(q.x - p.x) * (r.y - q.y);
-
-//    if (val == 0) return 0; // colinear
-//
-//    return (val > 0)? 1: 2; // clock or counterclock wise
 	}
 
-	private void shadowTriangle(float x, float y, float x2, float y2, float x3, float y3, float c, float[] vertexes) {
+	/**
+	 * Create a triangle for shadow (either umbra or penumbra)
+	 */
+	private void shadowTriangle(float x, float y, float x2, float y2, float x3, float y3, float color, float[] vertexes) {
 		vertexes[0] = x;
 		vertexes[1] = y;
-		vertexes[2] = c;
+		vertexes[2] = color;
 		vertexes[3] = 0f;
 		vertexes[4] = 0f;
 		vertexes[5] = x2;
 		vertexes[6] = y2;
-		vertexes[7] = c;
+		vertexes[7] = color;
 		vertexes[8] = 0f;
 		vertexes[9] = 1f;
 		vertexes[10] = x3;
 		vertexes[11] = y3;
-		vertexes[12] = c;
+		vertexes[12] = color;
 		vertexes[13] = 1f;
 		vertexes[14] = 0f;
 		vertexes[15] = x;
 		vertexes[16] = y;
-		vertexes[17] = c;
+		vertexes[17] = color;
 		vertexes[18] = 1f;
 		vertexes[19] = 1f;
 	}
 
 	@Override
 	public void resize(int width, int height) {
-//		lightOrigin.set(Rand.nextFloat(width), Rand.nextFloat(height));
 		bufferSize.set(width, height);
 		shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, bufferSize.x, bufferSize.y);
 		System.out.println("Resolution: " + bufferSize);
@@ -244,9 +316,12 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.PLUS) {
-//			sampleCount++;
+			selectedLight = new Light(cursor, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
+			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.MINUS) {
-//			sampleCount--;
+			lights.remove(selectedLight);
+		} else if (keycode == Input.Keys.F1) {
+			renderGeometry = !renderGeometry;
 		}
 		return false;
 	}
@@ -263,17 +338,29 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button == 1) {
+		if (button == 0) {
+			// Select first light for which cursor is within radius
+			selectedLight = null;
+			for(Light light : lights) {
+				System.err.println("Cursor: " + cursor + ", light.origin: " + light.origin + ", light.radius: " + light.radius + ", distance: " + cursor.dst(light.origin));
+				if (cursor.dst(light.origin) < light.radius) {
+					selectedLight = light;
+					dragging = true;
+					break;
+				}
+			}
+		} else  if (button == 1) {
 			startVector.set(screenX, bufferSize.y - screenY);
 			drawing = true;
 		}
-		lightOrigin.set(screenX, bufferSize.y - screenY);
 		return true;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (button == 1) {
+		if (button == 0) {
+			dragging = false;
+		} else if (button == 1) {
 			geometry.add(startVector.x);
 			geometry.add(startVector.y);
 			geometry.add((float)screenX);
@@ -285,22 +372,63 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		lightOrigin.set(screenX, bufferSize.y - screenY);
+		cursor.set(screenX, bufferSize.y - screenY);
+		if (selectedLight != null && dragging) {
+			selectedLight.origin.set(screenX, bufferSize.y - screenY);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		cursor.set(screenX, bufferSize.y - screenY);
 		return true;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		if (amount > 0) {
-			lightRange *= 1.1;
-		} else {
-			lightRange /= 1.1;
+		if (selectedLight != null) {
+			if (amount > 0) {
+				selectedLight.range *= 1.1;
+			} else {
+				selectedLight.range /= 1.1;
+			}
 		}
 		return true;
+	}
+
+	private void createRectangleGeometry(float left, float right, float bottom, float top) {
+		geometry.add(left);
+		geometry.add(bottom);
+		geometry.add(right);
+		geometry.add(bottom);
+
+		geometry.add(right);
+		geometry.add(bottom);
+		geometry.add(right);
+		geometry.add(top);
+
+		geometry.add(right);
+		geometry.add(top);
+		geometry.add(left);
+		geometry.add(top);
+
+		geometry.add(left);
+		geometry.add(top);
+		geometry.add(left);
+		geometry.add(bottom);
+	}
+
+	private void createCircleGeometry(Vector2 origin, float radius, int segments) {
+		Vector2 step = new Vector2(0, radius);
+		Vector2 vertex = origin.cpy().add(step);
+		for (int i = 0; i < segments; ++i) {
+			geometry.add(vertex.x);
+			geometry.add(vertex.y);
+			step.rotate(360f / segments);
+			vertex.set(origin).add(step);
+			geometry.add(vertex.x);
+			geometry.add(vertex.y);
+		}
 	}
 }
