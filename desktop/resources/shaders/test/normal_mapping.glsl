@@ -38,8 +38,9 @@ void main() {
 //	vec4 DiffuseColor = texture2D(u_texture, vTexCoord);
 
 	//RGB of our normal map
-	vec3 NormalMap = texture2D(u_texture, mod(gl_FragCoord.xy / 350.0, 1.0)).rgb;
-	NormalMap.g = 1.0 - NormalMap.g;
+	vec3 NormalMap = texture2D(u_texture, v_texCoord.xy).rgb;
+	// Uncomment below if vertical axis needs to be reversed
+	//	NormalMap.g = 1.0 - NormalMap.g;
 
 	//The delta position of light
 	vec3 LightDir = vec3(u_lightOrigin.xy - gl_FragCoord.xy, u_lightOrigin.z);

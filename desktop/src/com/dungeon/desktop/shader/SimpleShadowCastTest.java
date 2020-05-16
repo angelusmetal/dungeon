@@ -7,21 +7,15 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -59,34 +53,26 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		new LwjglApplication(new SimpleShadowCastTest(), config);
 	}
 
-	private ShaderProgram shadowShader;
-	private ShaderProgram normalMapShader;
-	private SpriteBatch batch;
-	private ShapeRenderer shapeRenderer;
-	private FrameBuffer lightBuffer;
-	private Texture pixel;
+	// Buffer with normal map information
+	private FrameBuffer normalMapBuffer;
+	// Patch of texture
 	private Texture normalMap;
-	private TextureRegion shadowTexture;
-	private Vector2 bufferSize = new Vector2();
+
+	// Time
 	private float time, lastLog;
-	private List<Float> geometry = new ArrayList<>();
-	private Vector2 startVector = new Vector2();
+	private Vector2 segmentStart = new Vector2();
 	private Vector2 cursor = new Vector2();
 	// Currently dragging lights
 	private boolean dragging = false;
 	// Currently drawing geometry
 	private boolean drawing = false;
-	// Render geometry
-	private boolean renderGeometry = true;
-	private float[] shadowVertexes = new float[20];
-	private final float umbraColor = new Color(0, 0, 0, 1).toFloatBits();
-	private final float penumbraColor = new Color(0, 0, 0, 0).toFloatBits();
-	private Color ambient = Color.BLACK;//new Color(0.1f, 0.2f, 0.3f, 1.0f);
-	private Color segmentColor = Color.RED;
-	private LinkedList<Light> lights = new LinkedList<>();
 	private Light selectedLight;
 
-	private class Light {
+	private LinkedList<Light> lights = new LinkedList<>();
+	private List<Float> geometry = new ArrayList<>();
+	private final LightRenderer renderer = new LightRenderer();
+
+	public class Light {
 		Vector2 origin;
 		float radius;
 		float range;
@@ -128,16 +114,11 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 
 	@Override
 	public void create () {
-		normalMapShader = Resources.shaders.get("df_vertex.glsl|test/normal_mapping.glsl");
-		shadowShader = Resources.shaders.get("df_vertex.glsl|test/penumbra.glsl");
 		normalMap = new Texture("core/assets/normal_map.png");
-		pixel = new Texture("core/assets/fill.png");
-		shapeRenderer = new ShapeRenderer();
-		batch = new SpriteBatch();
-		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		shadowTexture = new TextureRegion(lightBuffer.getColorBufferTexture());
-		shadowTexture.flip(false, true);
-		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Normal map buffer
+		normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		renderer.create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), normalMapBuffer);
+
 		Gdx.input.setInputProcessor(this);
 		createRectangleGeometry(800f, 1000f, 350f, 550f);
 		createCircleGeometry(new Vector2(200f, 700f), 100f, 20);
@@ -147,25 +128,38 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		lights.add(new Light(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f)));
 //		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 //		lights.add(selectedLight);
+
+		// Tile-repeat the normal map texture into the normal map buffer
+		normalMapBuffer.begin();
+		int timesX = (int) Math.ceil(((double) Gdx.graphics.getWidth()) / normalMap.getWidth());
+		int timesY = (int) Math.ceil(((double) Gdx.graphics.getHeight()) / normalMap.getHeight());
+		SpriteBatch batch = new SpriteBatch();
+		batch.begin();
+		for (int x = 0; x < timesX; ++x) {
+			for (int y = 0; y < timesY; ++y) {
+				batch.draw(normalMap, x * normalMap.getWidth(), y * normalMap.getHeight(), normalMap.getWidth(), normalMap.getHeight());
+			}
+		}
+		// Additional patch at the bottom left to verify alignment
+		batch.draw(normalMap, 20, 20, normalMap.getWidth(), normalMap.getHeight());
+		batch.end();
+		normalMapBuffer.end();
+		batch.dispose();
 	}
 
 	@Override
 	public void render() {
-
-		// Clear main buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		int oldSrcFunc = batch.getBlendSrcFunc();
-		int oldDstFunc = batch.getBlendDstFunc();
-
-		for (Light light : lights) {
-			drawLight(light);
+		List<Float> geometryToRender;
+		if (drawing) {
+			geometryToRender = new ArrayList<>(geometry);
+			geometryToRender.add(segmentStart.x);
+			geometryToRender.add(segmentStart.y);
+			geometryToRender.add(cursor.x);
+			geometryToRender.add(cursor.y);
+		} else {
+			geometryToRender = geometry;
 		}
-		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
-
-		if (renderGeometry) {
-			drawGeometry();
-		}
+		renderer.render(lights, geometryToRender);
 
 		time += Gdx.graphics.getDeltaTime();
 		if (time > lastLog + 1.0) {
@@ -176,140 +170,13 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		}
 	}
 
-	private void drawLight(Light light) {
-		lightBuffer.begin();
 
-		// Clear light buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
-		// Draw light with normal mapping
-		normalMapShader.begin();
-		normalMapShader.setUniformf("u_lightRange", light.range * (1 + 0.1f * MathUtils.sin(time * 30)));
-		normalMapShader.setUniformf("u_lightOrigin", light.origin.x, light.origin.y, 50f);
-		normalMapShader.setUniformf("u_lightColor", light.color);
-		normalMapShader.setUniformf("u_lightHardness", 1.0f);
-		normalMapShader.setUniformf("u_ambientColor", ambient);
-		normalMapShader.end();
-		batch.setShader(normalMapShader);
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		batch.begin();
-//		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1.0f));
-		batch.draw(normalMap, 0, 0, bufferSize.x, bufferSize.y);
-		batch.end();
-
-//		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-//		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		// Draw shadows
-		batch.begin();
-		batch.setShader(shadowShader);
-		// Draw each shadow
-		Vector2 normal = new Vector2();
-		Vector2 s1 = new Vector2();
-		Vector2 s2 = new Vector2();
-		Vector2 p1 = new Vector2();
-		Vector2 p2 = new Vector2();
-		Vector2 u1 = new Vector2();
-		Vector2 u2 = new Vector2();
-		for (int i = 0; i < geometry.size() - 3; i += 4) {
-			s1.set(geometry.get(i), geometry.get(i+1));
-			s2.set(geometry.get(i+2), geometry.get(i+3));
-
-			u1.set(s1).sub(light.origin).scl(1000f).add(light.origin);
-			u2.set(s2).sub(light.origin).scl(1000f).add(light.origin);
-			// Shadows are only drawn one way - this reduces a lot of artifacts
-			if (orientation(s1, s2, light.origin) > 0) {
-				normal.set(s1).sub(light.origin).nor().rotate90(1).scl(light.radius);
-				p1.set(s1).sub(light.origin).add(normal).scl(1000f).add(light.origin);
-				normal.set(s2).sub(light.origin).nor().rotate90(1).scl(light.radius);
-				p2.set(s2).sub(light.origin).sub(normal).scl(1000f).add(light.origin);
-				shadowTriangle(p1.x, p1.y, s1.x, s1.y, u1.x, u1.y, penumbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
-
-				shadowTriangle(p2.x, p2.y, s2.x, s2.y, u2.x, u2.y, penumbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
-
-				shadowTriangle(u1.x, u1.y, s1.x, s1.y, s2.x, s2.y, umbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
-				shadowTriangle(u2.x, u2.y, s2.x, s2.y, u1.x, u1.y, umbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
-			}
-		}
-
-		batch.end();
-		lightBuffer.end();
-
-		// Blend the light buffer onto the scene
-		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
-		batch.begin();
-		batch.setShader(null);
-		batch.draw(shadowTexture, 0, 0, bufferSize.x, bufferSize.y);
-		batch.end();
-	}
-
-	private void drawGeometry() {
-		// Draw geometry
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		shapeRenderer.setColor(segmentColor);
-		for (int i = 0; i < geometry.size() - 3; i += 4) {
-			shapeRenderer.line(geometry.get(i), geometry.get(i+1), geometry.get(i+2), geometry.get(i+3));
-		}
-		if (drawing) {
-			shapeRenderer.line(startVector.x, startVector.y, cursor.x, cursor.y);
-		}
-		for (Light light : lights) {
-			shapeRenderer.circle(light.origin.x, light.origin.y, light.radius);
-		}
-		shapeRenderer.end();
-	}
-
-	/**
-	 * Find orientation of ordered triplet (p, q, r)
-	 * See: https://www.geeksforgeeks.org/orientation-3-ordered-points/
-	 * @return 0 if colinear, > 0 if clockwise, < 0 if counter clockwise
-	 */
-	float orientation(Vector2 p, Vector2 q, Vector2 r) {
-		return  (q.y - p.y) * (r.x - q.x) -
-				(q.x - p.x) * (r.y - q.y);
-	}
-
-	/**
-	 * Create a triangle for shadow (either umbra or penumbra)
-	 */
-	private void shadowTriangle(float x, float y, float x2, float y2, float x3, float y3, float color, float[] vertexes) {
-		vertexes[0] = x;
-		vertexes[1] = y;
-		vertexes[2] = color;
-		vertexes[3] = 0f;
-		vertexes[4] = 0f;
-		vertexes[5] = x2;
-		vertexes[6] = y2;
-		vertexes[7] = color;
-		vertexes[8] = 0f;
-		vertexes[9] = 1f;
-		vertexes[10] = x3;
-		vertexes[11] = y3;
-		vertexes[12] = color;
-		vertexes[13] = 1f;
-		vertexes[14] = 0f;
-		vertexes[15] = x;
-		vertexes[16] = y;
-		vertexes[17] = color;
-		vertexes[18] = 1f;
-		vertexes[19] = 1f;
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		bufferSize.set(width, height);
-		shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, bufferSize.x, bufferSize.y);
-		System.out.println("Resolution: " + bufferSize);
-	}
+//	@Override
+//	public void resize(int width, int height) {
+//	}
 	@Override
 	public void dispose() {
-		shapeRenderer.dispose();
+		renderer.dispose();
 		Resources.dispose();
 	}
 
@@ -321,7 +188,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		} else if (keycode == Input.Keys.MINUS) {
 			lights.remove(selectedLight);
 		} else if (keycode == Input.Keys.F1) {
-			renderGeometry = !renderGeometry;
+			renderer.setRenderGeometry(!renderer.isRenderGeometry());
 		}
 		return false;
 	}
@@ -350,7 +217,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 				}
 			}
 		} else  if (button == 1) {
-			startVector.set(screenX, bufferSize.y - screenY);
+			segmentStart.set(screenX, Gdx.graphics.getHeight() - screenY);
 			drawing = true;
 		}
 		return true;
@@ -361,10 +228,10 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		if (button == 0) {
 			dragging = false;
 		} else if (button == 1) {
-			geometry.add(startVector.x);
-			geometry.add(startVector.y);
+			geometry.add(segmentStart.x);
+			geometry.add(segmentStart.y);
 			geometry.add((float)screenX);
-			geometry.add(bufferSize.y - screenY);
+			geometry.add((float) Gdx.graphics.getHeight() - screenY);
 			drawing = false;
 		}
 		return true;
@@ -372,16 +239,16 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		cursor.set(screenX, bufferSize.y - screenY);
+		cursor.set(screenX, Gdx.graphics.getHeight() - screenY);
 		if (selectedLight != null && dragging) {
-			selectedLight.origin.set(screenX, bufferSize.y - screenY);
+			selectedLight.origin.set(screenX, Gdx.graphics.getHeight() - screenY);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		cursor.set(screenX, bufferSize.y - screenY);
+		cursor.set(screenX, Gdx.graphics.getHeight() - screenY);
 		return true;
 	}
 
@@ -431,4 +298,5 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			geometry.add(vertex.y);
 		}
 	}
+
 }
