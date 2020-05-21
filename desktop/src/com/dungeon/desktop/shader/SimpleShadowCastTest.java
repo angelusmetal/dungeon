@@ -120,10 +120,10 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		renderer.create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), normalMapBuffer);
 
 		Gdx.input.setInputProcessor(this);
-		createRectangleGeometry(800f, 1000f, 350f, 550f);
-		createCircleGeometry(new Vector2(200f, 700f), 100f, 20);
-		createCircleGeometry(new Vector2(1400f, 300f), 50f, 20);
-		createCircleGeometry(new Vector2(1300f, 800f), 50f, 3);
+		Segments.rectangle(geometry, 800f, 1000f, 350f, 550f);
+		Segments.circle(geometry, new Vector2(200f, 700f), 100f, 20);
+		Segments.circle(geometry, new Vector2(1400f, 300f), 50f, 20);
+		Segments.circle(geometry, new Vector2(1300f, 800f), 50f, 3);
 //		// Default light
 		lights.add(new Light(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f)));
 //		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
@@ -262,41 +262,6 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			}
 		}
 		return true;
-	}
-
-	private void createRectangleGeometry(float left, float right, float bottom, float top) {
-		geometry.add(left);
-		geometry.add(bottom);
-		geometry.add(right);
-		geometry.add(bottom);
-
-		geometry.add(right);
-		geometry.add(bottom);
-		geometry.add(right);
-		geometry.add(top);
-
-		geometry.add(right);
-		geometry.add(top);
-		geometry.add(left);
-		geometry.add(top);
-
-		geometry.add(left);
-		geometry.add(top);
-		geometry.add(left);
-		geometry.add(bottom);
-	}
-
-	private void createCircleGeometry(Vector2 origin, float radius, int segments) {
-		Vector2 step = new Vector2(0, radius);
-		Vector2 vertex = origin.cpy().add(step);
-		for (int i = 0; i < segments; ++i) {
-			geometry.add(vertex.x);
-			geometry.add(vertex.y);
-			step.rotate(360f / segments);
-			vertex.set(origin).add(step);
-			geometry.add(vertex.x);
-			geometry.add(vertex.y);
-		}
 	}
 
 }
