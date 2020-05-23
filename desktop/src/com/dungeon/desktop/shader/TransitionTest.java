@@ -85,8 +85,8 @@ public class TransitionTest extends ApplicationAdapter implements InputProcessor
 		ShaderProgram shaderProgram = shaderPrograms.get(selectedShader);
 		shaderProgram.begin();
 		shaderProgram.setUniformf("u_bufferSize", new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-		float open = (float) (Math.sin(time * 2) + 1f) / 2f;
-		shaderProgram.setUniformf("u_open", open);
+		float phase = (float) Math.sin(time);//(Math.sin(time) + 1f) / 2f;
+		shaderProgram.setUniformf("u_phase", phase);
 		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();

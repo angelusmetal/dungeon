@@ -5,7 +5,7 @@ precision mediump int;
 
 uniform sampler2D u_texture;
 uniform vec2 u_bufferSize;
-uniform float u_open;
+uniform float u_phase;
 
 varying vec4 v_color;
 varying vec2 v_texCoord;
@@ -14,5 +14,9 @@ varying vec2 v_texCoord;
 void main() {
 	float maxRadius = length(u_bufferSize) * 0.5;
 	gl_FragColor = texture2D(u_texture, v_texCoord.xy) * v_color;
-	gl_FragColor.a = step(maxRadius * u_open, length(gl_FragCoord.xy - u_bufferSize.xy * 0.5));
+	if (u_phase > 0.0) {
+		gl_FragColor.a = step(maxRadius * u_phase, length(gl_FragCoord.xy - u_bufferSize.xy * 0.5));
+	} else {
+		gl_FragColor.a = 1.0 - step(maxRadius * (1.0 + u_phase), length(gl_FragCoord.xy - u_bufferSize.xy * 0.5));
+	}
 }
