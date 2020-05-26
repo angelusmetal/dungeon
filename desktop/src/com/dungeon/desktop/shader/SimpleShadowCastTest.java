@@ -182,10 +182,10 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Input.Keys.PLUS) {
+		if (keycode == Input.Keys.NUM_1) {
 			selectedLight = new Light(cursor, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 			lights.add(selectedLight);
-		} else if (keycode == Input.Keys.MINUS) {
+		} else if (keycode == Input.Keys.NUM_2) {
 			lights.remove(selectedLight);
 		} else if (keycode == Input.Keys.F1) {
 			renderer.setRenderGeometry(!renderer.isRenderGeometry());
