@@ -45,7 +45,7 @@ public class Player {
 		this.color = PLAYER_COLORS[playerId];
 		this.weapon = createWeapon();
 		pickName();
-		this.console = new OldConsole(10, 3f);
+		this.console = new OldConsole(10, 10f);
 	}
 
 	private void pickName() {

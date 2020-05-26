@@ -10,6 +10,7 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 import com.dungeon.game.resource.Resources;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -41,7 +42,9 @@ public class ConsoleStage implements Renderer {
 
 		x = viewPort.posX + 10;
 		y = viewPort.posY + 10 + 32;
-		for (OldConsole.LogLine log : console.getLog()) {
+		ListIterator<OldConsole.LogLine> iterator = console.getLog().listIterator(console.getLog().size());
+		while(iterator.hasPrevious()) {
+			OldConsole.LogLine log = iterator.previous();
 			log.color.a = Math.max((log.expiration - Engine.time()) / console.getMessageExpiration(), 0);
 			font.setColor(log.color);
 			font.draw(batch, log.message, x, y);

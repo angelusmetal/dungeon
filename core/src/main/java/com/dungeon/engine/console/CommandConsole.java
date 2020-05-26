@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,9 @@ public class CommandConsole {
 	private final StringBuilder currentCommand = new StringBuilder();
 	private final List<String> commandHistory = new ArrayList<>();
 	private final Map<String, Consumer<List<String>>> commands = new HashMap<>();
+	private final Map<String, ConsoleVar> vars = new HashMap<>();
 	private final Map<Integer, Runnable> keyBindings = new HashMap<>();
+
 	private final InputProcessor inputProcessor = new AbstractInputProcessor() {
 		@Override public boolean keyDown(int keycode) {
 			Runnable action = keyBindings.get(keycode);
@@ -47,12 +50,48 @@ public class CommandConsole {
 	};
 	private Consumer<String> output = System.out::println;
 
+	public CommandConsole() {
+		// Add get and set command for accessing variables
+		bindCommand("get", tokens -> {
+			if (tokens.size() == 1) {
+				print("Known variables:");
+				vars.keySet().stream().sorted().forEach(var -> print ("  - " + var));
+			} else {
+				int maxNameLength = tokens.stream().map(String::length).max(Integer::compareTo).orElse(6);
+				tokens.stream().skip(1).forEach(var -> {
+					ConsoleVar value = vars.get(var);
+					if (value != null) {
+						print("  " + String.format("%1$" + maxNameLength + "s", var) + " - " + value.getter().get());
+					} else {
+						print("  " + String.format("%1$" + maxNameLength + "s", var) + " - <no such var>");
+					}
+				});
+			}
+		});
+		bindCommand("set", tokens -> {
+			if (tokens.size() != 3) {
+				print("Usage: set <var> <value>");
+			} else {
+				ConsoleVar var = vars.get(tokens.get(1));
+				if (var != null) {
+					var.setter().accept(tokens.get(2));
+				} else {
+					print("No such var '" + tokens.get(1) + "'");
+				}
+			}
+		});
+	}
+
 	public void bindKey(int keycode, Runnable runnable) {
 		keyBindings.put(keycode, runnable);
 	}
 
 	public void bindCommand(String command, Consumer<List<String>> consumer) {
 		commands.put(command, consumer);
+	}
+
+	public void bindVar(ConsoleVar var) {
+		vars.put(var.getName(), var);
 	}
 
 	public String getCurrentCommand() {

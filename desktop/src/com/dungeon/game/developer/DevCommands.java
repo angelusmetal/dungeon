@@ -2,6 +2,7 @@ package com.dungeon.game.developer;
 
 import com.badlogic.gdx.Gdx;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.console.ConsoleVar;
 import com.dungeon.game.Game;
 import com.dungeon.game.player.Players;
 
@@ -19,6 +20,10 @@ public class DevCommands {
 		Game.getCommandConsole().bindCommand("stop_music", this::stopMusic);
 		Game.getCommandConsole().bindCommand("say", this::say);
 		Game.getCommandConsole().bindCommand("spawn", this::spawn);
+
+		// Add variables
+		Game.getCommandConsole().bindVar(ConsoleVar.mutableColor("e_baseLight", Engine::getBaseLight, Engine::setBaseLight));
+		Game.getCommandConsole().bindVar(ConsoleVar.readOnlyFloat("e_time", Engine::time));
 	}
 
 	public void playMusic(List<String> tokens) {
