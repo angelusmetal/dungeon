@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.console.InputProcessorStack;
@@ -51,7 +50,6 @@ public class Dungeon extends ApplicationAdapter {
 	private boolean fading = false;
 
 	private long frame = 0;
-	private DevTools devTools;
 	private DevCommands devCommands;
 
 	public Dungeon(Toml configuration) {
@@ -63,13 +61,13 @@ public class Dungeon extends ApplicationAdapter {
 		initResources();
 		inputStack = new InputProcessorStack();
 		inputMultiplexer = new InputMultiplexer();
-		devTools = new DevTools(inputMultiplexer);
-		devCommands = new DevCommands(devTools);
+		Game.devTools = new DevTools(inputMultiplexer);
+		devCommands = new DevCommands(Game.devTools);
 		inputStack.push(inputMultiplexer);
 		Gdx.input.setInputProcessor(inputStack);
 
 		// Set F12 to push & pop console input from the input processor
-		devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
+		Game.devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
 			Game.setDisplayConsole(true);
 			inputStack.push(Game.getCommandConsole().getInputProcessor());
 		});
@@ -87,8 +85,7 @@ public class Dungeon extends ApplicationAdapter {
 		configureInput();
 
 		// Add developer hotkeys
-		devTools.addDeveloperHotkeys();
-		devTools.addProfilerWidgets();
+		Game.devTools.addDeveloperHotkeys();
 
 		// Start playing character selection music
 		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
@@ -183,7 +180,7 @@ public class Dungeon extends ApplicationAdapter {
 			}));
 		}
 
-		devTools.draw();
+		Game.devTools.draw();
 
 		if (Players.count() > 0) {
 			movementSampler.sample((int) Players.get(0).getAvatar().getMovement().len());

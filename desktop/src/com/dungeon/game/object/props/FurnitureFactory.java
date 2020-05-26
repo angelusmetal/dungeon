@@ -13,11 +13,9 @@ import com.dungeon.engine.ui.particle.LinearParticle;
 import com.dungeon.engine.ui.particle.PathParticle;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.TimeGradient;
-import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.resource.Resources;
-import com.dungeon.game.ui.CoinsWidget;
 
 public class FurnitureFactory {
 
@@ -58,8 +56,8 @@ public class FurnitureFactory {
 					PlayerEntity character = (PlayerEntity) entity;
 					character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
 					Vector2 origin = getOrigin().cpy().add(0, getZPos());
-					Vector2 destination = character.getPlayer().getRenderer().getHudStage().getHudWidget(character.getPlayer()).getCoinCenter();
-					Bezier<Vector2> path = character.getPlayer().getRenderer().getHudStage().randQuadratic(origin, destination);
+					Vector2 destination = character.getPlayer().getRenderer().getHud().getHudWidget(character.getPlayer()).getCoinCenter();
+					Bezier<Vector2> path = character.getPlayer().getRenderer().getHud().randQuadratic(origin, destination);
 
 					PathParticle particle = new PathParticle(path, getAnimation(),1f) {
 						Metronome sparkGenerator;
@@ -71,7 +69,7 @@ public class FurnitureFactory {
 										getColor().a = gradient.get() * 0.1f;
 									}
 								};
-								character.getPlayer().getRenderer().getHudStage().addParticle(spark);
+								character.getPlayer().getRenderer().getHud().addParticle(spark);
 							});
 						}
 						@Override public void update() {
@@ -81,7 +79,7 @@ public class FurnitureFactory {
 							character.getPlayer().addGold(1);
 						}
 					};
-					character.getPlayer().getRenderer().getHudStage().addParticle(particle);
+					character.getPlayer().getRenderer().getHud().addParticle(particle);
 					expire();
 					return true;
 				}

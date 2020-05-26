@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
-import com.dungeon.engine.util.CyclicSampler;
+import com.dungeon.engine.util.CyclicProfiler;
 import com.dungeon.engine.util.Util;
 
 import java.util.function.Function;
 
 public class SamplerVisualizer extends AbstractWidget implements Widget, Disposable {
 
-	private final CyclicSampler sampler;
+	private final CyclicProfiler sampler;
 	private final String label;
 	private final Pixmap pixmap;
 	private final Texture texture;
@@ -22,7 +22,7 @@ public class SamplerVisualizer extends AbstractWidget implements Widget, Disposa
 	private BitmapFont font = new BitmapFont();
 	private Function<Double, String> formatter = Util::nanosToString;
 
-	public SamplerVisualizer(CyclicSampler sampler, String label) {
+	public SamplerVisualizer(CyclicProfiler sampler, String label) {
 		this.sampler = sampler;
 		this.label = label;
 		this.width = sampler.getSize();

@@ -2,12 +2,15 @@ package com.dungeon.engine.util;
 
 import java.util.function.BiConsumer;
 
-public class CyclicSampler {
+/**
+ * Circular buffer for profiling or sampling numbers.
+ */
+public class CyclicProfiler {
 
 	private final double[] samples;
 	private int current = 0;
 
-	public CyclicSampler(int size) {
+	public CyclicProfiler(int size) {
 		this.samples = new double[size];
 	}
 

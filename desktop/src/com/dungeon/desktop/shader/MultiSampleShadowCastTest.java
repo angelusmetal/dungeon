@@ -25,15 +25,15 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 	 * Also, there's a concept of light radius, which defines the radius of the light source itself (not how far the
 	 * light reaches, which is the light range). Multiple samples (as defined in u_sampleCount) determine how many times
 	 * this process is repeated between within the light radius. A wider radius translates into a wider penumbra, while
-	 * a higher sample count translates into softer (but costlier) shadows; cost grows linearly.
+	 * a higher profile count translates into softer (but costlier) shadows; cost grows linearly.
 	 *
 	 * The amount of geometry segments that need to be verified also significantly increase the cost (since it has to be
-	 * done per sample, per pixel). So this approach is very expensive.
+	 * done per profile, per pixel). So this approach is very expensive.
 	 *
 	 * The controls are mouse drag (left click) to move the light. Using the right click adds a geometry segment
 	 * (segment start and end coordinates are picked from mouse coordinates upon clicking & un-clicking).
 	 *
-	 * Keys 1 & 2 decrease and increase sample count, while mouse wheel controls the light range.
+	 * Keys 1 & 2 decrease and increase profile count, while mouse wheel controls the light range.
 	 *
 	 * @param arg
 	 */

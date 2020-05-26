@@ -14,6 +14,7 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
+import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
@@ -56,6 +57,7 @@ public class Game {
 	private static CommandConsole commandConsole = new CommandConsole();
 	private static boolean displayConsole = false;
 	public static GameView gameView = new GameView();
+	public static DevTools devTools;
 
 	public static OverlayText text(Vector2 origin, String text) {
 		return text(origin, text, Color.WHITE);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.ui.particle.Particle;
 import com.dungeon.engine.util.Util;
@@ -12,14 +13,13 @@ import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
 // TODO Make this a UI element inside the HudStage
-public class MiniMapStage implements RenderStage {
+public class MiniMapStage implements Renderer {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final Pixmap miniMap;
 	private final Texture miniMapTexture;
 	private final SpriteBatch batch;
-	private boolean enabled = true;
 	private final int width = 60;
 	private final int height = 60;
 	private final Color background =  Color.valueOf("000000c0");
@@ -36,17 +36,10 @@ public class MiniMapStage implements RenderStage {
 
 	@Override
 	public void render() {
-		if (enabled) {
-			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width / HudStage.SCALE, viewPort.height / HudStage.SCALE);
-			batch.begin();
-			drawMap(batch);
-			batch.end();
-		}
-	}
-
-	@Override
-	public void toggle() {
-		enabled = !enabled;
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width / HudStage.SCALE, viewPort.height / HudStage.SCALE);
+		batch.begin();
+		drawMap(batch);
+		batch.end();
 	}
 
 	private void drawMap(SpriteBatch batch) {

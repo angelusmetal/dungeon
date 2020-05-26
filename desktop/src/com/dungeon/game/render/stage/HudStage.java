@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.repository.Repository;
+import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.ui.particle.Particle;
 import com.dungeon.engine.ui.particle.PathParticle;
@@ -23,14 +24,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class HudStage implements RenderStage {
+public class HudStage implements Renderer {
 
 	public static final float SCALE = 2f;
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final SpriteBatch batch;
-	private boolean enabled = true;
 	private final HLayout layout = new HLayout();
 	private final Map<Player, Hud> hudByPlayer = new HashMap<>();
 	private final Repository<Particle> particles = new Repository<>();
@@ -73,19 +73,12 @@ public class HudStage implements RenderStage {
 
 	@Override
 	public void render() {
-		if (enabled) {
-			batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width / SCALE, viewPort.height / SCALE);
-			batch.begin();
-			layout.draw(batch);
-			particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
-			batch.end();
-			batch.setColor(Color.WHITE);
-		}
-	}
-
-	@Override
-	public void toggle() {
-		enabled = !enabled;
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width / SCALE, viewPort.height / SCALE);
+		batch.begin();
+		layout.draw(batch);
+		particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
+		batch.end();
+		batch.setColor(Color.WHITE);
 	}
 
 	@Override

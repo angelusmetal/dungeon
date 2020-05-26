@@ -8,17 +8,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.resource.Resources;
 
-public class TitleStage implements RenderStage {
+public class TitleStage implements Renderer {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final ViewPortBuffer textBuffer;
-	private boolean enabled = true;
 	private BitmapFont titleFont;
 	private BitmapFont subtitleFont;
 //	private Texture ornament;
@@ -37,21 +37,14 @@ public class TitleStage implements RenderStage {
 
 	@Override
 	public void render() {
-		if (enabled) {
-			if (expiration > Engine.time()) {
-				viewportBuffer.render(batch -> {
-					color.a = Util.clamp((expiration - Engine.time()) / 2f);
-					batch.setColor(color);
-					textBuffer.draw(batch);
-					batch.setColor(Color.WHITE);
-				});
-			}
+		if (expiration > Engine.time()) {
+			viewportBuffer.render(batch -> {
+				color.a = Util.clamp((expiration - Engine.time()) / 2f);
+				batch.setColor(color);
+				textBuffer.draw(batch);
+				batch.setColor(Color.WHITE);
+			});
 		}
-	}
-
-	@Override
-	public void toggle() {
-		enabled = !enabled;
 	}
 
 	@Override

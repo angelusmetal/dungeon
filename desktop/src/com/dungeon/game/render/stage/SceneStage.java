@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
+import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.util.Util;
@@ -23,7 +24,7 @@ import com.dungeon.game.resource.Resources;
 import java.util.Comparator;
 import java.util.EnumMap;
 
-public class SceneStage implements RenderStage {
+public class SceneStage implements Renderer {
 
 	// Entities need to be rendered with premultiplied alpha onto the alpha-enabled buffer
 	private static ShaderProgram entityShader = Resources.shaders.get("df_vertex.glsl|premultiplied_alpha_fragment.glsl");
@@ -50,7 +51,6 @@ public class SceneStage implements RenderStage {
 	private final BlendFunctionContext combineLights;
 	private final BlendFunctionContext blendLights;
 	private final BlendFunctionContext blendSprites;
-	private boolean enabled = true;
 	private final TextureRegion shadow;
 
 	private static final float SHADOW_INTENSITY = 0.6f;
@@ -108,14 +108,6 @@ public class SceneStage implements RenderStage {
 
 	@Override
 	public void render() {
-		if (!enabled) {
-			output.render(batch -> {
-				Gdx.gl.glClearColor(1, 1, 1, 1);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			});
-			return;
-		}
-
 		// Tiling variables (they keep track of tile rendering)
 		tSize = Game.getEnvironment().getTilesize();
 		minX = Math.max(0, viewPort.cameraX / tSize);
@@ -209,11 +201,6 @@ public class SceneStage implements RenderStage {
 			batch.setColor(Color.WHITE);
 		}));
 
-	}
-
-	@Override
-	public void toggle() {
-		enabled = !enabled;
 	}
 
 	private void drawFloorTiles(SpriteBatch batch) {

@@ -9,13 +9,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
+import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.resource.Resources;
 
 import java.util.Comparator;
 
-public class OverlayTextStage implements RenderStage {
+public class OverlayTextStage implements Renderer {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
@@ -25,7 +26,6 @@ public class OverlayTextStage implements RenderStage {
 			e1.getOrigin().y < e2.getOrigin().y ? 1 :
 			e1.getOrigin().x < e2.getOrigin().x ? -1 :
 			e1.getOrigin().x > e2.getOrigin().x ? 1 : 0;
-	private boolean enabled = true;
 	private ShaderProgram shaderOutline;
 
 	public OverlayTextStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
@@ -42,47 +42,40 @@ public class OverlayTextStage implements RenderStage {
 
 	@Override
 	public void render() {
-		if (enabled) {
-			Gdx.gl.glBlendFuncSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
-			// TODO only draw what's on the viewport
-			// Iterate texts in render order and draw them
-			labelBuffer.projectToViewPort();
-			Engine.overlayTexts.stream().filter(t -> t.isInViewport(viewPort)).sorted(comp).forEach(text -> {
-				// Each text is rendered first in a separate buffer
-				labelBuffer.render(batch -> {
-					Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-					Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-					text.draw(batch);
-				});
-				viewportBuffer.projectToZero();
-				viewportBuffer.render(batch -> {
-					Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-					if (text.hasOutline()) {
-						// If outline is enabled, draw the text first using the outline shader
-						batch.end();
-						shaderOutline.begin();
-						shaderOutline.setUniformf("u_color", new Color(0f, 0f, 0f, text.getColor().a));
-						shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / viewPort.width, 1f / viewPort.height));
-						shaderOutline.end();
-						batch.setShader(shaderOutline);
-						batch.begin();
-						labelBuffer.draw(batch);
-						batch.end();
-						batch.setShader(null);
-						batch.begin();
-					}
-					// And the buffer is then blended into the main scene
-					batch.setColor(text.getColor());
-					labelBuffer.draw(batch);
-					batch.setColor(Color.WHITE);
-				});
+		Gdx.gl.glBlendFuncSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
+		// TODO only draw what's on the viewport
+		// Iterate texts in render order and draw them
+		labelBuffer.projectToViewPort();
+		Engine.overlayTexts.stream().filter(t -> t.isInViewport(viewPort)).sorted(comp).forEach(text -> {
+			// Each text is rendered first in a separate buffer
+			labelBuffer.render(batch -> {
+				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				text.draw(batch);
 			});
-		}
-	}
-
-	@Override
-	public void toggle() {
-		enabled = !enabled;
+			viewportBuffer.projectToZero();
+			viewportBuffer.render(batch -> {
+				Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+				if (text.hasOutline()) {
+					// If outline is enabled, draw the text first using the outline shader
+					batch.end();
+					shaderOutline.begin();
+					shaderOutline.setUniformf("u_color", new Color(0f, 0f, 0f, text.getColor().a));
+					shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / viewPort.width, 1f / viewPort.height));
+					shaderOutline.end();
+					batch.setShader(shaderOutline);
+					batch.begin();
+					labelBuffer.draw(batch);
+					batch.end();
+					batch.setShader(null);
+					batch.begin();
+				}
+				// And the buffer is then blended into the main scene
+				batch.setColor(text.getColor());
+				labelBuffer.draw(batch);
+				batch.setColor(Color.WHITE);
+			});
+		});
 	}
 
 	@Override
