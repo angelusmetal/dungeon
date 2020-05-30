@@ -1,22 +1,23 @@
 package com.dungeon.engine.console;
 
 import com.badlogic.gdx.InputProcessor;
+import com.dungeon.engine.controller.AbstractInputProcessor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class CommandConsole {
+public class Console {
 
 	private final StringBuilder currentCommand = new StringBuilder();
 	private final List<String> commandHistory = new ArrayList<>();
 	private final Map<String, Consumer<List<String>>> commands = new HashMap<>();
+	private final TokenContext rootContext = new TokenContext();
 	private final Map<String, ConsoleVar> vars = new HashMap<>();
 	private final Map<Integer, Runnable> keyBindings = new HashMap<>();
 
@@ -48,50 +49,65 @@ public class CommandConsole {
 			return true;
 		}
 	};
+
 	private Consumer<String> output = System.out::println;
 
-	public CommandConsole() {
+	public Console() {
 		// Add get and set command for accessing variables
-		bindCommand("get", tokens -> {
-			if (tokens.size() == 1) {
-				print("Known variables:");
+		bindExpression("get", (tokens, out) -> {
+			if (tokens.isEmpty()) {
+				out.accept("Known variables:");
 				vars.keySet().stream().sorted().forEach(var -> print ("  - " + var));
 			} else {
 				int maxNameLength = tokens.stream().map(String::length).max(Integer::compareTo).orElse(6);
-				tokens.stream().skip(1).forEach(var -> {
+				tokens.forEach(var -> {
 					ConsoleVar value = vars.get(var);
 					if (value != null) {
-						print("  " + String.format("%1$" + maxNameLength + "s", var) + " - " + value.getter().get());
+						out.accept("  " + String.format("%1$" + maxNameLength + "s", var) + " - " + value.getter().get());
 					} else {
-						print("  " + String.format("%1$" + maxNameLength + "s", var) + " - <no such var>");
+						out.accept("  " + String.format("%1$" + maxNameLength + "s", var) + " - <no such var>");
 					}
 				});
 			}
-		});
-		bindCommand("set", tokens -> {
-			if (tokens.size() != 3) {
-				print("Usage: set <var> <value>");
+			return true;
+		}, () -> vars.keySet().stream().sorted());
+		bindExpression("set", (tokens, out) -> {
+			if (tokens.size() != 2) {
+				out.accept("Usage: set <var> <value>");
 			} else {
-				ConsoleVar var = vars.get(tokens.get(1));
+				ConsoleVar var = vars.get(tokens.get(0));
 				if (var != null) {
-					var.setter().accept(tokens.get(2));
+					var.setter().accept(tokens.get(1));
 				} else {
-					print("No such var '" + tokens.get(1) + "'");
+					out.accept("No such var '" + tokens.get(0) + "'");
 				}
 			}
-		});
+			return true;
+		}, () -> vars.keySet().stream().sorted());
 	}
 
 	public void bindKey(int keycode, Runnable runnable) {
 		keyBindings.put(keycode, runnable);
 	}
 
-	public void bindCommand(String command, Consumer<List<String>> consumer) {
-		commands.put(command, consumer);
+	public void bindExpression(String command, ConsoleExpression expression) {
+		rootContext.findOrCreateDescendent(tokenize(command))
+				.setExpression(expression);
+	}
+
+	public void bindExpression(String command, ConsoleExpression expression, Supplier<Stream<String>> childrenResolver) {
+		TokenContext descendent = rootContext.findOrCreateDescendent(tokenize(command));
+		descendent.setExpression(expression);
+		descendent.setChildrenResolver(childrenResolver);
 	}
 
 	public void bindVar(ConsoleVar var) {
 		vars.put(var.getName(), var);
+	}
+
+	public void setCurrentCommand(String command) {
+		currentCommand.setLength(0);
+		currentCommand.append(command);
 	}
 
 	public String getCurrentCommand() {
@@ -102,11 +118,6 @@ public class CommandConsole {
 		currentCommand.append(character);
 	}
 
-	public void commandSet(String command) {
-		currentCommand.setLength(0);
-		currentCommand.append(command);
-	}
-
 	public void commandBackspace() {
 		if (currentCommand.length() > 0) {
 			currentCommand.setLength(currentCommand.length() - 1);
@@ -114,39 +125,24 @@ public class CommandConsole {
 	}
 
 	public List<String> commandAutocomplete() {
-		final String command = currentCommand.toString();
-		// Find all commands that start with the current command
-		List<String> matches = commands.keySet().stream().filter(c -> c.startsWith(command)).collect(Collectors.toList());
-		if (matches.isEmpty()) {
-			// No match
-			return Collections.emptyList();
-		} else if (matches.size() == 1) {
-			commandSet(matches.get(0) + " ");
-			return Collections.emptyList();
+		List<String> tokens = tokenize(currentCommand.toString());
+		AutocompleteContext autocomplete = rootContext.autocomplete(tokens);
+		if (!tokens.isEmpty() && autocomplete.getMatches().size() == 1) {
+			tokens.set(tokens.size() - 1, autocomplete.getCommonPrefix());
+			setCurrentCommand(String.join(" ", tokens) + " ");
+		} else {
+			setCurrentCommand(String.join(" ", tokens));
 		}
-		String firstMatch = matches.get(0);
-		String prefix = command;
-		// If there are multiple matches, find the largest common prefix
-		for (int i = command.length(); i <= firstMatch.length(); ++i) {
-			final int index = i;
-			if (!matches.stream().allMatch(c -> c.startsWith(firstMatch.substring(0, index)))) {
-				break;
-			}
-			prefix = firstMatch.substring(0, index);
-		}
-		commandSet(prefix);
-		final String commonPrefix = prefix;
-		// Return all the commands starting with the common prefix
-		return commands.keySet().stream().filter(c -> c.startsWith(commonPrefix)).collect(Collectors.toList());
+		return autocomplete.getMatches();
 	}
 
 	public void commandExecute() {
 		String command = currentCommand.toString().trim();
 		commandHistory.add(command);
 		currentCommand.setLength(0);
-		List<String> tokens = Arrays.stream(command.split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
-		if (tokens.size() > 0) {
-			commands.getOrDefault(tokens.get(0), s -> commandUnknown(tokens.get(0))).accept(tokens);
+		List<String> tokens = tokenize(command);
+		if (!rootContext.evaluate(tokens, output) && !tokens.isEmpty()) {
+			commandUnknown(tokens.get(0));
 		}
 	}
 
@@ -164,5 +160,9 @@ public class CommandConsole {
 
 	public void print(String message) {
 		output.accept(message);
+	}
+
+	private List<String> tokenize(String sequence) {
+		return Stream.of(sequence.split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
 	}
 }

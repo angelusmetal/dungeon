@@ -7,6 +7,8 @@ import com.dungeon.game.Game;
 import com.dungeon.game.player.Players;
 
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DevCommands {
@@ -16,39 +18,42 @@ public class DevCommands {
 		this.devTools = devTools;
 
 		// Add console commands
-		Game.getCommandConsole().bindCommand("play_music", this::playMusic);
-		Game.getCommandConsole().bindCommand("stop_music", this::stopMusic);
-		Game.getCommandConsole().bindCommand("say", this::say);
-		Game.getCommandConsole().bindCommand("spawn", this::spawn);
+		Game.getConsole().bindExpression("play_music", this::playMusic);
+		Game.getConsole().bindExpression("stop_music", this::stopMusic);
+		Game.getConsole().bindExpression("say", this::say);
+		Game.getConsole().bindExpression("spawn", this::spawn);
 
 		// Add variables
-		Game.getCommandConsole().bindVar(ConsoleVar.mutableColor("e_baseLight", Engine::getBaseLight, Engine::setBaseLight));
-		Game.getCommandConsole().bindVar(ConsoleVar.readOnlyFloat("e_time", Engine::time));
+		Game.getConsole().bindVar(ConsoleVar.mutableColor("e_baseLight", Engine::getBaseLight, Engine::setBaseLight));
+		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("e_time", Engine::time));
 	}
 
-	public void playMusic(List<String> tokens) {
-		String path = tokens.get(1);
+	public boolean playMusic(List<String> tokens, Consumer<String> output) {
+		String path = tokens.get(0);
 		Engine.audio.playMusic(Gdx.files.internal(path));
+		return true;
 	}
 
-	public void stopMusic(List<String> tokens) {
+	public boolean stopMusic(List<String> tokens, Consumer<String> output) {
 		Engine.audio.stopMusic();
+		return true;
 	}
 
-	public void say(List<String> tokens) {
-		Players.get(0).getAvatar().say(tokens.stream().skip(1).collect(Collectors.joining(" ")));
+	public boolean say(List<String> tokens, Consumer<String> output) {
+		Players.get(0).getAvatar().say(String.join(" ", tokens));
+		return true;
 	}
 
-	public void spawn(List<String> tokens) {
-		if (tokens.size() < 2) {
-			return;
+	public boolean spawn(List<String> tokens, Consumer<String> output) {
+		if (tokens.size() >= 1) {
+			String type = tokens.get(0);
+			try {
+				Engine.entities.add(Game.build(type, devTools.mouseAt()));
+			} catch (RuntimeException e) {
+				output.accept(e.getMessage());
+			}
 		}
-		String type = tokens.get(1);
-		try {
-			Engine.entities.add(Game.build(type, devTools.mouseAt()));
-		} catch (RuntimeException e) {
-			Game.getCommandConsole().print(e.getMessage());
-		}
+		return true;
 	}
 
 

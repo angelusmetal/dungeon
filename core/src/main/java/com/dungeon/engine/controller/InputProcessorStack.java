@@ -1,4 +1,4 @@
-package com.dungeon.engine.console;
+package com.dungeon.engine.controller;
 
 import com.badlogic.gdx.InputProcessor;
 

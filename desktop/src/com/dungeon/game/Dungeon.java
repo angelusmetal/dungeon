@@ -8,7 +8,7 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
-import com.dungeon.engine.console.InputProcessorStack;
+import com.dungeon.engine.controller.InputProcessorStack;
 import com.dungeon.engine.controller.ControllerConfig;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
@@ -69,10 +69,10 @@ public class Dungeon extends ApplicationAdapter {
 		// Set F12 to push & pop console input from the input processor
 		Game.devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
 			Game.setDisplayConsole(true);
-			inputStack.push(Game.getCommandConsole().getInputProcessor());
+			inputStack.push(Game.getConsole().getInputProcessor());
 		});
-		Game.getCommandConsole().bindKey(Input.Keys.ENTER, () -> {
-			Game.getCommandConsole().commandExecute();
+		Game.getConsole().bindKey(Input.Keys.ENTER, () -> {
+			Game.getConsole().commandExecute();
 			Game.setDisplayConsole(false);
 			inputStack.pop();
 		});
