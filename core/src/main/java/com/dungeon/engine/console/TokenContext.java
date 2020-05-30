@@ -86,7 +86,7 @@ public class TokenContext {
 			}
 			final String commonPrefix = prefix;
 			// Return all the commands starting with the common prefix
-			return new AutocompleteContext(children.keySet().stream().filter(c -> c.startsWith(commonPrefix)).sorted().collect(Collectors.toList()), commonPrefix);
+			return new AutocompleteContext(childrenResolver.get().filter(c -> c.startsWith(commonPrefix)).sorted().collect(Collectors.toList()), commonPrefix);
 		}
 	}
 
