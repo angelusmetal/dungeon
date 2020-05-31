@@ -2,6 +2,8 @@ package com.dungeon.game.developer;
 
 import com.badlogic.gdx.Gdx;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.console.Console;
+import com.dungeon.engine.console.ConsoleOutput;
 import com.dungeon.engine.console.ConsoleVar;
 import com.dungeon.game.Game;
 import com.dungeon.game.player.Players;
@@ -29,7 +31,7 @@ public class DevCommands {
 		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("e_time", Engine::time));
 	}
 
-	public boolean playMusic(List<String> tokens, Consumer<String> output) {
+	public boolean playMusic(List<String> tokens, ConsoleOutput output) {
 		if (!tokens.isEmpty()) {
 			String path = tokens.get(0);
 			Engine.audio.playMusic(Gdx.files.internal(path));
@@ -37,23 +39,23 @@ public class DevCommands {
 		return true;
 	}
 
-	public boolean stopMusic(List<String> tokens, Consumer<String> output) {
+	public boolean stopMusic(List<String> tokens, ConsoleOutput output) {
 		Engine.audio.stopMusic();
 		return true;
 	}
 
-	public boolean say(List<String> tokens, Consumer<String> output) {
+	public boolean say(List<String> tokens, ConsoleOutput output) {
 		Players.get(0).getAvatar().say(String.join(" ", tokens));
 		return true;
 	}
 
-	public boolean spawn(List<String> tokens, Consumer<String> output) {
+	public boolean spawn(List<String> tokens, ConsoleOutput output) {
 		if (!tokens.isEmpty()) {
 			String type = tokens.get(0);
 			try {
 				Engine.entities.add(Game.build(type, devTools.mouseAt()));
 			} catch (RuntimeException e) {
-				output.accept(e.getMessage());
+				output.print(e.getMessage());
 			}
 		}
 		return true;

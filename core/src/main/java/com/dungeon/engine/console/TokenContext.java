@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -100,7 +99,7 @@ public class TokenContext {
 		this.childrenResolver = childrenResolver;
 	}
 
-	public boolean evaluate(List<String> tokens, Consumer<String> output) {
+	public boolean evaluate(List<String> tokens, ConsoleOutput output) {
 		// An expression is bound to this context, so all tokens are passed to it for parsing
 		if (expression != null) {
 			return expression.evaluate(tokens, output);

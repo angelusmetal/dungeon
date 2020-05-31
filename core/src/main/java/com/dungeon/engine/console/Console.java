@@ -2,13 +2,13 @@ package com.dungeon.engine.console;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.dungeon.engine.controller.AbstractInputProcessor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,7 +40,7 @@ public class Console {
 			} else if (character == 9) {
 				List<String> options = commandAutocomplete();
 				if (options.size() > 1) {
-					options.forEach(opt -> output.accept("  " + opt));
+					options.forEach(opt -> output.print("  " + opt));
 				}
 			} else if (character == 13 || (character >= '\uF700' && character <= '\uF703')) {
 //				commandExecute();
@@ -51,22 +51,22 @@ public class Console {
 		}
 	};
 
-	private Consumer<String> output = System.out::println;
+	private ConsoleOutput output = (text, color) -> System.out.println(text);
 
 	public Console() {
 		// Add get and set command for accessing variables
 		bindExpression("get", (tokens, out) -> {
 			if (tokens.isEmpty()) {
-				out.accept("Known variables:");
+				out.print("Known variables:");
 				vars.keySet().stream().sorted().forEach(var -> print ("  - " + var));
 			} else {
 				int maxNameLength = tokens.stream().map(String::length).max(Integer::compareTo).orElse(6);
 				tokens.forEach(var -> {
 					ConsoleVar value = vars.get(var);
 					if (value != null) {
-						out.accept("  " + String.format("%1$" + maxNameLength + "s", var) + " - " + value.getter().get());
+						out.print("  " + String.format("%1$" + maxNameLength + "s", var) + " - " + value.getter().get());
 					} else {
-						out.accept("  " + String.format("%1$" + maxNameLength + "s", var) + " - <no such var>");
+						out.print("  " + String.format("%1$" + maxNameLength + "s", var) + " - <no such var>");
 					}
 				});
 			}
@@ -74,13 +74,17 @@ public class Console {
 		}, () -> vars.keySet().stream().sorted());
 		bindExpression("set", (tokens, out) -> {
 			if (tokens.size() != 2) {
-				out.accept("Usage: set <var> <value>");
+				out.print("Usage: set <var> <value>");
 			} else {
 				ConsoleVar var = vars.get(tokens.get(0));
 				if (var != null) {
-					var.setter().accept(tokens.get(1));
+					try {
+						var.setter().accept(tokens.get(1));
+					} catch (RuntimeException e) {
+						out.print(e.getMessage());
+					}
 				} else {
-					out.accept("No such var '" + tokens.get(0) + "'");
+					out.print("No such var '" + tokens.get(0) + "'");
 				}
 			}
 			return true;
@@ -154,7 +158,7 @@ public class Console {
 	public void commandExecute() {
 		String command = currentCommand.toString().trim();
 		if (!command.isEmpty()) {
-			print("> " + command);
+			output.print("> " + command, Color.RED);
 			commandHistory.remove(commandHistory.size() - 1);
 			commandHistory.add(command);
 			commandHistory.add("");
@@ -168,19 +172,19 @@ public class Console {
 	}
 
 	private void commandUnknown(String command) {
-		output.accept("Unknown command: " + command);
+		output.print("Unknown command: " + command);
 	}
 
 	public InputProcessor getInputProcessor() {
 		return inputProcessor;
 	}
 
-	public void setOutput(Consumer<String> output) {
+	public void setOutput(ConsoleOutput output) {
 		this.output = output;
 	}
 
 	public void print(String message) {
-		output.accept(message);
+		output.print(message);
 	}
 
 	private void historyUp() {
