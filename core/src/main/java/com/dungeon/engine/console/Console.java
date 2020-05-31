@@ -1,5 +1,6 @@
 package com.dungeon.engine.console;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.dungeon.engine.controller.AbstractInputProcessor;
 
@@ -16,7 +17,7 @@ public class Console {
 
 	private final StringBuilder currentCommand = new StringBuilder();
 	private final List<String> commandHistory = new ArrayList<>();
-	private final Map<String, Consumer<List<String>>> commands = new HashMap<>();
+	private int commandHistoryLevel = 0;
 	private final TokenContext rootContext = new TokenContext();
 	private final Map<String, ConsoleVar> vars = new HashMap<>();
 	private final Map<Integer, Runnable> keyBindings = new HashMap<>();
@@ -41,9 +42,9 @@ public class Console {
 				if (options.size() > 1) {
 					options.forEach(opt -> output.accept("  " + opt));
 				}
-			} else if (character == 13) {
+			} else if (character == 13 || (character >= '\uF700' && character <= '\uF703')) {
 //				commandExecute();
-			} else {
+			} else if (character >= 32) {
 				commandAppend(character);
 			}
 			return true;
@@ -84,6 +85,13 @@ public class Console {
 			}
 			return true;
 		}, () -> vars.keySet().stream().sorted());
+
+		// Add bindings for up and down for cycling through command history
+		bindKey(Input.Keys.UP, this::historyUp);
+		bindKey(Input.Keys.DOWN, this::historyDown);
+
+		// Initialize command history
+		commandHistory.add("");
 	}
 
 	public void bindKey(int keycode, Runnable runnable) {
@@ -138,7 +146,12 @@ public class Console {
 
 	public void commandExecute() {
 		String command = currentCommand.toString().trim();
-		commandHistory.add(command);
+		if (!command.isEmpty()) {
+			commandHistory.remove(commandHistory.size() - 1);
+			commandHistory.add(command);
+			commandHistory.add("");
+			commandHistoryLevel = commandHistory.size() - 1;
+		}
 		currentCommand.setLength(0);
 		List<String> tokens = tokenize(command);
 		if (!rootContext.evaluate(tokens, output) && !tokens.isEmpty()) {
@@ -160,6 +173,22 @@ public class Console {
 
 	public void print(String message) {
 		output.accept(message);
+	}
+
+	private void historyUp() {
+		if (commandHistoryLevel > 0) {
+			commandHistory.set(commandHistoryLevel, currentCommand.toString());
+			commandHistoryLevel--;
+			setCurrentCommand(commandHistory.get(commandHistoryLevel));
+		}
+	}
+
+	private void historyDown() {
+		if (commandHistoryLevel < commandHistory.size() - 1) {
+			commandHistory.set(commandHistoryLevel, currentCommand.toString());
+			commandHistoryLevel++;
+			setCurrentCommand(commandHistory.get(commandHistoryLevel));
+		}
 	}
 
 	private List<String> tokenize(String sequence) {
