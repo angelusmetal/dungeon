@@ -154,6 +154,7 @@ public class Console {
 	public void commandExecute() {
 		String command = currentCommand.toString().trim();
 		if (!command.isEmpty()) {
+			print("> " + command);
 			commandHistory.remove(commandHistory.size() - 1);
 			commandHistory.add(command);
 			commandHistory.add("");

@@ -3,7 +3,7 @@ package com.dungeon.game.render.stage;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dungeon.engine.OldConsole;
+import com.dungeon.engine.ConsoleDisplay;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.viewport.ViewPort;
@@ -19,9 +19,9 @@ public class ConsoleStage implements Renderer {
 	private final ViewPort viewPort;
 	private final SpriteBatch batch;
 	private final BitmapFont font;
-	private final OldConsole console;
+	private final ConsoleDisplay console;
 
-	public ConsoleStage(ViewPort viewPort, SpriteBatch batch, OldConsole console) {
+	public ConsoleStage(ViewPort viewPort, SpriteBatch batch, ConsoleDisplay console) {
 		this.viewPort = viewPort;
 		this.batch = batch;
 		this.font = Resources.fonts.get("alegreya-sans-sc-black-15");
@@ -42,9 +42,9 @@ public class ConsoleStage implements Renderer {
 
 		x = viewPort.posX + 10;
 		y = viewPort.posY + 10 + 32;
-		ListIterator<OldConsole.LogLine> iterator = console.getLog().listIterator(console.getLog().size());
+		ListIterator<ConsoleDisplay.LogLine> iterator = console.getLog().listIterator(console.getLog().size());
 		while(iterator.hasPrevious()) {
-			OldConsole.LogLine log = iterator.previous();
+			ConsoleDisplay.LogLine log = iterator.previous();
 			log.color.a = Math.max((log.expiration - Engine.time()) / console.getMessageExpiration(), 0);
 			font.setColor(log.color);
 			font.draw(batch, log.message, x, y);

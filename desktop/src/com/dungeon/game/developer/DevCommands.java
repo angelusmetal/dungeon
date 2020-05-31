@@ -30,8 +30,10 @@ public class DevCommands {
 	}
 
 	public boolean playMusic(List<String> tokens, Consumer<String> output) {
-		String path = tokens.get(0);
-		Engine.audio.playMusic(Gdx.files.internal(path));
+		if (!tokens.isEmpty()) {
+			String path = tokens.get(0);
+			Engine.audio.playMusic(Gdx.files.internal(path));
+		}
 		return true;
 	}
 
