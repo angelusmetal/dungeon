@@ -55,7 +55,9 @@ public class TokenContext {
 			return autocomplete(tokens.get(0));
 		} else {
 			// Delegate autocomplete to children
-			return findChild(tokens.get(0)).map(child -> child.autocomplete(tokens.subList(1, tokens.size()))).orElse(new AutocompleteContext(Collections.emptyList(), tokens.get(tokens.size() - 1)));
+			return findChild(tokens.get(0))
+					.map(child -> child.autocomplete(tokens.subList(1, tokens.size())))
+					.orElse(new AutocompleteContext(Collections.emptyList(), tokens.get(tokens.size() - 1)));
 		}
 	}
 

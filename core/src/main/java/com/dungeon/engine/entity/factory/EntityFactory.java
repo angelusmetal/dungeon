@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class EntityFactory {
 	private final Map<String, Integer> ordinals = new HashMap<>();
@@ -39,6 +40,10 @@ public class EntityFactory {
 			throw new RuntimeException("No factory registered for entity type " + type);
 		}
 		return factories.get(ordinal);
+	}
+
+	public Stream<String> knownTypes() {
+		return ordinals.keySet().stream();
 	}
 
 }

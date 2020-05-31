@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Game {
 
@@ -330,6 +331,10 @@ public class Game {
 
 	public static Entity build(String type, Vector2 position) {
 		return entityFactory.build(type, position);
+	}
+
+	public static Stream<String> knownEntityTypes() {
+		return entityFactory.knownTypes();
 	}
 
 	private static int levelCount;

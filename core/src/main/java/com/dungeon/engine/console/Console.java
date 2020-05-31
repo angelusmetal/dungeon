@@ -133,13 +133,20 @@ public class Console {
 	}
 
 	public List<String> commandAutocomplete() {
-		List<String> tokens = tokenize(currentCommand.toString());
+		String command = currentCommand.toString();
+		List<String> tokens = tokenize(command);
+		// If there's whitespace at the end, add an extra token to indicate an attempt to find another token
+		if (command.endsWith(" ")) {
+			tokens.add("");
+		}
 		AutocompleteContext autocomplete = rootContext.autocomplete(tokens);
-		if (!tokens.isEmpty() && autocomplete.getMatches().size() == 1) {
+		if (!tokens.isEmpty() && !autocomplete.getMatches().isEmpty()) {
+			// If there's exactly one match, add a space at the end
+			String suffix = autocomplete.getMatches().size() == 1 ? " " : "";
+			// Replace the last token with an expanded version
 			tokens.set(tokens.size() - 1, autocomplete.getCommonPrefix());
-			setCurrentCommand(String.join(" ", tokens) + " ");
-		} else {
-			setCurrentCommand(String.join(" ", tokens));
+			// Update the current command
+			setCurrentCommand(String.join(" ", tokens) + suffix);
 		}
 		return autocomplete.getMatches();
 	}

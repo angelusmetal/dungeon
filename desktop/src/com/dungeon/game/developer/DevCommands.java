@@ -9,6 +9,7 @@ import com.dungeon.game.player.Players;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class DevCommands {
@@ -21,7 +22,7 @@ public class DevCommands {
 		Game.getConsole().bindExpression("play_music", this::playMusic);
 		Game.getConsole().bindExpression("stop_music", this::stopMusic);
 		Game.getConsole().bindExpression("say", this::say);
-		Game.getConsole().bindExpression("spawn", this::spawn);
+		Game.getConsole().bindExpression("spawn", this::spawn, Game::knownEntityTypes);
 
 		// Add variables
 		Game.getConsole().bindVar(ConsoleVar.mutableColor("e_baseLight", Engine::getBaseLight, Engine::setBaseLight));
@@ -45,7 +46,7 @@ public class DevCommands {
 	}
 
 	public boolean spawn(List<String> tokens, Consumer<String> output) {
-		if (tokens.size() >= 1) {
+		if (!tokens.isEmpty()) {
 			String type = tokens.get(0);
 			try {
 				Engine.entities.add(Game.build(type, devTools.mouseAt()));
