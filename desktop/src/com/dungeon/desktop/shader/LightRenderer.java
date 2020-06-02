@@ -20,6 +20,7 @@ public class LightRenderer implements Disposable {
 
 	// Shaders
 	private ShaderProgram normalMapShader;
+	private ShaderProgram simpleLightShader;
 	private ShaderProgram shadowShader;
 
 	private SpriteBatch batch;
@@ -27,9 +28,10 @@ public class LightRenderer implements Disposable {
 
 	// Light buffer & texture
 	private FrameBuffer lightBuffer;
-	private TextureRegion shadowTexture;
+	private TextureRegion lightTexture;
+	private TextureRegion simpleLightRegion;
 
-	// Normal map buffer & texure
+	// Normal map buffer & texture
 	private FrameBuffer normalMapBuffer;
 	private TextureRegion normalMapTexture;
 
@@ -47,26 +49,33 @@ public class LightRenderer implements Disposable {
 	// Render geometry
 	private boolean renderGeometry = false;
 
+	// Use normal mapping
+	private boolean useNormalMapping = false;
+
 	public void create (int bufferWidth, int bufferHeight, FrameBuffer normalMap) {
+		// Single-pixel texture for drawing triangles
+		pixel = new Texture("core/assets/fill.png");
+
 		// Normal map buffer, texture and shader
 		normalMapBuffer = normalMap;
 		normalMapTexture = new TextureRegion(normalMap.getColorBufferTexture());
 		normalMapTexture.flip(false, true);
-		normalMapShader = Resources.shaders.get("df_vertex.glsl|test/normal_mapping.glsl");
+		normalMapShader = Resources.shaders.get("df_vertex.glsl|test/light_normal_mapped.glsl");
+
+		// Simple light shader
+		simpleLightShader = Resources.shaders.get("df_vertex.glsl|test/light_simple.glsl");
+		simpleLightRegion = new TextureRegion(pixel);
 
 		// Light buffer, texture and shader (for rendering penumbra)
 		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, bufferWidth, bufferHeight, false);
 		shadowShader = Resources.shaders.get("df_vertex.glsl|test/penumbra.glsl");
-		shadowTexture = new TextureRegion(lightBuffer.getColorBufferTexture());
-		shadowTexture.flip(false, true);
-
-		// Single-pixel texture for drawing triangles
-		pixel = new Texture("core/assets/fill.png");
+		lightTexture = new TextureRegion(lightBuffer.getColorBufferTexture());
+		lightTexture.flip(false, true);
 
 		// Sprite batch for drawing lights & shadows
 		batch = new SpriteBatch();
 
-		// Shape renderer for drawing geometry and ligth contours
+		// Shape renderer for drawing geometry and light contours
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, bufferWidth, bufferHeight);
 	}
@@ -75,8 +84,9 @@ public class LightRenderer implements Disposable {
 	public void dispose() {
 		shapeRenderer.dispose();
 		batch.dispose();
-		normalMapBuffer.dispose();
-		pixel.dispose();
+		if (normalMapBuffer != null) {
+			normalMapBuffer.dispose();
+		}
 		lightBuffer.dispose();
 	}
 
@@ -106,19 +116,29 @@ public class LightRenderer implements Disposable {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Draw light with normal mapping
-		normalMapShader.begin();
-		normalMapShader.setUniformf("u_lightRange", light.range);// * (1 + 0.1f * MathUtils.sin(simpleShadowCastTest.time * 30)));
-		normalMapShader.setUniformf("u_lightOrigin", light.origin.x, light.origin.y, 50f);
-		normalMapShader.setUniformf("u_lightColor", light.color);
-		normalMapShader.setUniformf("u_lightHardness", 1.0f);
-		normalMapShader.setUniformf("u_ambientColor", ambient);
-		normalMapShader.end();
-		batch.setShader(normalMapShader);
+		ShaderProgram shader;
+		TextureRegion region;
+		if (useNormalMapping) {
+			shader = normalMapShader;
+			region = normalMapTexture;
+		} else {
+			shader = simpleLightShader;
+			region = simpleLightRegion;
+		}
+
+		// Draw light
+		shader.begin();
+		shader.setUniformf("u_lightRange", light.range);// * (1 + 0.1f * MathUtils.sin(simpleShadowCastTest.time * 30)));
+		shader.setUniformf("u_lightOrigin", light.origin.x, light.origin.y, 50f);
+		shader.setUniformf("u_lightColor", light.color);
+		shader.setUniformf("u_lightHardness", 1.0f);
+		shader.setUniformf("u_ambientColor", ambient);
+		shader.end();
+		batch.setShader(shader);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		batch.begin();
 //		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1.0f));
-		batch.draw(normalMapTexture, 0, 0, lightBuffer.getWidth(), lightBuffer.getHeight());
+		batch.draw(region, 0, 0, lightBuffer.getWidth(), lightBuffer.getHeight());
 		batch.end();
 
 //		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
@@ -167,7 +187,7 @@ public class LightRenderer implements Disposable {
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 		batch.begin();
 		batch.setShader(null);
-		batch.draw(shadowTexture, 0, 0, lightBuffer.getWidth(), lightBuffer.getHeight());
+		batch.draw(lightTexture, 0, 0, lightBuffer.getWidth(), lightBuffer.getHeight());
 		batch.end();
 	}
 
@@ -234,5 +254,9 @@ public class LightRenderer implements Disposable {
 
 	public Color getSegmentColor() {
 		return segmentColor;
+	}
+
+	public void setUseNormalMapping(boolean useNormalMapping) {
+		this.useNormalMapping = useNormalMapping;
 	}
 }

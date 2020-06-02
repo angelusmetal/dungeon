@@ -52,7 +52,7 @@ public class NormalMappingTest extends ApplicationAdapter implements InputProces
 
 	@Override
 	public void create () {
-		shaderProgram = Resources.shaders.get("df_vertex.glsl|test/normal_mapping.glsl");
+		shaderProgram = Resources.shaders.get("df_vertex.glsl|test/light_normal_mapped.glsl");
 		normalMap = new Texture("core/assets/normal_map.png");
 		batch = new SpriteBatch();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

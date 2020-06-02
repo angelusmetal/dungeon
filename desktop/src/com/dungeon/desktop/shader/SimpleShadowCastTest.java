@@ -71,6 +71,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private LinkedList<Light> lights = new LinkedList<>();
 	private List<Float> geometry = new ArrayList<>();
 	private final LightRenderer renderer = new LightRenderer();
+	private boolean useNormalMapping = false;
 
 	public class Light {
 		Vector2 origin;
@@ -189,6 +190,9 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			lights.remove(selectedLight);
 		} else if (keycode == Input.Keys.F1) {
 			renderer.setRenderGeometry(!renderer.isRenderGeometry());
+		} else if (keycode == Input.Keys.ENTER) {
+			useNormalMapping = !useNormalMapping;
+			renderer.setUseNormalMapping(useNormalMapping);
 		}
 		return false;
 	}
