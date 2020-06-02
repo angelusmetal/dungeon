@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,7 +54,9 @@ public class TokenContext {
 			return autocomplete(tokens.get(0));
 		} else {
 			// Delegate autocomplete to children
-			return findChild(tokens.get(0)).map(child -> child.autocomplete(tokens.subList(1, tokens.size()))).orElse(new AutocompleteContext(Collections.emptyList(), tokens.get(tokens.size() - 1)));
+			return findChild(tokens.get(0))
+					.map(child -> child.autocomplete(tokens.subList(1, tokens.size())))
+					.orElse(new AutocompleteContext(Collections.emptyList(), tokens.get(tokens.size() - 1)));
 		}
 	}
 
@@ -98,7 +99,7 @@ public class TokenContext {
 		this.childrenResolver = childrenResolver;
 	}
 
-	public boolean evaluate(List<String> tokens, Consumer<String> output) {
+	public boolean evaluate(List<String> tokens, ConsoleOutput output) {
 		// An expression is bound to this context, so all tokens are passed to it for parsing
 		if (expression != null) {
 			return expression.evaluate(tokens, output);

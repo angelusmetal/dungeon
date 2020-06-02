@@ -4,8 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
-import com.dungeon.engine.OldConsole;
+import com.dungeon.engine.ConsoleDisplay;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
@@ -34,7 +33,7 @@ public class Player {
 	private PlayerStats stats;
 	private Color color;
 	private Weapon weapon;
-	private OldConsole console;
+	private ConsoleDisplay console;
 	private int gold;
 
 	public Player(int playerId, int characterId, ControlBundle control) {
@@ -45,7 +44,7 @@ public class Player {
 		this.color = PLAYER_COLORS[playerId];
 		this.weapon = createWeapon();
 		pickName();
-		this.console = new OldConsole(10, 10f);
+		this.console = new ConsoleDisplay(100, 10f);
 	}
 
 	private void pickName() {
@@ -140,7 +139,7 @@ public class Player {
 		this.weapon = weapon;
 	}
 
-	public OldConsole getConsole() {
+	public ConsoleDisplay getConsole() {
 		return console;
 	}
 

@@ -1,6 +1,7 @@
 package com.dungeon.engine.console;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -77,7 +78,12 @@ public class ConsoleVar {
 		return new ConsoleVar(name, () -> getter.get().toString(), (value) -> {
 			String[] tokens = value.split(",+");
 			if (tokens.length == 1) {
-				setter.accept(Color.valueOf(tokens[0])); // assume hex
+				Color colorByName = Colors.get(tokens[0]);
+				if (colorByName != null) {
+					setter.accept(colorByName);
+				} else {
+					setter.accept(Color.valueOf(tokens[0])); // assume hex
+				}
 			} else if (tokens.length == 4) {
 				float r = Float.parseFloat(tokens[0]);
 				float g = Float.parseFloat(tokens[1]);
