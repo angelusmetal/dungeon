@@ -16,6 +16,7 @@ import com.dungeon.engine.render.light.Light2;
 import com.dungeon.engine.render.light.LightRenderer;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -73,9 +74,12 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private List<Float> geometry = new ArrayList<>();
 	private final LightRenderer renderer = new LightRenderer();
 	private boolean useNormalMapping = false;
+	private ViewPort viewPort;
+
 
 	@Override
 	public void create () {
+		viewPort = new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 1);
 		normalMap = new Texture("core/assets/normal_map.png");
 		// Normal map buffer
 		normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
@@ -87,7 +91,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		Segments.circle(geometry, new Vector2(1400f, 300f), 50f, 20);
 		Segments.circle(geometry, new Vector2(1300f, 800f), 50f, 3);
 //		// Default light
-		lights.add(new Light2(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f)));
+		lights.add(new Light2(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f), true));
 //		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 //		lights.add(selectedLight);
 
@@ -116,13 +120,13 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			geometryToRender = new ArrayList<>(geometry);
 			geometryToRender.add(segmentStart.x);
 			geometryToRender.add(segmentStart.y);
-			geometryToRender.add(cursor.x);
-			geometryToRender.add(cursor.y);
+			geometryToRender.add(viewPort.screenToWorld(cursor).x);
+			geometryToRender.add(viewPort.screenToWorld(cursor).y);
 		} else {
 			geometryToRender = geometry;
 		}
-		renderer.render(lights, geometryToRender);
-
+		renderer.render(viewPort, lights, geometryToRender);
+		renderer.drawToScreen();
 		time += Gdx.graphics.getDeltaTime();
 		if (time > lastLog + 1.0) {
 			lastLog = time;
@@ -145,10 +149,21 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.NUM_1) {
-			selectedLight = new Light2(cursor, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
+			selectedLight = new Light2(viewPort.screenToWorld(cursor), 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), true);
 			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.NUM_2) {
 			lights.remove(selectedLight);
+		} else if (keycode == Input.Keys.NUM_3) {
+			selectedLight = new Light2(viewPort.screenToWorld(cursor), 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), false);
+			lights.add(selectedLight);
+		} else if (keycode == Input.Keys.LEFT) {
+			viewPort.cameraX -= 10;
+		} else if (keycode == Input.Keys.RIGHT) {
+			viewPort.cameraX += 10;
+		} else if (keycode == Input.Keys.UP) {
+			viewPort.cameraY += 10;
+		} else if (keycode == Input.Keys.DOWN) {
+			viewPort.cameraY -= 10;
 		} else if (keycode == Input.Keys.F1) {
 			renderer.setRenderGeometry(!renderer.isRenderGeometry());
 		} else if (keycode == Input.Keys.ENTER) {
@@ -175,14 +190,14 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			selectedLight = null;
 			for(Light2 light : lights) {
 				System.err.println("Cursor: " + cursor + ", light.origin: " + light.getOrigin() + ", light.radius: " + light.getRadius() + ", distance: " + cursor.dst(light.getOrigin()));
-				if (cursor.dst(light.getOrigin()) < light.getRadius()) {
+				if (viewPort.screenToWorld(cursor).dst(light.getOrigin()) < light.getRadius()) {
 					selectedLight = light;
 					dragging = true;
 					break;
 				}
 			}
-		} else  if (button == 1) {
-			segmentStart.set(screenX, Gdx.graphics.getHeight() - screenY);
+		} else if (button == 1) {
+			segmentStart.set(viewPort.screenToWorld(cursor));
 			drawing = true;
 		}
 		return true;
@@ -195,8 +210,8 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		} else if (button == 1) {
 			geometry.add(segmentStart.x);
 			geometry.add(segmentStart.y);
-			geometry.add((float)screenX);
-			geometry.add((float) Gdx.graphics.getHeight() - screenY);
+			geometry.add(viewPort.screenToWorld(cursor).x);
+			geometry.add(viewPort.screenToWorld(cursor).y);
 			drawing = false;
 		}
 		return true;
@@ -206,7 +221,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		cursor.set(screenX, Gdx.graphics.getHeight() - screenY);
 		if (selectedLight != null && dragging) {
-			selectedLight.getOrigin().set(screenX, Gdx.graphics.getHeight() - screenY);
+			selectedLight.getOrigin().set(viewPort.screenToWorld(cursor));
 		}
 		return true;
 	}

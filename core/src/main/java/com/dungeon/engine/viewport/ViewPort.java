@@ -91,6 +91,10 @@ public class ViewPort {
 		return new Vector2(vector2.x - cameraX, vector2.y - cameraY);
 	}
 
+	public Vector2 screenToWorld(Vector2 vector2) {
+		return new Vector2(vector2.x + cameraX, vector2.y + cameraY);
+	}
+
 	@Override
 	public String toString() {
 		return "ViewPort{" +

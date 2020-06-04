@@ -10,12 +10,14 @@ public class Light2 {
 	private float radius;
 	private float range;
 	private Color color;
+	private final boolean castsShadows;
 
-	public Light2(Vector2 origin, float radius, float range, Color color) {
+	public Light2(Vector2 origin, float radius, float range, Color color, boolean castsShadows) {
 		this.origin = origin.cpy();
 		this.radius = radius;
 		this.range = range;
 		this.color = color;
+		this.castsShadows = castsShadows;
 	}
 
 	public Vector2 getOrigin() {
@@ -40,6 +42,10 @@ public class Light2 {
 
 	public Color getColor() {
 		return color;
+	}
+
+	public boolean castsShadows() {
+		return castsShadows;
 	}
 
 	@Override
