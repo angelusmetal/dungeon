@@ -3,12 +3,11 @@ package com.dungeon.game.combat;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
-import com.dungeon.game.entity.Projectile;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 import java.util.function.Supplier;
 
@@ -21,8 +20,8 @@ public class VenomStaffWeapon extends ProjectileWeapon {
 
 	public VenomStaffWeapon() {
 		super("Venom staff", damageSupplier(), DamageType.ELEMENTAL, 0);
-		projectile = Resources.prototypes.get("venom_bullet");
-		projectileInv = Resources.prototypes.get("venom_bullet_inverse");
+		projectile = DungeonResources.prototypes.get("venom_bullet");
+		projectileInv = DungeonResources.prototypes.get("venom_bullet_inverse");
 	}
 
 	@Override

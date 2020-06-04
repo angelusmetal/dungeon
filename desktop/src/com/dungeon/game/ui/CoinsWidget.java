@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.ui.widget.AbstractWidget;
 import com.dungeon.engine.ui.widget.Widget;
 import com.dungeon.game.player.Player;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 public class CoinsWidget extends AbstractWidget implements Widget {
 
@@ -20,7 +21,7 @@ public class CoinsWidget extends AbstractWidget implements Widget {
 
 	public CoinsWidget(Player player) {
 		coins = Resources.animations.get("coin");
-		font = Resources.fonts.get(Resources.DEFAULT_FONT);
+		font = Resources.fonts.get(DungeonResources.DEFAULT_FONT);
 		this.player = player;
 		spriteHeight = coins.getKeyFrame(0).getRegionHeight();
 		height = spriteHeight + (int) font.getLineHeight();

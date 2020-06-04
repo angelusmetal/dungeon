@@ -7,10 +7,11 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityTypeFactory;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 public class IceSlimeFactory {
 
@@ -34,7 +35,7 @@ public class IceSlimeFactory {
 		hitAnimation = Resources.animations.get(HIT);
 
 		final Animation<TextureRegion> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
-		final EntityPrototype pool = Resources.prototypes.get("ice_pool");
+		final EntityPrototype pool = DungeonResources.prototypes.get("ice_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {
 			@Override public void think() {

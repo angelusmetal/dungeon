@@ -8,21 +8,22 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
-import com.dungeon.engine.controller.InputProcessorStack;
 import com.dungeon.engine.controller.ControllerConfig;
+import com.dungeon.engine.controller.InputProcessorStack;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.StopWatch;
+import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.controller.ControllerControlBundle;
 import com.dungeon.game.controller.KeyboardControlBundle;
-import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.developer.DevCommands;
 import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.SelectionPlayerControlListener;
@@ -140,7 +141,8 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	private void initResources() {
-		Resources.load();
+		DungeonResources.addLoaders();
+		Resources.loader.load("assets/assets.conf");
 	}
 
 	@Override

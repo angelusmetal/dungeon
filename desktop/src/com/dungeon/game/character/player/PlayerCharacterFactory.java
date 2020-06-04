@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 import java.util.function.Function;
 
@@ -34,25 +35,25 @@ public class PlayerCharacterFactory {
 	private static final String KARA_IDLE = "kara_idle";
 
 	public Entity alma(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype dust_cloud_blood = Resources.prototypes.get("dust_cloud_blood");
+		final EntityPrototype dust_cloud_blood = DungeonResources.prototypes.get("dust_cloud_blood");
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.2f, () -> Engine.entities.add(new Entity(dust_cloud_blood, e.getOrigin().cpy().add(0, 1))));
 		return factory(ALMA_IDLE, ALMA_WALK, ALMA_ATTACK, stepFactory, prototype, origin);
 	}
 
 	public Entity mort(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype[] dust_clouds = {Resources.prototypes.get("dust_cloud_1"), Resources.prototypes.get("dust_cloud_2"), Resources.prototypes.get("dust_cloud_3")};
+		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(MORT_IDLE, MORT_WALK, MORT_ATTACK, stepFactory, prototype, origin);
 	}
 
 	public Entity jack(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype[] dust_clouds = {Resources.prototypes.get("dust_cloud_1"), Resources.prototypes.get("dust_cloud_2"), Resources.prototypes.get("dust_cloud_3")};
+		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(JACK_IDLE, JACK_WALK, JACK_ATTACK, stepFactory, prototype, origin);
 	}
 
 	public Entity kara(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype[] dust_clouds = {Resources.prototypes.get("dust_cloud_1"), Resources.prototypes.get("dust_cloud_2"), Resources.prototypes.get("dust_cloud_3")};
+		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(KARA_IDLE, KARA_WALK, KARA_ATTACK, stepFactory, prototype, origin);
 	}

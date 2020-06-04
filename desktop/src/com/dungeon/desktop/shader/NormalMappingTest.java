@@ -14,8 +14,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.resource.Resources;
 
 public class NormalMappingTest extends ApplicationAdapter implements InputProcessor {
 
@@ -52,7 +52,7 @@ public class NormalMappingTest extends ApplicationAdapter implements InputProces
 
 	@Override
 	public void create () {
-		shaderProgram = Resources.shaders.get("df_vertex.glsl|test/light_normal_mapped.glsl");
+		shaderProgram = Resources.shaders.get("df_vertex.glsl|light/normal_map.glsl");
 		normalMap = new Texture("core/assets/normal_map.png");
 		batch = new SpriteBatch();
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

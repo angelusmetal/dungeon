@@ -10,16 +10,13 @@ import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.Tile;
-import com.dungeon.game.level.TileType;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
@@ -74,7 +71,7 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 		for (int x = 0; x < width; ++x) {
 			array[x] = new Tile[height];
 			for (int y = 0; y < height; ++y) {
-				array[x][height - y - 1] = new Tile(Resources.tiles.get(tiles.get(y * width + x)));
+				array[x][height - y - 1] = new Tile(DungeonResources.tiles.get(tiles.get(y * width + x)));
 			}
 		}
 		return array;

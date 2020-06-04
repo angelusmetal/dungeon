@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dungeon.engine.ConsoleDisplay;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.render.Renderer;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
-import com.dungeon.game.resource.Resources;
 
 import java.util.ListIterator;
 import java.util.Map;

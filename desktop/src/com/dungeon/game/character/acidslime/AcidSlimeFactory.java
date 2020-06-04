@@ -1,6 +1,5 @@
 package com.dungeon.game.character.acidslime;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +7,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityTypeFactory;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
@@ -16,7 +16,7 @@ import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 import com.moandjiezana.toml.Toml;
 
 public class AcidSlimeFactory {
@@ -50,7 +50,7 @@ public class AcidSlimeFactory {
 		attackAnimation = Resources.animations.get(ATTACK);
 
 		final Animation<TextureRegion> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
-		final EntityPrototype pool = Resources.prototypes.get("creature_slime_acid_pool");
+		final EntityPrototype pool = DungeonResources.prototypes.get("creature_slime_acid_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {
 			@Override public void think() {

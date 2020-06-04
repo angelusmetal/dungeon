@@ -17,7 +17,7 @@ import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.render.stage.ViewPortRenderer;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 public class Player {
 
@@ -65,17 +65,17 @@ public class Player {
 		// TODO This is awful...
 		if (characterId == 0) {
 			Weapon w = new CatStaffWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().catStaff(Vector2.Zero, Resources.prototypes.get("weapon_cat_staff")).getAnimation();
+			Animation<TextureRegion> animation = new WeaponFactory().catStaff(Vector2.Zero, DungeonResources.prototypes.get("weapon_cat_staff")).getAnimation();
 			w.setAnimation(animation);
 			return w;
 		} else if (characterId == 1) {
 			Weapon w = new SwordWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().sword(Vector2.Zero, Resources.prototypes.get("weapon_sword")).getAnimation();
+			Animation<TextureRegion> animation = new WeaponFactory().sword(Vector2.Zero, DungeonResources.prototypes.get("weapon_sword")).getAnimation();
 			w.setAnimation(animation);
 			return w;
 		} else if (characterId == 2) {
 			Weapon w = new VenomStaffWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().greenStaff(Vector2.Zero, Resources.prototypes.get("weapon_green_staff")).getAnimation();
+			Animation<TextureRegion> animation = new WeaponFactory().greenStaff(Vector2.Zero, DungeonResources.prototypes.get("weapon_green_staff")).getAnimation();
 			w.setAnimation(animation);
 			return w;
 		}

@@ -13,7 +13,6 @@ import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
-import com.dungeon.game.resource.Resources;
 
 import java.util.function.Predicate;
 

@@ -1,4 +1,4 @@
-package com.dungeon.desktop.shader;
+package com.dungeon.engine.render.light;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -12,7 +12,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.engine.render.light.Light2;
+import com.dungeon.engine.resource.Resources;
 
 import java.util.List;
 
@@ -60,15 +61,14 @@ public class LightRenderer implements Disposable {
 		normalMapBuffer = normalMap;
 		normalMapTexture = new TextureRegion(normalMap.getColorBufferTexture());
 		normalMapTexture.flip(false, true);
-		normalMapShader = Resources.shaders.get("df_vertex.glsl|test/light_normal_mapped.glsl");
+		normalMapShader = Resources.shaders.get("df_vertex.glsl|light/normal_map.glsl");
 
 		// Simple light shader
-		simpleLightShader = Resources.shaders.get("df_vertex.glsl|test/light_simple.glsl");
+		simpleLightShader = Resources.shaders.get("df_vertex.glsl|light/simple.glsl");
 		simpleLightRegion = new TextureRegion(pixel);
 
 		// Light buffer, texture and shader (for rendering penumbra)
 		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, bufferWidth, bufferHeight, false);
-		shadowShader = Resources.shaders.get("df_vertex.glsl|test/penumbra.glsl");
 		lightTexture = new TextureRegion(lightBuffer.getColorBufferTexture());
 		lightTexture.flip(false, true);
 
@@ -90,7 +90,7 @@ public class LightRenderer implements Disposable {
 		lightBuffer.dispose();
 	}
 
-	public void render(List<SimpleShadowCastTest.Light> lights, List<Float> segments) {
+	public void render(List<Light2> lights, List<Float> segments) {
 
 		// Clear main buffer
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
@@ -98,7 +98,7 @@ public class LightRenderer implements Disposable {
 		int oldSrcFunc = batch.getBlendSrcFunc();
 		int oldDstFunc = batch.getBlendDstFunc();
 
-		for (SimpleShadowCastTest.Light light : lights) {
+		for (Light2 light : lights) {
 			drawLight(light, segments);
 		}
 		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
@@ -109,7 +109,7 @@ public class LightRenderer implements Disposable {
 
 	}
 
-	private void drawLight(SimpleShadowCastTest.Light light, List<Float> segments) {
+	private void drawLight(Light2 light, List<Float> segments) {
 		lightBuffer.begin();
 
 		// Clear light buffer
@@ -128,9 +128,9 @@ public class LightRenderer implements Disposable {
 
 		// Draw light
 		shader.begin();
-		shader.setUniformf("u_lightRange", light.range);// * (1 + 0.1f * MathUtils.sin(simpleShadowCastTest.time * 30)));
-		shader.setUniformf("u_lightOrigin", light.origin.x, light.origin.y, 50f);
-		shader.setUniformf("u_lightColor", light.color);
+		shader.setUniformf("u_lightRange", light.getRange());// * (1 + 0.1f * MathUtils.sin(simpleShadowCastTest.time * 30)));
+		shader.setUniformf("u_lightOrigin", light.getOrigin().x, light.getOrigin().y, 50f);
+		shader.setUniformf("u_lightColor", light.getColor());
 		shader.setUniformf("u_lightHardness", 1.0f);
 		shader.setUniformf("u_ambientColor", ambient);
 		shader.end();
@@ -159,14 +159,14 @@ public class LightRenderer implements Disposable {
 			s1.set(segments.get(i), segments.get(i+1));
 			s2.set(segments.get(i+2), segments.get(i+3));
 
-			u1.set(s1).sub(light.origin).scl(1000f).add(light.origin);
-			u2.set(s2).sub(light.origin).scl(1000f).add(light.origin);
+			u1.set(s1).sub(light.getOrigin()).scl(1000f).add(light.getOrigin());
+			u2.set(s2).sub(light.getOrigin()).scl(1000f).add(light.getOrigin());
 			// Shadows are only drawn one way - this reduces a lot of artifacts
-			if (orientation(s1, s2, light.origin) > 0) {
-				normal.set(s1).sub(light.origin).nor().rotate90(1).scl(light.radius);
-				p1.set(s1).sub(light.origin).add(normal).scl(1000f).add(light.origin);
-				normal.set(s2).sub(light.origin).nor().rotate90(1).scl(light.radius);
-				p2.set(s2).sub(light.origin).sub(normal).scl(1000f).add(light.origin);
+			if (orientation(s1, s2, light.getOrigin()) > 0) {
+				normal.set(s1).sub(light.getOrigin()).nor().rotate90(1).scl(light.getOrigin());
+				p1.set(s1).sub(light.getOrigin()).add(normal).scl(1000f).add(light.getOrigin());
+				normal.set(s2).sub(light.getOrigin()).nor().rotate90(1).scl(light.getRadius());
+				p2.set(s2).sub(light.getOrigin()).sub(normal).scl(1000f).add(light.getOrigin());
 				shadowTriangle(p1.x, p1.y, s1.x, s1.y, u1.x, u1.y, penumbraColor, shadowVertexes);
 				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
 
@@ -191,15 +191,15 @@ public class LightRenderer implements Disposable {
 		batch.end();
 	}
 
-	private void drawGeometry(List<SimpleShadowCastTest.Light> lights, List<Float> segments) {
+	private void drawGeometry(List<Light2> lights, List<Float> segments) {
 		// Draw geometry
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(segmentColor);
 		for (int i = 0; i < segments.size() - 3; i += 4) {
 			shapeRenderer.line(segments.get(i), segments.get(i+1), segments.get(i+2), segments.get(i+3));
 		}
-		for (SimpleShadowCastTest.Light light : lights) {
-			shapeRenderer.circle(light.origin.x, light.origin.y, light.radius);
+		for (Light2 light : lights) {
+			shapeRenderer.circle(light.getOrigin().x, light.getOrigin().y, light.getRadius());
 		}
 		shapeRenderer.end();
 	}

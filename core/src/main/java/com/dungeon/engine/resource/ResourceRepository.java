@@ -24,21 +24,25 @@ public class ResourceRepository<T> implements Disposable {
 	public ResourceRepository() {
 		this.compute = k -> null;
 		this.clean = (k, v) -> {};
+		Resources.registerRepository(this);
 	}
 
 	public ResourceRepository(Function<? super String, ? extends T> compute) {
 		this.compute = compute;
 		this.clean = (k, v) -> {};
+		Resources.registerRepository(this);
 	}
 
 	public ResourceRepository(Function<? super String, ? extends T> compute, BiConsumer<? super String, ? super T> clean) {
 		this.compute = compute;
 		this.clean = clean;
+		Resources.registerRepository(this);
 	}
 
 	public ResourceRepository(Function<? super String, ? extends T> compute, Consumer<? super T> clean) {
 		this.compute = compute;
 		this.clean = (k, v) -> clean.accept(v);
+		Resources.registerRepository(this);
 	}
 
 	public void put(String key, T resource) {

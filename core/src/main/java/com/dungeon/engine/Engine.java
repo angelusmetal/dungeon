@@ -5,12 +5,17 @@ import com.dungeon.engine.entity.repository.EntityRepository;
 import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.audio.AudioManager;
 import com.dungeon.engine.viewport.ViewPort;
 
 public class Engine {
+
+	public static void dispose() {
+		Resources.dispose();
+	}
 
 	public static EntityRepository entities = new EntityRepository();
 	public static AudioManager audio = new AudioManager();

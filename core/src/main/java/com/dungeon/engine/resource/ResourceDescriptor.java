@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Describes a resource through a toml blob.
+ * Describes a resource through a typesafe blob.
  */
 public class ResourceDescriptor {
 

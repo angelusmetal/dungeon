@@ -8,20 +8,14 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.util.Rand;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.engine.resource.Resources;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class TransitionTest extends ApplicationAdapter implements InputProcessor {
 
@@ -72,8 +66,8 @@ public class TransitionTest extends ApplicationAdapter implements InputProcessor
 	@Override
 	public void create () {
 		pixel = new Texture("core/assets/fill.png");
-		shaderPrograms.add(Resources.shaders.get("df_vertex.glsl|test/transition_circle.glsl"));
-		shaderPrograms.add(Resources.shaders.get("df_vertex.glsl|test/transition_bubbles.glsl"));
+		shaderPrograms.add(Resources.shaders.get("df_vertex.glsl|transition/circle.glsl"));
+		shaderPrograms.add(Resources.shaders.get("df_vertex.glsl|transition/bubbles.glsl"));
 		batch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
 	}

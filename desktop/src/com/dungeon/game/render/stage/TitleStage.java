@@ -4,15 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 public class TitleStage implements Renderer {
 
@@ -31,7 +31,7 @@ public class TitleStage implements Renderer {
 		this.textBuffer = new ViewPortBuffer(viewPort, Pixmap.Format.RGBA8888);
 		textBuffer.reset();
 		titleFont = Resources.fonts.get("chantelli-antiqua-32");
-		subtitleFont = Resources.fonts.get(Resources.DEFAULT_FONT);
+		subtitleFont = Resources.fonts.get(DungeonResources.DEFAULT_FONT);
 //		ornament = Resources.textures.get("title_ornament.png");
 	}
 

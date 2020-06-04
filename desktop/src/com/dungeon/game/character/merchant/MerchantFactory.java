@@ -3,8 +3,8 @@ package com.dungeon.game.character.merchant;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.object.shop.ShopItem;
-import com.dungeon.game.resource.Resources;
 
 import java.util.Arrays;
 import java.util.List;

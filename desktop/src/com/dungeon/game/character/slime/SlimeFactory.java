@@ -1,19 +1,17 @@
 package com.dungeon.game.character.slime;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
-import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 import com.moandjiezana.toml.Toml;
 
 import java.util.function.Supplier;
@@ -59,7 +57,7 @@ public class SlimeFactory {
 				0.7f);
 
 		// Setting up random color (TODO move this to the conf file)
-		Resources.prototypes.get("creature_slime")
+		DungeonResources.prototypes.get("creature_slime")
 				.color(color);
 	}
 

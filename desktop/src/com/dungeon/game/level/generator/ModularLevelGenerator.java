@@ -2,7 +2,6 @@ package com.dungeon.game.level.generator;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.level.Level;
@@ -11,12 +10,10 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.resource.Resources;
 import com.dungeon.game.tileset.Environment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

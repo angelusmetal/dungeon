@@ -2,7 +2,7 @@ package com.dungeon.game.tileset;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.render.TileSheet;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.engine.resource.Resources;
 
 public class HudSheet extends TileSheet {
 

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.game.Game;
 import com.dungeon.game.level.entity.EntityPlaceholder;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +22,7 @@ public class Level implements LevelTiles {
 		this.width = width;
 		this.height = height;
 		this.tiles = new Tile[width * height];
-		TilePrototype solid = Resources.tiles.get("solid");
+		TilePrototype solid = DungeonResources.tiles.get("solid");
 		for (int i = 0; i < tiles.length; ++i) {
 			tiles[i] = new Tile(solid);
 		}

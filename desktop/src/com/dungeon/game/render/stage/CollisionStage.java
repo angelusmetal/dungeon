@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
-import com.dungeon.game.resource.Resources;
 
 public class CollisionStage implements Renderer {
 

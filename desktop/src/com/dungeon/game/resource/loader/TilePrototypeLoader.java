@@ -1,15 +1,12 @@
 package com.dungeon.game.resource.loader;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.game.level.TilePrototype;
-import com.dungeon.game.resource.Resources;
-import com.dungeon.game.tileset.Tileset;
+import com.dungeon.game.resource.DungeonResources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -40,8 +37,8 @@ public class TilePrototypeLoader implements ResourceLoader<TilePrototype> {
 	@Override
 	public TilePrototype read(String identifier, Config descriptor) {
 		return new TilePrototype.Builder()
-				.floor(Resources.tilesets.get(ConfigUtil.requireString(descriptor, "floor")))
-				.wall(Resources.tilesets.get(ConfigUtil.requireString(descriptor, "wall")))
+				.floor(DungeonResources.tilesets.get(ConfigUtil.requireString(descriptor, "floor")))
+				.wall(DungeonResources.tilesets.get(ConfigUtil.requireString(descriptor, "wall")))
 				.solid(ConfigUtil.requireBoolean(descriptor, "solid"))
 				.build();
 	}

@@ -12,13 +12,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.render.light.Light2;
+import com.dungeon.engine.render.light.LightRenderer;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class SimpleShadowCastTest extends ApplicationAdapter implements InputProcessor {
 
@@ -66,52 +67,12 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private boolean dragging = false;
 	// Currently drawing geometry
 	private boolean drawing = false;
-	private Light selectedLight;
+	private Light2 selectedLight;
 
-	private LinkedList<Light> lights = new LinkedList<>();
+	private LinkedList<Light2> lights = new LinkedList<>();
 	private List<Float> geometry = new ArrayList<>();
 	private final LightRenderer renderer = new LightRenderer();
 	private boolean useNormalMapping = false;
-
-	public class Light {
-		Vector2 origin;
-		float radius;
-		float range;
-		Color color;
-
-		public Light(Vector2 origin, float radius, float range, Color color) {
-			this.origin = origin.cpy();
-			this.radius = radius;
-			this.range = range;
-			this.color = color;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			Light light = (Light) o;
-			return Float.compare(light.radius, radius) == 0 &&
-					Float.compare(light.range, range) == 0 &&
-					Objects.equals(origin, light.origin) &&
-					Objects.equals(color, light.color);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(origin, radius, range, color);
-		}
-
-		@Override
-		public String toString() {
-			return "Light{" +
-					"origin=" + origin +
-					", radius=" + radius +
-					", range=" + range +
-					", color=" + color +
-					'}';
-		}
-	}
 
 	@Override
 	public void create () {
@@ -126,7 +87,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		Segments.circle(geometry, new Vector2(1400f, 300f), 50f, 20);
 		Segments.circle(geometry, new Vector2(1300f, 800f), 50f, 3);
 //		// Default light
-		lights.add(new Light(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f)));
+		lights.add(new Light2(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f)));
 //		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 //		lights.add(selectedLight);
 
@@ -184,7 +145,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.NUM_1) {
-			selectedLight = new Light(cursor, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
+			selectedLight = new Light2(cursor, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.NUM_2) {
 			lights.remove(selectedLight);
@@ -212,9 +173,9 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		if (button == 0) {
 			// Select first light for which cursor is within radius
 			selectedLight = null;
-			for(Light light : lights) {
-				System.err.println("Cursor: " + cursor + ", light.origin: " + light.origin + ", light.radius: " + light.radius + ", distance: " + cursor.dst(light.origin));
-				if (cursor.dst(light.origin) < light.radius) {
+			for(Light2 light : lights) {
+				System.err.println("Cursor: " + cursor + ", light.origin: " + light.getOrigin() + ", light.radius: " + light.getRadius() + ", distance: " + cursor.dst(light.getOrigin()));
+				if (cursor.dst(light.getOrigin()) < light.getRadius()) {
 					selectedLight = light;
 					dragging = true;
 					break;
@@ -245,7 +206,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		cursor.set(screenX, Gdx.graphics.getHeight() - screenY);
 		if (selectedLight != null && dragging) {
-			selectedLight.origin.set(screenX, Gdx.graphics.getHeight() - screenY);
+			selectedLight.getOrigin().set(screenX, Gdx.graphics.getHeight() - screenY);
 		}
 		return true;
 	}
@@ -260,9 +221,9 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	public boolean scrolled(int amount) {
 		if (selectedLight != null) {
 			if (amount > 0) {
-				selectedLight.range *= 1.1;
+				selectedLight.setRange(selectedLight.getRange() * 1.1f);
 			} else {
-				selectedLight.range /= 1.1;
+				selectedLight.setRange(selectedLight.getRange() / 1.1f);
 			}
 		}
 		return true;

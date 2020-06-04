@@ -2,9 +2,10 @@ package com.dungeon.game.level.generator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.TileType;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 import com.dungeon.game.tileset.Tileset;
 
 import java.util.function.BiFunction;

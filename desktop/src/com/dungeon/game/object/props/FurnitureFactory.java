@@ -1,7 +1,5 @@
 package com.dungeon.game.object.props;
 
-import static com.dungeon.engine.util.Util.randVect;
-
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Bezier;
@@ -9,13 +7,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.ui.particle.LinearParticle;
 import com.dungeon.engine.ui.particle.PathParticle;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.TimeGradient;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
+
+import static com.dungeon.engine.util.Util.randVect;
 
 public class FurnitureFactory {
 
@@ -29,7 +30,7 @@ public class FurnitureFactory {
 					canBlock = false;
 					canBeHit = false;
 					opened = true;
-					Engine.entities.add(new DungeonEntity(Resources.prototypes.get("door_horizontal_open"), origin));
+					Engine.entities.add(new DungeonEntity(DungeonResources.prototypes.get("door_horizontal_open"), origin));
 				}
 			}
 		};

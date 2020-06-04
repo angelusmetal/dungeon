@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.ui.widget.AbstractWidget;
 import com.dungeon.engine.ui.widget.Widget;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.player.Player;
-import com.dungeon.game.resource.Resources;
 
 public class HeartWidget extends AbstractWidget implements Widget {
 

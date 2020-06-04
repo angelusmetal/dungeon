@@ -7,9 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.game.Game;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.entity.Projectile;
-import com.dungeon.game.resource.Resources;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;

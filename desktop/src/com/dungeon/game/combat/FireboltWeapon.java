@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 import java.util.function.Supplier;
 
@@ -15,7 +15,7 @@ public class FireboltWeapon extends ProjectileWeapon {
 
 	public FireboltWeapon() {
 		super("Firebolt", damageSupplier(), DamageType.ELEMENTAL, 0);
-		projectile = new EntityPrototype(Resources.prototypes.get("firebolt"));
+		projectile = new EntityPrototype(DungeonResources.prototypes.get("firebolt"));
 
 	}
 

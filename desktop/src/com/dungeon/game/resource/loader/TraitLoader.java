@@ -7,12 +7,12 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.LoadingException;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
-import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;

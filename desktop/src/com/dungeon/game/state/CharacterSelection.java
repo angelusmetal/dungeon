@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.Game;
 import com.dungeon.game.character.player.PlayerCharacterFactory;
 import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.render.effect.FadeEffect;
-import com.dungeon.game.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.List;

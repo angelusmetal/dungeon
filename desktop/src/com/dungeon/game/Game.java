@@ -11,11 +11,11 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.developer.DevTools;
-import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.entity.EntityPlaceholder;
@@ -26,8 +26,10 @@ import com.dungeon.game.level.generator.ModularLevelGenerator;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.render.stage.SceneStage2;
+import com.dungeon.game.resource.DungeonResources;
 import com.dungeon.game.tileset.Environment;
+import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.viewport.SharedScreenCreationStrategy;
 import com.dungeon.game.viewport.SplitScreenCreationStrategy;
 import com.moandjiezana.toml.Toml;
@@ -65,7 +67,7 @@ public class Game {
 	}
 
 	public static OverlayText text(Vector2 origin, String text, Color color) {
-		return new OverlayText(origin, text, color, Resources.fonts.get(Resources.DEFAULT_FONT));
+		return new OverlayText(origin, text, color, Resources.fonts.get(DungeonResources.DEFAULT_FONT));
 	}
 
 	private static Vector2 SAY_OFFSET = new Vector2(0, 40);
@@ -121,8 +123,8 @@ public class Game {
 	}
 	private static void initEntityFactories(EntityFactory entityFactory) {
 		Map<String, Object> factoryObjects = new HashMap<>();
-		Resources.prototypes.getKeys().forEach(name -> {
-			EntityPrototype prototype = Resources.prototypes.get(name);
+		DungeonResources.prototypes.getKeys().forEach(name -> {
+			EntityPrototype prototype = DungeonResources.prototypes.get(name);
 			if (prototype.getFactory() != null) {
 				String factoryName = prototype.getFactory();
 				String className = factoryName.substring(0, factoryName.lastIndexOf('.'));
@@ -238,6 +240,7 @@ public class Game {
 		// Add watches
 		Players.all().forEach(player -> {
 			player.getConsole().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
+			player.getConsole().watch("Lights", () -> Integer.toString(SceneStage2.lightCount));
 //			player.getConsole().watch("Time", () -> Float.toString(Engine.time()));
 //			player.getConsole().watch("Level", () -> Integer.toString(Game.getLevelCount()));
 //			player.getConsole().watch("Origin", () -> player.getAvatar().getOrigin().toString());
@@ -281,10 +284,10 @@ public class Game {
 
 	public static void generateNewLevel() {
 		// Pick a random environment
-		String env = Rand.pick(Resources.environments.getKeys());
+		String env = Rand.pick(DungeonResources.environments.getKeys());
 		env = "dungeon";
 //		env = "prairie";
-		environment = Resources.environments.get(env);
+		environment = DungeonResources.environments.get(env);
 		Engine.setBaseLight(environment.getLight().get());
 		LevelGenerator generator;
 		// TODO Wire the corresponding generator in the environment definition

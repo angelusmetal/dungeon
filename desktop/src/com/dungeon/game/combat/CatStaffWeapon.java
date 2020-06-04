@@ -3,14 +3,13 @@ package com.dungeon.game.combat;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
-import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.entity.Projectile;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 
 import java.util.function.Supplier;
 
@@ -22,7 +21,7 @@ public class CatStaffWeapon extends ProjectileWeapon {
 
 	public CatStaffWeapon() {
 		super("Cat staff", damageSupplier(), DamageType.ELEMENTAL, 0);
-		projectile = Resources.prototypes.get("cat_bullet")
+		projectile = DungeonResources.prototypes.get("cat_bullet")
 				.with(Traits.autoSeek(0.1f, 60, () -> Engine.entities.dynamic().filter(PlayerEntity.TARGET_NON_PLAYER_CHARACTERS)));
 	}
 

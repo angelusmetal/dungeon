@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
-import com.dungeon.game.resource.Resources;
 
 public class PlayerArrowsStage implements Renderer {
 

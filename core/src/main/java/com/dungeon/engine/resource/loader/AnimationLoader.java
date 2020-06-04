@@ -1,4 +1,4 @@
-package com.dungeon.game.resource.loader;
+package com.dungeon.engine.resource.loader;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -8,8 +8,8 @@ import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
-import com.dungeon.game.resource.Resources;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 

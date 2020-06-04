@@ -1,18 +1,18 @@
 package com.dungeon.game.character.fireslime;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.FireballWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.player.Players;
-import com.dungeon.game.resource.Resources;
+import com.dungeon.game.resource.DungeonResources;
 import com.moandjiezana.toml.Toml;
 
 public class FireSlimeFactory {
@@ -42,7 +42,7 @@ public class FireSlimeFactory {
 		// Character animations
 		idleAnimation = Resources.animations.get(IDLE);
 
-		character = Resources.prototypes.get("creature_slime_fire");
+		character = DungeonResources.prototypes.get("creature_slime_fire");
 		weapon = new FireballWeapon();
 	}
 
