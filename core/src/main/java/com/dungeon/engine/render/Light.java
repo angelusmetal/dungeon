@@ -29,6 +29,7 @@ public class Light {
 	public float angle = 0;
 	/** Light displacement */
 	public Vector2 displacement = new Vector2();
+	public final boolean castsShadow;
 
 	private final List<Consumer<Light>> traits;
 
@@ -37,19 +38,21 @@ public class Light {
 		this.color = prototype.color;
 		this.diameter = prototype.diameter;
 		this.traits = prototype.traits.stream().map(Supplier::get).collect(Collectors.toList());
+		this.castsShadow = prototype.castsShadow;
 	}
 
-	public Light(float diameter, Color color, Texture texture, List<Consumer<Light>> traits) {
+	public Light(float diameter, Color color, Texture texture, List<Consumer<Light>> traits, boolean castsShadow) {
 		this.texture = texture;
 		this.color = color;
 		this.diameter = diameter;
 		this.angle = 0;
 		this.traits = traits;
+		this.castsShadow = castsShadow;
 	}
 
 	public Light cpy() {
 		// TODO Sounds like copying traits can cause problems...
-		return new Light(diameter, color.cpy(), texture, traits);
+		return new Light(diameter, color.cpy(), texture, traits, castsShadow);
 	}
 
 	public void update() {

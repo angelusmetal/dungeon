@@ -22,11 +22,13 @@ public class LightPrototype {
 	protected final float diameter;
 
 	protected final List<Supplier<Consumer<Light>>> traits = new ArrayList<>();
+	protected final boolean castsShadow;
 
-	public LightPrototype(float diameter, Color color, Texture texture) {
+	public LightPrototype(float diameter, Color color, Texture texture, boolean castsShadow) {
 		this.texture = texture;
 		this.color = color;
 		this.diameter = diameter;
+		this.castsShadow = castsShadow;
 	}
 
 	public LightPrototype torchlight() {

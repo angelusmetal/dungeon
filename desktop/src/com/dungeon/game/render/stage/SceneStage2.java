@@ -25,6 +25,7 @@ import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -259,11 +260,45 @@ public class SceneStage2 implements Renderer {
 		lightCount = (int) Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).count();
 		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 100f)
 				.filter(viewPort::lightIsInViewPort)
-				.map(entity -> mapLight(entity, entity.getLight(), withShadows))
+				.map(entity -> mapLight(entity, entity.getLight()))
 				.collect(Collectors.toList());
-		lightRenderer.render(lightsToRender, Collections.emptyList());
+		List<Float> geometry;
+		if (withShadows) {
+			 geometry = Engine.entities.inViewPort(viewPort, 100f)
+					.filter(e -> e.shadowType() == ShadowType.RECTANGLE)
+					.flatMap(entity -> mapGeometry(entity).stream())
+					.collect(Collectors.toList());
+		} else {
+			geometry = Collections.emptyList();
+		}
+
+		lightRenderer.render(lightsToRender, geometry);
 		lights.projectToZero();
 		lights.render(batch -> lightRenderer.drawToCamera());
+	}
+
+	private List<Float> mapGeometry(Entity entity) {
+		List<Float> vertexes = new ArrayList<>(16);
+		vertexes.add(entity.getBody().getBottomLeft().x);
+		vertexes.add(entity.getBody().getBottomLeft().y);
+		vertexes.add(entity.getBody().getTopRight().x);
+		vertexes.add(entity.getBody().getBottomLeft().y);
+
+		vertexes.add(entity.getBody().getTopRight().x);
+		vertexes.add(entity.getBody().getBottomLeft().y);
+		vertexes.add(entity.getBody().getTopRight().x);
+		vertexes.add(entity.getBody().getTopRight().y);
+
+		vertexes.add(entity.getBody().getTopRight().x);
+		vertexes.add(entity.getBody().getTopRight().y);
+		vertexes.add(entity.getBody().getBottomLeft().x);
+		vertexes.add(entity.getBody().getTopRight().y);
+
+		vertexes.add(entity.getBody().getBottomLeft().x);
+		vertexes.add(entity.getBody().getTopRight().y);
+		vertexes.add(entity.getBody().getBottomLeft().x);
+		vertexes.add(entity.getBody().getBottomLeft().y);
+		return vertexes;
 	}
 
 	private void renderLights(boolean withShadows) {
@@ -527,14 +562,14 @@ public class SceneStage2 implements Renderer {
 		shapeRenderer.end();
 	}
 
-	private Light2 mapLight(Entity emitter, Light light, boolean shadows) {
+	private Light2 mapLight(Entity emitter, Light light) {
 		Color color = light.color.cpy();
 		color.a *= emitter.getColor().a;
 		return new Light2(emitter.getOrigin().cpy().add(light.displacement).add(0, emitter.getZPos()),
 				4f,
 				light.diameter / 2f,
 				color,
-				shadows);
+				light.castsShadow);
 	}
 
 	public void toggleDrawTiles() {

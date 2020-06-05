@@ -181,7 +181,8 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		float diameter = ConfigUtil.requireFloat(config, "diameter");
 		Color color = ConfigUtil.requireColor(config, "color");
 		Texture texture = Resources.textures.get(ConfigUtil.requireString(config, "texture"));
-		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture);
+		boolean castsShadow = ConfigUtil.getBoolean(config, "castsShadow").orElse(false);
+		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture, castsShadow);
 		ConfigUtil.getStringList(config, "traits").ifPresent(list -> list.forEach(trait -> getLightTrait(lightPrototype, trait)));
 		return lightPrototype;
 	}

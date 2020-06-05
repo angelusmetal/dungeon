@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.ui.particle.LinearParticle;
 import com.dungeon.engine.ui.particle.PathParticle;
@@ -30,6 +31,7 @@ public class FurnitureFactory {
 					canBlock = false;
 					canBeHit = false;
 					opened = true;
+					shadowType = ShadowType.NONE;
 					Engine.entities.add(new DungeonEntity(DungeonResources.prototypes.get("door_horizontal_open"), origin));
 				}
 			}
@@ -45,6 +47,7 @@ public class FurnitureFactory {
 					canBlock = false;
 					canBeHit = false;
 					opened = true;
+					shadowType = ShadowType.NONE;
 				}
 			}
 		};
