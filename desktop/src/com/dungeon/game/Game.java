@@ -26,7 +26,7 @@ import com.dungeon.game.level.generator.ModularLevelGenerator;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
-import com.dungeon.game.render.stage.SceneStage2;
+import com.dungeon.game.render.stage.SceneStage;
 import com.dungeon.game.resource.DungeonResources;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.viewport.GameView;
@@ -240,7 +240,7 @@ public class Game {
 		// Add watches
 		Players.all().forEach(player -> {
 			player.getConsole().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));
-			player.getConsole().watch("Lights", () -> Integer.toString(SceneStage2.lightCount));
+			player.getConsole().watch("Lights", () -> Integer.toString(SceneStage.lightCount));
 //			player.getConsole().watch("Time", () -> Float.toString(Engine.time()));
 //			player.getConsole().watch("Level", () -> Integer.toString(Game.getLevelCount()));
 //			player.getConsole().watch("Origin", () -> player.getAvatar().getOrigin().toString());

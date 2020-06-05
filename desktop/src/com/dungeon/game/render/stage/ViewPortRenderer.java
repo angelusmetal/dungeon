@@ -19,7 +19,7 @@ public class ViewPortRenderer implements Disposable {
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 
-	private final SceneStage2 scene;
+	private final SceneStage scene;
 	private final HealthbarStage healthbar;
 	private final CollisionStage collision;
 	private final NoiseStage noise;
@@ -38,7 +38,7 @@ public class ViewPortRenderer implements Disposable {
 		this.viewPort = viewPort;
 		this.batch = new SpriteBatch();
 
-		scene = new SceneStage2(viewPort, viewportBuffer);
+		scene = new SceneStage(viewPort, viewportBuffer);
 		healthbar = new HealthbarStage(viewPort, viewportBuffer);
 		collision = new CollisionStage(viewPort, viewportBuffer);
 		noise = new NoiseStage(viewPort, viewportBuffer);
