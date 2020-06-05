@@ -7,22 +7,29 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
+import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.render.light.Light2;
+import com.dungeon.engine.render.light.LightRenderer;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SceneStage2 implements Renderer {
 
@@ -80,6 +87,8 @@ public class SceneStage2 implements Renderer {
 	}
 	private final EnumMap<ShadowType, ShadowRenderer> shadowRenderer;
 	private final ShapeRenderer shapeRenderer;
+	private final FrameBuffer normalMapBuffer;
+	private final LightRenderer lightRenderer;
 
 	public SceneStage2(ViewPort viewPort, ViewPortBuffer output) {
 		this.viewPort = viewPort;
@@ -106,6 +115,10 @@ public class SceneStage2 implements Renderer {
 		this.shadowRenderer.put(ShadowType.RECTANGLE, this::rectangleShadow);
 		this.shapeRenderer = new ShapeRenderer();
 		this.shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
+
+		this.normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
+		this.lightRenderer = new LightRenderer();
+		lightRenderer.create(viewPort, normalMapBuffer);
 	}
 
 	@Override
@@ -148,7 +161,7 @@ public class SceneStage2 implements Renderer {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			});
 		}
-		renderLights(drawShadows);
+		renderLights2(drawShadows);
 		// Combine tiles with lighting
 		unlit.projectToZero();
 		unlit.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
@@ -157,7 +170,7 @@ public class SceneStage2 implements Renderer {
 	}
 
 	private void renderEntities() {
-		renderLights(false);
+		renderLights2(false);
 		if (drawEntities) {
 			unlit.projectToViewPort();
 			unlit.render(batch -> blendSprites.run(batch, () -> {
@@ -240,6 +253,17 @@ public class SceneStage2 implements Renderer {
 		}
 		// Record the last reached coordinate
 		wallY = eY;
+	}
+
+	private void renderLights2(boolean withShadows) {
+		lightCount = (int) Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).count();
+		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 100f)
+				.filter(viewPort::lightIsInViewPort)
+				.map(entity -> mapLight(entity, entity.getLight(), withShadows))
+				.collect(Collectors.toList());
+		lightRenderer.render(lightsToRender, Collections.emptyList());
+		lights.projectToZero();
+		lights.render(batch -> lightRenderer.drawToCamera());
 	}
 
 	private void renderLights(boolean withShadows) {
@@ -503,6 +527,16 @@ public class SceneStage2 implements Renderer {
 		shapeRenderer.end();
 	}
 
+	private Light2 mapLight(Entity emitter, Light light, boolean shadows) {
+		Color color = light.color.cpy();
+		color.a *= emitter.getColor().a;
+		return new Light2(emitter.getOrigin().cpy().add(light.displacement).add(0, emitter.getZPos()),
+				4f,
+				light.diameter / 2f,
+				color,
+				shadows);
+	}
+
 	public void toggleDrawTiles() {
 		drawTiles = !drawTiles;
 	}
@@ -521,6 +555,10 @@ public class SceneStage2 implements Renderer {
 
 	@Override
 	public void dispose() {
-
+		output.dispose();
+		unlit.dispose();
+		lights.dispose();
+		current.dispose();
+		normalMapBuffer.dispose();
 	}
 }

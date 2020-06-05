@@ -18,7 +18,7 @@ varying vec2 v_texCoord;
 void main() {
 	vec2 normal = normalize(gl_FragCoord.xy - u_lightOrigin.xy);
 	float dist = length(gl_FragCoord.xy - u_lightOrigin.xy);
-	float luminosity = clamp((1.0 - dist / u_lightRange) * u_lightHardness, 0.0, 1.0);
+	float luminosity = pow(u_lightHardness, dist / u_lightRange * 4.0);
 
 	vec3 Diffuse = u_lightColor.rgb * u_lightColor.a;
 	vec3 Ambient = u_ambientColor.rgb * u_ambientColor.a * texture2D(u_texture, v_texCoord.xy).rgb;

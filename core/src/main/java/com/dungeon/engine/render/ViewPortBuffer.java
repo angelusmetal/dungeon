@@ -57,6 +57,10 @@ public class ViewPortBuffer implements Disposable {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
+	public void projectToZeroFull() {
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
+	}
+
 	@Override
 	public void dispose() {
 		if (frameBuffer != null) {

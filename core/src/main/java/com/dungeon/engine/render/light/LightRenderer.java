@@ -60,10 +60,14 @@ public class LightRenderer implements Disposable {
 	// Current light texture region being used
 	private TextureRegion lightTexture;
 
+	private ViewPort viewPort;
 
-	public void create (int bufferWidth, int bufferHeight, FrameBuffer normalMap) {
+	public void create (ViewPort viewPort, FrameBuffer normalMap) {
+		this.viewPort = viewPort;
 		// Single-pixel texture for drawing triangles
-		pixel = new Texture("core/assets/fill.png");
+		Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		p.drawPixel(0, 0, Color.rgba8888(1f, 1f, 1f,1f));
+		pixel = new Texture(p);
 
 		// Normal map buffer, texture and shader
 		normalMapBuffer = normalMap;
@@ -79,10 +83,10 @@ public class LightRenderer implements Disposable {
 		shadowShader = Resources.shaders.get("df_vertex.glsl|light/penumbra.glsl");
 
 		// Light buffer, texture and shader (for rendering penumbra)
-		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, bufferWidth, bufferHeight, false);
+		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
 		allLightsTexture = new TextureRegion(allLightsBuffer.getColorBufferTexture());
 		allLightsTexture.flip(false, true);
-		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, bufferWidth, bufferHeight, false);
+		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
 		currentLightTexture = new TextureRegion(currentLightBuffer.getColorBufferTexture());
 		currentLightTexture.flip(false, true);
 
@@ -91,7 +95,6 @@ public class LightRenderer implements Disposable {
 
 		// Shape renderer for drawing geometry and light contours
 		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, bufferWidth, bufferHeight);
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public class LightRenderer implements Disposable {
 		normalMapBuffer.dispose();
 	}
 
-	public void render(ViewPort viewPort, List<Light2> lights, List<Float> occludingSegments) {
+	public void render(List<Light2> lights, List<Float> occludingSegments) {
 
 		// Clear main buffer
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
@@ -120,8 +123,8 @@ public class LightRenderer implements Disposable {
 			lightTexture = simpleLightTexture;
 		}
 
-		// Adjust projection to the viewport
-		//batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.width, viewPort.height);
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
+		shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 
 		// Draw all lights that do not cast shadows directly on the all-lights buffer (cheaper)
 		allLightsBuffer.begin();
@@ -130,36 +133,44 @@ public class LightRenderer implements Disposable {
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 		lights.stream()
 				.filter(light -> !light.castsShadows())
-				.forEach(light -> drawSimpleLight(viewPort, light));
+				.forEach(this::drawSimpleLight);
 		allLightsBuffer.end();
 
 		// Draw all lights that cast shadows in a separate buffer (more expensive)
 		lights.stream()
 				.filter(Light2::castsShadows)
-				.forEach(light -> drawLight(viewPort, light, occludingSegments));
+				.forEach(light -> drawLight(light, occludingSegments));
 
 		if (renderGeometry) {
 			drawGeometry(lights, occludingSegments);
 		}
 		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
-		//batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}
 
 	public void drawToScreen() {
 		// Draw the resulting light buffer onto the screen
 		batch.begin();
 		batch.setShader(null);
-		batch.draw(allLightsTexture, 0, 0, allLightsBuffer.getWidth(), allLightsBuffer.getHeight());
+		batch.draw(allLightsTexture, 0, 0, viewPort.width, viewPort.height);
 		batch.end();
 	}
 
-	private void drawSimpleLight(ViewPort viewPort, Light2 light) {
+	public void drawToCamera() {
+		// Draw the resulting light buffer onto the screen
+		batch.begin();
+		batch.setShader(null);
+		batch.draw(allLightsTexture, 0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
+		batch.end();
+	}
+
+	private void drawSimpleLight(Light2 light) {
+		Vector2 origin = light.getOrigin().cpy().sub(viewPort.cameraX, viewPort.cameraY).scl(viewPort.getScale());
 		// Draw light
 		lightShader.begin();
-		lightShader.setUniformf("u_lightRange", light.getRange());// * (1 + 0.1f * MathUtils.sin(simpleShadowCastTest.time * 30)));
-		lightShader.setUniformf("u_lightOrigin", light.getOrigin().x - viewPort.cameraX, light.getOrigin().y - viewPort.cameraY, 50f);
+		lightShader.setUniformf("u_lightRange", light.getRange() * viewPort.getScale());
+		lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, 50f);
 		lightShader.setUniformf("u_lightColor", light.getColor());
-		lightShader.setUniformf("u_lightHardness", 1.0f);
+		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", ambient);
 		lightShader.end();
 		batch.setShader(lightShader);
@@ -168,29 +179,18 @@ public class LightRenderer implements Disposable {
 		batch.end();
 	}
 
-	private void drawLight(ViewPort viewPort, Light2 light, List<Float> segments) {
+	private void drawLight(Light2 light, List<Float> segments) {
 		currentLightBuffer.begin();
 
 		// Clear light buffer
 		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// Draw light
-		lightShader.begin();
-		lightShader.setUniformf("u_lightRange", light.getRange());// * (1 + 0.1f * MathUtils.sin(simpleShadowCastTest.time * 30)));
-		lightShader.setUniformf("u_lightOrigin", light.getOrigin().x - viewPort.cameraX, light.getOrigin().y - viewPort.cameraY, 50f);
-		lightShader.setUniformf("u_lightColor", light.getColor());
-		lightShader.setUniformf("u_lightHardness", 1.0f);
-		lightShader.setUniformf("u_ambientColor", ambient);
-		lightShader.end();
-		batch.setShader(lightShader);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		batch.begin();
-		batch.draw(lightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
-		batch.end();
+		drawSimpleLight(light);
 
 		// Draw shadows
-		batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.width, viewPort.height);
+		batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.cameraWidth, viewPort.cameraHeight);
 		batch.begin();
 		batch.setShader(shadowShader);
 		// Draw each shadow
@@ -226,7 +226,7 @@ public class LightRenderer implements Disposable {
 			}
 		}
 		batch.end();
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
 		currentLightBuffer.end();
 
 		// Blend the light buffer onto the all-lights buffer
@@ -234,7 +234,7 @@ public class LightRenderer implements Disposable {
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 		batch.begin();
 		batch.setShader(null);
-		batch.draw(currentLightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
+		batch.draw(currentLightTexture, 0, 0, viewPort.width, viewPort.height);
 		batch.end();
 		allLightsBuffer.end();
 	}

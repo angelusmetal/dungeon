@@ -83,7 +83,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		normalMap = new Texture("core/assets/normal_map.png");
 		// Normal map buffer
 		normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		renderer.create(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), normalMapBuffer);
+		renderer.create(viewPort, normalMapBuffer);
 
 		Gdx.input.setInputProcessor(this);
 		Segments.rectangle(geometry, 800f, 1000f, 350f, 550f);
@@ -125,7 +125,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		} else {
 			geometryToRender = geometry;
 		}
-		renderer.render(viewPort, lights, geometryToRender);
+		renderer.render(lights, geometryToRender);
 		renderer.drawToScreen();
 		time += Gdx.graphics.getDeltaTime();
 		if (time > lastLog + 1.0) {
@@ -164,6 +164,10 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 			viewPort.cameraY += 10;
 		} else if (keycode == Input.Keys.DOWN) {
 			viewPort.cameraY -= 10;
+		} else if (keycode == Input.Keys.PLUS) {
+			viewPort.setScale(viewPort.getScale() * 1.1f);
+		} else if (keycode == Input.Keys.MINUS) {
+			viewPort.setScale(viewPort.getScale() / 1.1f);
 		} else if (keycode == Input.Keys.F1) {
 			renderer.setRenderGeometry(!renderer.isRenderGeometry());
 		} else if (keycode == Input.Keys.ENTER) {
