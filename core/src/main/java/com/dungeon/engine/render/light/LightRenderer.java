@@ -39,14 +39,16 @@ public class LightRenderer implements Disposable {
 	private TextureRegion normalMapTexture;
 
 	// Single-pixel texture for drawing into the buffer
-	private Texture pixel;
+	private Texture flatMapTexture;
 
 	// Used for drawing shadow triangles
 	private float[] shadowVertexes = new float[20];
 
 	private final float umbraColor = new Color(0, 0, 0, 1).toFloatBits();
 	private final float penumbraColor = new Color(0, 0, 0, 0).toFloatBits();
-	private final Color ambient = Color.BLACK;
+
+	// Not a copy but a reference to the actual color; so if it is changed it gets reflected during rendering
+	private Color ambient = Color.BLACK;
 	private final Color segmentColor = Color.RED;
 
 	// Render geometry
@@ -67,7 +69,7 @@ public class LightRenderer implements Disposable {
 		// Single-pixel texture for drawing triangles
 		Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		p.drawPixel(0, 0, Color.rgba8888(1f, 1f, 1f,1f));
-		pixel = new Texture(p);
+		flatMapTexture = new Texture(p);
 
 		// Normal map buffer, texture and shader
 		normalMapBuffer = normalMap;
@@ -77,7 +79,7 @@ public class LightRenderer implements Disposable {
 
 		// Simple light shader
 		simpleLightShader = Resources.shaders.get("df_vertex.glsl|light/simple.glsl");
-		simpleLightTexture = new TextureRegion(pixel);
+		simpleLightTexture = new TextureRegion(flatMapTexture);
 
 		// Shadow shader
 		shadowShader = Resources.shaders.get("df_vertex.glsl|light/penumbra.glsl");
@@ -103,7 +105,6 @@ public class LightRenderer implements Disposable {
 		batch.dispose();
 		currentLightBuffer.dispose();
 		allLightsBuffer.dispose();
-		normalMapBuffer.dispose();
 	}
 
 	public void render(List<Light2> lights, List<Float> occludingSegments) {
@@ -128,7 +129,7 @@ public class LightRenderer implements Disposable {
 
 		// Draw all lights that do not cast shadows directly on the all-lights buffer (cheaper)
 		allLightsBuffer.begin();
-		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl.glClearColor(ambient.r, ambient.g, ambient.b, ambient.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 		lights.stream()
@@ -171,7 +172,7 @@ public class LightRenderer implements Disposable {
 		lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, 50f);
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
-		lightShader.setUniformf("u_ambientColor", ambient);
+		lightShader.setUniformf("u_ambientColor", Color.BLACK);
 		lightShader.end();
 		batch.setShader(lightShader);
 		batch.begin();
@@ -214,15 +215,15 @@ public class LightRenderer implements Disposable {
 				normal.set(s2).sub(light.getOrigin()).nor().rotate90(1).scl(light.getRadius());
 				p2.set(s2).sub(light.getOrigin()).sub(normal).scl(1000f).add(light.getOrigin());
 				shadowTriangle(p1.x, p1.y, s1.x, s1.y, u1.x, u1.y, penumbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
+				batch.draw(flatMapTexture, shadowVertexes, 0, shadowVertexes.length);
 
 				shadowTriangle(p2.x, p2.y, s2.x, s2.y, u2.x, u2.y, penumbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
+				batch.draw(flatMapTexture, shadowVertexes, 0, shadowVertexes.length);
 
 				shadowTriangle(u1.x, u1.y, s1.x, s1.y, s2.x, s2.y, umbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
+				batch.draw(flatMapTexture, shadowVertexes, 0, shadowVertexes.length);
 				shadowTriangle(u2.x, u2.y, s2.x, s2.y, u1.x, u1.y, umbraColor, shadowVertexes);
-				batch.draw(pixel, shadowVertexes, 0, shadowVertexes.length);
+				batch.draw(flatMapTexture, shadowVertexes, 0, shadowVertexes.length);
 			}
 		}
 		batch.end();
@@ -300,8 +301,12 @@ public class LightRenderer implements Disposable {
 		return ambient;
 	}
 
+	/**
+	 * Wires (not copies) the provided color to the renderer as ambient color. Changes to the original
+	 * object will get picked up during the next rendering cycle.
+	 */
 	public void setAmbient(Color ambient) {
-		this.ambient.set(ambient);
+		this.ambient = ambient;
 	}
 
 	public Color getSegmentColor() {

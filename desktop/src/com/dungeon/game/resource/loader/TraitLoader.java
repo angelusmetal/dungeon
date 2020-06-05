@@ -178,7 +178,8 @@ public class TraitLoader {
 		Sound sound = Resources.sounds.get(file);
 		float volume = ConfigUtil.getFloat(config, "volume").orElse(1f);
 		float pitchVariance = Util.clamp(ConfigUtil.getFloat(config, "pitchVariance").orElse(0f));
-		return Traits.playSound(sound, volume, pitchVariance);
+		float zspeedAttn = ConfigUtil.getFloat(config, "zspeedAttn").orElse(0f);
+		return Traits.playSound(sound, volume, pitchVariance, zspeedAttn);
 	}
 
 

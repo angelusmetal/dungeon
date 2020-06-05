@@ -17,7 +17,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static com.dungeon.engine.util.Util.clamp;
 import static com.dungeon.engine.util.Util.length2;
+import static java.lang.Math.abs;
 
 // TODO Move this to game package
 public class Traits {
@@ -150,7 +152,7 @@ public class Traits {
             Vector2 vector = vectorProvider.apply(entity);
             // Updates current animation based on the self impulse vector
             entity.getDrawScale().x = vector.x < 0 ? -1 : 1;
-            if (Math.abs(vector.x) > Math.abs(vector.y)) {
+            if (abs(vector.x) > abs(vector.y)) {
                 // Sideways animation
                 newAnimation = side;
             } else {
@@ -165,7 +167,7 @@ public class Traits {
     static public <T extends Entity> TraitSupplier<T> xInvertByVector(Function<Entity, Vector2> vFunction) {
         return e -> entity -> {
             if (vFunction.apply(e).x != 0) {
-                entity.getDrawScale().x = Math.abs(entity.getDrawScale().x) * entity.getMovement().x < 0 ? -1 : 1;
+                entity.getDrawScale().x = abs(entity.getDrawScale().x) * entity.getMovement().x < 0 ? -1 : 1;
             }
         };
     }
@@ -204,8 +206,12 @@ public class Traits {
         return e -> entity -> entity.setRotation(rotateVector.angle());
     }
 
-    static public <T extends Entity> TraitSupplier<T> playSound(Sound sound, float volume, float pitchVariance) {
-        return e -> entity -> Engine.audio.playSound(sound, entity.getOrigin(), volume, pitchVariance);
+    static public <T extends Entity> TraitSupplier<T> playSound(Sound sound, float volume, float pitchVariance, float zspeedAttn) {
+        if (pitchVariance == 0) {
+            return e -> entity -> Engine.audio.playSound(sound, entity.getOrigin(), volume, pitchVariance);
+        } else {
+            return e -> entity -> Engine.audio.playSound(sound, entity.getOrigin(), volume * clamp(abs(entity.zSpeed) / zspeedAttn), pitchVariance);
+        }
     }
 
 }

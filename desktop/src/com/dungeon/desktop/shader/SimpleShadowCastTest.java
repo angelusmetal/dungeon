@@ -143,6 +143,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public void dispose() {
 		renderer.dispose();
+		normalMapBuffer.dispose();
 		Resources.dispose();
 	}
 

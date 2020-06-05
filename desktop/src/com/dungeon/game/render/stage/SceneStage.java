@@ -105,6 +105,7 @@ public class SceneStage implements Renderer {
 
 		this.normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
 		this.lightRenderer = new LightRenderer();
+		lightRenderer.setAmbient(Engine.getBaseLight());
 		lightRenderer.create(viewPort, normalMapBuffer);
 	}
 
