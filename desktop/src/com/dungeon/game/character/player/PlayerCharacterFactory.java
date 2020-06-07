@@ -1,5 +1,6 @@
 package com.dungeon.game.character.player;
 
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -129,15 +130,38 @@ public class PlayerCharacterFactory {
 		final Animation<TextureRegion> attackUpAnimation = Resources.animations.get(attackUp);
 
 		return new PlayerEntity(prototype, origin) {
-			@Override protected Animation<TextureRegion> getAttackRightAnimation() { return attackRightAnimation; }
-			@Override protected Animation<TextureRegion> getIdleRightAnimation() { return idleRightAnimation; }
-			@Override protected Animation<TextureRegion> getWalkRightAnimation() { return walkRightAnimation; }
-			@Override protected Animation<TextureRegion> getAttackDownAnimation() { return attackDownAnimation; }
-			@Override protected Animation<TextureRegion> getIdleDownAnimation() { return idleDownAnimation; }
-			@Override protected Animation<TextureRegion> getWalkDownAnimation() { return walkDownAnimation; }
-			@Override protected Animation<TextureRegion> getAttackUpAnimation() { return attackUpAnimation; }
-			@Override protected Animation<TextureRegion> getIdleUpAnimation() { return idleUpAnimation; }
-			@Override protected Animation<TextureRegion> getWalkUpAnimation() { return walkUpAnimation; }
+			@Override protected Animation<TextureRegion> getAttackAnimation(PovDirection direction) {
+				if (direction == PovDirection.south) {
+					return attackDownAnimation;
+				} else if (direction == PovDirection.north) {
+					return attackUpAnimation;
+				} else {
+					return attackRightAnimation;
+				}
+			}
+			@Override protected Animation<TextureRegion> getIdleAnimation(PovDirection direction) {
+				if (direction == PovDirection.south) {
+					return idleDownAnimation;
+				} else if (direction == PovDirection.north) {
+					return idleUpAnimation;
+				} else {
+					return idleRightAnimation;
+				}
+			}
+			@Override protected Animation<TextureRegion> getWalkAnimation(PovDirection direction) {
+				if (direction == PovDirection.south) {
+					return walkDownAnimation;
+				} else if (direction == PovDirection.north) {
+					return walkUpAnimation;
+				} else {
+					return walkRightAnimation;
+				}
+			}
+			@Override protected boolean isAttackAnimation() {
+				return getAnimation() == attackDownAnimation ||
+						getAnimation() == attackUpAnimation ||
+						getAnimation() == attackRightAnimation;
+			}
 			@Override protected void onExpire() {
 				super.onExpire();
 				Engine.entities.add(Game.build(EntityType.TOMBSTONE, getOrigin()));

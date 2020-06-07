@@ -67,21 +67,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 				direction = newDirection;
 			}
 			if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-				if (direction == PovDirection.south) {
-					updateAnimation(getIdleDownAnimation());
-				} else if (direction == PovDirection.north) {
-					updateAnimation(getIdleUpAnimation());
-				} else {
-					updateAnimation(getIdleRightAnimation());
-				}
+				updateAnimation(getIdleAnimation(direction));
 			} else {
-				if (direction == PovDirection.south) {
-					updateAnimation(getWalkDownAnimation());
-				} else if (direction == PovDirection.north) {
-					updateAnimation(getWalkUpAnimation());
-				} else {
-					updateAnimation(getWalkRightAnimation());
-				}
+				updateAnimation(getWalkAnimation(direction));
 				stepMetronome.doAtInterval();
 			}
 		}
@@ -110,12 +98,6 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
-	private boolean isAttackAnimation() {
-		return getAnimation() == getAttackRightAnimation() ||
-				getAnimation() == getAttackDownAnimation() ||
-				getAnimation() == getAttackUpAnimation();
-	}
-
 	@Override
 	protected void onExpire() {
 		getPlayer().getConsole().log("You have died", Color.GOLD);
@@ -130,13 +112,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 					weapon.spawnEntities(getBody().getCenter(), getAim());
 //					PovDirection direction = getAnimationDirection();
 					updateXScale(direction);
-					if (direction == PovDirection.south) {
-						updateAnimation(getAttackDownAnimation());
-					} else if (direction == PovDirection.north) {
-						updateAnimation(getAttackUpAnimation());
-					} else {
-						updateAnimation(getAttackRightAnimation());
-					}
+					updateAnimation(getAttackAnimation(direction));
 					slowUntil = Engine.time() + weapon.attackCooldown();
 					energy -= weapon.energyDrain();
 				});
@@ -154,15 +130,10 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
-	abstract protected Animation<TextureRegion> getIdleRightAnimation();
-	abstract protected Animation<TextureRegion> getWalkRightAnimation();
-	abstract protected Animation<TextureRegion> getAttackRightAnimation();
-	abstract protected Animation<TextureRegion> getIdleDownAnimation();
-	abstract protected Animation<TextureRegion> getWalkDownAnimation();
-	abstract protected Animation<TextureRegion> getAttackDownAnimation();
-	abstract protected Animation<TextureRegion> getIdleUpAnimation();
-	abstract protected Animation<TextureRegion> getWalkUpAnimation();
-	abstract protected Animation<TextureRegion> getAttackUpAnimation();
+	abstract protected Animation<TextureRegion> getIdleAnimation(PovDirection direction);
+	abstract protected Animation<TextureRegion> getWalkAnimation(PovDirection direction);
+	abstract protected Animation<TextureRegion> getAttackAnimation(PovDirection direction);
+	abstract protected boolean isAttackAnimation();
 
 	public Player getPlayer() {
 		return Players.get(playerId);
