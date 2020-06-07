@@ -21,6 +21,7 @@ import com.dungeon.game.controller.KeyboardControlBundle;
 import com.dungeon.game.developer.DevCommands;
 import com.dungeon.game.developer.DevTools;
 import com.dungeon.game.entity.PlayerEntity;
+import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
 import com.dungeon.game.resource.DungeonResources;
@@ -173,7 +174,7 @@ public class Dungeon extends ApplicationAdapter {
 
 		if (!fading && Game.getCurrentState() == Game.State.INGAME && Engine.entities.ofType(PlayerEntity.class).count() == 0) {
 			fading = true;
-			Engine.renderEffects.add(FadeEffect.fadeOutDeath(Engine.time(), () -> {
+			Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.closeTransition(2f, () -> {
 				Game.setCurrentState(Game.State.MENU);
 				Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
 				fading = false;
@@ -187,6 +188,8 @@ public class Dungeon extends ApplicationAdapter {
 		if (Players.count() > 0) {
 			movementSampler.sample((int) Players.get(0).getAvatar().getMovement().len());
 		}
+
+		Game.runScheduledUpdates();
 
 		this.frame++;
 	}

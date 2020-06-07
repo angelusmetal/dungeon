@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.ui.particle.Particle;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;

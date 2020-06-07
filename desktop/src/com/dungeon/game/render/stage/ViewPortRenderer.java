@@ -28,6 +28,7 @@ public class ViewPortRenderer implements Disposable {
 	private final PlayerArrowsStage playerArrows;
 	private final HudStage hud;
 	private final MiniMapStage miniMap;
+	private final TransitionStage transition;
 	private final ScaleStage scale;
 	private final ConsoleStage console;
 	private final TitleStage title;
@@ -43,6 +44,7 @@ public class ViewPortRenderer implements Disposable {
 		collision = new CollisionStage(viewPort, viewportBuffer);
 		noise = new NoiseStage(viewPort, viewportBuffer);
 		motionBlur = new MotionBlurStage(viewPort, viewportBuffer);
+		transition = new TransitionStage(viewPort, viewportBuffer);
 		scale = new ScaleStage(viewportBuffer, batch);
 		console = new ConsoleStage(viewPort, batch, players.get(0).getConsole());
 		overlayText = new OverlayTextStage(viewPort, viewportBuffer);
@@ -59,6 +61,7 @@ public class ViewPortRenderer implements Disposable {
 		pipeline.addNode(overlayText, "overlay_text");
 		pipeline.addNode(playerArrows, "player_arrow");
 		pipeline.addNode(title, "title");
+		pipeline.addNode(transition, "transition");
 		pipeline.addNode(scale, "scale");
 		pipeline.addNode(hud, "hud");
 		pipeline.addNode(miniMap, "minimap");
@@ -131,6 +134,14 @@ public class ViewPortRenderer implements Disposable {
 
 	public void toggleProfiler() {
 		pipeline.toggleProfile();
+	}
+
+	public void openTransition(float duration, Runnable endAction) {
+		transition.open(duration, endAction);
+	}
+
+	public void closeTransition(float duration, Runnable endAction) {
+		transition.close(duration, endAction);
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package com.dungeon.game.render.stage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
-import com.dungeon.engine.viewport.ViewPort;
 
 public class ScaleStage implements Renderer {
 

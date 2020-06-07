@@ -25,7 +25,6 @@ import com.dungeon.game.level.generator.LevelGenerator;
 import com.dungeon.game.level.generator.ModularLevelGenerator;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
-import com.dungeon.game.render.effect.FadeEffect;
 import com.dungeon.game.render.stage.SceneStage;
 import com.dungeon.game.resource.DungeonResources;
 import com.dungeon.game.tileset.Environment;
@@ -40,6 +39,7 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,6 +61,7 @@ public class Game {
 	private static boolean displayConsole = false;
 	public static GameView gameView = new GameView();
 	public static DevTools devTools;
+	public static List<Runnable> updates = new ArrayList<>();
 
 	public static OverlayText text(Vector2 origin, String text) {
 		return text(origin, text, Color.WHITE);
@@ -189,7 +190,7 @@ public class Game {
 	}
 
 	public static void exitLevel() {
-		Engine.renderEffects.add(FadeEffect.fadeOut(Engine.time(), Game::startNewLevel));
+		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.closeTransition(2f, Game::startNewLevel));
 	}
 
 	public static void startNewLevel() {
@@ -232,7 +233,8 @@ public class Game {
 
 		setCurrentState(State.INGAME);
 
-		Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
+		// Open transition
+		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.openTransition(2f, () -> {}));
 
 		// Start playing new music
 		Engine.audio.playMusic(Gdx.files.internal(levelMusic.get((levelCount - 1) % levelMusic.size())));
@@ -344,5 +346,20 @@ public class Game {
 
 	public static int getLevelCount() {
 		return levelCount;
+	}
+
+	/**
+	 * Schedule an update to be executed at the end of the current cycle
+	 */
+	public static void scheduleUpdate(Runnable runnable) {
+		updates.add(runnable);
+	}
+
+	/**
+	 * Run all scheduled updates
+	 */
+	public static void runScheduledUpdates() {
+		updates.forEach(Runnable::run);
+		updates.clear();
 	}
 }

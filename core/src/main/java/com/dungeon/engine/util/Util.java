@@ -16,6 +16,20 @@ public class Util {
 		return Math.max(min, Math.min(max, val));
 	}
 
+	public static float step(float edge, float val) {
+		return val < edge ? 0f : 1f;
+	}
+
+	public static float smoothstep(float edge0, float edge1, float val) {
+		if (val < edge0) {
+			return 0f;
+		} else if (val > edge1) {
+			return 1f;
+		} else {
+			return (val - edge0) / (edge1 - edge0);
+		}
+	}
+
 	public static Color hsvaToColor(float hue, float saturation, float value, float alpha) {
 
 		int h = (int)(hue * 6);
