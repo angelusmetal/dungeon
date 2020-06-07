@@ -30,43 +30,114 @@ public class PlayerCharacterFactory {
 	private static final String JACK_ATTACK = "jack_attack";
 	private static final String JACK_IDLE = "jack_idle";
 
-	public static final String KARA_WALK = "kara_walk";
-	private static final String KARA_ATTACK = "kara_attack";
-	private static final String KARA_IDLE = "kara_idle";
+	public static final String KARA_WALK = "kara_walk_right";
+	private static final String KARA_ATTACK = "kara_attack_right";
+	private static final String KARA_IDLE = "kara_idle_right";
 
 	public Entity alma(Vector2 origin, EntityPrototype prototype) {
 		final EntityPrototype dust_cloud_blood = DungeonResources.prototypes.get("dust_cloud_blood");
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.2f, () -> Engine.entities.add(new Entity(dust_cloud_blood, e.getOrigin().cpy().add(0, 1))));
-		return factory(ALMA_IDLE, ALMA_WALK, ALMA_ATTACK, stepFactory, prototype, origin);
+		return factory(
+				ALMA_IDLE,
+				ALMA_WALK,
+				ALMA_ATTACK,
+				ALMA_IDLE,
+				ALMA_WALK,
+				ALMA_ATTACK,
+				ALMA_IDLE,
+				ALMA_WALK,
+				ALMA_ATTACK,
+				stepFactory,
+				prototype,
+				origin);
 	}
 
 	public Entity mort(Vector2 origin, EntityPrototype prototype) {
 		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
-		return factory(MORT_IDLE, MORT_WALK, MORT_ATTACK, stepFactory, prototype, origin);
+		return factory(
+				MORT_IDLE,
+				MORT_WALK,
+				MORT_ATTACK,
+				MORT_IDLE,
+				MORT_WALK,
+				MORT_ATTACK,
+				MORT_IDLE,
+				MORT_WALK,
+				MORT_ATTACK,
+				stepFactory,
+				prototype,
+				origin);
 	}
 
 	public Entity jack(Vector2 origin, EntityPrototype prototype) {
 		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
-		return factory(JACK_IDLE, JACK_WALK, JACK_ATTACK, stepFactory, prototype, origin);
+		return factory(
+				JACK_IDLE,
+				JACK_WALK,
+				JACK_ATTACK,
+				JACK_IDLE,
+				JACK_WALK,
+				JACK_ATTACK,
+				JACK_IDLE,
+				JACK_WALK,
+				JACK_ATTACK,
+				stepFactory,
+				prototype,
+				origin);
 	}
 
 	public Entity kara(Vector2 origin, EntityPrototype prototype) {
 		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
-		return factory(KARA_IDLE, KARA_WALK, KARA_ATTACK, stepFactory, prototype, origin);
+		return factory(
+				"kara_idle_right",
+				"kara_walk_right",
+				"kara_attack_right",
+				"kara_idle_down",
+				"kara_walk_down",
+				"kara_attack_down",
+				"kara_idle_up",
+				"kara_walk_up",
+				"kara_attack_up",
+				stepFactory,
+				prototype,
+				origin);
 	}
 
-	private Entity factory(String idle, String walk, String attack, Function<Entity, Metronome> stepMetronomeFactory, EntityPrototype prototype, Vector2 origin) {
-		final Animation<TextureRegion> idleAnimation = Resources.animations.get(idle);
-		final Animation<TextureRegion> walkAnimation = Resources.animations.get(walk);
-		final Animation<TextureRegion> attackAnimation = Resources.animations.get(attack);
+	private Entity factory(String idleRight,
+						   String walkRight,
+						   String attackRight,
+						   String idleDown,
+						   String walkDown,
+						   String attackDown,
+						   String idleUp,
+						   String walkUp,
+						   String attackUp,
+						   Function<Entity, Metronome> stepMetronomeFactory,
+						   EntityPrototype prototype,
+						   Vector2 origin) {
+		final Animation<TextureRegion> idleRightAnimation = Resources.animations.get(idleRight);
+		final Animation<TextureRegion> walkRightAnimation = Resources.animations.get(walkRight);
+		final Animation<TextureRegion> attackRightAnimation = Resources.animations.get(attackRight);
+		final Animation<TextureRegion> idleDownAnimation = Resources.animations.get(idleDown);
+		final Animation<TextureRegion> walkDownAnimation = Resources.animations.get(walkDown);
+		final Animation<TextureRegion> attackDownAnimation = Resources.animations.get(attackDown);
+		final Animation<TextureRegion> idleUpAnimation = Resources.animations.get(idleUp);
+		final Animation<TextureRegion> walkUpAnimation = Resources.animations.get(walkUp);
+		final Animation<TextureRegion> attackUpAnimation = Resources.animations.get(attackUp);
 
 		return new PlayerEntity(prototype, origin) {
-			@Override protected Animation<TextureRegion> getAttackAnimation() { return attackAnimation; }
-			@Override protected Animation<TextureRegion> getIdleAnimation() { return idleAnimation; }
-			@Override protected Animation<TextureRegion> getWalkAnimation() { return walkAnimation; }
+			@Override protected Animation<TextureRegion> getAttackRightAnimation() { return attackRightAnimation; }
+			@Override protected Animation<TextureRegion> getIdleRightAnimation() { return idleRightAnimation; }
+			@Override protected Animation<TextureRegion> getWalkRightAnimation() { return walkRightAnimation; }
+			@Override protected Animation<TextureRegion> getAttackDownAnimation() { return attackDownAnimation; }
+			@Override protected Animation<TextureRegion> getIdleDownAnimation() { return idleDownAnimation; }
+			@Override protected Animation<TextureRegion> getWalkDownAnimation() { return walkDownAnimation; }
+			@Override protected Animation<TextureRegion> getAttackUpAnimation() { return attackUpAnimation; }
+			@Override protected Animation<TextureRegion> getIdleUpAnimation() { return idleUpAnimation; }
+			@Override protected Animation<TextureRegion> getWalkUpAnimation() { return walkUpAnimation; }
 			@Override protected void onExpire() {
 				super.onExpire();
 				Engine.entities.add(Game.build(EntityType.TOMBSTONE, getOrigin()));

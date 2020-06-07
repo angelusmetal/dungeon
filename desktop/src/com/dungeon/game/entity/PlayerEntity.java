@@ -1,5 +1,6 @@
 package com.dungeon.game.entity;
 
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,6 +17,9 @@ import com.dungeon.game.player.Players;
 
 import java.util.function.Predicate;
 
+import static com.dungeon.engine.controller.pov.PovToggle.vec2ToPov4;
+import static com.dungeon.engine.controller.pov.PovToggle.vec2ToPov8;
+
 public abstract class PlayerEntity extends CreatureEntity {
 
 	private int playerId;
@@ -30,6 +34,8 @@ public abstract class PlayerEntity extends CreatureEntity {
 	private float energyRecovery = 20;
 	/** Indicate whether this character is continuously firing */
 	private boolean firing;
+	/** Direction where charater is heading (for picking the right animation) */
+	private PovDirection direction;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
@@ -54,12 +60,28 @@ public abstract class PlayerEntity extends CreatureEntity {
 	@Override
 	public void think() {
 		super.think();
-		if (getAnimation() != getAttackAnimation() || isAnimationFinished()) {
-			updateXScale();
+		if (!isAttackAnimation() || isAnimationFinished()) {
+			PovDirection newDirection = getAnimationDirection();
+			if (newDirection != PovDirection.center) {
+				updateXScale(direction);
+				direction = newDirection;
+			}
 			if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-				updateAnimation(getIdleAnimation());
+				if (direction == PovDirection.south) {
+					updateAnimation(getIdleDownAnimation());
+				} else if (direction == PovDirection.north) {
+					updateAnimation(getIdleUpAnimation());
+				} else {
+					updateAnimation(getIdleRightAnimation());
+				}
 			} else {
-				updateAnimation(getWalkAnimation());
+				if (direction == PovDirection.south) {
+					updateAnimation(getWalkDownAnimation());
+				} else if (direction == PovDirection.north) {
+					updateAnimation(getWalkUpAnimation());
+				} else {
+					updateAnimation(getWalkRightAnimation());
+				}
 				stepMetronome.doAtInterval();
 			}
 		}
@@ -69,15 +91,30 @@ public abstract class PlayerEntity extends CreatureEntity {
 		energy = Math.min(energy + energyRecovery * Engine.frameTime(), maxEnergy);
 	}
 
-	/** Inverts the horizontal draw scale based on the movement vector */
-	private void updateXScale() {
-		if (getAim().x != 0 && getAnimation() == getAttackAnimation()) {
-			getDrawScale().x = Math.abs(getDrawScale().x) * getAim().x < 0 ? -1 : 1;
-		} else if (getMovement().x != 0) {
-			getDrawScale().x = Math.abs(getDrawScale().x) * getMovement().x < 0 ? -1 : 1;
+	private PovDirection getAnimationDirection() {
+		if (getAim().len2() > 0) {
+			return vec2ToPov4(getAim(), 0.8f);
+		} else {
+			return vec2ToPov4(getMovement(), speed * 0.8f);
 		}
 	}
 
+	/** Inverts the horizontal draw scale based on the movement vector */
+	private void updateXScale(PovDirection direction) {
+		if (direction == PovDirection.west) {
+			// Only invert for west
+			getDrawScale().x = Math.abs(getDrawScale().x) * -1;
+		} else if (direction != PovDirection.center) {
+			// Only update if direction is not center
+			getDrawScale().x = Math.abs(getDrawScale().x);
+		}
+	}
+
+	private boolean isAttackAnimation() {
+		return getAnimation() == getAttackRightAnimation() ||
+				getAnimation() == getAttackDownAnimation() ||
+				getAnimation() == getAttackUpAnimation();
+	}
 
 	@Override
 	protected void onExpire() {
@@ -91,8 +128,15 @@ public abstract class PlayerEntity extends CreatureEntity {
 			if (energy > weapon.energyDrain()) {
 				actionGate.attempt(weapon.attackCooldown(), () -> {
 					weapon.spawnEntities(getBody().getCenter(), getAim());
-					updateAnimation(getAttackAnimation());
-					updateXScale();
+//					PovDirection direction = getAnimationDirection();
+					updateXScale(direction);
+					if (direction == PovDirection.south) {
+						updateAnimation(getAttackDownAnimation());
+					} else if (direction == PovDirection.north) {
+						updateAnimation(getAttackUpAnimation());
+					} else {
+						updateAnimation(getAttackRightAnimation());
+					}
 					slowUntil = Engine.time() + weapon.attackCooldown();
 					energy -= weapon.energyDrain();
 				});
@@ -110,9 +154,15 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
-	abstract protected Animation<TextureRegion> getAttackAnimation();
-	abstract protected Animation<TextureRegion> getIdleAnimation();
-	abstract protected Animation<TextureRegion> getWalkAnimation();
+	abstract protected Animation<TextureRegion> getIdleRightAnimation();
+	abstract protected Animation<TextureRegion> getWalkRightAnimation();
+	abstract protected Animation<TextureRegion> getAttackRightAnimation();
+	abstract protected Animation<TextureRegion> getIdleDownAnimation();
+	abstract protected Animation<TextureRegion> getWalkDownAnimation();
+	abstract protected Animation<TextureRegion> getAttackDownAnimation();
+	abstract protected Animation<TextureRegion> getIdleUpAnimation();
+	abstract protected Animation<TextureRegion> getWalkUpAnimation();
+	abstract protected Animation<TextureRegion> getAttackUpAnimation();
 
 	public Player getPlayer() {
 		return Players.get(playerId);
