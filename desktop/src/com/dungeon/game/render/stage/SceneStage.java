@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -21,14 +20,12 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.render.light.Light2;
 import com.dungeon.engine.render.light.LightRenderer;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,7 +145,7 @@ public class SceneStage implements Renderer {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			});
 		}
-		renderLights2(drawShadows);
+		renderLights(drawShadows);
 		// Combine tiles with lighting
 		unlit.projectToZero();
 		unlit.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
@@ -157,7 +154,7 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderEntities() {
-		renderLights2(false);
+		renderLights(false);
 		if (drawEntities) {
 			unlit.projectToViewPort();
 			unlit.render(batch -> blendSprites.run(batch, () -> {
@@ -242,7 +239,7 @@ public class SceneStage implements Renderer {
 		wallY = eY;
 	}
 
-	private void renderLights2(boolean withShadows) {
+	private void renderLights(boolean withShadows) {
 		lightCount = (int) Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).count();
 		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 100f)
 				.filter(viewPort::lightIsInViewPort)
@@ -261,6 +258,16 @@ public class SceneStage implements Renderer {
 		lightRenderer.render(lightsToRender, geometry);
 		lights.projectToZero();
 		lights.render(batch -> lightRenderer.drawToCamera());
+		if (withShadows) {
+			lights.projectToViewPort();
+			lights.render(batch -> {
+				blendSprites.set(batch);
+				Engine.entities.inViewPort(viewPort, 100f)
+						.filter(e -> e.shadowType() == ShadowType.CIRCLE || e.shadowType() == ShadowType.RECTANGLE)
+						.forEach(entity -> circleShadow(entity, batch));
+				blendSprites.unset(batch);
+			});
+		}
 	}
 
 	private List<Float> mapGeometry(Entity entity) {
@@ -288,7 +295,7 @@ public class SceneStage implements Renderer {
 	}
 
 	/** Draws a circular shadow */
-	private void circleShadow(Entity light, Entity blocker, ViewPort viewPort, SpriteBatch batch, Vector2 offset) {
+	private void circleShadow(Entity blocker, SpriteBatch batch) {
 		// Draw shadow at the feet of the entity
 		shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
 		batch.setColor(shadowColor);
@@ -298,27 +305,27 @@ public class SceneStage implements Renderer {
 
 		batch.draw(shadow, blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
 
-		// Draw projected shadow
-		// TODO double check whether we still need origin & zpos here
-		Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
-		float shadowLen = o.len();
-		if (shadowLen < 2) {
-			return;
-		}
-		shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
-		batch.setColor(shadowColor);
-		batch.draw(
-				shadow,
-				blocker.getOrigin().x,
-				blocker.getOrigin().y /*- width / 2*/,
-				0,
-				width / 2,
-				width,
-				width,
-				shadowLen / 10f,
-				1 + shadowLen / 100f,
-				o.angle(),
-				true);
+//		// Draw projected shadow
+//		// TODO double check whether we still need origin & zpos here
+//		Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
+//		float shadowLen = o.len();
+//		if (shadowLen < 2) {
+//			return;
+//		}
+//		shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
+//		batch.setColor(shadowColor);
+//		batch.draw(
+//				shadow,
+//				blocker.getOrigin().x,
+//				blocker.getOrigin().y /*- width / 2*/,
+//				0,
+//				width / 2,
+//				width,
+//				width,
+//				shadowLen / 10f,
+//				1 + shadowLen / 100f,
+//				o.angle(),
+//				true);
 	}
 
 	private Light2 mapLight(Entity emitter, Light light) {
