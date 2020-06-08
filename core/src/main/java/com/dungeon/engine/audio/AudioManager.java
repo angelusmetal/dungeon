@@ -49,26 +49,32 @@ public class AudioManager {
 
 		fadeOut(fade);
 
-		if (fade == 0) {
-			track.fade = () -> 1;
-		} else {
-			track.fade = TimeGradient.fadeIn(Engine.time(), fade);
-			track.music.setVolume(0f);
+		boolean success = false;
+		while(!success) {
+			try {
+				if (fade == 0) {
+					track.fade = () -> 1;
+				} else {
+					track.fade = TimeGradient.fadeIn(Engine.time(), fade);
+					track.music.setVolume(0f);
+				}
+				track.music.play();
+				success = true;
+			} catch (GdxRuntimeException e) {
+				System.err.println(e.getMessage());
+				track.music.dispose();
+			}
 		}
 
-		track.music.play();
 		track.music.setLooping(loop);
+
 		currentTracks.push(track);
 	}
 
 	public void fadeOut(float fade) {
 		if (fade == 0) {
 			// If no fade, stop all previous tracks immediately
-			while (!currentTracks.isEmpty()) {
-				MusicTrack previous = currentTracks.pop();
-				previous.music.stop();
-				previous.music.dispose();
-			}
+			stopMusic();
 		} else {
 			// If there is a fade, all previous tracks will start a fadeout
 			currentTracks.forEach(t -> {
@@ -83,6 +89,7 @@ public class AudioManager {
 			MusicTrack previous = currentTracks.pop();
 			previous.music.stop();
 			previous.music.dispose();
+			System.err.println("Forcefully stopped track: " + previous);
 		}
 	}
 
@@ -103,6 +110,7 @@ public class AudioManager {
 			if (track.music.getVolume() == 0f && track.ending) {
 				track.music.stop();
 				track.music.dispose();
+				System.err.println("Stopped track because of fade: " + track);
 				iterator.remove();
 			}
 		}

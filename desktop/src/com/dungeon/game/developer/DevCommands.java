@@ -21,10 +21,18 @@ public class DevCommands {
 		this.devTools = devTools;
 
 		// Add console commands
-		Game.getConsole().bindExpression("play_music", this::playMusic);
-		Game.getConsole().bindExpression("stop_music", this::stopMusic);
+		Game.getConsole().bindExpression("playMusic", this::playMusic);
+		Game.getConsole().bindExpression("stopMusic", this::stopMusic);
 		Game.getConsole().bindExpression("say", this::say);
 		Game.getConsole().bindExpression("spawn", this::spawn, Game::knownEntityTypes);
+		Game.getConsole().bindExpression("die", (args, output) -> {
+			Players.all().forEach(p -> p.getAvatar().expire());
+			return true;
+		});
+		Game.getConsole().bindExpression("exitLevel", (args, output) -> {
+			Game.exitLevel();
+			return true;
+		});
 
 		// Add variables
 		Game.getConsole().bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));

@@ -18,7 +18,6 @@ import com.dungeon.game.player.Players;
 import java.util.function.Predicate;
 
 import static com.dungeon.engine.controller.pov.PovToggle.vec2ToPov4;
-import static com.dungeon.engine.controller.pov.PovToggle.vec2ToPov8;
 
 public abstract class PlayerEntity extends CreatureEntity {
 
@@ -34,8 +33,8 @@ public abstract class PlayerEntity extends CreatureEntity {
 	private float energyRecovery = 20;
 	/** Indicate whether this character is continuously firing */
 	private boolean firing;
-	/** Direction where charater is heading (for picking the right animation) */
-	private PovDirection direction;
+	/** Direction where character is heading (for picking the right animation) */
+	private PovDirection animationDirection;
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
@@ -63,13 +62,13 @@ public abstract class PlayerEntity extends CreatureEntity {
 		if (!isAttackAnimation() || isAnimationFinished()) {
 			PovDirection newDirection = getAnimationDirection();
 			if (newDirection != PovDirection.center) {
-				updateXScale(direction);
-				direction = newDirection;
+				updateXScale(animationDirection);
+				animationDirection = newDirection;
 			}
 			if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-				updateAnimation(getIdleAnimation(direction));
+				updateAnimation(getIdleAnimation(animationDirection));
 			} else {
-				updateAnimation(getWalkAnimation(direction));
+				updateAnimation(getWalkAnimation(animationDirection));
 				stepMetronome.doAtInterval();
 			}
 		}
@@ -110,9 +109,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 			if (energy > weapon.energyDrain()) {
 				actionGate.attempt(weapon.attackCooldown(), () -> {
 					weapon.spawnEntities(getBody().getCenter(), getAim());
-//					PovDirection direction = getAnimationDirection();
-					updateXScale(direction);
-					updateAnimation(getAttackAnimation(direction));
+//					PovDirection animationDirection = getAnimationDirection();
+					updateXScale(animationDirection);
+					updateAnimation(getAttackAnimation(animationDirection));
 					slowUntil = Engine.time() + weapon.attackCooldown();
 					energy -= weapon.energyDrain();
 				});
