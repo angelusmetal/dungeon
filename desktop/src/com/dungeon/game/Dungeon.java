@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.dungeon.game.developer.DevTools.*;
+import static com.dungeon.game.render.stage.TransitionStage.LEVEL_TRANSITION_TIME;
 
 public class Dungeon extends ApplicationAdapter {
 
@@ -90,7 +91,7 @@ public class Dungeon extends ApplicationAdapter {
 		Game.devTools.addDeveloperHotkeys();
 
 		// Start playing character selection music
-		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
+		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"), 0f);
 	}
 
 	private void configureInput() {
@@ -174,12 +175,13 @@ public class Dungeon extends ApplicationAdapter {
 
 		if (!fading && Game.getCurrentState() == Game.State.INGAME && Engine.entities.ofType(PlayerEntity.class).count() == 0) {
 			fading = true;
-			Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.closeTransition(2f, () -> {
+			Engine.audio.fadeOut(LEVEL_TRANSITION_TIME);
+			Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.closeTransition(LEVEL_TRANSITION_TIME, () -> {
 				Game.setCurrentState(Game.State.MENU);
 				Engine.renderEffects.add(FadeEffect.fadeIn(Engine.time()));
 				fading = false;
 				// Start playing character selection music
- 				Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"));
+ 				Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"), 0f);
 			}));
 		}
 

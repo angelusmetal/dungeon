@@ -77,14 +77,14 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		batch.draw(bars.getKeyFrame(Engine.time()), x + 47, y + 11);
 
 		// Display health
-		TextureRegion keyFrame = health.getKeyFrame(Engine.time());
+		TextureRegion keyFrame = new TextureRegion(health.getKeyFrame(Engine.time()));
 		float healthFill = player.getAvatar().getHealth() / player.getAvatar().getMaxHealth();
 		keyFrame.setRegionX((int)((1f - healthFill) * healthWidth));
 		keyFrame.setRegionWidth((int)(healthFill * healthWidth));
 		batch.draw(keyFrame, x + 47, y + 22);
 
 		// Display energy
-		keyFrame = energy.getKeyFrame(Engine.time());
+		keyFrame.setRegion(energy.getKeyFrame(Engine.time()));
 		float energyFill = player.getAvatar().getEnergy() / player.getAvatar().getMaxEnergy();
 		keyFrame.setRegionX((int)((1f - energyFill) * energyWidth));
 		keyFrame.setRegionWidth((int)(energyFill * energyWidth));

@@ -48,6 +48,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.dungeon.game.render.stage.TransitionStage.LEVEL_TRANSITION_TIME;
+
 public class Game {
 
 	public enum State {
@@ -172,7 +174,6 @@ public class Game {
 
 	public static void startNewGame(List<Player> players) {
 		Players.set(players);
-		levelCount = 0;
 		getConsole().setOutput(Players.get(0).getConsole()::log);
 		startNewLevel();
 	}
@@ -190,7 +191,12 @@ public class Game {
 	}
 
 	public static void exitLevel() {
-		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.closeTransition(2f, Game::startNewLevel));
+		// Fade out music
+		Engine.audio.fadeOut(LEVEL_TRANSITION_TIME);
+		// Disable movement
+		Players.all().forEach(Player::disableAvatarControl);
+		// Fire up transition effect
+		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.closeTransition(LEVEL_TRANSITION_TIME, Game::startNewLevel));
 	}
 
 	public static void startNewLevel() {
@@ -234,10 +240,10 @@ public class Game {
 		setCurrentState(State.INGAME);
 
 		// Open transition
-		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.openTransition(2f, () -> {}));
+		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.openTransition(LEVEL_TRANSITION_TIME, () -> {}));
 
 		// Start playing new music
-		Engine.audio.playMusic(Gdx.files.internal(levelMusic.get((levelCount - 1) % levelMusic.size())));
+		Engine.audio.playMusic(Gdx.files.internal(levelMusic.get((levelCount - 1) % levelMusic.size())), 0f);
 
 		// Add watches
 		Players.all().forEach(player -> {
@@ -346,6 +352,10 @@ public class Game {
 
 	public static int getLevelCount() {
 		return levelCount;
+	}
+
+	public static void setLevelCount(int levelCount) {
+		Game.levelCount = levelCount;
 	}
 
 	/**

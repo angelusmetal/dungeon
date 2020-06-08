@@ -15,6 +15,7 @@ import com.dungeon.game.Game;
 
 public class TransitionStage implements Renderer {
 
+	public static final float LEVEL_TRANSITION_TIME = 2f;
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 	private final TextureRegion fill;

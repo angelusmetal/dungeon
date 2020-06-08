@@ -47,9 +47,23 @@ public class AudioManager {
 			return;
 		}
 
+		fadeOut(fade);
+
+		if (fade == 0) {
+			track.fade = () -> 1;
+		} else {
+			track.fade = TimeGradient.fadeIn(Engine.time(), fade);
+			track.music.setVolume(0f);
+		}
+
+		track.music.play();
+		track.music.setLooping(loop);
+		currentTracks.push(track);
+	}
+
+	public void fadeOut(float fade) {
 		if (fade == 0) {
 			// If no fade, stop all previous tracks immediately
-			track.fade = () -> 1;
 			while (!currentTracks.isEmpty()) {
 				MusicTrack previous = currentTracks.pop();
 				previous.music.stop();
@@ -57,16 +71,11 @@ public class AudioManager {
 			}
 		} else {
 			// If there is a fade, all previous tracks will start a fadeout
-			track.fade = TimeGradient.fadeIn(Engine.time(), fade);
-			track.music.setVolume(0f);
 			currentTracks.forEach(t -> {
 				t.fade = TimeGradient.fadeOut(Engine.time(), fade);
 				t.ending = true;
 			});
 		}
-		track.music.play();
-		track.music.setLooping(loop);
-		currentTracks.push(track);
 	}
 
 	public void stopMusic() {

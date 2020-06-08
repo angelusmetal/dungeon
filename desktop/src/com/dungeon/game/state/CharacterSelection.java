@@ -12,6 +12,7 @@ import com.dungeon.game.Game;
 import com.dungeon.game.character.player.PlayerCharacterFactory;
 import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.player.Player;
+import com.dungeon.game.player.Players;
 import com.dungeon.game.render.effect.FadeEffect;
 
 import java.util.ArrayList;
@@ -71,7 +72,9 @@ public class CharacterSelection {
 
 	public void confirmSelection(ControlBundle control) {
 		// TODO Only confirm when all active slots have confirmed
+		Game.setLevelCount(0);
 		List<Player> players = slots.stream().map(slot -> new Player(slot.playerId, slot.characterId, slot.control)).collect(Collectors.toList());
+		Engine.audio.fadeOut(FadeEffect.DEFAULT_FADE_DURATION);
 		Engine.renderEffects.add(FadeEffect.fadeOut(Engine.time(), () -> Game.startNewGame(players)));
 	}
 

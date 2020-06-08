@@ -11,7 +11,7 @@ import com.dungeon.engine.util.Util;
 
 public class FadeEffect implements RenderEffect {
 
-	private static final int DEFAULT_FADE_DURATION = 1;
+	public static final int DEFAULT_FADE_DURATION = 1;
 	private final Color start;
 	private final Color end;
 	private final Color currentBlend;

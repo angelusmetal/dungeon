@@ -27,8 +27,9 @@ public class DevCommands {
 		Game.getConsole().bindExpression("spawn", this::spawn, Game::knownEntityTypes);
 
 		// Add variables
-		Game.getConsole().bindVar(ConsoleVar.mutableColor("e_baseLight", Engine::getBaseLight, Engine::setBaseLight));
-		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("e_time", Engine::time));
+		Game.getConsole().bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
+		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
+		Game.getConsole().bindVar(ConsoleVar.mutableInt("levelCount", Game::getLevelCount, Game::setLevelCount));
 	}
 
 	public boolean playMusic(List<String> tokens, ConsoleOutput output) {

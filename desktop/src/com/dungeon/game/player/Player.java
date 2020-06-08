@@ -92,7 +92,15 @@ public class Player {
 		avatar = createAvatar(characterId, origin);
 		avatar.setPlayerId(playerId);
 		Engine.entities.add(avatar);
+		enableAvatarControl();
+	}
+
+	public void enableAvatarControl() {
 		control.setEntity(avatar);
+	}
+
+	public void disableAvatarControl() {
+		control.setEntity(null);
 	}
 
 	private PlayerEntity createAvatar(int characterId, Vector2 origin) {
