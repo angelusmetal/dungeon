@@ -58,7 +58,7 @@ public class FurnitureFactory {
 			@Override public boolean onEntityCollision(Entity entity) {
 				if (!expired && entity instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) entity;
-					character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
+					//character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
 					Vector2 origin = getOrigin().cpy().add(0, getZPos());
 					Vector2 destination = character.getPlayer().getRenderer().getHud().getHudWidget(character.getPlayer()).getCoinCenter();
 					Bezier<Vector2> path = character.getPlayer().getRenderer().getHud().randQuadratic(origin, destination);
