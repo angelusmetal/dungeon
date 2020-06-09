@@ -27,13 +27,8 @@ public class PlayerCharacterFactory {
 	private static final String MORT_ATTACK = "mort_attack";
 	private static final String MORT_IDLE = "mort_idle";
 
-	public static final String JACK_WALK = "jack_walk";
-	private static final String JACK_ATTACK = "jack_attack";
-	private static final String JACK_IDLE = "jack_idle";
-
+	public static final String JACK_WALK = "jack_walk_right";
 	public static final String KARA_WALK = "kara_walk_right";
-	private static final String KARA_ATTACK = "kara_attack_right";
-	private static final String KARA_IDLE = "kara_idle_right";
 
 	public Entity alma(Vector2 origin, EntityPrototype prototype) {
 		final EntityPrototype dust_cloud_blood = DungeonResources.prototypes.get("dust_cloud_blood");
@@ -75,15 +70,15 @@ public class PlayerCharacterFactory {
 		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(
-				JACK_IDLE,
-				JACK_WALK,
-				JACK_ATTACK,
-				JACK_IDLE,
-				JACK_WALK,
-				JACK_ATTACK,
-				JACK_IDLE,
-				JACK_WALK,
-				JACK_ATTACK,
+				"jack_idle_right",
+				"jack_walk_right",
+				"jack_attack_right",
+				"jack_idle_down",
+				"jack_walk_down",
+				"jack_attack_down",
+				"jack_idle_up",
+				"jack_walk_up",
+				"jack_attack_up",
 				stepFactory,
 				prototype,
 				origin);
