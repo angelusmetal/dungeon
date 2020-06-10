@@ -191,11 +191,12 @@ public class SceneStage implements Renderer {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				batch.setColor(lightColor);
 				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
+				Vector2 offset = flare.getFlare() != null ? flare.getFlare().offset : Vector2.Zero;
 				// Draw light texture
 				viewPort.draw(batch,
 						flare.getFlare().texture,
-						flare.getOrigin().x + displacement.x,
-						flare.getOrigin().y + displacement.y + flare.getZPos(),
+						offset.x + flare.getOrigin().x + displacement.x,
+						offset.y + flare.getOrigin().y + displacement.y + flare.getZPos(),
 						flare.getFlare().diameter * flare.getFlare().dim,
 						flare.getFlare().angle);
 			});
@@ -331,7 +332,7 @@ public class SceneStage implements Renderer {
 	private Light2 mapLight(Entity emitter, Light light) {
 		Color color = light.color.cpy();
 		color.a *= emitter.getColor().a;
-		return new Light2(emitter.getOrigin().cpy().add(light.displacement).add(0, emitter.getZPos()),
+		return new Light2(emitter.getOrigin().cpy().add(light.displacement).add(light.offset).add(0, emitter.getZPos()),
 				4f,
 				light.diameter / 2f,
 				color,

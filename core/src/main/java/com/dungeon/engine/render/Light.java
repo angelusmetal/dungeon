@@ -27,6 +27,8 @@ public class Light {
 	public float dim = 1;
 	/** Light angle */
 	public float angle = 0;
+	/** Light offset */
+	public Vector2 offset;
 	/** Light displacement */
 	public Vector2 displacement = new Vector2();
 	public final boolean castsShadow;
@@ -37,6 +39,7 @@ public class Light {
 		this.texture = prototype.texture;
 		this.color = prototype.color;
 		this.diameter = prototype.diameter;
+		this.offset = prototype.offset;
 		this.traits = prototype.traits.stream().map(Supplier::get).collect(Collectors.toList());
 		this.castsShadow = prototype.castsShadow;
 	}
@@ -46,6 +49,7 @@ public class Light {
 		this.color = color;
 		this.diameter = diameter;
 		this.angle = 0;
+		this.offset = Vector2.Zero;
 		this.traits = traits;
 		this.castsShadow = castsShadow;
 	}

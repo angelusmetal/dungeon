@@ -2,6 +2,7 @@ package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityMover;
 import com.dungeon.engine.entity.EntityPrototype;
@@ -25,6 +26,7 @@ import com.typesafe.config.ConfigValueType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 
@@ -182,7 +184,8 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		Color color = ConfigUtil.requireColor(config, "color");
 		Texture texture = Resources.textures.get(ConfigUtil.requireString(config, "texture"));
 		boolean castsShadow = ConfigUtil.getBoolean(config, "castsShadow").orElse(false);
-		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture, castsShadow);
+		Vector2 offset = ConfigUtil.getVector2(config, "offset").orElse(Vector2.Zero);
+		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture, offset, castsShadow);
 		ConfigUtil.getStringList(config, "traits").ifPresent(list -> list.forEach(trait -> getLightTrait(lightPrototype, trait)));
 		return lightPrototype;
 	}

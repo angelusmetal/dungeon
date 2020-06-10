@@ -3,6 +3,7 @@ package com.dungeon.engine.render;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
@@ -20,14 +21,17 @@ public class LightPrototype {
 	protected final Color color;
 	/** Light diameter, in units */
 	protected final float diameter;
+	/** Light offset */
+	protected final Vector2 offset;
 
 	protected final List<Supplier<Consumer<Light>>> traits = new ArrayList<>();
 	protected final boolean castsShadow;
 
-	public LightPrototype(float diameter, Color color, Texture texture, boolean castsShadow) {
+	public LightPrototype(float diameter, Color color, Texture texture, Vector2 offset, boolean castsShadow) {
 		this.texture = texture;
 		this.color = color;
 		this.diameter = diameter;
+		this.offset = offset;
 		this.castsShadow = castsShadow;
 	}
 

@@ -43,7 +43,6 @@ public class AudioManager {
 		try {
 			track.music = Gdx.audio.newMusic(file);
 		} catch (GdxRuntimeException e) {
-			System.err.println("Couldn't find audio file: " + file.name());
 			return;
 		}
 
@@ -110,7 +109,6 @@ public class AudioManager {
 			if (track.music.getVolume() == 0f && track.ending) {
 				track.music.stop();
 				track.music.dispose();
-				System.err.println("Stopped track because of fade: " + track);
 				iterator.remove();
 			}
 		}
