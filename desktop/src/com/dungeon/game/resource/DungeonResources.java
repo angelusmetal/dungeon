@@ -7,6 +7,8 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TilePrototype;
 import com.dungeon.game.resource.loader.EntityPrototypeLoader;
 import com.dungeon.game.resource.loader.EnvironmentLoader;
+import com.dungeon.game.resource.loader.LootGenerator;
+import com.dungeon.game.resource.loader.LootGeneratorLoader;
 import com.dungeon.game.resource.loader.RoomPrototypeLoader;
 import com.dungeon.game.resource.loader.TilePrototypeLoader;
 import com.dungeon.game.resource.loader.TilesetLoader;
@@ -24,6 +26,7 @@ public class DungeonResources {
 	public static final ResourceRepository<TilePrototype> tiles = new ResourceRepository<>();
 	public static final ResourceRepository<RoomPrototype> rooms = new ResourceRepository<>();
 	public static final ResourceRepository<Environment> environments = new ResourceRepository<>();
+	public static final ResourceRepository<LootGenerator> loots = new ResourceRepository<>();
 
 	public static void addLoaders(){
 		Resources.loader.registerLoader("prototype", new EntityPrototypeLoader(prototypes));
@@ -31,6 +34,7 @@ public class DungeonResources {
 		Resources.loader.registerLoader("tile", new TilePrototypeLoader(tiles));
 		Resources.loader.registerLoader("room", new RoomPrototypeLoader(rooms));
 		Resources.loader.registerLoader("environment", new EnvironmentLoader(environments));
+		Resources.loader.registerLoader("loot", new LootGeneratorLoader(loots));
 	}
 
 }

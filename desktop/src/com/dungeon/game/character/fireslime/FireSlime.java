@@ -63,8 +63,6 @@ public class FireSlime extends CreatureEntity {
 	@Override
 	protected void onExpire() {
 		shout(deathPhrases, 0.3f);
-		// Create loot
-		Game.createCreatureLoot(getOrigin());
 	}
 
 	@Override

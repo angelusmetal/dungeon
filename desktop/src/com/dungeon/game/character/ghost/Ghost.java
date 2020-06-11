@@ -66,10 +66,4 @@ public class Ghost extends CreatureEntity {
 		shout(hitPhrases, 0.3f);
 	}
 
-	@Override
-	public void onExpire() {
-		// Create loot TODO Move this to the conf file
-		Game.createCreatureLoot(getOrigin());
-	}
-
 }

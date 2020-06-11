@@ -72,10 +72,4 @@ public class Slime extends CreatureEntity {
 		}
 	}
 
-	@Override
-	protected void onExpire() {
-		// TODO Move this as well to conf
-		Game.createCreatureLoot(getOrigin());
-	}
-
 }

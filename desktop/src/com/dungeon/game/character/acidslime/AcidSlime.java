@@ -72,11 +72,6 @@ public class AcidSlime extends CreatureEntity {
 	}
 
 	@Override
-	protected void onExpire() {
-		Game.createCreatureLoot(getOrigin());
-	}
-
-	@Override
 	protected boolean onEntityCollision(DungeonEntity entity) {
 		if (entity instanceof PlayerEntity) {
 			Attack attack = new Attack(this, factory.damagePerSecond * Engine.frameTime(), DamageType.NORMAL, 0);

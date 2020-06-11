@@ -12,7 +12,6 @@
     # Scaling gives the blocky appeal
     gamma = 0.3
 [map]
-    items = ["weapon_sword", "weapon_cat_staff", "weapon_green_staff"]
     itemchance = 1.0
 [rendering]
     noiseWidth = 128

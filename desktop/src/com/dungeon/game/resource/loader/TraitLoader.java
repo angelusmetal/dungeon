@@ -1,6 +1,8 @@
 package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -10,9 +12,11 @@ import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Metronome;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.resource.DungeonResources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -37,7 +41,7 @@ public class TraitLoader {
 		} else if (type.equals("generate")) {
 			return generate(config);
 		} else if (type.equals("generateLoot")) {
-			return DungeonEntity.generateLoot();
+			return generateLoot(config);
 		} else if (type.equals("xInvert")){
 			return xInvert(config);
 		} else if (type.equals("deathClone")){
@@ -46,9 +50,48 @@ public class TraitLoader {
 			return fadeIn(config);
 		} else if (type.equals("sound")) {
 			return sound(config);
+		} else if (type.equals("setAnimation")) {
+			return setAnimation(config);
+		} else if (type.equals("disableSignals")) {
+			return e -> entity -> entity.setAcceptsSignals(false);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
+	}
+
+	private static <T extends Entity> TraitSupplier<T> setAnimation(Config config) {
+		String name = ConfigUtil.requireString(config, "animation");
+		Animation<TextureRegion> animation = Resources.animations.get(name);
+		return e -> entity -> {
+			entity.setAnimation(animation, Engine.time());
+		};
+	}
+
+	private static <T extends Entity> TraitSupplier<T> generateLoot(Config config) {
+		String lootName = ConfigUtil.requireString(config, "loot");
+		return e -> entity -> {
+			LootGenerator generator = DungeonResources.loots.get(lootName);
+			List<String> lootList = generator.generate();
+			Vector2 origin = entity.getOrigin().cpy().add(0, -5);
+			if (lootList.size() == 1) {
+				// Spawn a single piece of loot
+				Entity loot = Game.build(lootList.get(0), origin);
+				loot.setZPos(15);
+				// TODO Is this really ok?
+				loot.getTraits().add(Traits.fadeIn(1f, 1f).get(loot));
+				Engine.entities.add(loot);
+			} else {
+				// Spawn multiple pieces of loot
+				lootList.forEach(piece -> {
+					Entity loot = Game.build(piece, origin);
+					loot.setZPos(15);
+					// Scatter them around! (this only works if speed is at least 50)
+					loot.impulse(Rand.between(-20, 20), Rand.between(-5, -1));
+					loot.setZSpeed(Rand.between(50, 150));
+					Engine.entities.add(loot);
+				});
+			}
+		};
 	}
 
 	private static <T extends Entity> TraitSupplier<T> fadeIn(Config config) {

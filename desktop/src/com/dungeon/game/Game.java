@@ -8,6 +8,7 @@ import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.console.Console;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
 import com.dungeon.engine.render.Light;
@@ -27,6 +28,7 @@ import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.stage.SceneStage;
 import com.dungeon.game.resource.DungeonResources;
+import com.dungeon.game.resource.loader.LootGenerator;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.viewport.SharedScreenCreationStrategy;
@@ -112,7 +114,6 @@ public class Game {
 		Game.configuration = configuration;
 		entityFactory = new EntityFactory();
 		initEntityFactories(entityFactory);
-		lootSet = configuration.getList("map.items");
 		Collections.shuffle(levelMusic);
 
 		float scale = ConfigUtil.getFloat(config, "viewport.scale").orElse(DEFAULT_SCALE);
@@ -312,17 +313,6 @@ public class Game {
 
 	public static String createLoot() {
 		return Rand.pick(lootSet);
-	}
-
-	public static void createCreatureLoot(Vector2 origin) {
-		if (Rand.chance(1f)) { // Always
-			Rand.doBetween(1, 3, () -> {
-				Entity coin = build(EntityType.COIN, origin);
-				coin.impulse(Rand.between(-20, 20), Rand.between(-20, 20));
-				coin.setZSpeed(Rand.between(50, 150));
-				Engine.entities.add(coin);
-			});
-		}
 	}
 
 	public static Level getLevel() {

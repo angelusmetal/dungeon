@@ -106,6 +106,7 @@ public class Entity implements Drawable, Movable {
 	protected boolean canBeHit;
 	protected boolean canBeHurt;
 	protected boolean isStatic;
+	protected boolean acceptsSignals = true;
 	protected ShadowType shadowType;
 
 	/**
@@ -519,11 +520,17 @@ public class Entity implements Drawable, Movable {
 	}
 
 	public final void signal(Entity emitter) {
-		onSignal(emitter);
-		onSignalTraits.forEach(m -> m.accept(this));
+		if (acceptsSignals) {
+			onSignal(emitter);
+			onSignalTraits.forEach(m -> m.accept(this));
+		}
 	}
 
 	protected void onSignal(Entity emitter) {}
+	
+	public void setAcceptsSignals(boolean acceptsSignals) {
+		this.acceptsSignals = acceptsSignals;
+	}
 
 	@Override
 	public boolean equals(Object o) {
