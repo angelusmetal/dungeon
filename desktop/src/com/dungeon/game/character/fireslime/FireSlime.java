@@ -18,7 +18,6 @@ import java.util.List;
 public class FireSlime extends CreatureEntity {
 
 	private static final List<String> attackPhrases = Arrays.asList("I'm on fire!", "Eat lead!", "That will teach you", "Smoky!");
-	private static final List<String> deathPhrases = Arrays.asList("Oh my!");
 
 	private final FireSlimeFactory factory;
 	private float nextThink;
@@ -58,11 +57,6 @@ public class FireSlime extends CreatureEntity {
 		} else {
 			speed *= 1 - 0.5 * Engine.frameTime();
 		}
-	}
-
-	@Override
-	protected void onExpire() {
-		shout(deathPhrases, 0.3f);
 	}
 
 	@Override

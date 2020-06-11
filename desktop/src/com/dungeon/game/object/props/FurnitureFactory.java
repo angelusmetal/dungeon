@@ -25,30 +25,20 @@ public class FurnitureFactory {
 
 	public Entity doorHorizontal(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
-			private boolean opened = false;
 			@Override public void onSignal(Entity emitter) {
-				if (!opened) {
-					canBlock = false;
-					canBeHit = false;
-					opened = true;
-					shadowType = ShadowType.NONE;
-					Engine.entities.add(new DungeonEntity(DungeonResources.prototypes.get("door_horizontal_open"), origin));
-				}
+				canBlock = false;
+				canBeHit = false;
+				shadowType = ShadowType.NONE;
 			}
 		};
 	}
 
 	public Entity doorVertical(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
-			private boolean opened = false;
 			@Override public void onSignal(Entity emitter) {
-				setAnimation(Resources.animations.get("door_vertical_open"), Engine.time());
-				if (!opened) {
-					canBlock = false;
-					canBeHit = false;
-					opened = true;
-					shadowType = ShadowType.NONE;
-				}
+				canBlock = false;
+				canBeHit = false;
+				shadowType = ShadowType.NONE;
 			}
 		};
 	}

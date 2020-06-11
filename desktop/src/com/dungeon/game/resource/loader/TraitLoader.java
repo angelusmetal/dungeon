@@ -15,11 +15,13 @@ import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
+import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.resource.DungeonResources;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -54,9 +56,21 @@ public class TraitLoader {
 			return setAnimation(config);
 		} else if (type.equals("disableSignals")) {
 			return e -> entity -> entity.setAcceptsSignals(false);
+		} else if (type.equals("shout")) {
+			return shout(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
+	}
+
+	private static <T extends Entity> TraitSupplier<T> shout(Config config) {
+		List<String> phrases = ConfigUtil.getStringList(config, "phrases").orElse(Collections.emptyList());
+		float chance = ConfigUtil.getFloat(config, "chance").orElse(1f);
+		return e -> entity -> {
+			if (Rand.chance(chance)) {
+				Game.shout(entity, Rand.pick(phrases));
+			}
+		};
 	}
 
 	private static <T extends Entity> TraitSupplier<T> setAnimation(Config config) {
