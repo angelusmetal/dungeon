@@ -86,19 +86,33 @@ public class OverlayText {
 		return this;
 	}
 
-	public OverlayText bindTo(Entity entity, Vector2 offset) {
-		if (offset.y >= 0) {
-			// If vertical offset is positive, it will be relative to top
-			traits.add(() -> {
-				origin.set(entity.getOrigin().x + offset.x, entity.getBody().getTopRight().y + offset.y);
-				expired |= entity.isExpired();
-			});
+	public OverlayText bindTo(Entity entity, Vector2 offset, boolean andExpire) {
+		if (andExpire) {
+			if (offset.y >= 0) {
+				// If vertical offset is positive, it will be relative to top
+				traits.add(() -> {
+					origin.set(entity.getOrigin().x + offset.x, entity.getBody().getTopRight().y + offset.y);
+					expired |= entity.isExpired();
+				});
+			} else {
+				// Negative vertical offset is instead relative to origin
+				traits.add(() -> {
+					origin.set(entity.getOrigin().x + offset.x, entity.getOrigin().y + offset.y);
+					expired |= entity.isExpired();
+				});
+			}
 		} else {
-			// Negative vertical offset is instead relative to origin
-			traits.add(() -> {
-				origin.set(entity.getOrigin().x + offset.x, entity.getOrigin().y + offset.y);
-				expired |= entity.isExpired();
-			});
+			if (offset.y >= 0) {
+				// If vertical offset is positive, it will be relative to top
+				traits.add(() -> {
+					origin.set(entity.getOrigin().x + offset.x, entity.getBody().getTopRight().y + offset.y);
+				});
+			} else {
+				// Negative vertical offset is instead relative to origin
+				traits.add(() -> {
+					origin.set(entity.getOrigin().x + offset.x, entity.getOrigin().y + offset.y);
+				});
+			}
 		}
 		return this;
 	}

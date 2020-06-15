@@ -28,7 +28,7 @@ public class ShopItemEntity extends DungeonEntity {
 		this.canBlock = false;
 		// Add text for price
 		OverlayText overlayText = Game.text(origin, "" + price, Color.GOLD)
-				.bindTo(this, PRICE_OFFSET);
+				.bindTo(this, PRICE_OFFSET, true);
 		Engine.overlayTexts.add(overlayText);
 	}
 

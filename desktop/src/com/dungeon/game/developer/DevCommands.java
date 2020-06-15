@@ -24,6 +24,7 @@ public class DevCommands {
 		Game.getConsole().bindExpression("playMusic", this::playMusic);
 		Game.getConsole().bindExpression("stopMusic", this::stopMusic);
 		Game.getConsole().bindExpression("say", this::say);
+		Game.getConsole().bindExpression("shout", this::shout);
 		Game.getConsole().bindExpression("spawn", this::spawn, Game::knownEntityTypes);
 		Game.getConsole().bindExpression("die", (args, output) -> {
 			Players.all().forEach(p -> p.getAvatar().expire());
@@ -55,6 +56,11 @@ public class DevCommands {
 
 	public boolean say(List<String> tokens, ConsoleOutput output) {
 		Players.get(0).getAvatar().say(String.join(" ", tokens));
+		return true;
+	}
+
+	public boolean shout(List<String> tokens, ConsoleOutput output) {
+		Game.shout(Players.get(0).getAvatar(), String.join(" ", tokens));
 		return true;
 	}
 

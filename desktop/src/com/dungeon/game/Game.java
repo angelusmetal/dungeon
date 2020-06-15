@@ -81,7 +81,7 @@ public class Game {
 		OverlayText overlayText = text(emitter.getOrigin(), text)
 				.spell(1, 0)
 				.fadeout(1, 4)
-				.bindTo(emitter, SAY_OFFSET);
+				.bindTo(emitter, SAY_OFFSET, false);
 		Engine.overlayTexts.add(overlayText);
 		return overlayText;
 	}
@@ -90,7 +90,7 @@ public class Game {
 		OverlayText overlayText = text(emitter.getOrigin(), text)
 				.spell(0.25f, 0)
 				.fadeout(1, 1)
-				.bindTo(emitter, SAY_OFFSET);
+				.bindTo(emitter, SAY_OFFSET, false);
 		Engine.overlayTexts.add(overlayText);
 		return overlayText;
 	}
