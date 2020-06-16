@@ -39,6 +39,7 @@ public class DevCommands {
 		Game.getConsole().bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
 		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
 		Game.getConsole().bindVar(ConsoleVar.mutableInt("levelCount", Game::getLevelCount, Game::setLevelCount));
+		Game.getConsole().bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 	}
 
 	public boolean playMusic(List<String> tokens, ConsoleOutput output) {

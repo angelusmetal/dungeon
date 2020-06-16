@@ -18,6 +18,7 @@ import java.util.LinkedList;
 public class AudioManager {
 
 	boolean enabled = true;
+	private float musicVolume = 0.5f;
 
 	private static class MusicTrack {
 		Music music;
@@ -104,7 +105,7 @@ public class AudioManager {
 	public void update() {
 		for (Iterator<MusicTrack> iterator = currentTracks.iterator(); iterator.hasNext();) {
 			MusicTrack track = iterator.next();
-			track.music.setVolume(track.fade.get());
+			track.music.setVolume(track.fade.get() * musicVolume);
 			// Any track that has completely faded out will be stopped, disposed and removed
 			if (track.music.getVolume() == 0f && track.ending) {
 				track.music.stop();
@@ -114,4 +115,11 @@ public class AudioManager {
 		}
 	}
 
+	public float getMusicVolume() {
+		return musicVolume;
+	}
+
+	public void setMusicVolume(float musicVolume) {
+		this.musicVolume = musicVolume;
+	}
 }

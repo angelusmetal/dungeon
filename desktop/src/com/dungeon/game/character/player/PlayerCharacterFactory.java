@@ -1,5 +1,6 @@
 package com.dungeon.game.character.player;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,6 +31,26 @@ public class PlayerCharacterFactory {
 	public static final String JACK_WALK = "jack_walk_right";
 	public static final String KARA_WALK = "kara_walk_right";
 
+	public static final float STEP_INTERVAL = 0.4f;
+
+	private Function<Entity, Metronome> stepFactory;
+
+	public PlayerCharacterFactory() {
+		final EntityPrototype[] dust_clouds = {
+				DungeonResources.prototypes.get("dust_cloud_1"),
+				DungeonResources.prototypes.get("dust_cloud_2"),
+				DungeonResources.prototypes.get("dust_cloud_3")
+		};
+		final Sound[] sounds = {
+				Resources.sounds.get("audio/sound/step_1.ogg"),
+				Resources.sounds.get("audio/sound/step_2.ogg")
+		};
+		stepFactory = e -> new Metronome(STEP_INTERVAL, () -> {
+			Engine.audio.playSound(Rand.pick(sounds), e.getOrigin(), 0.5f, 0.05f);
+			Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1)));
+		});
+	}
+
 	public Entity alma(Vector2 origin, EntityPrototype prototype) {
 		final EntityPrototype dust_cloud_blood = DungeonResources.prototypes.get("dust_cloud_blood");
 		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.2f, () -> Engine.entities.add(new Entity(dust_cloud_blood, e.getOrigin().cpy().add(0, 1))));
@@ -49,8 +70,6 @@ public class PlayerCharacterFactory {
 	}
 
 	public Entity mort(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
-		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(
 				MORT_IDLE,
 				MORT_WALK,
@@ -67,8 +86,6 @@ public class PlayerCharacterFactory {
 	}
 
 	public Entity jack(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
-		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(
 				"jack_idle_right",
 				"jack_walk_right",
@@ -85,8 +102,6 @@ public class PlayerCharacterFactory {
 	}
 
 	public Entity kara(Vector2 origin, EntityPrototype prototype) {
-		final EntityPrototype[] dust_clouds = {DungeonResources.prototypes.get("dust_cloud_1"), DungeonResources.prototypes.get("dust_cloud_2"), DungeonResources.prototypes.get("dust_cloud_3")};
-		Function<Entity, Metronome> stepFactory = e -> new Metronome(0.4f, () -> Engine.entities.add(new Entity(Rand.pick(dust_clouds), e.getOrigin().cpy().add(0, 1))));
 		return factory(
 				"kara_idle_right",
 				"kara_walk_right",

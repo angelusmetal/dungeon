@@ -18,6 +18,7 @@ import com.dungeon.game.player.Players;
 import java.util.function.Predicate;
 
 import static com.dungeon.engine.controller.pov.PovToggle.vec2ToPov4;
+import static com.dungeon.game.character.player.PlayerCharacterFactory.STEP_INTERVAL;
 
 public abstract class PlayerEntity extends CreatureEntity {
 
@@ -68,7 +69,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 			if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
 				updateAnimation(getIdleAnimation(animationDirection));
 			} else {
-				updateAnimation(getWalkAnimation(animationDirection));
+				if (updateAnimation(getWalkAnimation(animationDirection))) {
+					stepMetronome.reset(STEP_INTERVAL / 2f);
+				}
 				stepMetronome.doAtInterval();
 			}
 		}

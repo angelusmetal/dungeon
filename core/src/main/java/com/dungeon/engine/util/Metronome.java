@@ -30,4 +30,12 @@ public class Metronome {
 			expiration = Engine.time() + interval;
 		}
 	}
+
+	public void reset() {
+		expiration = Engine.time();
+	}
+
+	public void reset(float offset) {
+		expiration = Engine.time() + offset;
+	}
 }

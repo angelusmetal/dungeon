@@ -226,10 +226,16 @@ public class Entity implements Drawable, Movable {
 		this.animationStart = offsetAnimation ? Engine.time() - Rand.between(0f, animation.getAnimationDuration()) : Engine.time();
 	}
 
-	public void updateAnimation(Animation<TextureRegion> animation) {
+	/**
+	 * @return true if animation was changed; false otherwise (animation was already the desired one)
+	 */
+	public boolean updateAnimation(Animation<TextureRegion> animation) {
 		if (animation != this.animation) {
 			this.animation = animation;
 			this.animationStart = Engine.time();
+			return true;
+		} else {
+			return false;
 		}
 	}
 

@@ -21,7 +21,7 @@ import static com.dungeon.engine.util.Util.randVect;
 
 public class FurnitureFactory {
 
-	Sound soundFurnitureBreak = Resources.sounds.get("audio/sound/break_wood.ogg");
+	Sound pickupSound = Resources.sounds.get("audio/sound/pickup.ogg");
 
 	public Entity doorHorizontal(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
@@ -56,6 +56,7 @@ public class FurnitureFactory {
 					PathParticle particle = new PathParticle(path, getAnimation(),1f) {
 						Metronome sparkGenerator;
 						{
+							Engine.audio.playSound(pickupSound, character.getOrigin(), 1f, 0.05f);
 							sparkGenerator = new Metronome(1f / 30f, () -> {
 								TimeGradient gradient = TimeGradient.fadeOut(startTime, duration);
 								LinearParticle spark = new LinearParticle(this.origin, randVect(10, 30), this.animation, 0.5f) {
