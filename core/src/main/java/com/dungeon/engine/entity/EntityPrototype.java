@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 import static com.dungeon.engine.util.Util.clamp;
 
 public class EntityPrototype {
+	List<Vector2> occlusionSegments;
 	Supplier<Animation<TextureRegion>> animation = () -> null;
 	boolean offsetAnimation;
 	float bounciness = 0;
@@ -87,6 +88,7 @@ public class EntityPrototype {
 		this.shadowType = other.shadowType;
 		this.factory = other.factory;
 		this.isStatic = other.isStatic;
+		this.occlusionSegments = other.occlusionSegments;
 	}
 
 	public EntityPrototype animation(Animation<TextureRegion> animation) {
@@ -121,6 +123,47 @@ public class EntityPrototype {
 	public EntityPrototype boundingBoxOffset(Vector2 boundingBoxOffset) {
 		this.boundingBoxOffset = boundingBoxOffset;
 		return this;
+	}
+
+	public EntityPrototype occlusionSegments(List<Vector2> vertexes) {
+		this.occlusionSegments = vertexes;
+		return this;
+	}
+
+	/**
+	 * @return A list of occlusion segments derived from the bounding box
+	 * (used for when there are no custom segments defined)
+	 */
+	public ArrayList<Vector2> occlusionSegmentsFromBoundingBox() {
+		ArrayList<Vector2> vertexes = new ArrayList<>(16);
+		if (boundingBoxOffset.len2() > 0) {
+			// If there is a defined offset
+			vertexes.add(new Vector2(-boundingBoxOffset.x, -boundingBoxOffset.y));
+			vertexes.add(new Vector2(boundingBox.x - boundingBoxOffset.x, -boundingBoxOffset.y));
+
+			vertexes.add(new Vector2(boundingBox.x - boundingBoxOffset.x, -boundingBoxOffset.y));
+			vertexes.add(new Vector2(boundingBox.x - boundingBoxOffset.x, boundingBox.y - boundingBoxOffset.y));
+
+			vertexes.add(new Vector2(boundingBox.x - boundingBoxOffset.x, boundingBox.y - boundingBoxOffset.y));
+			vertexes.add(new Vector2(-boundingBoxOffset.x, boundingBox.y - boundingBoxOffset.y));
+
+			vertexes.add(new Vector2(-boundingBoxOffset.x, boundingBox.y - boundingBoxOffset.y));
+			vertexes.add(new Vector2(-boundingBoxOffset.x, -boundingBoxOffset.y));
+		} else {
+			// Otherwise, centered
+			vertexes.add(new Vector2(-boundingBox.x / 2f, -boundingBox.y / 2f));
+			vertexes.add(new Vector2(boundingBox.x / 2f, -boundingBox.y / 2f));
+
+			vertexes.add(new Vector2(boundingBox.x / 2f, -boundingBox.y / 2f));
+			vertexes.add(new Vector2(boundingBox.x / 2f, boundingBox.y / 2f));
+
+			vertexes.add(new Vector2(boundingBox.x / 2f, boundingBox.y / 2f));
+			vertexes.add(new Vector2(-boundingBox.x / 2f, boundingBox.y / 2f));
+
+			vertexes.add(new Vector2(-boundingBox.x / 2f, boundingBox.y / 2f));
+			vertexes.add(new Vector2(-boundingBox.x / 2f, -boundingBox.y / 2f));
+		}
+		return vertexes;
 	}
 
 	public EntityPrototype shadowType(ShadowType shadowType) {

@@ -100,4 +100,7 @@ public class ViewPortBuffer implements Disposable {
 		return textureRegion.getTexture();
 	}
 
+	public FrameBuffer getFrameBuffer() {
+		return frameBuffer;
+	}
 }

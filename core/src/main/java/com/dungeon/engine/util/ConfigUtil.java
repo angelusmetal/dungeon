@@ -9,6 +9,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValueType;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,6 +376,18 @@ public class ConfigUtil {
 //		return ConfigUtil.<T>getList(configuration, key).orElseThrow(missing(key));
 //	}
 
+	public static Optional<List<Float>> getFloatList(Config config, String key) {
+		if (config.hasPath(key)) {
+			return Optional.of(config.getDoubleList(key).stream().map(Double::floatValue).collect(Collectors.toList()));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static List<Float> requireFloatList(Config config, String key) {
+		return config.getDoubleList(key).stream().map(Double::floatValue).collect(Collectors.toList());
+	}
+
 	public static Optional<List<Integer>> getIntList(Config config, String key) {
 		if (config.hasPath(key)) {
 			return Optional.of(config.getIntList(key));
@@ -397,6 +410,26 @@ public class ConfigUtil {
 
 	public static List<String> requireStringList(Config config, String key) {
 		return config.getStringList(key);
+	}
+
+	public static Optional<List<Vector2>> getVector2List(Config config, String key) {
+		if (config.hasPath(key)) {
+			List<Float> floats = requireFloatList(config, key);
+			if (floats.size() % 2 != 0) {
+				throw new RuntimeException("Expected an even number of floats in Vector2 list at key '" + key + "'");
+			}
+			ArrayList<Vector2> vector2s = new ArrayList<>(floats.size() / 2);
+			for (int i = 0; i < floats.size(); i += 2) {
+				vector2s.add(new Vector2(floats.get(i), floats.get(i+1)));
+			}
+			return Optional.of(vector2s);
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	public static List<Vector2> requireVector2List(Config config, String key) {
+		return getVector2List(config, key).get();
 	}
 
 	public static Optional<List<? extends Config>> getConfigList(Config config, String key) {

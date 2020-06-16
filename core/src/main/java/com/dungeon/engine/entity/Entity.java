@@ -108,6 +108,7 @@ public class Entity implements Drawable, Movable {
 	protected boolean isStatic;
 	protected boolean acceptsSignals = true;
 	protected ShadowType shadowType;
+	private List<Vector2> occlusionSegments;
 
 	/**
 	 * Create an entity at origin, from the specified prototype
@@ -157,6 +158,7 @@ public class Entity implements Drawable, Movable {
 		this.canBeHurt = prototype.canBeHurt;
 		this.shadowType = prototype.shadowType;
 		this.isStatic = prototype.isStatic;
+		this.occlusionSegments = prototype.occlusionSegments;
 	}
 
 	/**
@@ -197,6 +199,7 @@ public class Entity implements Drawable, Movable {
 		this.canBeHurt = other.canBeHurt;
 		this.shadowType = other.shadowType;
 		this.isStatic = other.isStatic;
+		this.occlusionSegments = other.occlusionSegments;
 	}
 
 	@Override
@@ -551,4 +554,7 @@ public class Entity implements Drawable, Movable {
 		return Objects.hash(uniqueid);
 	}
 
+	public List<Vector2> getOcclusionSegments() {
+		return occlusionSegments;
+	}
 }

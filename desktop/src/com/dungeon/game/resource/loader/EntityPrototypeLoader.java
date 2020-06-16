@@ -90,6 +90,8 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getFloat(descriptor, "bounciness").ifPresent(prototype::bounciness);
 		ConfigUtil.getVector2(descriptor, "boundingBox").ifPresent(prototype::boundingBox);
 		ConfigUtil.getVector2(descriptor, "boundingBoxOffset").ifPresent(prototype::boundingBoxOffset);
+		List<Vector2> occlusionSegments = ConfigUtil.getVector2List(descriptor, "occlusionSegments").orElse(prototype.occlusionSegmentsFromBoundingBox());
+		prototype.occlusionSegments(occlusionSegments);
 		ConfigUtil.getEnum(descriptor, "shadow", ShadowType.class).ifPresent(prototype::shadowType);
 		ConfigUtil.getColor(descriptor, "color").ifPresent(prototype::color);
 		ConfigUtil.getVector2(descriptor, "drawOffset").ifPresent(prototype::drawOffset);

@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SceneStage implements Renderer {
 
@@ -250,7 +251,7 @@ public class SceneStage implements Renderer {
 		if (withShadows) {
 			 geometry = Engine.entities.inViewPort(viewPort, 100f)
 					.filter(e -> e.shadowType() == ShadowType.RECTANGLE)
-					.flatMap(entity -> mapGeometry(entity).stream())
+					.flatMap(this::mapGeometry)
 					.collect(Collectors.toList());
 		} else {
 			geometry = Collections.emptyList();
@@ -271,28 +272,9 @@ public class SceneStage implements Renderer {
 		}
 	}
 
-	private List<Float> mapGeometry(Entity entity) {
-		List<Float> vertexes = new ArrayList<>(16);
-		vertexes.add(entity.getBody().getBottomLeft().x);
-		vertexes.add(entity.getBody().getBottomLeft().y);
-		vertexes.add(entity.getBody().getTopRight().x);
-		vertexes.add(entity.getBody().getBottomLeft().y);
-
-		vertexes.add(entity.getBody().getTopRight().x);
-		vertexes.add(entity.getBody().getBottomLeft().y);
-		vertexes.add(entity.getBody().getTopRight().x);
-		vertexes.add(entity.getBody().getTopRight().y);
-
-		vertexes.add(entity.getBody().getTopRight().x);
-		vertexes.add(entity.getBody().getTopRight().y);
-		vertexes.add(entity.getBody().getBottomLeft().x);
-		vertexes.add(entity.getBody().getTopRight().y);
-
-		vertexes.add(entity.getBody().getBottomLeft().x);
-		vertexes.add(entity.getBody().getTopRight().y);
-		vertexes.add(entity.getBody().getBottomLeft().x);
-		vertexes.add(entity.getBody().getBottomLeft().y);
-		return vertexes;
+	private Stream<Float> mapGeometry(Entity entity) {
+		return entity.getOcclusionSegments().stream()
+				.flatMap(vec -> Stream.of(vec.x + entity.getOrigin().x, vec.y + entity.getOrigin().y));
 	}
 
 	/** Draws a circular shadow */
