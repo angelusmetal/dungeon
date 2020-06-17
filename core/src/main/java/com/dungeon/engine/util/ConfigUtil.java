@@ -6,10 +6,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.resource.LoadingException;
 import com.moandjiezana.toml.Toml;
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigValueType;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -409,7 +411,11 @@ public class ConfigUtil {
 	}
 
 	public static List<String> requireStringList(Config config, String key) {
-		return config.getStringList(key);
+		try {
+			return config.getStringList(key);
+		} catch (ConfigException.WrongType e) {
+			return Collections.singletonList(config.getString(key));
+		}
 	}
 
 	public static Optional<List<Vector2>> getVector2List(Config config, String key) {

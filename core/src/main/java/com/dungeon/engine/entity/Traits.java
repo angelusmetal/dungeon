@@ -12,7 +12,7 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.TimeGradient;
 import com.dungeon.engine.util.Util;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -214,4 +214,19 @@ public class Traits {
         }
     }
 
+    static public <T extends Entity> TraitSupplier<T> playSound(List<Sound> sounds, float volume, float pitchVariance, float zspeedAttn, float chance) {
+        if (pitchVariance == 0) {
+            return e -> entity -> {
+                if (Rand.chance(chance)) {
+                    Engine.audio.playSound(Rand.pick(sounds), entity.getOrigin(), volume, pitchVariance);
+                }
+            };
+        } else {
+            return e -> entity -> {
+                if (Rand.chance(chance)) {
+                    Engine.audio.playSound(Rand.pick(sounds), entity.getOrigin(), volume * clamp(abs(entity.zSpeed) / zspeedAttn), pitchVariance);
+                }
+            };
+        }
+    }
 }

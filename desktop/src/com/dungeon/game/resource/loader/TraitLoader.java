@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class TraitLoader {
 
@@ -231,12 +232,12 @@ public class TraitLoader {
 	}
 
 	private static <T extends Entity> TraitSupplier<T> sound(Config config) {
-		String file = ConfigUtil.requireString(config, "file");
-		Sound sound = Resources.sounds.get(file);
+		List<Sound> sounds = ConfigUtil.requireStringList(config, "file").stream().map(Resources.sounds::get).collect(Collectors.toList());
+		float chance = ConfigUtil.getFloat(config, "chance").orElse(1f);
 		float volume = ConfigUtil.getFloat(config, "volume").orElse(1f);
 		float pitchVariance = Util.clamp(ConfigUtil.getFloat(config, "pitchVariance").orElse(0f));
 		float zspeedAttn = ConfigUtil.getFloat(config, "zspeedAttn").orElse(0f);
-		return Traits.playSound(sound, volume, pitchVariance, zspeedAttn);
+		return Traits.playSound(sounds, volume, pitchVariance, zspeedAttn, chance);
 	}
 
 
