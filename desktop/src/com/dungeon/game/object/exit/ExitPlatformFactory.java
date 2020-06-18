@@ -23,4 +23,18 @@ public class ExitPlatformFactory {
 		};
 	}
 
+	public Entity boss(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
+			boolean exited = false;
+			@Override
+			protected boolean onEntityCollision(Entity entity) {
+				if (!exited && entity instanceof PlayerEntity) {
+					exited = true;
+					Game.exitLevel();
+				}
+				return true;
+			}
+		};
+	}
+
 }
