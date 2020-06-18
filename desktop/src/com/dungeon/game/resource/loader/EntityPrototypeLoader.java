@@ -69,6 +69,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 	}
 
 	private void getGeneratorDeps(Config config, List<ResourceIdentifier> dependencies) {
+		ConfigUtil.getString(config, "animation").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("animation", dependency)));
 		ConfigUtil.getString(config, "prototype").ifPresent(dependency -> dependencies.add(new ResourceIdentifier("prototype", dependency)));
 	}
 
