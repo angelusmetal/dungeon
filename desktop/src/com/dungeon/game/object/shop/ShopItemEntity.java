@@ -6,7 +6,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.game.Game;
-import com.dungeon.game.character.merchant.MerchantEntity;
+import com.dungeon.game.character.npc.MerchantEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 

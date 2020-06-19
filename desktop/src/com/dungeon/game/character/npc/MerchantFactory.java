@@ -1,9 +1,11 @@
-package com.dungeon.game.character.merchant;
+package com.dungeon.game.character.npc;
 
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.Resources;
+import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.object.shop.ShopItem;
 
 import java.util.Arrays;
@@ -48,5 +50,11 @@ public class MerchantFactory {
 				items);
 	}
 
+	public Entity wanderer(Vector2 origin, EntityPrototype prototype) {
+		return new NpcEntity(origin, prototype,
+				Resources.animations.get("kat_idle"),
+				Resources.animations.get("kat_talk"),
+				Arrays.asList("Greetings adventurer", "This is the dungeon of Arkind", "A foul place filled with monsters", "Enter at your own risk"));
+	}
 
 }

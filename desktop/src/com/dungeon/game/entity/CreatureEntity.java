@@ -23,17 +23,8 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	public CreatureEntity(Vector2 origin, EntityPrototype prototype) {
 		super(prototype, origin);
-		canBeHit = true;
-		canBeHurt = true;
 	}
 
-//	@Override
-//	public void think() {
-//		if (getSelfImpulse().len() > 0.5) {
-//			aim(getSelfImpulse());
-//		}
-//	}
-//
 	public void aim(Vector2 vector) {
 		aim.set(vector);
 	}
@@ -58,7 +49,7 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	public void say(String text) {
 		if (Engine.time() > nextTalk) {
-			nextTalk = Engine.time() + 4;
+			nextTalk = Engine.time() + 4.5f;
 			Game.say(this, text);
 		}
 	}

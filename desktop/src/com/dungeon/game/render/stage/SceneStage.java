@@ -23,7 +23,6 @@ import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -164,8 +163,8 @@ public class SceneStage implements Renderer {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
-				Engine.entities.inViewPort(viewPort)
-						.filter(viewPort::isInViewPort)
+				Engine.entities.inViewPort(viewPort, 100f)
+//						.filter(viewPort::isInViewPort)
 						.filter(e -> e.getZIndex() >= 0)
 						.sorted(comp)
 						.forEach(e -> {
@@ -188,7 +187,7 @@ public class SceneStage implements Renderer {
 		// Draw flares
 		output.projectToViewPort();
 		output.render(batch -> addLights.run(batch, () -> {
-			Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
+			Engine.entities.inViewPort(viewPort, 200f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				batch.setColor(lightColor);
 				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
@@ -242,7 +241,7 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderLights(boolean withShadows) {
-		lightCount = (int) Engine.entities.inViewPort(viewPort, 100f).filter(viewPort::lightIsInViewPort).count();
+		lightCount = (int) Engine.entities.inViewPort(viewPort, 200f).filter(viewPort::lightIsInViewPort).count();
 		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 100f)
 				.filter(viewPort::lightIsInViewPort)
 				.map(entity -> mapLight(entity, entity.getLight()))

@@ -151,7 +151,7 @@ public class Traits {
             Animation<TextureRegion> newAnimation;
             Vector2 vector = vectorProvider.apply(entity);
             // Updates current animation based on the self impulse vector
-            entity.getDrawScale().x = vector.x < 0 ? -1 : 1;
+            entity.getDrawScale().x = abs(entity.getDrawScale().x) * (vector.x < 0 ? -1 : 1);
             if (abs(vector.x) > abs(vector.y)) {
                 // Sideways animation
                 newAnimation = side;
@@ -167,7 +167,7 @@ public class Traits {
     static public <T extends Entity> TraitSupplier<T> xInvertByVector(Function<Entity, Vector2> vFunction) {
         return e -> entity -> {
             if (vFunction.apply(e).x != 0) {
-                entity.getDrawScale().x = abs(entity.getDrawScale().x) * entity.getMovement().x < 0 ? -1 : 1;
+                entity.getDrawScale().x = abs(entity.getDrawScale().x) * (entity.getMovement().x < 0 ? -1 : 1);
             }
         };
     }

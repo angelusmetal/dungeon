@@ -63,10 +63,10 @@ public class ViewPort {
 
 	public boolean isInViewPort(Entity e) {
 		return
-				e.getOrigin().x - e.getDrawOffset().x < cameraX + cameraWidth &&
-				e.getOrigin().x - e.getDrawOffset().x + e.getFrame().getRegionWidth() > cameraX &&
-				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() < cameraY + cameraHeight &&
-				e.getOrigin().y - e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
+				e.getBody().getBottomLeft().x - e.getDrawOffset().x < cameraX + cameraWidth &&
+				e.getBody().getTopRight().x - e.getDrawOffset().x + e.getFrame().getRegionWidth() > cameraX &&
+				e.getBody().getBottomLeft().y - e.getDrawOffset().y + e.getZPos() < cameraY + cameraHeight &&
+				e.getBody().getTopRight().y - e.getDrawOffset().y + e.getZPos() + e.getFrame().getRegionHeight() > cameraY;
 	}
 
 	public boolean lightIsInViewPort(Entity e) {

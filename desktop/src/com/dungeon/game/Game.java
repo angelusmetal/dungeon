@@ -8,7 +8,6 @@ import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.console.Console;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
-import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.entity.factory.EntityFactory;
 import com.dungeon.engine.entity.factory.EntityPrototypeFactory;
 import com.dungeon.engine.render.Light;
@@ -28,8 +27,8 @@ import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.render.stage.SceneStage;
 import com.dungeon.game.resource.DungeonResources;
-import com.dungeon.game.resource.loader.LootGenerator;
 import com.dungeon.game.tileset.Environment;
+import com.dungeon.game.tileset.EnvironmentLevel;
 import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.viewport.SharedScreenCreationStrategy;
 import com.dungeon.game.viewport.SplitScreenCreationStrategy;
@@ -96,25 +95,16 @@ public class Game {
 	}
 
 	private static Level level;
+	private static int levelCount;
 	private static Environment environment;
+	private static EnvironmentLevel environmentLevel;
 	private static State currentState = State.MENU;
-
-	// List of level music...
-	private static List<String> levelMusic = Arrays.asList(
-			"audio/shy.ogg",
-			"audio/roaming.ogg",
-			"audio/street_dancing.wav",
-			"audio/the_course.wav",
-			"audio/the_crystal_chamber.wav",
-			"audio/the_halls_of_nowhere.ogg"
-	);
 
 	public static void initialize(Toml configuration) {
 		Config config = ConfigFactory.load("config.conf");
 		Game.configuration = configuration;
 		entityFactory = new EntityFactory();
 		initEntityFactories(entityFactory);
-		Collections.shuffle(levelMusic);
 
 		float scale = ConfigUtil.getFloat(config, "viewport.scale").orElse(DEFAULT_SCALE);
 		float margin = ConfigUtil.getFloat(config, "viewport.margin").orElse(DEFAULT_MARGIN);
@@ -168,8 +158,10 @@ public class Game {
 	}
 
 	public static float getDifficultyTier() {
+		// TODO Fix this...
+		int levelTier = environmentLevel != null ? environmentLevel.getTier() : 0;
 		double playerMultiplier = Math.pow(1.5, Math.max(Players.count(), 1) - 1);
-		double levelMultiplier = Math.pow(1.5, Math.max(getLevelCount(), 1) - 1);
+		double levelMultiplier = Math.pow(1.5, Math.max(levelTier, 1) - 1);
 		return (float) (playerMultiplier * levelMultiplier);
 	}
 
@@ -213,7 +205,7 @@ public class Game {
 		int i = 0;
 		for (Player player : Players.all()) {
 			EntityPlaceholder spawnPoint = playerSpawns.get(i++);
-			Vector2 origin = Util.floor(spawnPoint.getOrigin().cpy().scl(environment.getTilesize()));
+			Vector2 origin = Util.floor(spawnPoint.getOrigin().cpy().scl(environmentLevel.getTilesize()));
 			player.spawn(origin);
 		}
 
@@ -222,12 +214,12 @@ public class Game {
 			if (Rand.chance(placeholder.getChance())) {
 				if (EntityType.LIGHT.equals(placeholder.getType())) {
 					// Light placeholder (which inlines light definition)
-					Entity light = entityFactory.build(EntityType.LIGHT, Util.floor(placeholder.getOrigin().cpy().scl(environment.getTilesize())));
+					Entity light = entityFactory.build(EntityType.LIGHT, Util.floor(placeholder.getOrigin().cpy().scl(environmentLevel.getTilesize())));
 					light.setLight(new Light(placeholder.getLightPrototype()));
 					Engine.entities.add(light);
 				} else {
 					// Regular placeholder
-					Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environment.getTilesize()))));
+					Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environmentLevel.getTilesize()))));
 				}
 			}
 		});
@@ -244,7 +236,7 @@ public class Game {
 		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.openTransition(LEVEL_TRANSITION_TIME, () -> {}));
 
 		// Start playing new music
-		Engine.audio.playMusic(Gdx.files.internal(levelMusic.get((levelCount - 1) % levelMusic.size())), 0f);
+		Engine.audio.playMusic(Gdx.files.internal(environmentLevel.getMusic()), 0f);
 
 		// Add watches
 		Players.all().forEach(player -> {
@@ -287,8 +279,8 @@ public class Game {
 	private static final float DEFAULT_SCALE = 3;
 	private static final float DEFAULT_MARGIN = 100;
 
-	public static Environment getEnvironment() {
-		return environment;
+	public static EnvironmentLevel getEnvironment() {
+		return environmentLevel;
 	}
 
 	public static void generateNewLevel() {
@@ -297,15 +289,17 @@ public class Game {
 		env = "dungeon";
 //		env = "prairie";
 		environment = DungeonResources.environments.get(env);
-		Engine.setBaseLight(environment.getLight().get());
+		// TODO Do something special when you get past the last level (for now, wrap around)
+		environmentLevel = environment.getLevels().get(levelCount % environment.getLevels().size());
+		Engine.setBaseLight(environmentLevel.getLight().get());
 		LevelGenerator generator;
 		// TODO Wire the corresponding generator in the environment definition
 		if (env.equals("dungeon")) {
 //			generator = new ModularLevelGenerator(environment, baseWidth + levelCount * growth, baseHeight + levelCount * growth);
-			generator = new ModularLevelGenerator(environment, 200, 200);
+			generator = new ModularLevelGenerator(environmentLevel, 200, 200);
 		} else {
 //			generator = new ForestLevelGenerator(environment, 50, 50, 4d);
-			generator = new ForestLevelGenerator(environment, 500, 500, 4d);
+			generator = new ForestLevelGenerator(environmentLevel, 500, 500, 4d);
 		}
 		level = generator.generateLevel();
 		Engine.setLevelTiles(level);
@@ -337,8 +331,6 @@ public class Game {
 	public static Stream<String> knownEntityTypes() {
 		return entityFactory.knownTypes();
 	}
-
-	private static int levelCount;
 
 	public static int getLevelCount() {
 		return levelCount;

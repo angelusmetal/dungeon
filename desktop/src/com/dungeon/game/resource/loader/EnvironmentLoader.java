@@ -10,6 +10,7 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TilePrototype;
 import com.dungeon.game.resource.DungeonResources;
 import com.dungeon.game.tileset.Environment;
+import com.dungeon.game.tileset.EnvironmentLevel;
 import com.typesafe.config.Config;
 
 import java.util.ArrayList;
@@ -34,22 +35,36 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	@Override
 	public ResourceDescriptor scan(String key, Config config) {
 		List<ResourceIdentifier> dependencies = new ArrayList<>();
-		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "fillTile")));
-		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "voidTile")));
-		ConfigUtil.requireStringList(config, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
-		ConfigUtil.requireStringList(config, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
+		ConfigUtil.requireConfigList(config, "levels")
+				.forEach(levelConfig -> scanLevel(dependencies, levelConfig));
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, dependencies);
 	}
 
 	@Override
 	public Environment read(String identifier, Config config) {
+		List<EnvironmentLevel> levels = ConfigUtil.requireConfigList(config, "levels").stream()
+				.map(this::readLevel)
+				.collect(Collectors.toList());
+		return new Environment(levels);
+	}
+
+	public void scanLevel(List<ResourceIdentifier> dependencies, Config config) {
+		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "fillTile")));
+		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "voidTile")));
+		ConfigUtil.requireStringList(config, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
+		ConfigUtil.requireStringList(config, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
+	}
+
+	public EnvironmentLevel readLevel(Config config) {
 		int tilesize = ConfigUtil.requireInteger(config, "tilesize");
 		TilePrototype fillTile = DungeonResources.tiles.get(ConfigUtil.requireString(config, "fillTile"));
 		TilePrototype voidTile = DungeonResources.tiles.get(ConfigUtil.requireString(config, "voidTile"));
 		Color lightColor = ConfigUtil.requireColor(config, "light");
 		List<RoomPrototype> rooms = ConfigUtil.requireStringList(config, "rooms").stream().map(DungeonResources.rooms::get).collect(Collectors.toList());
 		List<String> monsters = ConfigUtil.requireStringList(config, "monsters");
-		return new Environment(tilesize, fillTile, voidTile, () -> lightColor, rooms, monsters);
+		int tier = ConfigUtil.requireInteger(config, "tier");
+		String music = ConfigUtil.requireString(config, "music");
+		return new EnvironmentLevel(tilesize, fillTile, voidTile, () -> lightColor, rooms, monsters, tier, music);
 	}
 
 }

@@ -21,8 +21,6 @@ public class FireSlimeFactory {
 
 	final Animation<TextureRegion> idleAnimation;
 
-	final EntityPrototype character;
-
 	final float maxTargetDistance;
 	final float attackFrequency;
 	final float attackSpeed;
@@ -30,6 +28,7 @@ public class FireSlimeFactory {
 	final float damagePerSecond;
 
 	final Weapon weapon;
+	final Weapon bossWeapon;
 
 	public FireSlimeFactory() {
 		Toml config = ConfigUtil.getTomlMap(Game.getConfiguration(), "creatures", "id").get("SLIME_FIRE");
@@ -42,12 +41,16 @@ public class FireSlimeFactory {
 		// Character animations
 		idleAnimation = Resources.animations.get(IDLE);
 
-		character = DungeonResources.prototypes.get("creature_slime_fire");
 		weapon = new FireballWeapon();
+		bossWeapon = new FireballWeapon(10);
 	}
 
 	public Entity build(Vector2 origin, EntityPrototype prototype) {
-		return new FireSlime(origin, this);
+		return new FireSlime(origin, prototype, this);
+	}
+
+	public Entity buildBoss(Vector2 origin, EntityPrototype prototype) {
+		return new FireSlimeBoss(origin, prototype, this);
 	}
 
 	public Entity buildExplosion(Vector2 origin, EntityPrototype prototype) {

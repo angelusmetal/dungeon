@@ -108,14 +108,4 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 		return false;
 	}
 
-
-	static public <T extends Entity> TraitSupplier<T> generateLoot() {
-		return e -> entity -> {
-			Entity loot = Game.build(Game.createLoot(), entity.getOrigin());
-			loot.setZPos(15);
-			// TODO Is this really ok?
-			loot.getTraits().add(Traits.fadeIn(1f, 1f).get(loot));
-			Engine.entities.add(loot);
-		};
-	}
 }

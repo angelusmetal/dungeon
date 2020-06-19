@@ -10,7 +10,7 @@ import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.tileset.Environment;
+import com.dungeon.game.tileset.EnvironmentLevel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	private int maxRoomSeparation = 8;
 	private int minRoomSeparation = 2;
 	private List<Room> rooms = new ArrayList<>();
-	private Environment environment;
+	private EnvironmentLevel environmentLevel;
 	private Map<String, Integer> roomOccurrences = new HashMap<>();
 	private final TilesetSolver tileSolver = new TilesetSolver();
 
@@ -76,14 +76,14 @@ public class ModularLevelGenerator implements LevelGenerator {
 		}
 	}
 
-	public ModularLevelGenerator(Environment environment, int width, int height) {
-		this.environment = environment;
+	public ModularLevelGenerator(EnvironmentLevel environmentLevel, int width, int height) {
+		this.environmentLevel = environmentLevel;
 		this.width = width;
 		this.height = height;
 		this.tiles = new Tile[width][height];
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				tiles[x][y] = new Tile(environment.getFillTile());
+				tiles[x][y] = new Tile(environmentLevel.getFillTile());
 			}
 		}
 	}
@@ -94,7 +94,10 @@ public class ModularLevelGenerator implements LevelGenerator {
 				// repeat if no rooms could be placed
 				rooms.isEmpty() ||
 				// or no exit could be placed
-				(environment.getRooms().size() > 1 && roomOccurrences.getOrDefault("exit_room", 0) == 0)) {
+				(environmentLevel.getRooms().size() > 1
+						// TODO replace this with some indicator on rooms that identify exits
+						&& roomOccurrences.getOrDefault("exit_room", 0) == 0
+						&& roomOccurrences.getOrDefault("boss_exit_room", 0) == 0)) {
 
 			roomOccurrences.clear();
 			// Pick a random position to start (excluding border rows/columns)
@@ -130,7 +133,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 	}
 
 	private void generateEntities(List<EntityPlaceholder> placeholders) {
-		List<String> monsterTypes = environment.getMonsters();
+		List<String> monsterTypes = environmentLevel.getMonsters();
 
 		// Create player spawn points in the starting room
 		rooms.get(0).spawnPoints.forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.PLAYER_SPAWN, pos)));
@@ -194,7 +197,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 					for (int i = 0; i <= frame.roomSeparation; ++i) {
 						int xi = frame.originPoint.origin.x + frame.originPoint.direction.x * i;
 						int yi = frame.originPoint.origin.y + frame.originPoint.direction.y * i;
-						tiles[xi][yi].setPrototype(environment.getVoidTile());
+						tiles[xi][yi].setPrototype(environmentLevel.getVoidTile());
 						if (i % 2 == 0) {
 							room.placeholders.add(new EntityPlaceholder("gold_light_small", new Vector2(xi + 0.5f, yi + 0.5f)));
 						}
@@ -224,8 +227,8 @@ public class ModularLevelGenerator implements LevelGenerator {
 		}
 
 		// Attempt to place each room (in random order) until one succeeds
-		Collections.shuffle(environment.getRooms());
-		for (RoomPrototype prototype : environment.getRooms()) {
+		Collections.shuffle(environmentLevel.getRooms());
+		for (RoomPrototype prototype : environmentLevel.getRooms()) {
 			Optional<ConnectionPoint> entryPoint = prototype.getConnections().stream().filter(d -> d.direction == direction.opposite()).findFirst();
 			if (entryPoint.isPresent()) {
 				ConnectionPoint p = entryPoint.get();
@@ -247,7 +250,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 
 		for (int x = room.left; x <= room.left + room.width; ++x) {
 			for (int y = room.bottom; y <= room.bottom + room.height; ++y) {
-				if (tiles[x][y].getPrototype() != environment.getFillTile()) {
+				if (tiles[x][y].getPrototype() != environmentLevel.getFillTile()) {
 					return false;
 				}
 			}
@@ -257,7 +260,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 			return false;
 		}
 		// If the minimum depth for this room has not yet been reached, it cannot be placed
-		if (environment.getRooms().size() > 1 && room.generation < room.prototype.getMinDepth()) {
+		if (environmentLevel.getRooms().size() > 1 && room.generation < room.prototype.getMinDepth()) {
 			return false;
 		}
 		return true;

@@ -18,7 +18,11 @@ public class FireballWeapon extends ProjectileWeapon {
 	Sound soundFirebolt = Resources.sounds.get("audio/sound/firebolt.ogg");
 
 	public FireballWeapon() {
-		super("Fireball", damageSupplier(), DamageType.ELEMENTAL, 0);
+		this(Game.getDifficultyTier());
+	}
+
+	public FireballWeapon(float tier) {
+		super("Fireball", damageSupplier(tier), DamageType.ELEMENTAL, 0);
 		projectile = DungeonResources.prototypes.get("slime_fireball");
 	}
 
@@ -28,8 +32,7 @@ public class FireballWeapon extends ProjectileWeapon {
 		Engine.audio.playSound(soundFirebolt, origin, 1f, 0.05f);
 	}
 
-	private static Supplier<Float> damageSupplier() {
-		float tier = Game.getDifficultyTier();
+	private static Supplier<Float> damageSupplier(float tier) {
 		return () -> tier * Rand.between(2f, 5f);
 	}
 

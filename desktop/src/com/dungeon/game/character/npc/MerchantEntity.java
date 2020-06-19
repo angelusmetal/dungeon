@@ -1,4 +1,4 @@
-package com.dungeon.game.character.merchant;
+package com.dungeon.game.character.npc;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.util.Rand;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.object.shop.ShopItem;
 import com.dungeon.game.object.shop.ShopItemEntity;
@@ -13,22 +14,15 @@ import com.dungeon.game.object.shop.ShopItemEntity;
 import java.util.Collections;
 import java.util.List;
 
-public class MerchantEntity extends CreatureEntity {
-	private final Animation<TextureRegion> idleAnimation;
-	private final Animation<TextureRegion> talkAnimation;
-	private final List<String> greetPhrases;
+public class MerchantEntity extends NpcEntity {
 	private final List<String> buyPhrases;
 	private final List<String> cantBuyPhrases;
-	private float talkUntil = 0f;
 
 	public MerchantEntity(Vector2 origin, EntityPrototype prototype,
 						  Animation<TextureRegion> idleAnimation, Animation<TextureRegion> talkAnimation,
 						  List<String> greetPhrases, List<String> buyPhrases, List<String> cantBuyPhrases,
 						  List<ShopItem> items) {
-		super(origin, prototype);
-		this.idleAnimation = idleAnimation;
-		this.talkAnimation = talkAnimation;
-		this.greetPhrases = greetPhrases;
+		super(origin, prototype, idleAnimation, talkAnimation, greetPhrases);
 		this.buyPhrases = buyPhrases;
 		this.cantBuyPhrases = cantBuyPhrases;
 		Collections.shuffle(items);
@@ -43,26 +37,13 @@ public class MerchantEntity extends CreatureEntity {
 			setAnimation(idleAnimation, 0f);
 		}
 	}
-	@Override protected void onSignal(Entity emitter) {
-		sayTo(emitter, greetPhrases);
-	}
 
 	public void bought(Entity emitter) {
-		sayTo(emitter, buyPhrases);
+		sayTo(emitter, Rand.pick(buyPhrases));
 	}
 
 	public void cantBuy(Entity emitter) {
-		sayTo(emitter, cantBuyPhrases);
-	}
-
-	private void sayTo(Entity emitter, List<String> text) {
-		// Make the merchant look at the character who interacted with them
-		getDrawScale().x = emitter.getOrigin().x - getOrigin().x < 0 ? -1 : 1;
-		if (nextTalk < Engine.time()) {
-			talkUntil = Engine.time() + 1f;
-			setAnimation(talkAnimation, 0f);
-			say(text);
-		}
+		sayTo(emitter, Rand.pick(cantBuyPhrases));
 	}
 
 }

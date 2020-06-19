@@ -7,7 +7,7 @@ import com.dungeon.engine.util.Util;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
-import com.dungeon.game.tileset.Environment;
+import com.dungeon.game.tileset.EnvironmentLevel;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,15 +17,15 @@ public class ForestLevelGenerator implements LevelGenerator {
 
 	private final OpenSimplexNoise noise;
 	private final OpenSimplexNoise colorNoise;
-	private final Environment environment;
+	private final EnvironmentLevel environmentLevel;
 	private final int width;
 	private final int height;
 	private final double featureSize;
 
-	public ForestLevelGenerator(Environment environment, int width, int height, double featureSize) {
+	public ForestLevelGenerator(EnvironmentLevel environmentLevel, int width, int height, double featureSize) {
 		this.noise = new OpenSimplexNoise(Rand.nextInt(Integer.MAX_VALUE));
 		this.colorNoise = new OpenSimplexNoise(Rand.nextInt(Integer.MAX_VALUE));
-		this.environment = environment;
+		this.environmentLevel = environmentLevel;
 		this.width = width;
 		this.height = height;
 		this.featureSize = featureSize;
