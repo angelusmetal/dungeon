@@ -8,9 +8,6 @@ import com.dungeon.engine.ConsoleDisplay;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
-import com.dungeon.game.combat.CatStaffWeapon;
-import com.dungeon.game.combat.SwordWeapon;
-import com.dungeon.game.combat.VenomStaffWeapon;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.entity.PlayerEntity;
@@ -64,23 +61,14 @@ public class Player {
 	private Weapon createWeapon() {
 		// TODO This is awful...
 		if (characterId == 0) {
-			Weapon w = new CatStaffWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().catStaff(Vector2.Zero, DungeonResources.prototypes.get("weapon_cat_staff")).getAnimation();
-			w.setAnimation(animation);
-			return w;
+			return new WeaponFactory().buildCatStaff(1f);
 		} else if (characterId == 1) {
-			Weapon w = new SwordWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().sword(Vector2.Zero, DungeonResources.prototypes.get("weapon_sword")).getAnimation();
-			w.setAnimation(animation);
-			return w;
+			return new WeaponFactory().buildSword(1f);
 		} else if (characterId == 2) {
-			Weapon w = new VenomStaffWeapon();
-			Animation<TextureRegion> animation = new WeaponFactory().greenStaff(Vector2.Zero, DungeonResources.prototypes.get("weapon_green_staff")).getAnimation();
-			w.setAnimation(animation);
-			return w;
+			return new WeaponFactory().buildVenomStaff(1f);
 		}
 		// Hmmm
-		return new SwordWeapon();
+		return new WeaponFactory().buildSword(1f);
 	}
 
 	/**

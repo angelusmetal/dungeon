@@ -241,9 +241,12 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderLights(boolean withShadows) {
-		lightCount = (int) Engine.entities.inViewPort(viewPort, 200f).filter(viewPort::lightIsInViewPort).count();
-		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 100f)
-				.filter(viewPort::lightIsInViewPort)
+		lightCount = (int) Engine.entities.inViewPort(viewPort, 200f)
+				.filter(e -> e.getLight() != null)
+//				.filter(viewPort::lightIsInViewPort)
+				.count();
+		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 200f)
+				.filter(e -> e.getLight() != null)
 				.map(entity -> mapLight(entity, entity.getLight()))
 				.collect(Collectors.toList());
 		List<Float> geometry;
@@ -312,7 +315,8 @@ public class SceneStage implements Renderer {
 
 	private Light2 mapLight(Entity emitter, Light light) {
 		Color color = light.color.cpy();
-		color.a *= emitter.getColor().a;
+		// TODO get rid of light.dim
+		color.a *= emitter.getColor().a * light.dim;
 		return new Light2(emitter.getOrigin().cpy().add(light.displacement).add(light.offset).add(0, emitter.getZPos()),
 				4f,
 				light.diameter / 2f,

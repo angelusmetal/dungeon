@@ -111,7 +111,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 			// Attempt attack; will succeed only if cooldown is ready
 			if (energy > weapon.energyDrain()) {
 				actionGate.attempt(weapon.attackCooldown(), () -> {
-					weapon.spawnEntities(getBody().getCenter(), getAim());
+					weapon.attack(getBody().getCenter(), getAim());
 //					PovDirection animationDirection = getAnimationDirection();
 					updateXScale(animationDirection);
 					updateAnimation(getAttackAnimation(animationDirection));

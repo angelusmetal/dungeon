@@ -8,10 +8,11 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
+import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.player.Players;
+import com.dungeon.game.object.weapon.WeaponFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +20,10 @@ import java.util.List;
 public class FireSlimeBoss extends CreatureEntity {
 
 	private static final List<String> attackPhrases = Arrays.asList("I'm on fire!", "Eat lead!", "That will teach you", "Smoky!");
+	private static final float MAX_TARGET_DISTANCE = 600f;
 
 	private final FireSlimeFactory factory;
+	private final Weapon weapon;
 	private float nextThink;
 	private ClosestEntity closest;
 	private List<Runnable> actions = Arrays.asList(this::moveCloser, this::leap, this::fireProjectile, this::fireRingAttack);
@@ -30,6 +33,7 @@ public class FireSlimeBoss extends CreatureEntity {
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		this.drawScale.set(5, 5);
+		weapon = new WeaponFactory().buildFireballStaff(Game.getDifficultyTier() * 10f);
 	}
 
 	@Override
@@ -75,7 +79,7 @@ public class FireSlimeBoss extends CreatureEntity {
 		speed = factory.attackSpeed;
 		// Fire a projectile
 		Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
-		factory.bossWeapon.spawnEntities(getOrigin(), aim);
+		weapon.attack(getOrigin(), aim);
 		shout(attackPhrases, 0.1f);
 	}
 
@@ -86,7 +90,7 @@ public class FireSlimeBoss extends CreatureEntity {
 		int bullets = 20;
 		Vector2 aim = new Vector2(0, 1);
 		for (int i = 0; i < bullets; ++i) {
-			factory.bossWeapon.spawnEntities(getOrigin(), aim);
+			weapon.attack(getOrigin(), aim);
 			aim.rotate(360f / bullets);
 		}
 	}

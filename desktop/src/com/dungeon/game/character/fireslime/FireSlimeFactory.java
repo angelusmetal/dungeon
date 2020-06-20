@@ -9,10 +9,9 @@ import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
-import com.dungeon.game.combat.FireballWeapon;
 import com.dungeon.game.combat.Weapon;
+import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Players;
-import com.dungeon.game.resource.DungeonResources;
 import com.moandjiezana.toml.Toml;
 
 public class FireSlimeFactory {
@@ -41,8 +40,8 @@ public class FireSlimeFactory {
 		// Character animations
 		idleAnimation = Resources.animations.get(IDLE);
 
-		weapon = new FireballWeapon();
-		bossWeapon = new FireballWeapon(10);
+		weapon = new WeaponFactory().buildFireballStaff(Game.getDifficultyTier());
+		bossWeapon = new WeaponFactory().buildFireballStaff(Game.getDifficultyTier() * 10f);
 	}
 
 	public Entity build(Vector2 origin, EntityPrototype prototype) {
@@ -60,7 +59,7 @@ public class FireSlimeFactory {
 				int bullets = (Players.count() + Game.getLevelCount()) * 2;
 				Vector2 aim = new Vector2(0, 1);
 				for (int i = 0; i < bullets; ++i) {
-					getWeapon().spawnEntities(getOrigin(), aim);
+					getWeapon().attack(getOrigin(), aim);
 					aim.rotate(360f / bullets);
 				}
 			}

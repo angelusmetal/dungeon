@@ -8,10 +8,11 @@ import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
+import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.player.Players;
+import com.dungeon.game.object.weapon.WeaponFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,12 +22,14 @@ public class FireSlime extends CreatureEntity {
 	private static final List<String> attackPhrases = Arrays.asList("I'm on fire!", "Eat lead!", "That will teach you", "Smoky!");
 
 	private final FireSlimeFactory factory;
+	private final Weapon weapon;
 	private float nextThink;
 
 	FireSlime(Vector2 origin, EntityPrototype prototype, FireSlimeFactory factory) {
 		super(origin, prototype);
 		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
+		weapon = new WeaponFactory().buildFireballStaff(Game.getDifficultyTier());
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class FireSlime extends CreatureEntity {
 				moveStrictlyTowards(closest.getEntity().getOrigin());
 				// Fire a projectile
 				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
-				factory.getWeapon().spawnEntities(getOrigin(), aim);
+				weapon.attack(getOrigin(), aim);
 				shout(attackPhrases, 0.1f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);

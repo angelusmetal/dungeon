@@ -9,6 +9,7 @@ import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -16,7 +17,7 @@ import java.util.function.Supplier;
 import static com.dungeon.engine.util.Util.clamp;
 
 public class EntityPrototype {
-	List<Vector2> occlusionSegments;
+	List<Vector2> occlusionSegments = Collections.emptyList();
 	Supplier<Animation<TextureRegion>> animation = () -> null;
 	boolean offsetAnimation;
 	float bounciness = 0;
