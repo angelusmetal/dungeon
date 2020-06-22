@@ -24,9 +24,9 @@ public class Light {
 	/** Light diameter, in units */
 	public final float diameter;
 	/** Light dim; affects intensity of color and diameter */
-	public float dim = 1;
+	public float dim = 1f;
 	/** Light angle */
-	public float angle = 0;
+	public float angle = 0f;
 	/** Light offset */
 	public Vector2 offset;
 	/** Light displacement */

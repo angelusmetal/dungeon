@@ -12,10 +12,17 @@ public class AimedParticleModule implements WeaponModule {
 	final EntityPrototype prototype;
 	float spawnDistance = 0;
 
+	/**
+	 * Create a weapon module that spawns a particle rotated according to aim vector
+	 * @param prototype Entity prototype for the particle.
+	 */
 	public AimedParticleModule(EntityPrototype prototype) {
 		this.prototype = prototype;
 	}
 
+	/**
+	 * Set spawn distance, which indicates how far from origin (into aim direction) will the particle spawn.
+	 */
 	public AimedParticleModule spawnDistance(float spawnDistance) {
 		this.spawnDistance = spawnDistance;
 		return this;

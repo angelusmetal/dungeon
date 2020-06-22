@@ -12,25 +12,35 @@ import com.dungeon.game.entity.Projectile;
 import java.util.function.Function;
 
 /**
- * Creates an attack entity
+ * Creates an attack projectile
  */
 public class AttackModule implements WeaponModule {
 	final EntityPrototype prototype;
 	final DamageType damageType;
-	final float minDps;
-	final float maxDps;
+	final float minDamage;
+	final float maxDamage;
 	final Function<Entity, Attack> attackFunction;
 	final float knockback = 0;
 	float spawnDistance = 0;
 
-	public AttackModule(EntityPrototype prototype, DamageType damageType, float minDps, float maxDps) {
+	/**
+	 * Create a weapon module that spawns a projectile
+	 * @param prototype Entity prototype for this projectile
+	 * @param damageType Damage type for this projectile
+	 * @param minDamage Minimum damage upon hit
+	 * @param maxDamage Maximum damage upon hit
+	 */
+	public AttackModule(EntityPrototype prototype, DamageType damageType, float minDamage, float maxDamage) {
 		this.prototype = prototype;
 		this.damageType = damageType;
-		this.minDps = minDps;
-		this.maxDps = maxDps;
-		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(minDps, maxDps) + 0.5f), damageType, knockback);
+		this.minDamage = minDamage;
+		this.maxDamage = maxDamage;
+		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(minDamage, maxDamage) + 0.5f), damageType, knockback);
 	}
 
+	/**
+	 * Set spawn distance, which indicates how far from origin (into aim direction) will the particle spawn.
+	 */
 	public AttackModule spawnDistance(float spawnDistance) {
 		this.spawnDistance = spawnDistance;
 		return this;

@@ -76,7 +76,7 @@ public class Entity implements Drawable, Movable {
 	protected Light flare;
 	protected DrawContext drawContext;
 	private final Vector2 drawOffset;
-	protected Vector2 drawScale = new Vector2(1, 1);
+	protected Vector2 drawScale;
 	private float rotation = 0;
 
 	/** Aspects */
@@ -124,6 +124,7 @@ public class Entity implements Drawable, Movable {
 			this.body = Body.withOffset(origin, prototype.boundingBox, prototype.boundingBoxOffset);
 		}
 		this.drawOffset = prototype.drawOffset;
+		this.drawScale = prototype.drawScale;
 		this.startTime = Engine.time();
 		this.speed = prototype.speed.get();
 		this.zSpeed = prototype.zSpeed.get();
@@ -170,6 +171,7 @@ public class Entity implements Drawable, Movable {
 		this.startAnimation(other.animation);
 		this.body = Body.centered(other.getOrigin(), other.getBoundingBox());
 		this.drawOffset = other.drawOffset;
+		this.drawScale = other.drawScale;
 		this.startTime = Engine.time();
 		this.speed = other.getSpeed();
 		this.zSpeed = other.getZSpeed();

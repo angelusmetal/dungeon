@@ -5,8 +5,13 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.console.Console;
 import com.dungeon.engine.console.ConsoleOutput;
 import com.dungeon.engine.console.ConsoleVar;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.game.Game;
+import com.dungeon.game.combat.module.ModularWeapon;
+import com.dungeon.game.combat.module.ModularWeaponGenerator;
+import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Players;
+import com.dungeon.game.resource.DungeonResources;
 
 import java.util.List;
 import java.util.StringJoiner;
@@ -34,12 +39,22 @@ public class DevCommands {
 			Game.exitLevel();
 			return true;
 		});
+		Game.getConsole().bindExpression("randomWeapon", this::randomWeapon);
+		Game.getConsole().bindExpression("gold", this::gold);
 
 		// Add variables
 		Game.getConsole().bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
 		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
 		Game.getConsole().bindVar(ConsoleVar.mutableInt("levelCount", Game::getLevelCount, Game::setLevelCount));
 		Game.getConsole().bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
+	}
+
+	private boolean gold(List<String> tokens, ConsoleOutput output) {
+		if (!tokens.isEmpty()) {
+			int gold = Integer.parseInt(tokens.get(0));
+			Players.all().forEach(player -> player.addGold(gold));
+		}
+		return true;
 	}
 
 	public boolean playMusic(List<String> tokens, ConsoleOutput output) {
@@ -70,6 +85,20 @@ public class DevCommands {
 			String type = tokens.get(0);
 			try {
 				Engine.entities.add(Game.build(type, devTools.mouseAt()));
+			} catch (RuntimeException e) {
+				output.print(e.getMessage());
+			}
+		}
+		return true;
+	}
+
+	private boolean randomWeapon(List<String> tokens, ConsoleOutput output) {
+		if (!tokens.isEmpty()) {
+			int score = Integer.parseInt(tokens.get(0));
+			try {
+				Engine.entities.add(
+						new WeaponFactory().buildWeaponEntity(devTools.mouseAt(), DungeonResources.prototypes.get("weapon_cat_staff"), () -> new ModularWeaponGenerator().generate(score))
+				);
 			} catch (RuntimeException e) {
 				output.print(e.getMessage());
 			}

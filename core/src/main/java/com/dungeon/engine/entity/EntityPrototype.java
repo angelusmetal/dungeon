@@ -11,6 +11,7 @@ import com.dungeon.engine.util.Util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -51,6 +52,7 @@ public class EntityPrototype {
 	Vector2 boundingBox = Vector2.Zero;
 	Vector2 drawOffset = Vector2.Zero;
 	Vector2 boundingBoxOffset = Vector2.Zero;
+	Vector2 drawScale = new Vector2(1f,1f);
 	private String factory;
 
 	public EntityPrototype() {}
@@ -81,6 +83,7 @@ public class EntityPrototype {
 		this.boundingBox = other.boundingBox.cpy();
 		this.boundingBoxOffset = other.boundingBoxOffset.cpy();
 		this.drawOffset = other.drawOffset.cpy();
+		this.drawScale = other.drawScale.cpy();
 		this.canBlock = other.canBlock;
 		this.canBeBlockedByEntities = other.canBeBlockedByEntities;
 		this.canBeBlockedByTiles = other.canBeBlockedByTiles;
@@ -123,6 +126,11 @@ public class EntityPrototype {
 
 	public EntityPrototype boundingBoxOffset(Vector2 boundingBoxOffset) {
 		this.boundingBoxOffset = boundingBoxOffset;
+		return this;
+	}
+
+	public EntityPrototype drawScale(Vector2 drawScale) {
+		this.drawScale = drawScale;
 		return this;
 	}
 

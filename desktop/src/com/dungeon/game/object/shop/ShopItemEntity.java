@@ -7,21 +7,33 @@ import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.game.Game;
 import com.dungeon.game.character.npc.MerchantEntity;
+import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
+import com.dungeon.game.object.weapon.WeaponFactory;
+import com.dungeon.game.resource.DungeonResources;
 
 public class ShopItemEntity extends DungeonEntity {
 
 	private static final Vector2 PRICE_OFFSET = new Vector2(0, -15);
 	private final int price;
-	private final String item;
 	private final MerchantEntity merchant;
+	private final Entity item;
 
 	public ShopItemEntity(ShopItem item, Vector2 origin, MerchantEntity merchant) {
 		// We first build this as a clone of the item
 		super(Game.build(item.getItemType(), origin));
-		this.item = item.getItemType();
-		this.price = item.getBasePrice();
+		if (item.getItemType().equals("random_weapon")) {
+			Weapon weapon = new WeaponFactory().buildRandom(Game.getDifficultyTier());
+			this.item = new WeaponFactory().buildWeaponEntity(getOrigin(), DungeonResources.prototypes.get("weapon_green_staff"),() -> weapon);
+			// Update both the item and the placeholder animation from the weapon
+			this.item.setAnimation(weapon.getAnimation(), Engine.time());
+			setAnimation(weapon.getAnimation(), Engine.time());
+			this.price = weapon.getPrice();
+		} else {
+			this.item = Game.build(item.getItemType(), getOrigin());
+			this.price = item.getBasePrice();
+		}
 		this.merchant = merchant;
 
 		// But then make some tweaks
@@ -39,7 +51,7 @@ public class ShopItemEntity extends DungeonEntity {
 			// Only if player can pay
 			if (playerEntity.getPlayer().getGold() > price) {
 				playerEntity.getPlayer().subtractGold(price);
-				Engine.entities.add(Game.build(item, getOrigin()));
+				Engine.entities.add(item);
 				// Remove this placeholder
 				expire();
 				// TODO replace this with a specialized method

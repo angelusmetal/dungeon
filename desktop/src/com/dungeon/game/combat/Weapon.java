@@ -32,4 +32,6 @@ public abstract class Weapon {
 	public float energyDrain() {
 		return 20;
 	}
+
+	abstract public int getPrice();
 }

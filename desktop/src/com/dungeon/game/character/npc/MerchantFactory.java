@@ -34,9 +34,12 @@ public class MerchantFactory {
 			"Come back when you got money");
 
 	private final List<ShopItem> items = Arrays.asList(
-			new ShopItem("weapon_sword", 75),
-			new ShopItem("weapon_cat_staff", 80),
-			new ShopItem("weapon_green_staff", 75),
+//			new ShopItem("weapon_sword", 75),
+//			new ShopItem("weapon_cat_staff", 80),
+//			new ShopItem("weapon_green_staff", 75),
+			new ShopItem("random_weapon", 0),
+			new ShopItem("random_weapon", 0),
+			new ShopItem("random_weapon", 0),
 			new ShopItem("health_powerup", 25)
 	);
 

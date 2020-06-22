@@ -12,30 +12,42 @@ import com.dungeon.game.entity.Projectile;
 import java.util.function.Function;
 
 /**
- * Creates multitple attack entities in a fan (arc) pattern
+ * Creates multitple attack projectiles in an arc pattern
  */
-public class FanAttackModule implements WeaponModule {
+public class ArcAttackModule implements WeaponModule {
 	final EntityPrototype prototype;
 	final DamageType damageType;
-	final float minDps;
-	final float maxDps;
+	final float minDamage;
+	final float maxDamage;
 	final Function<Entity, Attack> attackFunction;
 	final float knockback = 0;
 	final int count;
 	final int spread;
 	float spawnDistance = 0;
 
-	public FanAttackModule(EntityPrototype prototype, DamageType damageType, float minDps, float maxDps, int count, int spread) {
+	/**
+	 * Create a weapon module that spawns multiple projectiles in an arc pattern
+	 * @param prototype Entity prototype for each projectile
+	 * @param damageType Damage type for each projectile
+	 * @param minDamage Minimum damage upon hit
+	 * @param maxDamage Maximum damage upon hit
+	 * @param count Amount of projectiles to spawn
+	 * @param spread Distance (in degrees) between each projectile
+	 */
+	public ArcAttackModule(EntityPrototype prototype, DamageType damageType, float minDamage, float maxDamage, int count, int spread) {
 		this.prototype = prototype;
 		this.damageType = damageType;
-		this.minDps = minDps;
-		this.maxDps = maxDps;
+		this.minDamage = minDamage;
+		this.maxDamage = maxDamage;
 		this.count = count;
 		this.spread = spread;
-		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(minDps, maxDps) + 0.5f), damageType, knockback);
+		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(minDamage, maxDamage) + 0.5f), damageType, knockback);
 	}
 
-	public FanAttackModule spawnDistance(float spawnDistance) {
+	/**
+	 * Set spawn distance, which indicates how far from origin (into aim direction) will the particle spawn.
+	 */
+	public ArcAttackModule spawnDistance(float spawnDistance) {
 		this.spawnDistance = spawnDistance;
 		return this;
 	}
