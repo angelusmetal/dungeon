@@ -169,7 +169,7 @@ public class Entity implements Drawable, Movable {
 	public Entity (Entity other) {
 		this.offsetAnimation = other.offsetAnimation;
 		this.startAnimation(other.animation);
-		this.body = Body.centered(other.getOrigin(), other.getBoundingBox());
+		this.body = Body.copyOf(other.body);
 		this.drawOffset = other.drawOffset;
 		this.drawScale = other.drawScale;
 		this.startTime = Engine.time();

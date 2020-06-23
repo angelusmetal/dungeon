@@ -33,6 +33,10 @@ public class Body {
 		return new Body(newOrigin, newBoundingBox, newBottomLeft, newTopRight);
 	}
 
+	public static Body copyOf(Body other) {
+		return new Body(other.origin.cpy(), other.boundingBox.cpy(), other.bottomLeft.cpy(), other.topRight.cpy());
+	}
+
 	public void move(Vector2 movement) {
 		origin.add(movement);
 		bottomLeft.add(movement);

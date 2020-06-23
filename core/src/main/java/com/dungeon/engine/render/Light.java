@@ -44,19 +44,18 @@ public class Light {
 		this.castsShadow = prototype.castsShadow;
 	}
 
-	public Light(float diameter, Color color, Texture texture, List<Consumer<Light>> traits, boolean castsShadow) {
+	private Light(float diameter, Color color, Texture texture, Vector2 offset, List<Consumer<Light>> traits, boolean castsShadow) {
 		this.texture = texture;
 		this.color = color;
 		this.diameter = diameter;
 		this.angle = 0;
-		this.offset = Vector2.Zero;
+		this.offset = offset.cpy();
 		this.traits = traits;
 		this.castsShadow = castsShadow;
 	}
 
 	public Light cpy() {
-		// TODO Sounds like copying traits can cause problems...
-		return new Light(diameter, color.cpy(), texture, traits, castsShadow);
+		return new Light(diameter, color.cpy(), texture, offset, traits, castsShadow);
 	}
 
 	public void update() {

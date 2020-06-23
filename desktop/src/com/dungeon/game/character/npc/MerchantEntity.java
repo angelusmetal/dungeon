@@ -32,12 +32,6 @@ public class MerchantEntity extends NpcEntity {
 		Engine.entities.add(item2);
 	}
 
-	@Override protected void think() {
-		if (getAnimation() == talkAnimation && talkUntil < Engine.time()) {
-			setAnimation(idleAnimation, 0f);
-		}
-	}
-
 	public void bought(Entity emitter) {
 		sayTo(emitter, Rand.pick(buyPhrases));
 	}
