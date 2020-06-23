@@ -24,7 +24,10 @@ public class KeyboardAnalogControl extends AnalogControl implements InputProcess
 	private final int left;
 	private final int right;
 
-	private int povIndex = 4;
+	private boolean upPressed;
+	private boolean downPressed;
+	private boolean leftPressed;
+	private boolean rightPressed;
 
 	/**
 	 * Create a analog control governed by 4 analog keyboard keys
@@ -43,17 +46,17 @@ public class KeyboardAnalogControl extends AnalogControl implements InputProcess
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == up) {
-			povIndex += 3;
-			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
+			upPressed = true;
+			notifyListeners();
 		} else if (keycode == down) {
-			povIndex -= 3;
-			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
+			downPressed = true;
+			notifyListeners();
 		} else if (keycode == left) {
-			povIndex -= 1;
-			notifyListeners( VECTOR_DIRECTIONS[povIndex]);
+			leftPressed = true;
+			notifyListeners();
 		} else if (keycode == right) {
-			povIndex += 1;
-			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
+			rightPressed = true;
+			notifyListeners();
 		} else {
 			return false;
 		}
@@ -63,21 +66,30 @@ public class KeyboardAnalogControl extends AnalogControl implements InputProcess
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == up) {
-			povIndex -= 3;
-			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
+			upPressed = false;
+			notifyListeners();
 		} else if (keycode == down) {
-			povIndex += 3;
-			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
+			downPressed = false;
+			notifyListeners();
 		} else if (keycode == left) {
-			povIndex += 1;
-			notifyListeners( VECTOR_DIRECTIONS[povIndex]);
+			leftPressed = false;
+			notifyListeners();
 		} else if (keycode == right) {
-			povIndex -= 1;
-			notifyListeners(VECTOR_DIRECTIONS[povIndex]);
+			rightPressed = false;
+			notifyListeners();
 		} else {
 			return false;
 		}
 		return true;
+	}
+
+	private void notifyListeners() {
+		int povIndex = 4
+				+ (leftPressed ? -1 : 0)
+				+ (rightPressed ? 1 : 0)
+				+ (upPressed ? 3 : 0)
+				+ (downPressed ? -3 : 0);
+		notifyListeners(VECTOR_DIRECTIONS[povIndex]);
 	}
 
 	@Override

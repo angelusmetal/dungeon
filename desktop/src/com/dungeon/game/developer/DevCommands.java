@@ -97,7 +97,7 @@ public class DevCommands {
 			int score = Integer.parseInt(tokens.get(0));
 			try {
 				Engine.entities.add(
-						new WeaponFactory().buildWeaponEntity(devTools.mouseAt(), DungeonResources.prototypes.get("weapon_cat_staff"), () -> new ModularWeaponGenerator().generate(score))
+						new WeaponFactory().buildWeaponEntity(devTools.mouseAt(), DungeonResources.prototypes.get("random_weapon"), () -> new ModularWeaponGenerator().generate(score))
 				);
 			} catch (RuntimeException e) {
 				output.print(e.getMessage());

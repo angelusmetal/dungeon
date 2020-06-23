@@ -25,7 +25,7 @@ public class ShopItemEntity extends DungeonEntity {
 		super(Game.build(item.getItemType(), origin));
 		if (item.getItemType().equals("random_weapon")) {
 			Weapon weapon = new WeaponFactory().buildRandom(Game.getDifficultyTier());
-			this.item = new WeaponFactory().buildWeaponEntity(getOrigin(), DungeonResources.prototypes.get("weapon_green_staff"),() -> weapon);
+			this.item = new WeaponFactory().buildWeaponEntity(getOrigin(), DungeonResources.prototypes.get("random_weapon"),() -> weapon);
 			// Update both the item and the placeholder animation from the weapon
 			this.item.setAnimation(weapon.getAnimation(), Engine.time());
 			setAnimation(weapon.getAnimation(), Engine.time());

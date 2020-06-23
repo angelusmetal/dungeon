@@ -76,7 +76,7 @@ public class WeaponFactory {
 				new AimedParticleModule(slash).spawnDistance(4),
 				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
 		);
-		return new ModularWeapon("Sword", Resources.animations.get("weapon_sword"), modules, 0.35f, 15, 75);
+		return new ModularWeapon("Sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.35f, 15, 75);
 	}
 
 	public Weapon buildCatStaff(float tier) {
@@ -88,7 +88,7 @@ public class WeaponFactory {
 				new AttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
-		return new ModularWeapon("Cat staff", Resources.animations.get("weapon_cat_staff"), modules, 0.35f, 15, 80);
+		return new ModularWeapon("Cat staff", Resources.animations.get("weapon_fire_wand"), modules, 0.35f, 15, 80);
 	}
 
 	public Weapon buildVenomStaff(float tier) {
@@ -101,7 +101,7 @@ public class WeaponFactory {
 				new AttackModule(projectileInv, DamageType.ELEMENTAL, minDps, maxDps),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
-		return new ModularWeapon("Venom staff", Resources.animations.get("weapon_green_staff"), modules, 0.25f, 20, 75);
+		return new ModularWeapon("Venom staff", Resources.animations.get("weapon_poison_wand"), modules, 0.25f, 20, 75);
 	}
 
 	public Weapon buildDevastatorStaff(float tier) {
@@ -113,7 +113,7 @@ public class WeaponFactory {
 				new ArcAttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps, (int) Game.getDifficultyTier() + 5, 10),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
-		return new ModularWeapon("Devastator staff", Resources.animations.get("weapon_cat_staff"), modules, 0.35f, 15, 10000);
+		return new ModularWeapon("Devastator staff", Resources.animations.get("weapon_poison_scepter"), modules, 0.35f, 15, 10000);
 	}
 
 	public Weapon buildFireballStaff(float tier) {
@@ -124,7 +124,7 @@ public class WeaponFactory {
 				new AttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps),
 				new SoundModule(Resources.sounds.get("audio/sound/firebolt.ogg"))
 		);
-		return new ModularWeapon("Fireball", Resources.animations.get("weapon_cat_staff"), modules, 0.25f, 20, 75);
+		return new ModularWeapon("Fireball", Resources.animations.get("weapon_fire_staff"), modules, 0.25f, 20, 75);
 	}
 
 	public Weapon buildRandom(float tier) {
