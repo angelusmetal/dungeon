@@ -72,10 +72,10 @@ public class ViewPort {
 	public boolean lightIsInViewPort(Entity e) {
 		return
 				e.getLight() != null &&
-						e.getOrigin().x - e.getLight().diameter < cameraX + cameraWidth &&
-						e.getOrigin().x + e.getLight().diameter > cameraX &&
-						e.getOrigin().y - e.getLight().diameter < cameraY + cameraHeight &&
-						e.getOrigin().y + e.getLight().diameter > cameraY;
+						e.getOrigin().x - e.getLight().diameter + e.getLight().offset.x + e.getLight().displacement.x < cameraX + cameraWidth &&
+						e.getOrigin().x + e.getLight().diameter + e.getLight().offset.x + e.getLight().displacement.x > cameraX &&
+						e.getOrigin().y - e.getLight().diameter + e.getLight().offset.y + e.getLight().displacement.y + e.getZPos() < cameraY + cameraHeight &&
+						e.getOrigin().y + e.getLight().diameter + e.getLight().offset.y + e.getLight().displacement.y + e.getZPos() > cameraY;
 	}
 
 	public boolean flareIsInViewPort(Entity e) {

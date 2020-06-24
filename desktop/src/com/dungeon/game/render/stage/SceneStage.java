@@ -243,10 +243,11 @@ public class SceneStage implements Renderer {
 	private void renderLights(boolean withShadows) {
 		lightCount = (int) Engine.entities.inViewPort(viewPort, 200f)
 				.filter(e -> e.getLight() != null)
-//				.filter(viewPort::lightIsInViewPort)
+				.filter(viewPort::lightIsInViewPort)
 				.count();
 		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 200f)
 				.filter(e -> e.getLight() != null)
+				.filter(viewPort::lightIsInViewPort)
 				.map(entity -> mapLight(entity, entity.getLight()))
 				.collect(Collectors.toList());
 		List<Float> geometry;

@@ -15,7 +15,7 @@ import com.dungeon.game.resource.DungeonResources;
 
 public class ShopItemEntity extends DungeonEntity {
 
-	private static final Vector2 PRICE_OFFSET = new Vector2(0, -15);
+	private static final Vector2 PRICE_OFFSET = new Vector2(0, -2);
 	private final int price;
 	private final MerchantEntity merchant;
 	private final Entity item;
