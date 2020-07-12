@@ -7,15 +7,18 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.dungeon.engine.console.ConsoleExpression;
 import com.dungeon.engine.console.ConsoleVar;
+import com.dungeon.engine.resource.Resources;
 
 public class EngineAdapter extends ApplicationAdapter {
 
 	private final ApplicationListener listener;
 	private final LwjglApplicationConfiguration config;
+	private final String assetsPath;
 
 	private EngineAdapter(Builder builder) {
 		this.listener = builder.listener;
 		this.config = builder.config;
+		this.assetsPath = builder.assetsPath;
 	}
 
 	@Override
@@ -25,6 +28,9 @@ public class EngineAdapter extends ApplicationAdapter {
 		// And add an input stack to it and a mainKeyboardProcessor
 		Engine.inputMultiplexer.addProcessor(Engine.inputStack);
 		Engine.inputMultiplexer.addProcessor(Engine.mainKeyboardProcessor);
+
+		// Load resources
+		Resources.loader.load(assetsPath);
 
 		// Initialize and push the main application listener
 		listener.create();
@@ -38,46 +44,27 @@ public class EngineAdapter extends ApplicationAdapter {
 		Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
 		Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 
-//		initResources();
-//		inputMultiplexer = new InputMultiplexer();
-//		Game.devTools = new DevTools(inputMultiplexer);
-//		devCommands = new DevCommands(Game.devTools);
-//
-//		// Set F12 to push & pop console input from the input processor
-//		Game.devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
-//			Game.setDisplayConsole(true);
-//			Engine.inputStack.push(Game.getConsole().getInputProcessor());
-//		});
-//		Game.getConsole().bindKey(Input.Keys.ENTER, () -> {
-//			Game.getConsole().commandExecute();
-//			Game.setDisplayConsole(false);
-//			Engine.inputStack.pop();
-//		});
-//
-//		Game.initialize(configuration);
-//
-//		characterSelection = new CharacterSelection();
-//		characterSelection.initialize();
-//
-//		configureInput();
-//
-//		// Add developer hotkeys
-//		Game.devTools.addDeveloperHotkeys();
-//
-//		// Start playing character selection music
-//		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"), 0f);
-//
-//		System.err.println("GL_MAX_TEXTURE_SIZE: " + Engine.getMaxTextureSize());
+
 	}
 
 	@Override
 	public void render() {
+		Engine.addTime(Gdx.graphics.getDeltaTime());
+		Engine.audio.update();
+		// Defer rendering to the current stack frame
 		Engine.appListenerStack.render();
+	}
+
+	@Override
+	public void dispose() {
+		Engine.appListenerStack.dispose();
+		Resources.dispose();
 	}
 
 	public static class Builder {
 		private ApplicationListener listener;
 		private LwjglApplicationConfiguration config;
+		private String assetsPath;
 
 		public Builder listener(ApplicationListener listener) {
 			this.listener = listener;
@@ -86,6 +73,11 @@ public class EngineAdapter extends ApplicationAdapter {
 
 		public Builder config(LwjglApplicationConfiguration config) {
 			this.config = config;
+			return this;
+		}
+
+		public Builder assetsPath(String assetsPath) {
+			this.assetsPath = assetsPath;
 			return this;
 		}
 

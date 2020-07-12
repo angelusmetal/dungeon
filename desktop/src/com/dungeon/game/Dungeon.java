@@ -59,8 +59,7 @@ public class Dungeon extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		initResources();
-		Game.devTools = new DevTools(Engine.inputMultiplexer);
+		Game.devTools = new DevTools();
 		devCommands = new DevCommands(Game.devTools);
 
 		// Set F12 to push & pop console input from the input processor
@@ -139,15 +138,9 @@ public class Dungeon extends ApplicationAdapter {
 		return configurations;
 	}
 
-	private void initResources() {
-		DungeonResources.addLoaders();
-		Resources.loader.load("assets/assets.conf");
-	}
-
 	@Override
 	public void render() {
 		stopWatch.start();
-		Engine.addTime(Gdx.graphics.getDeltaTime());
 		Engine.overlayTexts.update(OverlayText::think, OverlayText::isExpired, o -> {});
 
 		// Render corresponding state
@@ -197,7 +190,6 @@ public class Dungeon extends ApplicationAdapter {
 	public void dispose () {
 		characterSelection.dispose();
 		Game.gameView.dispose();
-		Resources.dispose();
 	}
 
 

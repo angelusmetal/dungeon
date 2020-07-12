@@ -60,8 +60,6 @@ public class Engine {
 	public static void addTime(float frameTime) {
 		stateTime += frameTime;
 		Engine.frameTime = frameTime;
-		// TODO is this the right place?
-		audio.update();
 	}
 
 	public static void setLevelTiles(LevelTiles levelTiles) {

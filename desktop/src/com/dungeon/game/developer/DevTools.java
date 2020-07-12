@@ -31,15 +31,13 @@ public class DevTools {
 
 	public static LinkedHashMap<String, CyclicProfiler> namedProfilers = new LinkedHashMap<>();
 
-	private final InputMultiplexer inputMultiplexer;
 	private StopWatch stopWatch = new StopWatch();
 	private VLayout profilerWidget = new VLayout();
 	public boolean drawProfiler = false;
 	private Vector2 mouseOrigin = new Vector2();
 
-	public DevTools(InputMultiplexer inputMultiplexer) {
-		this.inputMultiplexer = inputMultiplexer;
-		inputMultiplexer.addProcessor(new AbstractInputProcessor() {
+	public DevTools() {
+		Engine.inputMultiplexer.addProcessor(new AbstractInputProcessor() {
 			@Override public boolean mouseMoved(int screenX, int screenY) {
 				mouseOrigin.set(screenX, Gdx.graphics.getHeight() - screenY);
 				return true;
