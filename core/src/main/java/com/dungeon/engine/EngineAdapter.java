@@ -20,8 +20,9 @@ public class EngineAdapter extends ApplicationAdapter {
 	public void create () {
 		// Set the multiplexer as the main input to be able to host keys that must always work
 		Gdx.input.setInputProcessor(Engine.inputMultiplexer);
-		// And add an input stack to it
+		// And add an input stack to it and a mainKeyboardProcessor
 		Engine.inputMultiplexer.addProcessor(Engine.inputStack);
+		Engine.inputMultiplexer.addProcessor(Engine.mainKeyboardProcessor);
 
 		// Initialize and push the main application listener
 		listener.create();

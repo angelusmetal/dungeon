@@ -2,11 +2,12 @@ package com.dungeon.engine.controller.analog;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.controller.toggle.Toggle;
 
 /**
  * A analog control backed by a keyboard
  */
-public class KeyboardAnalogControl extends AnalogControl implements InputProcessor {
+public class KeyboardAnalogControl extends AnalogControl {
 
 	private static final Vector2[] VECTOR_DIRECTIONS = {
 			new Vector2(-1,-1),
@@ -18,11 +19,6 @@ public class KeyboardAnalogControl extends AnalogControl implements InputProcess
 			new Vector2(-1,1),
 			new Vector2(0,1),
 			new Vector2(1,1)};
-
-	private final int up;
-	private final int down;
-	private final int left;
-	private final int right;
 
 	private boolean upPressed;
 	private boolean downPressed;
@@ -36,51 +32,31 @@ public class KeyboardAnalogControl extends AnalogControl implements InputProcess
 	 * @param left Key for moving left
 	 * @param right Key for moving right
 	 */
-	public KeyboardAnalogControl(int up, int down, int left, int right) {
-		this.up = up;
-		this.down = down;
-		this.left = left;
-		this.right = right;
+	public KeyboardAnalogControl(Toggle up, Toggle down, Toggle left, Toggle right) {
+		up.addListener(this::up);
+		down.addListener(this::down);
+		left.addListener(this::left);
+		right.addListener(this::right);
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
-		if (keycode == up) {
-			upPressed = true;
-			notifyListeners();
-		} else if (keycode == down) {
-			downPressed = true;
-			notifyListeners();
-		} else if (keycode == left) {
-			leftPressed = true;
-			notifyListeners();
-		} else if (keycode == right) {
-			rightPressed = true;
-			notifyListeners();
-		} else {
-			return false;
-		}
-		return true;
+	private void up(boolean pressed) {
+		upPressed = pressed;
+		notifyListeners();
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
-		if (keycode == up) {
-			upPressed = false;
-			notifyListeners();
-		} else if (keycode == down) {
-			downPressed = false;
-			notifyListeners();
-		} else if (keycode == left) {
-			leftPressed = false;
-			notifyListeners();
-		} else if (keycode == right) {
-			rightPressed = false;
-			notifyListeners();
-		} else {
-			return false;
-		}
-		return true;
+	private void down(boolean pressed) {
+		downPressed = pressed;
+		notifyListeners();
+	}
+
+	private void left(boolean pressed) {
+		leftPressed = pressed;
+		notifyListeners();
+	}
+
+	private void right(boolean pressed) {
+		rightPressed = pressed;
+		notifyListeners();
 	}
 
 	private void notifyListeners() {
@@ -90,36 +66,6 @@ public class KeyboardAnalogControl extends AnalogControl implements InputProcess
 				+ (upPressed ? 3 : 0)
 				+ (downPressed ? -3 : 0);
 		notifyListeners(VECTOR_DIRECTIONS[povIndex]);
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
 	}
 
 }

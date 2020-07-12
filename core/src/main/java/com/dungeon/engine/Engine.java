@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.dungeon.engine.audio.AudioManager;
 import com.dungeon.engine.console.Console;
 import com.dungeon.engine.controller.InputProcessorStack;
+import com.dungeon.engine.controller.KeyboardProcessor;
 import com.dungeon.engine.entity.repository.EntityRepository;
 import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.physics.LevelTiles;
@@ -32,6 +33,7 @@ public class Engine {
 	public static AudioManager audio = new AudioManager();
 	public static InputMultiplexer inputMultiplexer = new InputMultiplexer();
 	public static InputProcessorStack inputStack = new InputProcessorStack();
+	public static KeyboardProcessor mainKeyboardProcessor = new KeyboardProcessor();
 	public static ApplicationListenerStack appListenerStack = new ApplicationListenerStack();
 
 	public static Repository<OverlayText> overlayTexts = new Repository<>();

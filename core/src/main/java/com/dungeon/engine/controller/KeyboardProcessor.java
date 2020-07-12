@@ -1,19 +1,30 @@
-package com.dungeon.engine.controller.toggle;
+package com.dungeon.engine.controller;
 
 import com.badlogic.gdx.InputProcessor;
+import com.dungeon.engine.controller.toggle.Toggle;
 
-public class KeyboardToggle extends Toggle implements InputProcessor {
+import java.util.HashMap;
+import java.util.Map;
 
-	private final int keycode;
+/**
+ * Allows registering toggles for different keys
+ */
+public class KeyboardProcessor implements InputProcessor {
+	private final Map<Integer, Toggle> toggles = new HashMap<>();
 
-	public KeyboardToggle(int keycode) {
-		this.keycode = keycode;
+	/**
+	 * Regoster a toggle with a keycode
+	 * @return true if there was already a mapping (which gets overwritten)
+	 */
+	public boolean register(int keycode, Toggle toggle) {
+		return toggles.put(keycode, toggle) != null;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == this.keycode) {
-			notifyListeners(true);
+		Toggle toggle = toggles.get(keycode);
+		if (toggle != null) {
+			toggle.notifyListeners(true);
 			return true;
 		} else {
 			return false;
@@ -22,8 +33,9 @@ public class KeyboardToggle extends Toggle implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if (keycode == this.keycode) {
-			notifyListeners(false);
+		Toggle toggle = toggles.get(keycode);
+		if (toggle != null) {
+			toggle.notifyListeners(false);
 			return true;
 		} else {
 			return false;

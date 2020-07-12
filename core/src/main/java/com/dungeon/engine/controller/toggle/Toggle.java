@@ -12,7 +12,7 @@ public class Toggle {
 		listeners.add(listener);
 	}
 
-	protected void notifyListeners(boolean pressed) {
+	public void notifyListeners(boolean pressed) {
 		for (Consumer<Boolean> listener : listeners) {
 			listener.accept(pressed);
 		}

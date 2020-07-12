@@ -3,12 +3,12 @@ package com.dungeon.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.controller.ControllerConfig;
+import com.dungeon.engine.controller.KeyboardProcessor;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.Resources;
@@ -43,6 +43,7 @@ import static com.dungeon.game.render.stage.TransitionStage.LEVEL_TRANSITION_TIM
 public class Dungeon extends ApplicationAdapter {
 
 	private StopWatch stopWatch = new StopWatch();
+	private KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
 
 	private final Toml configuration;
 	private CharacterSelection characterSelection;
@@ -63,6 +64,7 @@ public class Dungeon extends ApplicationAdapter {
 		devCommands = new DevCommands(Game.devTools);
 
 		// Set F12 to push & pop console input from the input processor
+		Engine.inputStack.push(keyboardProcessor);
 		Game.devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
 			Game.setDisplayConsole(true);
 			Engine.inputStack.push(Engine.console.getInputProcessor());
@@ -93,7 +95,7 @@ public class Dungeon extends ApplicationAdapter {
 		Map<String, ControllerConfig> controllerConfigs = readControllerConfigurations();
 
 		// Add keyboard controller
-		ControlBundle keyboardControl = new KeyboardControlBundle(Engine.inputMultiplexer);
+		ControlBundle keyboardControl = new KeyboardControlBundle(keyboardProcessor);
 		keyboardControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(keyboardControl));
 		keyboardControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
 

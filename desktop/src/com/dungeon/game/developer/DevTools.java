@@ -6,8 +6,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.controller.AbstractInputProcessor;
-import com.dungeon.engine.controller.toggle.KeyboardToggle;
+import com.dungeon.engine.controller.toggle.Toggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 import com.dungeon.engine.ui.widget.SamplerVisualizer;
 import com.dungeon.engine.ui.widget.VLayout;
@@ -100,10 +101,10 @@ public class DevTools {
 	}
 
 	public void addDeveloperHotkey(int keycode, Runnable runnable) {
-		KeyboardToggle keyboardToggle = new KeyboardToggle(keycode);
-		inputMultiplexer.addProcessor(keyboardToggle);
-		Trigger trigger = new Trigger(keyboardToggle);
+		Toggle toggle = new Toggle();
+		Trigger trigger = new Trigger(toggle);
 		trigger.addListener(runnable);
+		Engine.mainKeyboardProcessor.register(keycode, toggle);
 	}
 
 	public Vector2 mouseAt() {

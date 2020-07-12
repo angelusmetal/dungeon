@@ -1,31 +1,47 @@
 package com.dungeon.game.controller;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
+import com.dungeon.engine.controller.KeyboardProcessor;
 import com.dungeon.engine.controller.analog.KeyboardAnalogControl;
 import com.dungeon.engine.controller.pov.PovToggle;
 import com.dungeon.engine.controller.pov.PovTrigger;
-import com.dungeon.engine.controller.toggle.KeyboardToggle;
+import com.dungeon.engine.controller.toggle.Toggle;
 import com.dungeon.engine.controller.trigger.Trigger;
 
 public class KeyboardControlBundle extends ControlBundle {
-	public KeyboardControlBundle(InputMultiplexer inputMultiplexer) {
+	public KeyboardControlBundle(KeyboardProcessor keyboardToggle) {
 		super();
 
 		// Create directional controls
-		KeyboardAnalogControl moveStick = new KeyboardAnalogControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
-		KeyboardAnalogControl aimStick = new KeyboardAnalogControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D);
+//		KeyboardAnalogControl moveStick = new KeyboardAnalogControl(Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
+//		KeyboardAnalogControl aimStick = new KeyboardAnalogControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D);
+
+		// Movement control stick
+		Toggle toggleUp = new Toggle();
+		Toggle toggleDown = new Toggle();
+		Toggle toggleLeft = new Toggle();
+		Toggle toggleRight = new Toggle();
+		KeyboardAnalogControl moveStick = new KeyboardAnalogControl(toggleUp, toggleDown, toggleLeft, toggleRight);
+
+		// Aim control stick
+		Toggle toggleAimUp = new Toggle();
+		Toggle toggleAimDown = new Toggle();
+		Toggle toggleAimLeft = new Toggle();
+		Toggle toggleAimRight = new Toggle();
+		KeyboardAnalogControl aimStick = new KeyboardAnalogControl(toggleAimUp, toggleAimDown, toggleAimLeft, toggleAimRight);
 		PovTrigger povTrigger = new PovTrigger(new PovToggle(moveStick));
 
-		// Create a toggle and a trigger version for action keys
-		KeyboardToggle toggleA = new KeyboardToggle(Input.Keys.SPACE);
-		KeyboardToggle toggleB = new KeyboardToggle(Input.Keys.Z);
-		KeyboardToggle toggleX = new KeyboardToggle(Input.Keys.X);
-		KeyboardToggle toggleY = new KeyboardToggle(Input.Keys.C);
-		KeyboardToggle toggleL1 = new KeyboardToggle(Input.Keys.SHIFT_LEFT);
-		KeyboardToggle toggleL2 = new KeyboardToggle(Input.Keys.CONTROL_LEFT);
-		KeyboardToggle toggleR1 = new KeyboardToggle(Input.Keys.SHIFT_RIGHT);
-		KeyboardToggle toggleR2 = new KeyboardToggle(Input.Keys.CONTROL_RIGHT);
+		// Action toggles
+		Toggle toggleA = new Toggle();
+		Toggle toggleB = new Toggle();
+		Toggle toggleX = new Toggle();
+		Toggle toggleY = new Toggle();
+		Toggle toggleL1 = new Toggle();
+		Toggle toggleL2 = new Toggle();
+		Toggle toggleR1 = new Toggle();
+		Toggle toggleR2 = new Toggle();
+
+		// Action triggers
 		Trigger triggerA = new Trigger(toggleA);
 		Trigger triggerB = new Trigger(toggleB);
 		Trigger triggerX = new Trigger(toggleX);
@@ -35,17 +51,25 @@ public class KeyboardControlBundle extends ControlBundle {
 		Trigger triggerR1 = new Trigger(toggleR1);
 		Trigger triggerR2 = new Trigger(toggleR2);
 
-		// Wire controls to the keyboard
-		inputMultiplexer.addProcessor(moveStick);
-		inputMultiplexer.addProcessor(aimStick);
-		inputMultiplexer.addProcessor(toggleA);
-		inputMultiplexer.addProcessor(toggleB);
-		inputMultiplexer.addProcessor(toggleX);
-		inputMultiplexer.addProcessor(toggleY);
-		inputMultiplexer.addProcessor(toggleL1);
-		inputMultiplexer.addProcessor(toggleL2);
-		inputMultiplexer.addProcessor(toggleR1);
-		inputMultiplexer.addProcessor(toggleR2);
+		// Keyboard mapping
+		keyboardToggle.register(Input.Keys.UP, toggleUp);
+		keyboardToggle.register(Input.Keys.DOWN, toggleDown);
+		keyboardToggle.register(Input.Keys.LEFT, toggleLeft);
+		keyboardToggle.register(Input.Keys.RIGHT, toggleRight);
+
+		keyboardToggle.register(Input.Keys.W, toggleAimUp);
+		keyboardToggle.register(Input.Keys.S, toggleAimDown);
+		keyboardToggle.register(Input.Keys.A, toggleAimLeft);
+		keyboardToggle.register(Input.Keys.D, toggleAimRight);
+
+		keyboardToggle.register(Input.Keys.SPACE, toggleA);
+		keyboardToggle.register(Input.Keys.Z, toggleB);
+		keyboardToggle.register(Input.Keys.X, toggleX);
+		keyboardToggle.register(Input.Keys.C, toggleY);
+		keyboardToggle.register(Input.Keys.SHIFT_LEFT, toggleL1);
+		keyboardToggle.register(Input.Keys.CONTROL_LEFT, toggleL2);
+		keyboardToggle.register(Input.Keys.SHIFT_RIGHT, toggleR1);
+		keyboardToggle.register(Input.Keys.CONTROL_RIGHT, toggleR2);
 
 		// Wire controls to the controller methods
 		moveStick.addListener(this::updateDirection);
