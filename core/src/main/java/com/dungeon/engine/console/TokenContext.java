@@ -99,10 +99,10 @@ public class TokenContext {
 		this.childrenResolver = childrenResolver;
 	}
 
-	public boolean evaluate(List<String> tokens, ConsoleOutput output) {
+	public boolean evaluate(List<String> tokens) {
 		// An expression is bound to this context, so all tokens are passed to it for parsing
 		if (expression != null) {
-			return expression.evaluate(tokens, output);
+			return expression.evaluate(tokens);
 		}
 		// No expression is bound to this context, so continue walking children to find one
 		else {
@@ -112,7 +112,7 @@ public class TokenContext {
 			}
 			Optional<TokenContext> child = findChild(tokens.get(0));
 			// Continue traversing children, with the remaining tokens
-			return child.map(tokenContext -> tokenContext.evaluate(tokens.stream().skip(1).collect(Collectors.toList()), output))
+			return child.map(tokenContext -> tokenContext.evaluate(tokens.stream().skip(1).collect(Collectors.toList())))
 					// No child matching next token; this cannot be evaluated
 					.orElse(false);
 		}

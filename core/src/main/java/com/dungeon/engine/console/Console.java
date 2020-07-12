@@ -55,36 +55,36 @@ public class Console {
 
 	public Console() {
 		// Add get and set command for accessing variables
-		bindExpression("get", (tokens, out) -> {
+		bindExpression("get", tokens -> {
 			if (tokens.isEmpty()) {
-				out.print("Known variables:");
+				output.print("Known variables:");
 				vars.keySet().stream().sorted().forEach(var -> print ("  - " + var));
 			} else {
 				int maxNameLength = tokens.stream().map(String::length).max(Integer::compareTo).orElse(6);
 				tokens.forEach(var -> {
 					ConsoleVar value = vars.get(var);
 					if (value != null) {
-						out.print("  " + String.format("%1$" + maxNameLength + "s", var) + " - " + value.getter().get());
+						output.print("  " + String.format("%1$" + maxNameLength + "s", var) + ": " + value.getter().get());
 					} else {
-						out.print("  " + String.format("%1$" + maxNameLength + "s", var) + " - <no such var>");
+						output.print("  " + String.format("%1$" + maxNameLength + "s", var) + ": <no such var>");
 					}
 				});
 			}
 			return true;
 		}, () -> vars.keySet().stream().sorted());
-		bindExpression("set", (tokens, out) -> {
+		bindExpression("set", tokens -> {
 			if (tokens.size() != 2) {
-				out.print("Usage: set <var> <value>");
+				output.print("Usage: set <var> <value>");
 			} else {
 				ConsoleVar var = vars.get(tokens.get(0));
 				if (var != null) {
 					try {
 						var.setter().accept(tokens.get(1));
 					} catch (RuntimeException e) {
-						out.print(e.getMessage());
+						output.print(e.getMessage());
 					}
 				} else {
-					out.print("No such var '" + tokens.get(0) + "'");
+					output.print("No such var '" + tokens.get(0) + "'");
 				}
 			}
 			return true;
@@ -166,7 +166,7 @@ public class Console {
 		}
 		currentCommand.setLength(0);
 		List<String> tokens = tokenize(command);
-		if (!rootContext.evaluate(tokens, output) && !tokens.isEmpty()) {
+		if (!rootContext.evaluate(tokens) && !tokens.isEmpty()) {
 			commandUnknown(tokens.get(0));
 		}
 	}
@@ -181,6 +181,10 @@ public class Console {
 
 	public void setOutput(ConsoleOutput output) {
 		this.output = output;
+	}
+
+	public ConsoleOutput getOutput() {
+		return output;
 	}
 
 	public void print(String message) {

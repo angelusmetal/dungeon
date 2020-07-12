@@ -5,6 +5,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.dungeon.engine.console.ConsoleExpression;
+import com.dungeon.engine.console.ConsoleVar;
 
 public class EngineAdapter extends ApplicationAdapter {
 
@@ -27,6 +29,14 @@ public class EngineAdapter extends ApplicationAdapter {
 		// Initialize and push the main application listener
 		listener.create();
 		Engine.appListenerStack.push(listener);
+
+		// Bind engine expressions and variables
+		Engine.console.bindExpression("playMusic", ConsoleExpression.of((String path) -> Engine.audio.playMusic(Gdx.files.internal(path))));
+		Engine.console.bindExpression("stopMusic", ConsoleExpression.of(Engine.audio::stopMusic));
+
+		Engine.console.bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
+		Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
+		Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 
 //		initResources();
 //		inputMultiplexer = new InputMultiplexer();
