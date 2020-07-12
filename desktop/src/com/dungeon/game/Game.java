@@ -41,8 +41,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +58,6 @@ public class Game {
 	private static EntityFactory entityFactory;
 	private static Toml configuration;
 	private static List<String> lootSet;
-	private static Console console = new Console();
 	private static boolean displayConsole = false;
 	public static GameView gameView = new GameView();
 	public static DevTools devTools;
@@ -167,12 +164,8 @@ public class Game {
 
 	public static void startNewGame(List<Player> players) {
 		Players.set(players);
-		getConsole().setOutput(Players.get(0).getConsole()::log);
+		Engine.console.setOutput(Players.get(0).getConsole()::log);
 		startNewLevel();
-	}
-
-	public static Console getConsole() {
-		return console;
 	}
 
 	public static boolean displayConsole() {

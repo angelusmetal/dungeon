@@ -37,7 +37,7 @@ public class ConsoleStage implements Renderer {
 		if (Game.displayConsole()) {
 			font.setColor(Color.WHITE);
 			String cursor = (int) (Engine.time() * 2f) % 2 == 0 ? "|" : "";
-			font.draw(batch, "> " + Game.getConsole().getCurrentCommand() + cursor, x, y);
+			font.draw(batch, "> " + Engine.console.getCurrentCommand() + cursor, x, y);
 		}
 
 		x = viewPort.posX + 10;

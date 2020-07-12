@@ -1,7 +1,7 @@
 package com.dungeon.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.dungeon.engine.EngineAdapter;
 import com.dungeon.game.Dungeon;
 import com.moandjiezana.toml.Toml;
 
@@ -10,6 +10,9 @@ public class DesktopLauncher {
 		// Read configuration from file
 		Toml toml = new Toml().read(DesktopLauncher.class.getClassLoader().getResourceAsStream("config.toml"));
 		LwjglApplicationConfiguration config = toml.getTable("application").to(LwjglApplicationConfiguration.class);
-		new LwjglApplication(new Dungeon(toml), config);
+		new EngineAdapter.Builder()
+				.config(config)
+				.listener(new Dungeon(toml))
+				.launch();
 	}
 }

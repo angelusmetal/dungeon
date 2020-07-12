@@ -26,27 +26,27 @@ public class DevCommands {
 		this.devTools = devTools;
 
 		// Add console commands
-		Game.getConsole().bindExpression("playMusic", this::playMusic);
-		Game.getConsole().bindExpression("stopMusic", this::stopMusic);
-		Game.getConsole().bindExpression("say", this::say);
-		Game.getConsole().bindExpression("shout", this::shout);
-		Game.getConsole().bindExpression("spawn", this::spawn, Game::knownEntityTypes);
-		Game.getConsole().bindExpression("die", (args, output) -> {
+		Engine.console.bindExpression("playMusic", this::playMusic);
+		Engine.console.bindExpression("stopMusic", this::stopMusic);
+		Engine.console.bindExpression("say", this::say);
+		Engine.console.bindExpression("shout", this::shout);
+		Engine.console.bindExpression("spawn", this::spawn, Game::knownEntityTypes);
+		Engine.console.bindExpression("die", (args, output) -> {
 			Players.all().forEach(p -> p.getAvatar().expire());
 			return true;
 		});
-		Game.getConsole().bindExpression("exitLevel", (args, output) -> {
+		Engine.console.bindExpression("exitLevel", (args, output) -> {
 			Game.exitLevel();
 			return true;
 		});
-		Game.getConsole().bindExpression("randomWeapon", this::randomWeapon);
-		Game.getConsole().bindExpression("gold", this::gold);
+		Engine.console.bindExpression("randomWeapon", this::randomWeapon);
+		Engine.console.bindExpression("gold", this::gold);
 
 		// Add variables
-		Game.getConsole().bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
-		Game.getConsole().bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
-		Game.getConsole().bindVar(ConsoleVar.mutableInt("levelCount", Game::getLevelCount, Game::setLevelCount));
-		Game.getConsole().bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
+		Engine.console.bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
+		Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
+		Engine.console.bindVar(ConsoleVar.mutableInt("levelCount", Game::getLevelCount, Game::setLevelCount));
+		Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 	}
 
 	private boolean gold(List<String> tokens, ConsoleOutput output) {

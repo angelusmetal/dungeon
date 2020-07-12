@@ -17,41 +17,41 @@ public class InputProcessorStack implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		return stack.peek().keyDown(keycode);
+		return !stack.isEmpty() && stack.peek().keyDown(keycode);
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		return stack.peek().keyUp(keycode);
+		return !stack.isEmpty() && stack.peek().keyUp(keycode);
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		return stack.peek().keyTyped(character);
+		return !stack.isEmpty() && stack.peek().keyTyped(character);
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return stack.peek().touchDown(screenX, screenY, pointer, button);
+		return !stack.isEmpty() && stack.peek().touchDown(screenX, screenY, pointer, button);
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return stack.peek().touchUp(screenX, screenY, pointer, button);
+		return !stack.isEmpty() && stack.peek().touchUp(screenX, screenY, pointer, button);
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return stack.peek().touchDragged(screenX, screenY, pointer);
+		return !stack.isEmpty() && stack.peek().touchDragged(screenX, screenY, pointer);
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		return stack.peek().mouseMoved(screenX, screenY);
+		return !stack.isEmpty() && stack.peek().mouseMoved(screenX, screenY);
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		return stack.peek().scrolled(amount);
+		return !stack.isEmpty() && stack.peek().scrolled(amount);
 	}
 }

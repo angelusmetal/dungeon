@@ -9,7 +9,6 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.OverlayText;
 import com.dungeon.engine.controller.ControllerConfig;
-import com.dungeon.engine.controller.InputProcessorStack;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.Resources;
@@ -46,8 +45,6 @@ public class Dungeon extends ApplicationAdapter {
 	private StopWatch stopWatch = new StopWatch();
 
 	private final Toml configuration;
-	private InputMultiplexer inputMultiplexer;
-	private InputProcessorStack inputStack;
 	private CharacterSelection characterSelection;
 
 	private boolean fading = false;
@@ -60,24 +57,20 @@ public class Dungeon extends ApplicationAdapter {
 	}
 
 	@Override
-	public void create () {
+	public void create() {
 		initResources();
-		inputStack = new InputProcessorStack();
-		inputMultiplexer = new InputMultiplexer();
-		Game.devTools = new DevTools(inputMultiplexer);
+		Game.devTools = new DevTools(Engine.inputMultiplexer);
 		devCommands = new DevCommands(Game.devTools);
-		inputStack.push(inputMultiplexer);
-		Gdx.input.setInputProcessor(inputStack);
 
 		// Set F12 to push & pop console input from the input processor
 		Game.devTools.addDeveloperHotkey(Input.Keys.ENTER, () -> {
 			Game.setDisplayConsole(true);
-			inputStack.push(Game.getConsole().getInputProcessor());
+			Engine.inputStack.push(Engine.console.getInputProcessor());
 		});
-		Game.getConsole().bindKey(Input.Keys.ENTER, () -> {
-			Game.getConsole().commandExecute();
+		Engine.console.bindKey(Input.Keys.ENTER, () -> {
+			Engine.console.commandExecute();
 			Game.setDisplayConsole(false);
-			inputStack.pop();
+			Engine.inputStack.pop();
 		});
 
 		Game.initialize(configuration);
@@ -92,13 +85,15 @@ public class Dungeon extends ApplicationAdapter {
 
 		// Start playing character selection music
 		Engine.audio.playMusic(Gdx.files.internal("audio/character_select.mp3"), 0f);
+
+		System.err.println("GL_MAX_TEXTURE_SIZE: " + Engine.getMaxTextureSize());
 	}
 
 	private void configureInput() {
 		Map<String, ControllerConfig> controllerConfigs = readControllerConfigurations();
 
 		// Add keyboard controller
-		ControlBundle keyboardControl = new KeyboardControlBundle(inputMultiplexer);
+		ControlBundle keyboardControl = new KeyboardControlBundle(Engine.inputMultiplexer);
 		keyboardControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(keyboardControl));
 		keyboardControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(keyboardControl, characterSelection));
 
