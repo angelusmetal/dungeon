@@ -1,5 +1,6 @@
 package com.dungeon.engine.resource;
 
+import com.badlogic.gdx.Gdx;
 import com.typesafe.config.Config;
 
 /**
@@ -33,7 +34,7 @@ public interface ResourceLoader<T> {
 	T read(String identifier, Config descriptor);
 
 	default void load(ResourceDescriptor descriptor) {
-		System.out.println("Loading " + descriptor.getIdentifier().getType() + " '" + descriptor.getIdentifier().getKey() + "'...");
+		Gdx.app.log("Resource", "Loading " + descriptor.getIdentifier().getType() + " '" + descriptor.getIdentifier().getKey() + "'...");
 		getRepository().put(descriptor.getIdentifier().getKey(), read(descriptor.getIdentifier().getKey(), descriptor.getBlob()));
 	}
 

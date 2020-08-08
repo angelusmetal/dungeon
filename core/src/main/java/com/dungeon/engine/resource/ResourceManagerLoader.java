@@ -1,5 +1,6 @@
 package com.dungeon.engine.resource;
 
+import com.badlogic.gdx.Gdx;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValue;
@@ -16,6 +17,7 @@ import java.util.Set;
  */
 public class ResourceManagerLoader {
 
+	private static final String TAG = "Resource";
 	private final Map<String, ResourceLoader<?>> loaders = new HashMap<>();
 
 	/**
@@ -43,7 +45,7 @@ public class ResourceManagerLoader {
 			// Get the corresponding loader
 			ResourceLoader<?> resourceLoader = loaders.get(type);
 			if (resourceLoader == null) {
-				System.out.println("Ignoring unknown resource type '" + type + "'");
+				Gdx.app.log(TAG, "Ignoring unknown resource type '" + type + "'");
 			} else {
 				// Iterate entries within type
 				Config typeTable = config.getConfig(type);
@@ -51,7 +53,7 @@ public class ResourceManagerLoader {
 					String key = entry.getKey();
 					ResourceIdentifier identifier = new ResourceIdentifier(type, key);
 					ResourceDescriptor descriptor = resourceLoader.scan(key, typeTable.getConfig(key));
-					System.out.println("  - Adding descriptor for " + identifier + "...");
+					Gdx.app.log(TAG, "Adding descriptor for " + identifier + "...");
 					ResourceDescriptor duplicate = descriptors.put(identifier, descriptor);
 					if (duplicate != null) {
 						throw new LoadingException("Found duplicate descriptor for identifier: '" + identifier + "'");

@@ -221,7 +221,7 @@ public class Game {
 		Players.all().forEach(player -> player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage()));
 
 		Engine.entities.commit(false);
-		System.out.println(Engine.entities.analysis());
+		Gdx.app.log("Level", Engine.entities.analysis());
 
 		setCurrentState(State.INGAME);
 

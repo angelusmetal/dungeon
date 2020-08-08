@@ -1,5 +1,6 @@
 package com.dungeon.engine.entity.repository;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
@@ -46,7 +47,7 @@ public class EntityRepository {
 
 	public void clear(int width, int height) {
 		dynamic.clear();
-		System.out.println("Creating QuadTree of size: [" + width + ", " + height + "]");
+		Gdx.app.log("Level", "Creating QuadTree of size: [" + width + ", " + height + "]");
 		quadTree = new QuadTree(new Rectangle(0, 0, width, height));
 	}
 

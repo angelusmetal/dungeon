@@ -1,5 +1,6 @@
 package com.dungeon.game.state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.controller.AbstractControlBundleListener;
@@ -31,7 +32,7 @@ public class SelectionPlayerControlListener extends AbstractControlBundleListene
 		if (!added) {
 			added = characterSelection.addControl(control);
 		} else {
-			System.out.println("Player confirmed!");
+			Gdx.app.log("Level", "Player confirmed!");
 			characterSelection.confirmSelection(control);
 		}
 	}

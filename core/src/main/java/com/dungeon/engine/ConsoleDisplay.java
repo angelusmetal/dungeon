@@ -1,5 +1,6 @@
 package com.dungeon.engine;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ConsoleDisplay {
 			this.log.remove(0);
 		}
 		this.log.add(new LogLine(log, color.cpy(), Engine.time() + messageExpiration));
-		System.out.println(log);
+		Gdx.app.log("Console", log);
 	}
 
 	public List<LogLine> getLog() {

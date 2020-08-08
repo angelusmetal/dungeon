@@ -1,6 +1,7 @@
 package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.repository.EntityRepository;
@@ -19,7 +20,7 @@ public class EntityManagerPerfTest {
 
 	EntityRepository repository = new EntityRepository();
 	@Mock
-	Animation<TextureRegion> animation;
+	Animation<Sprite> animation;
 
 	@Before
 	public void init() {

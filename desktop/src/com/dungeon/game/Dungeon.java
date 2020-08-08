@@ -100,7 +100,7 @@ public class Dungeon extends ApplicationAdapter {
 
 		// Add an extra controller for each physical one
 		for (Controller controller : Controllers.getControllers()) {
-			System.out.println("Detected controller '" + controller.getName() + (controllerConfigs.containsKey(controller.getName()) ? "' and found a configuration for it" : "' but found no configuration for it"));
+			Gdx.app.log("Controller", "Detected controller '" + controller.getName() + (controllerConfigs.containsKey(controller.getName()) ? "' and found a configuration for it" : "' but found no configuration for it"));
 			ControlBundle controllerControl = new ControllerControlBundle(controller, controllerConfigs.get(controller.getName()));
 			controllerControl.addStateListener(Game.State.INGAME, new CharacterPlayerControlListener(controllerControl));
 			controllerControl.addStateListener(Game.State.MENU, new SelectionPlayerControlListener(controllerControl, characterSelection));

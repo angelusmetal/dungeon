@@ -1,5 +1,6 @@
 package com.dungeon.engine.console;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -51,7 +52,7 @@ public class Console {
 		}
 	};
 
-	private ConsoleOutput output = (text, color) -> System.out.println(text);
+	private ConsoleOutput output = (text, color) -> Gdx.app.log("Console", text);
 
 	public Console() {
 		// Add get and set command for accessing variables

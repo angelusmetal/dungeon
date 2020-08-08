@@ -1,5 +1,6 @@
 package com.dungeon.engine.viewport;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ViewPortInputProcessor implements GestureDetector.GestureListener, InputProcessor {
 
 	public static final float[] SCALES = {0.125f, 0.25f, 0.5f, 1f, 2f, 3f, 4f, 5f, 6f};
+	private static final String TAG = "ViewPort";
 
 	private final ViewPort viewPort;
 	private boolean zoomEnabled = true;
@@ -51,25 +53,25 @@ public class ViewPortInputProcessor implements GestureDetector.GestureListener, 
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
-		System.out.println("pan stop!");
+		Gdx.app.log(TAG, "pan stop!");
 		return false;
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		System.out.println("zoom!");
+		Gdx.app.log(TAG, "zoom!");
 		return false;
 	}
 
 	@Override
 	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-		System.out.println("pinch!");
+		Gdx.app.log(TAG, "pinch!");
 		return false;
 	}
 
 	@Override
 	public void pinchStop() {
-		System.out.println("pinch stop!");
+		Gdx.app.log(TAG, "pinch stop!");
 	}
 
 	/// InputProcessor methods

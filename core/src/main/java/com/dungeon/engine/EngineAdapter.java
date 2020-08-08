@@ -43,8 +43,6 @@ public class EngineAdapter extends ApplicationAdapter {
 		Engine.console.bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
 		Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
 		Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
-
-
 	}
 
 	@Override
