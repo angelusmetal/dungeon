@@ -2,6 +2,7 @@ package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -146,9 +147,9 @@ public class Traits {
     }
 
     /** Sets animation based on a vector, using one sprite for up, down and sides (mirrored) */
-    static public <T extends Entity> TraitSupplier<T> animationByVector(Function<T, Vector2> vectorProvider, Animation<TextureRegion> side, Animation<TextureRegion> up, Animation<TextureRegion> down) {
+    static public <T extends Entity> TraitSupplier<T> animationByVector(Function<T, Vector2> vectorProvider, Animation<Sprite> side, Animation<Sprite> up, Animation<Sprite> down) {
         return e -> entity -> {
-            Animation<TextureRegion> newAnimation;
+            Animation<Sprite> newAnimation;
             Vector2 vector = vectorProvider.apply(entity);
             // Updates current animation based on the self impulse vector
             entity.getDrawScale().x = abs(entity.getDrawScale().x) * (vector.x < 0 ? -1 : 1);

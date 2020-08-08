@@ -195,9 +195,9 @@ public class ModularWeaponGenerator {
 	);
 
 	private final List<String> skins = Arrays.asList(
-			"weapon_iron_dagger", "weapon_iron_estoc", "weapon_iron_shortsword", "weapon_iron_longsword", "weapon_iron_sawblade", "weapon_iron_broadsword",
-			"weapon_bronze_dagger", "weapon_bronze_estoc", "weapon_bronze_shortsword", "weapon_bronze_longsword", "weapon_bronze_sawblade", "weapon_bronze_broadsword",
-			"weapon_steel_dagger", "weapon_steel_estoc", "weapon_steel_shortsword", "weapon_steel_longsword", "weapon_steel_sawblade", "weapon_steel_broadsword",
+			"weapon_iron_dagger", "weapon_iron_rapier", "weapon_iron_shortsword", "weapon_iron_longsword", "weapon_iron_sawblade", "weapon_iron_broadsword",
+			"weapon_bronze_dagger", "weapon_bronze_rapier", "weapon_bronze_shortsword", "weapon_bronze_longsword", "weapon_bronze_sawblade", "weapon_bronze_broadsword",
+			"weapon_steel_dagger", "weapon_steel_rapier", "weapon_steel_shortsword", "weapon_steel_longsword", "weapon_steel_sawblade", "weapon_steel_broadsword",
 			"weapon_fire_wand", "weapon_fire_staff", "weapon_fire_scepter", "weapon_poison_wand", "weapon_poison_staff", "weapon_poison_scepter"
 	);
 

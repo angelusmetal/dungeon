@@ -2,6 +2,7 @@ package com.dungeon.game.render.stage;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
@@ -15,12 +16,12 @@ public class PlayerArrowsStage implements Renderer {
 
 	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
-	private final Texture texture;
+	private final Sprite arrow;
 
 	public PlayerArrowsStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
 		this.viewportBuffer = viewportBuffer;
-		texture = Resources.textures.get("player_arrow.png");
+		arrow = Resources.loadSprite("player_arrow");
 	}
 
 	@Override
@@ -35,12 +36,16 @@ public class PlayerArrowsStage implements Renderer {
 							y - viewPort.cameraHeight / 2
 					);
 					batch.setColor(player.getColor());
-					batch.draw(
-							texture, x, y,
-							8,8,16,16, 1,1,
-							origin.angle(),0,0,
-							texture.getWidth(), texture.getHeight(),
-							false,false);
+					arrow.setOrigin(8, 8);
+					arrow.setRotation(origin.angle());
+					arrow.setPosition(x, y);
+					arrow.draw(batch);
+//					batch.draw(
+//							texture, x, y,
+//							8,8,16,16, 1,1,
+//							origin.angle(),0,0,
+//							texture.getWidth(), texture.getHeight(),
+//							false,false);
 					batch.setColor(Color.WHITE);
 				}
 			}

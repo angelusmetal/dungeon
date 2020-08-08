@@ -2,6 +2,7 @@ package com.dungeon.game.resource.loader;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -76,7 +77,7 @@ public class TraitLoader {
 
 	private static <T extends Entity> TraitSupplier<T> setAnimation(Config config) {
 		String name = ConfigUtil.requireString(config, "animation");
-		Animation<TextureRegion> animation = Resources.animations.get(name);
+		Animation<Sprite> animation = Resources.animations.get(name);
 		return e -> entity -> {
 			entity.setAnimation(animation, Engine.time());
 		};

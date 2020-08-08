@@ -3,6 +3,7 @@ package com.dungeon.game.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -16,13 +17,13 @@ import com.dungeon.game.player.Player;
 import com.dungeon.game.resource.DungeonResources;
 
 public class CharacterHudWidget extends AbstractWidget implements Widget {
-	private final Animation<TextureRegion> coins;
-	private final Animation<TextureRegion> face;
-	private final Animation<TextureRegion> bars;
-	private final Animation<TextureRegion> nameplate;
-	private final Animation<TextureRegion> health;
-	private final Animation<TextureRegion> energy;
-	private final Animation<TextureRegion> experience;
+	private final Animation<Sprite> coins;
+	private final Animation<Sprite> face;
+	private final Animation<Sprite> bars;
+	private final Animation<Sprite> nameplate;
+	private final Animation<Sprite> health;
+	private final Animation<Sprite> energy;
+	private final Animation<Sprite> experience;
 	private final BitmapFont font;
 	private final BitmapFont chubbyFont;
 	private final Player player;
@@ -30,9 +31,9 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 	private final Color outlineColor;
 	private final ViewPort viewPort;
 
-	private final int healthWidth;
-	private final int energyWidth;
-	private final int experienceWidth;
+	private final float healthWidth;
+	private final float energyWidth;
+	private final float experienceWidth;
 
 	public CharacterHudWidget(Player player, ViewPort viewPort) {
 		face = getFace(player);
@@ -50,12 +51,12 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		width = 144;
 		this.viewPort = viewPort;
 		outlineColor = new Color(0x504057ff);
-		healthWidth = health.getKeyFrame(0).getRegionWidth();
-		energyWidth = energy.getKeyFrame(0).getRegionWidth();
-		experienceWidth = experience.getKeyFrame(0).getRegionWidth();
+		healthWidth = health.getKeyFrame(0).getWidth();
+		energyWidth = energy.getKeyFrame(0).getWidth();
+		experienceWidth = experience.getKeyFrame(0).getWidth();
 	}
 
-	private Animation<TextureRegion> getFace(Player player) {
+	private Animation<Sprite> getFace(Player player) {
 		if (player.getCharacterId() == 0) {
 			return Resources.animations.get("hud_kara");
 		} else if (player.getCharacterId() == 1) {
@@ -71,33 +72,45 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 
 	@Override
 	public void draw(SpriteBatch batch) {
-		batch.setColor(player.getColor());
-		batch.draw(nameplate.getKeyFrame(Engine.time()), x + 23, y + 28);
-		batch.setColor(Color.WHITE);
-		batch.draw(bars.getKeyFrame(Engine.time()), x + 47, y + 11);
+		Sprite frame = nameplate.getKeyFrame(Engine.time());
+		frame.setColor(player.getColor());
+		frame.setPosition(x + 23, y + 28);
+		frame.draw(batch);
+
+		frame = bars.getKeyFrame(Engine.time());
+		frame.setPosition(x + 47, y + 11);
+		frame.draw(batch);
 
 		// Display health
-		TextureRegion keyFrame = new TextureRegion(health.getKeyFrame(Engine.time()));
 		float healthFill = player.getAvatar().getHealth() / player.getAvatar().getMaxHealth();
-		keyFrame.setRegionX((int)((1f - healthFill) * healthWidth));
-		keyFrame.setRegionWidth((int)(healthFill * healthWidth));
-		batch.draw(keyFrame, x + 47, y + 22);
+		frame = new Sprite(health.getKeyFrame(Engine.time()));
+		frame.setRegionX((int) (frame.getRegionX() + frame.getRegionWidth() * (1f - healthFill)));
+		frame.setSize((int) (frame.getWidth() * healthFill), frame.getHeight());
+		frame.setPosition(x + 47, y + 22);
+		frame.draw(batch);
 
 		// Display energy
-		keyFrame.setRegion(energy.getKeyFrame(Engine.time()));
 		float energyFill = player.getAvatar().getEnergy() / player.getAvatar().getMaxEnergy();
-		keyFrame.setRegionX((int)((1f - energyFill) * energyWidth));
-		keyFrame.setRegionWidth((int)(energyFill * energyWidth));
-		batch.draw(keyFrame, x + 47, y + 16);
+		frame = new Sprite(energy.getKeyFrame(Engine.time()));
+		frame.setRegionX((int) (frame.getRegionX() + frame.getRegionWidth() * (1f - energyFill)));
+		frame.setSize((int) (frame.getWidth() * energyFill), frame.getHeight());
+		frame.setPosition(x + 47, y + 16);
+		frame.draw(batch);
 
 		// Display experience
-		batch.draw(experience.getKeyFrame(Engine.time()), x + 47, y + 11);
+		frame = experience.getKeyFrame(Engine.time());
+		frame.setPosition(x + 47, y + 11);
+		frame.draw(batch);
 
 		// Display mug
-		batch.draw(face.getKeyFrame(Engine.time()), x, y);
+		frame = face.getKeyFrame(Engine.time());
+		frame.setPosition(x, y);
+		frame.draw(batch);
 
 		// Display coins
-		batch.draw(coins.getKeyFrame(Engine.time()), x + 50, y);
+		frame = coins.getKeyFrame(Engine.time());
+		frame.setPosition(x + 50, y);
+		frame.draw(batch);
 		font.draw(batch, Integer.toString(player.getGold()), x + 59, y + font.getLineHeight());
 
 		// Display weapon

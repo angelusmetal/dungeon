@@ -1,6 +1,7 @@
 package com.dungeon.game.character.npc;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -16,15 +17,15 @@ import java.util.List;
 import static java.lang.Math.abs;
 
 public class NpcEntity extends CreatureEntity {
-	protected final Animation<TextureRegion> idleAnimation;
-	protected final Animation<TextureRegion> talkAnimation;
+	protected final Animation<Sprite> idleAnimation;
+	protected final Animation<Sprite> talkAnimation;
 	// TODO This should become a full-fledge conversation system
 	protected final List<String> greetPhrases;
 	protected int greetPhrase = 0;
 	protected float talkUntil = 0f;
 
 	public NpcEntity(Vector2 origin, EntityPrototype prototype,
-					 Animation<TextureRegion> idleAnimation, Animation<TextureRegion> talkAnimation,
+					 Animation<Sprite> idleAnimation, Animation<Sprite> talkAnimation,
 					 List<String> greetPhrases) {
 		super(origin, prototype);
 		this.idleAnimation = idleAnimation;

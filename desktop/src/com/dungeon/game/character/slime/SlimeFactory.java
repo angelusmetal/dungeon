@@ -2,6 +2,7 @@ package com.dungeon.game.character.slime;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
@@ -26,10 +27,10 @@ public class SlimeFactory {
 
 	public static final String POOL_DRY = "slime_pool_dry";
 
-	final Animation<TextureRegion> idleAnimation;
-	final Animation<TextureRegion> blinkAnimation;
-	final Animation<TextureRegion> spawnIdleAnimation;
-	final Animation<TextureRegion> spawnBlinkAnimation;
+	final Animation<Sprite> idleAnimation;
+	final Animation<Sprite> blinkAnimation;
+	final Animation<Sprite> spawnIdleAnimation;
+	final Animation<Sprite> spawnBlinkAnimation;
 
 	final float maxTargetDistance;
 	final float jumpDistance;

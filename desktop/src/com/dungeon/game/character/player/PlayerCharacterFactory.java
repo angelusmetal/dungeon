@@ -3,6 +3,7 @@ package com.dungeon.game.character.player;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -129,18 +130,18 @@ public class PlayerCharacterFactory {
 						   Function<Entity, Metronome> stepMetronomeFactory,
 						   EntityPrototype prototype,
 						   Vector2 origin) {
-		final Animation<TextureRegion> idleRightAnimation = Resources.animations.get(idleRight);
-		final Animation<TextureRegion> walkRightAnimation = Resources.animations.get(walkRight);
-		final Animation<TextureRegion> attackRightAnimation = Resources.animations.get(attackRight);
-		final Animation<TextureRegion> idleDownAnimation = Resources.animations.get(idleDown);
-		final Animation<TextureRegion> walkDownAnimation = Resources.animations.get(walkDown);
-		final Animation<TextureRegion> attackDownAnimation = Resources.animations.get(attackDown);
-		final Animation<TextureRegion> idleUpAnimation = Resources.animations.get(idleUp);
-		final Animation<TextureRegion> walkUpAnimation = Resources.animations.get(walkUp);
-		final Animation<TextureRegion> attackUpAnimation = Resources.animations.get(attackUp);
+		final Animation<Sprite> idleRightAnimation = Resources.animations.get(idleRight);
+		final Animation<Sprite> walkRightAnimation = Resources.animations.get(walkRight);
+		final Animation<Sprite> attackRightAnimation = Resources.animations.get(attackRight);
+		final Animation<Sprite> idleDownAnimation = Resources.animations.get(idleDown);
+		final Animation<Sprite> walkDownAnimation = Resources.animations.get(walkDown);
+		final Animation<Sprite> attackDownAnimation = Resources.animations.get(attackDown);
+		final Animation<Sprite> idleUpAnimation = Resources.animations.get(idleUp);
+		final Animation<Sprite> walkUpAnimation = Resources.animations.get(walkUp);
+		final Animation<Sprite> attackUpAnimation = Resources.animations.get(attackUp);
 
 		return new PlayerEntity(prototype, origin) {
-			@Override protected Animation<TextureRegion> getAttackAnimation(PovDirection direction) {
+			@Override protected Animation<Sprite> getAttackAnimation(PovDirection direction) {
 				if (direction == PovDirection.south) {
 					return attackDownAnimation;
 				} else if (direction == PovDirection.north) {
@@ -149,7 +150,7 @@ public class PlayerCharacterFactory {
 					return attackRightAnimation;
 				}
 			}
-			@Override protected Animation<TextureRegion> getIdleAnimation(PovDirection direction) {
+			@Override protected Animation<Sprite> getIdleAnimation(PovDirection direction) {
 				if (direction == PovDirection.south) {
 					return idleDownAnimation;
 				} else if (direction == PovDirection.north) {
@@ -158,7 +159,7 @@ public class PlayerCharacterFactory {
 					return idleRightAnimation;
 				}
 			}
-			@Override protected Animation<TextureRegion> getWalkAnimation(PovDirection direction) {
+			@Override protected Animation<Sprite> getWalkAnimation(PovDirection direction) {
 				if (direction == PovDirection.south) {
 					return walkDownAnimation;
 				} else if (direction == PovDirection.north) {

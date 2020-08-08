@@ -2,6 +2,7 @@ package com.dungeon.game.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.resource.Resources;
@@ -13,7 +14,7 @@ import com.dungeon.game.player.Player;
 public class HeartWidget extends AbstractWidget implements Widget {
 
 	private final float healthPerContainer;
-	private final Animation<TextureRegion> hearts;
+	private final Animation<Sprite> hearts;
 	private final TextureRegion energy;
 	private final Player player;
 	private final int heartTab;

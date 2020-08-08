@@ -2,6 +2,7 @@ package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.LightPrototype;
@@ -19,7 +20,7 @@ import static com.dungeon.engine.util.Util.clamp;
 
 public class EntityPrototype {
 	List<Vector2> occlusionSegments = Collections.emptyList();
-	Supplier<Animation<TextureRegion>> animation = () -> null;
+	Supplier<Animation<Sprite>> animation = () -> null;
 	boolean offsetAnimation;
 	float bounciness = 0;
 	Supplier<Color> color = Color.WHITE::cpy;
@@ -95,17 +96,17 @@ public class EntityPrototype {
 		this.occlusionSegments = other.occlusionSegments;
 	}
 
-	public EntityPrototype animation(Animation<TextureRegion> animation) {
+	public EntityPrototype animation(Animation<Sprite> animation) {
 		this.animation = () -> animation;
 		return this;
 	}
 
-	public EntityPrototype animation(Supplier<Animation<TextureRegion>> animation) {
+	public EntityPrototype animation(Supplier<Animation<Sprite>> animation) {
 		this.animation = animation;
 		return this;
 	}
 
-	public Supplier<Animation<TextureRegion>> getAnimation() {
+	public Supplier<Animation<Sprite>> getAnimation() {
 		return animation;
 	}
 

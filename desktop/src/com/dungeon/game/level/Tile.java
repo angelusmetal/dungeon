@@ -1,12 +1,13 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Tile {
 	TilePrototype prototype;
-	Animation<TextureRegion> floorAnimation;
-	Animation<TextureRegion> wallAnimation;
+	Animation<Sprite> floorAnimation;
+	Animation<Sprite> wallAnimation;
 	boolean discovered = false;
 
 	public Tile(TilePrototype prototype) {
@@ -21,19 +22,19 @@ public class Tile {
 		this.prototype = prototype;
 	}
 
-	public Animation<TextureRegion> getFloorAnimation() {
+	public Animation<Sprite> getFloorAnimation() {
 		return floorAnimation;
 	}
 
-	public void setFloorAnimation(Animation<TextureRegion> floorAnimation) {
+	public void setFloorAnimation(Animation<Sprite> floorAnimation) {
 		this.floorAnimation = floorAnimation;
 	}
 
-	public Animation<TextureRegion> getWallAnimation() {
+	public Animation<Sprite> getWallAnimation() {
 		return wallAnimation;
 	}
 
-	public void setWallAnimation(Animation<TextureRegion> wallAnimation) {
+	public void setWallAnimation(Animation<Sprite> wallAnimation) {
 		this.wallAnimation = wallAnimation;
 	}
 

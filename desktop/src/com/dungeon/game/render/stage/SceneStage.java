@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -208,8 +209,9 @@ public class SceneStage implements Renderer {
 		// Only render the visible portion of the map
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
-				TextureRegion textureRegion = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true);
-				batch.draw(textureRegion, x * tSize, y * tSize, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+				Sprite floor = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true);
+				floor.setPosition(x * tSize, y * tSize);
+				floor.draw(batch);
 				Game.getLevel().setDiscovered(x, y);
 			}
 		}
@@ -224,14 +226,16 @@ public class SceneStage implements Renderer {
 		// If possible, continue with the following vertical stripes, from the top
 		for (int y = wallY - 1; y >= eY; y--) {
 			for (int x = minX; x < maxX; x++) {
-				TextureRegion textureRegion = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true);
+				Sprite wall = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true);
 				// If it partially occludes a non-solid tile, it is rendered semi-transparent
 				if (!Game.getLevel().isSolid(x, y + 1)) {
 					batch.setColor(1, 1, 1, 0.8f);
-					batch.draw(textureRegion, x * tSize, y * tSize, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+					wall.setPosition(x * tSize, y * tSize);
+					wall.draw(batch);
 					batch.setColor(1, 1, 1, 1);
 				} else {
-					batch.draw(textureRegion, x * tSize, y * tSize, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+					wall.setPosition(x * tSize, y * tSize);
+					wall.draw(batch);
 				}
 				Game.getLevel().setDiscovered(x, y);
 			}

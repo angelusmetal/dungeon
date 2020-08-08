@@ -2,6 +2,7 @@ package com.dungeon.engine.ui.particle;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -9,12 +10,12 @@ import com.dungeon.engine.Engine;
 
 public abstract class AbstractParticle implements Particle {
 	protected final Vector2 origin = new Vector2();
-	protected final Animation<TextureRegion> animation;
+	protected final Animation<Sprite> animation;
 	protected final float startTime;
 	protected final float duration;
 	private final Color color;
 
-	protected AbstractParticle(Animation<TextureRegion> animation, float duration) {
+	protected AbstractParticle(Animation<Sprite> animation, float duration) {
 		this.animation = animation;
 		this.startTime = Engine.time();
 		this.duration = duration;

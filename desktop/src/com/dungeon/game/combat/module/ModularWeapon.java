@@ -1,6 +1,7 @@
 package com.dungeon.game.combat.module;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.combat.Weapon;
@@ -14,12 +15,12 @@ import java.util.List;
 public class ModularWeapon extends Weapon {
 
 	private final List<WeaponModule> modules;
-	private final Animation<TextureRegion> animation;
+	private final Animation<Sprite> animation;
 	private final float cooldown;
 	private final float energyDrain;
 	private final int price;
 
-	public ModularWeapon(String name, Animation<TextureRegion> animation, List<WeaponModule> modules, float cooldown, float energyDrain, int price) {
+	public ModularWeapon(String name, Animation<Sprite> animation, List<WeaponModule> modules, float cooldown, float energyDrain, int price) {
 		super(name);
 		this.animation = animation;
 		this.modules = modules;
@@ -44,7 +45,7 @@ public class ModularWeapon extends Weapon {
 	}
 
 	@Override
-	public Animation<TextureRegion> getAnimation() {
+	public Animation<Sprite> getAnimation() {
 		return animation;
 	}
 

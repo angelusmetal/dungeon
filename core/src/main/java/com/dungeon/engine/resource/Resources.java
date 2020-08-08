@@ -5,6 +5,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
@@ -20,9 +22,10 @@ public class Resources {
 	public static final String DEFAULT_FONT = "alegreya-sans-sc-9";
 
 	private static final List<ResourceRepository<?>> repositories = new ArrayList<>();
+	private static TextureAtlas atlas;
 
 	public static final ResourceRepository<Texture> textures = new ResourceRepository<>(Texture::new, Texture::dispose);
-	public static final ResourceRepository<Animation<TextureRegion>> animations = new ResourceRepository<>();
+	public static final ResourceRepository<Animation<Sprite>> animations = new ResourceRepository<>();
 	public static final ResourceRepository<EntityPrototype> prototypes = new ResourceRepository<>();
 	public static final ResourceRepository<BitmapFont> fonts = new ResourceRepository<>(Resources::computeFont, BitmapFont::dispose);
 	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);
@@ -38,8 +41,35 @@ public class Resources {
 		repositories.add(repository);
 	}
 
+	public static void initAtlas() {
+		atlas = new TextureAtlas(Gdx.files.internal("pack.atlas"));
+	}
+
 	public static void dispose() {
 		repositories.forEach(Disposable::dispose);
+		atlas.dispose();
+	}
+
+	public static Sprite loadSprite(String name) {
+		if (atlas == null) {
+			throw new RuntimeException("Texture atlas not initialized; did you forget to call Resources.initAtlas()?");
+		}
+		Sprite sprite = atlas.createSprite(name);
+		if (sprite == null) {
+			System.err.println("No image found in atlas for name '" + name + "'");
+		}
+		return sprite;
+	}
+
+	public static Sprite loadSprite(String name, int index) {
+		if (atlas == null) {
+			throw new RuntimeException("Texture atlas not initialized; did you forget to call Resources.initAtlas()?");
+		}
+		Sprite sprite = atlas.createSprite(name, index);
+		if (sprite == null) {
+			System.err.println("No image found in atlas for name '" + name + "' and index '" + index + "'");
+		}
+		return sprite;
 	}
 
 	private static BitmapFont computeFont(String name) {

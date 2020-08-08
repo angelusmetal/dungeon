@@ -3,6 +3,7 @@ package com.dungeon.game.entity;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -132,9 +133,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
-	abstract protected Animation<TextureRegion> getIdleAnimation(PovDirection direction);
-	abstract protected Animation<TextureRegion> getWalkAnimation(PovDirection direction);
-	abstract protected Animation<TextureRegion> getAttackAnimation(PovDirection direction);
+	abstract protected Animation<Sprite> getIdleAnimation(PovDirection direction);
+	abstract protected Animation<Sprite> getWalkAnimation(PovDirection direction);
+	abstract protected Animation<Sprite> getAttackAnimation(PovDirection direction);
 	abstract protected boolean isAttackAnimation();
 
 	public Player getPlayer() {

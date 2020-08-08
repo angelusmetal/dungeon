@@ -2,6 +2,7 @@ package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -31,7 +32,7 @@ public class Entity implements Drawable, Movable {
 
 	private final int uniqueid = sequencer.getAndIncrement();
 
-	private Animation<TextureRegion> animation;
+	private Animation<Sprite> animation;
 	private float animationStart;
 	private boolean offsetAnimation;
 	/**
@@ -74,7 +75,6 @@ public class Entity implements Drawable, Movable {
 
 	protected Light light;
 	protected Light flare;
-	protected DrawContext drawContext;
 	private final Vector2 drawOffset;
 	protected Vector2 drawScale;
 	private float rotation = 0;
@@ -136,7 +136,6 @@ public class Entity implements Drawable, Movable {
 		this.color = prototype.color.get();
 		this.light = prototype.light != null ? new Light(prototype.light) : null; // TODO Check this null...
 		this.flare = prototype.flare != null ? new Light(prototype.flare) : null; // TODO Check this null...
-		this.drawContext = new ColorContext(this.color);
 		this.zIndex = prototype.zIndex;
 		this.z = prototype.z;
 		Float timeToLive = prototype.timeToLive.get();
@@ -183,7 +182,6 @@ public class Entity implements Drawable, Movable {
 		this.color = other.color;
 		this.light = other.light != null ? other.light.cpy(): null;
 		this.flare = other.flare != null ? other.flare.cpy(): null;
-		this.drawContext = other.drawContext;
 		this.zIndex = other.zIndex;
 		this.expirationTime = other.expirationTime;
 		this.traits = other.traits;
@@ -205,7 +203,7 @@ public class Entity implements Drawable, Movable {
 	}
 
 	@Override
-	public TextureRegion getFrame() {
+	public Sprite getFrame() {
 		return animation.getKeyFrame(Engine.time() - animationStart);
 	}
 
@@ -217,16 +215,16 @@ public class Entity implements Drawable, Movable {
 		return expirationTime;
 	}
 
-	public Animation<TextureRegion> getAnimation() {
+	public Animation<Sprite> getAnimation() {
 		return animation;
 	}
 
-	public void setAnimation(Animation<TextureRegion> currentAnimation, float animationStart) {
+	public void setAnimation(Animation<Sprite> currentAnimation, float animationStart) {
 		this.animation = currentAnimation;
 		this.animationStart = animationStart;
 	}
 
-	public void startAnimation(Animation<TextureRegion> animation) {
+	public void startAnimation(Animation<Sprite> animation) {
 		this.animation = animation;
 		this.animationStart = offsetAnimation ? Engine.time() - Rand.between(0f, animation.getAnimationDuration()) : Engine.time();
 	}
@@ -234,7 +232,7 @@ public class Entity implements Drawable, Movable {
 	/**
 	 * @return true if animation was changed; false otherwise (animation was already the desired one)
 	 */
-	public boolean updateAnimation(Animation<TextureRegion> animation) {
+	public boolean updateAnimation(Animation<Sprite> animation) {
 		if (animation != this.animation) {
 			this.animation = animation;
 			this.animationStart = Engine.time();
@@ -443,20 +441,13 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		drawContext.run(batch, () -> {
-			TextureRegion frame = getFrame();
-			batch.draw(
-					frame,
-					(int) (getOrigin().x - getDrawOffset().x),
-					(int) (getOrigin().y - getDrawOffset().y + getZPos()),
-					getDrawOffset().x,
-					getDrawOffset().y,
-					frame.getRegionWidth(),
-					frame.getRegionHeight(),
-					getDrawScale().x,
-					getDrawScale().y,
-					getRotation());
-		});
+		Sprite frame = getFrame();
+		frame.setPosition((int) (getOrigin().x - getDrawOffset().x), (int) (getOrigin().y - getDrawOffset().y + getZPos()));
+		frame.setOrigin(getDrawOffset().x, getDrawOffset().y);
+		frame.setScale(getDrawScale().x, getDrawScale().y);
+		frame.setRotation(getRotation());
+		frame.setColor(getColor());
+		frame.draw(batch);
 	}
 
 	public void setLight(Light light) {

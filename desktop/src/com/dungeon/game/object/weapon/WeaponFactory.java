@@ -2,6 +2,7 @@ package com.dungeon.game.object.weapon;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -53,7 +54,7 @@ public class WeaponFactory {
 	}
 
 	public Weapon buildSword(float tier) {
-		Animation<TextureRegion> slashAnimation = Resources.animations.get("melee_slash");
+		Animation<Sprite> slashAnimation = Resources.animations.get("melee_slash");
 		TextureRegion referenceFrame = slashAnimation.getKeyFrame(0);
 		Vector2 hitDrawOffset = new Vector2(referenceFrame.getRegionWidth() / 2f, referenceFrame.getRegionHeight() / 2f);
 		Vector2 hitBoundingBox = new Vector2(32, 32);

@@ -1,6 +1,7 @@
 package com.dungeon.game.character.npc;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -19,7 +20,7 @@ public class MerchantEntity extends NpcEntity {
 	private final List<String> cantBuyPhrases;
 
 	public MerchantEntity(Vector2 origin, EntityPrototype prototype,
-						  Animation<TextureRegion> idleAnimation, Animation<TextureRegion> talkAnimation,
+						  Animation<Sprite> idleAnimation, Animation<Sprite> talkAnimation,
 						  List<String> greetPhrases, List<String> buyPhrases, List<String> cantBuyPhrases,
 						  List<ShopItem> items) {
 		super(origin, prototype, idleAnimation, talkAnimation, greetPhrases);

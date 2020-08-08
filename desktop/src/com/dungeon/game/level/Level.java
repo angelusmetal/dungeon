@@ -1,6 +1,7 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.game.Game;
@@ -36,19 +37,19 @@ public class Level implements LevelTiles {
 		return height;
 	}
 
-	public void setFloorAnimation(int x, int y, Animation<TextureRegion> animation) {
+	public void setFloorAnimation(int x, int y, Animation<Sprite> animation) {
 		getTile(x, y).floorAnimation = animation;
 	}
 
-	public Animation<TextureRegion> getFloorAnimation(int x, int y) {
+	public Animation<Sprite> getFloorAnimation(int x, int y) {
 		return getTile(x, y).floorAnimation;
 	}
 
-	public void setWallAnimation(int x, int y, Animation<TextureRegion> animation) {
+	public void setWallAnimation(int x, int y, Animation<Sprite> animation) {
 		getTile(x, y).wallAnimation = animation;
 	}
 
-	public Animation<TextureRegion> getWallAnimation(int x, int y) {
+	public Animation<Sprite> getWallAnimation(int x, int y) {
 		return getTile(x, y).wallAnimation;
 	}
 

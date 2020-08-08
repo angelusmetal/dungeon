@@ -1,6 +1,7 @@
 package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -24,8 +25,8 @@ public class AcidSlimeFactory {
 	private static final String IDLE = "slime_acid_idle";
 	private static final String ATTACK = "slime_acid_attack";
 
-	final Animation<TextureRegion> idleAnimation;
-	final Animation<TextureRegion> attackAnimation;
+	final Animation<Sprite> idleAnimation;
+	final Animation<Sprite> attackAnimation;
 
 	final float maxTargetDistance;
 	final float dashDistance;
@@ -49,7 +50,7 @@ public class AcidSlimeFactory {
 		idleAnimation = Resources.animations.get(IDLE);
 		attackAnimation = Resources.animations.get(ATTACK);
 
-		final Animation<TextureRegion> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
+		final Animation<Sprite> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
 		final EntityPrototype pool = DungeonResources.prototypes.get("creature_slime_acid_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {
