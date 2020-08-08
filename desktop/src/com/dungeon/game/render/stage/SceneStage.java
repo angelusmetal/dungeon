@@ -146,7 +146,14 @@ public class SceneStage implements Renderer {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			});
 		}
-		renderLights(drawShadows);
+		if (drawLights) {
+			renderLights(drawShadows);
+		} else {
+			lights.render(batch -> {
+				Gdx.gl.glClearColor(1, 1, 1, 1);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
+		}
 		// Combine tiles with lighting
 		unlit.projectToZero();
 		unlit.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
@@ -155,7 +162,14 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderEntities() {
-		renderLights(false);
+		if (drawLights) {
+			renderLights(false);
+		} else {
+			lights.render(batch -> {
+				Gdx.gl.glClearColor(1, 1, 1, 1);
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			});
+		}
 		if (drawEntities) {
 			unlit.projectToViewPort();
 			unlit.render(batch -> blendSprites.run(batch, () -> {
