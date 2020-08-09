@@ -1,11 +1,9 @@
 package com.dungeon.game.character.npc;
 
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.object.shop.ShopItem;
 
 import java.util.Arrays;

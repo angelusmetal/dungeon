@@ -1,6 +1,7 @@
 package com.dungeon.desktop.shader;
 
 import com.badlogic.gdx.math.Vector2;
+
 import java.util.List;
 
 public class Segments {

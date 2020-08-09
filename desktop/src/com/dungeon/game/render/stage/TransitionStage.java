@@ -1,7 +1,5 @@
 package com.dungeon.game.render.stage;
 
-import static com.dungeon.engine.util.Util.smoothstep;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -12,6 +10,8 @@ import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
+
+import static com.dungeon.engine.util.Util.smoothstep;
 
 public class TransitionStage implements Renderer {
 

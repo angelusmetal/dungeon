@@ -1,7 +1,6 @@
 package com.dungeon.game.object.props;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -15,7 +14,6 @@ import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.TimeGradient;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
-import com.dungeon.game.resource.DungeonResources;
 
 import static com.dungeon.engine.util.Util.randVect;
 

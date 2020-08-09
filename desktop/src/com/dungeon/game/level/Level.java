@@ -2,7 +2,6 @@ package com.dungeon.game.level;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.game.Game;
 import com.dungeon.game.level.entity.EntityPlaceholder;

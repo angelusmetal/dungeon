@@ -2,7 +2,6 @@ package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.repository.EntityRepository;
 import com.dungeon.engine.util.Rand;

@@ -28,7 +28,7 @@ public class DungeonResources {
 	public static final ResourceRepository<Environment> environments = new ResourceRepository<>();
 	public static final ResourceRepository<LootGenerator> loots = new ResourceRepository<>();
 
-	public static void addLoaders(){
+	public static void addLoaders() {
 		Resources.loader.registerLoader("prototype", new EntityPrototypeLoader(prototypes));
 		Resources.loader.registerLoader("tileset", new TilesetLoader(tilesets));
 		Resources.loader.registerLoader("tile", new TilePrototypeLoader(tiles));

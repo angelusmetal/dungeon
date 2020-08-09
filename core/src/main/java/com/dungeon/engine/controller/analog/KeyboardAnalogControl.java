@@ -1,6 +1,5 @@
 package com.dungeon.engine.controller.analog;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.toggle.Toggle;
 

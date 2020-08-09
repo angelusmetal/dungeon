@@ -1,11 +1,9 @@
 package com.dungeon.game.resource.loader;
 
-import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
 import com.dungeon.engine.resource.ResourceLoader;
 import com.dungeon.engine.resource.ResourceRepository;
-import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.typesafe.config.Config;
 

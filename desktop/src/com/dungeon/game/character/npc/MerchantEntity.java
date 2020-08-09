@@ -2,13 +2,11 @@ package com.dungeon.game.character.npc;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.object.shop.ShopItem;
 import com.dungeon.game.object.shop.ShopItemEntity;
 

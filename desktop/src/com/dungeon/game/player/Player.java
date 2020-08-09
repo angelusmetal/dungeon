@@ -1,8 +1,6 @@
 package com.dungeon.game.player;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.ConsoleDisplay;
 import com.dungeon.engine.Engine;
@@ -14,7 +12,6 @@ import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.render.stage.ViewPortRenderer;
-import com.dungeon.game.resource.DungeonResources;
 
 public class Player {
 

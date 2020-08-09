@@ -5,7 +5,6 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.CreatureEntity;

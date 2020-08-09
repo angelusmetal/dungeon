@@ -4,8 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.LightPrototype;
 import com.dungeon.engine.util.Util;
 
-import java.util.Optional;
-
 /**
  * Placeholder for entities that have not yet been created.
  */

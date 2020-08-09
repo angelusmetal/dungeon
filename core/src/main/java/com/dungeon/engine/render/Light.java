@@ -1,15 +1,9 @@
 package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.Engine;
-import com.dungeon.engine.util.Metronome;
-import com.dungeon.engine.util.Rand;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -18,7 +12,7 @@ import java.util.stream.Collectors;
 public class Light {
 
 	/** Light texture to use */
-	public final Texture texture;
+	public final Sprite sprite;
 	/** Light color as a Color (red, green, blue, alpha) */
 	public final Color color;
 	/** Light diameter, in units */
@@ -36,7 +30,7 @@ public class Light {
 	private final List<Consumer<Light>> traits;
 
 	public Light(LightPrototype prototype) {
-		this.texture = prototype.texture;
+		this.sprite = prototype.sprite;
 		this.color = prototype.color;
 		this.diameter = prototype.diameter;
 		this.offset = prototype.offset;
@@ -44,8 +38,8 @@ public class Light {
 		this.castsShadow = prototype.castsShadow;
 	}
 
-	private Light(float diameter, Color color, Texture texture, Vector2 offset, List<Consumer<Light>> traits, boolean castsShadow) {
-		this.texture = texture;
+	private Light(float diameter, Color color, Sprite sprite, Vector2 offset, List<Consumer<Light>> traits, boolean castsShadow) {
+		this.sprite = sprite;
 		this.color = color;
 		this.diameter = diameter;
 		this.angle = 0;
@@ -55,7 +49,7 @@ public class Light {
 	}
 
 	public Light cpy() {
-		return new Light(diameter, color.cpy(), texture, offset, traits, castsShadow);
+		return new Light(diameter, color.cpy(), sprite, offset, traits, castsShadow);
 	}
 
 	public void update() {

@@ -34,7 +34,6 @@ public class ResourceManagerLoader {
 	 * Load resources from a custom path and mask
 	 */
 	public void load(String path) {
-		Resources.initAtlas();
 		Config config = ConfigFactory.load(path);
 
 		// Load all contents into the descriptors dictionary

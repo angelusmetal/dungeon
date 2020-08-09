@@ -7,10 +7,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.loader.AnimationLoader;
 
@@ -42,6 +43,16 @@ public class Resources {
 	}
 
 	public static void initAtlas() {
+		// Regenerate atlas if missing or outdated
+		TexturePacker.Settings settings = new TexturePacker.Settings();
+		settings.maxWidth = settings.maxHeight = Engine.getMaxTextureSize();
+		settings.ignoreBlankImages = false;
+		if (TexturePacker.isModified("gfx", ".", "pack", settings)) {
+			Gdx.app.log("Resources", "Updating texture atlas...");
+			TexturePacker.process(settings, "gfx", ".", "pack");
+		}
+		// Load atlas
+		Gdx.app.log("Resources", "Loading texture atlas...");
 		atlas = new TextureAtlas(Gdx.files.internal("pack.atlas"));
 	}
 

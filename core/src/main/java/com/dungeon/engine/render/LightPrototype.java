@@ -1,7 +1,7 @@
 package com.dungeon.engine.render;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public class LightPrototype {
 
 	/** Light texture to use */
-	protected final Texture texture;
+	protected final Sprite sprite;
 	/** Light color as a Color (red, green, blue, alpha) */
 	protected final Color color;
 	/** Light diameter, in units */
@@ -27,8 +27,8 @@ public class LightPrototype {
 	protected final List<Supplier<Consumer<Light>>> traits = new ArrayList<>();
 	protected final boolean castsShadow;
 
-	public LightPrototype(float diameter, Color color, Texture texture, Vector2 offset, boolean castsShadow) {
-		this.texture = texture;
+	public LightPrototype(float diameter, Color color, Sprite sprite, Vector2 offset, boolean castsShadow) {
+		this.sprite = sprite;
 		this.color = color;
 		this.diameter = diameter;
 		this.offset = offset;

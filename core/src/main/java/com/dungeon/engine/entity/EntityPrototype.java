@@ -3,16 +3,13 @@ package com.dungeon.engine.entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.LightPrototype;
 import com.dungeon.engine.render.ShadowType;
-import com.dungeon.engine.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 

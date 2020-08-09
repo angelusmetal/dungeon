@@ -8,19 +8,13 @@ import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
 import com.dungeon.engine.ui.particle.Particle;
-import com.dungeon.engine.ui.particle.PathParticle;
 import com.dungeon.engine.ui.widget.HLayout;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.ui.CharacterHudWidget;
-import com.dungeon.game.ui.CoinsWidget;
-import com.dungeon.game.ui.HeartWidget;
-import com.dungeon.game.ui.WeaponWidget;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

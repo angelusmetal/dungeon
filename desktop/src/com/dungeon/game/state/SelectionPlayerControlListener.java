@@ -2,10 +2,9 @@ package com.dungeon.game.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.math.Vector2;
 import com.dungeon.game.controller.AbstractControlBundleListener;
-import com.dungeon.game.controller.ControlBundleListener;
 import com.dungeon.game.controller.ControlBundle;
+import com.dungeon.game.controller.ControlBundleListener;
 
 public class SelectionPlayerControlListener extends AbstractControlBundleListener implements ControlBundleListener {
 

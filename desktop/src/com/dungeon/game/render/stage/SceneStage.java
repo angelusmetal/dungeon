@@ -204,16 +204,20 @@ public class SceneStage implements Renderer {
 		output.render(batch -> addLights.run(batch, () -> {
 			Engine.entities.inViewPort(viewPort, 200f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
-				batch.setColor(lightColor);
 				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
-				Vector2 offset = flare.getFlare() != null ? flare.getFlare().offset : Vector2.Zero;
+				Vector2 offset = flare.getFlare().offset;
 				// Draw light texture
-				viewPort.draw(batch,
-						flare.getFlare().texture,
-						offset.x + flare.getOrigin().x + displacement.x,
-						offset.y + flare.getOrigin().y + displacement.y + flare.getZPos(),
-						flare.getFlare().diameter * flare.getFlare().dim,
-						flare.getFlare().angle);
+				Sprite sprite = flare.getFlare().sprite;
+				sprite.setOriginCenter();
+				sprite.setScale(flare.getFlare().dim);
+				sprite.setRotation(flare.getFlare().angle);
+				sprite.setBounds(
+						offset.x + flare.getOrigin().x + displacement.x - flare.getFlare().diameter / 2f,
+						offset.y + flare.getOrigin().y + displacement.y + flare.getZPos() - flare.getFlare().diameter / 2f,
+						flare.getFlare().diameter,
+						flare.getFlare().diameter);
+				sprite.setColor(lightColor);
+				sprite.draw(batch);
 			});
 			batch.setColor(Color.WHITE);
 		}));

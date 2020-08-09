@@ -10,8 +10,8 @@ import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.EnvironmentLevel;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ForestLevelGenerator implements LevelGenerator {
 
