@@ -7,11 +7,10 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 
-public class HealthPowerupFactory {
+public class PotionFactory {
 
-	public Entity build(Vector2 origin, EntityPrototype prototype) {
+	public Entity healthSmall(Vector2 origin, EntityPrototype prototype) {
 		return new DungeonEntity(prototype, origin) {
-
 			@Override
 			protected boolean onEntityCollision(Entity entity) {
 				if (!expired && entity instanceof PlayerEntity) {
@@ -20,7 +19,24 @@ public class HealthPowerupFactory {
 					character.heal(amount);
 					expire();
 					character.getPlayer().getConsole().log("Healed for " + amount, Color.GOLD);
-//					character.getPlayer().getRenderer().beginMotionBlur();
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+		};
+	}
+	public Entity healthLarge(Vector2 origin, EntityPrototype prototype) {
+		return new DungeonEntity(prototype, origin) {
+			@Override
+			protected boolean onEntityCollision(Entity entity) {
+				if (!expired && entity instanceof PlayerEntity) {
+					PlayerEntity character = (PlayerEntity) entity;
+					int amount = 150;
+					character.heal(amount);
+					expire();
+					character.getPlayer().getConsole().log("Healed for " + amount, Color.GOLD);
 					return true;
 				} else {
 					return false;

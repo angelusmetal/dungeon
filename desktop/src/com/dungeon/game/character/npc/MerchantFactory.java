@@ -38,7 +38,8 @@ public class MerchantFactory {
 			new ShopItem("random_weapon", 0),
 			new ShopItem("random_weapon", 0),
 			new ShopItem("random_weapon", 0),
-			new ShopItem("health_powerup", 25)
+			new ShopItem("potion_health_small", 25),
+			new ShopItem("potion_health_large", 75)
 	);
 
 	public Entity kat(Vector2 origin, EntityPrototype prototype) {

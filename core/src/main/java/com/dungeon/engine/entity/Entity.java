@@ -197,6 +197,7 @@ public class Entity implements Drawable, Movable {
 		this.shadowType = other.shadowType;
 		this.isStatic = other.isStatic;
 		this.occlusionSegments = other.occlusionSegments;
+		this.z = other.z;
 	}
 
 	@Override
