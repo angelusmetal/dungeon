@@ -55,8 +55,8 @@ public class WeaponFactory {
 
 	public Weapon buildSword(float tier) {
 		Animation<Sprite> slashAnimation = Resources.animations.get("melee_slash");
-		TextureRegion referenceFrame = slashAnimation.getKeyFrame(0);
-		Vector2 hitDrawOffset = new Vector2(referenceFrame.getRegionWidth() / 2f, referenceFrame.getRegionHeight() / 2f);
+		Sprite referenceFrame = slashAnimation.getKeyFrame(0);
+		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
 		Vector2 hitBoundingBox = new Vector2(32, 32);
 		EntityPrototype hit = new EntityPrototype()
 				.animation(Resources.animations.get("invisible"))

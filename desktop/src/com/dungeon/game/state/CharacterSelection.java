@@ -103,10 +103,13 @@ public class CharacterSelection {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.draw(playerCharacterScreen, 0, 0, playerCharacterScreen.getWidth() * 4, playerCharacterScreen.getHeight() * 4);
-		int x = 50, y = 80;
+		int x = 42, y = 80;
 		for (Slot s : slots) {
 			Sprite keyFrame = getAnimation(s.characterId).getKeyFrame(Engine.time());
-			batch.draw(keyFrame, (x - keyFrame.getRegionWidth() / 2) * 4, (y - keyFrame.getRegionHeight() / 2) * 4, keyFrame.getRegionWidth() * 4, keyFrame.getRegionHeight() * 4);
+			keyFrame.setScale(4f);
+			keyFrame.setOrigin(keyFrame.getWidth() / 2f, keyFrame.getHeight() / 2f);
+			keyFrame.setPosition((x) * 4, (y) * 4);
+			keyFrame.draw(batch);
 			x += 100;
 		}
 		batch.end();
