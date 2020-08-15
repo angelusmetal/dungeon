@@ -14,6 +14,9 @@ import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.TimeGradient;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
+import com.dungeon.game.object.powerups.PotionFactory;
+import com.dungeon.game.player.Player;
+import com.dungeon.game.ui.ParticleBuilder;
 
 import static com.dungeon.engine.util.Util.randVect;
 
@@ -46,33 +49,15 @@ public class FurnitureFactory {
 			@Override public boolean onEntityCollision(Entity entity) {
 				if (!expired && entity instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) entity;
-					//character.getPlayer().getConsole().log("Picked up gold!", Color.GOLD);
-					Vector2 origin = getOrigin().cpy().add(0, getZPos());
+					Engine.audio.playSound(pickupSound, character.getOrigin(), 1f, 0.05f);
 					Vector2 destination = character.getPlayer().getRenderer().getHud().getHudWidget(character.getPlayer()).getCoinCenter();
-					Bezier<Vector2> path = character.getPlayer().getRenderer().getHud().randQuadratic(origin, destination);
-
-					PathParticle particle = new PathParticle(path, getAnimation(),1f) {
-						Metronome sparkGenerator;
-						{
-							Engine.audio.playSound(pickupSound, character.getOrigin(), 1f, 0.05f);
-							sparkGenerator = new Metronome(1f / 30f, () -> {
-								TimeGradient gradient = TimeGradient.fadeOut(startTime, duration);
-								LinearParticle spark = new LinearParticle(this.origin, randVect(10, 30), this.animation, 0.5f) {
-									@Override public void update() {
-										getColor().a = gradient.get() * 0.1f;
-									}
-								};
-								character.getPlayer().getRenderer().getHud().addParticle(spark);
-							});
-						}
-						@Override public void update() {
-							sparkGenerator.doAtInterval();
-						}
-						@Override public void expire(){
-							character.getPlayer().addGold(1);
-						}
-					};
-					character.getPlayer().getRenderer().getHud().addParticle(particle);
+					ParticleBuilder.of(this, (PlayerEntity) entity, destination)
+							.animation(getAnimation())
+							.sparksPerSecond(30f)
+							.sparkDuration(0.25f)
+							.sparkAttenuation(0.25f)
+							.endAction(() -> character.getPlayer().addGold(1))
+							.add();
 					expire();
 					return true;
 				}

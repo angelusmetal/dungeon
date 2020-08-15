@@ -42,7 +42,7 @@ public class EngineAdapter extends ApplicationAdapter {
 			Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
 			Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 		});
-		initAdapter.addInitTask("Initializing atlas...", Resources::initAtlas);
+		initAdapter.addInitTask("Rebuilding atlas... (takes long only the first time)", Resources::initAtlas);
 		initAdapter.addInitTask("Loading resources...", () -> {
 			// Load resources
 			Resources.loader.load(assetsPath);

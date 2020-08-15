@@ -25,9 +25,10 @@ public abstract class AbstractParticle implements Particle {
 	@Override
 	public void drawAndUpdate(SpriteBatch batch) {
 		move();
-		TextureRegion frame = animation.getKeyFrame(Engine.time());
-		batch.setColor(color);
-		batch.draw(frame, origin.x - frame.getRegionWidth() / 2f, origin.y - frame.getRegionHeight() / 2f);
+		Sprite frame = animation.getKeyFrame(Engine.time());
+		frame.setColor(color);
+		frame.setPosition(origin.x - frame.getWidth() / 2f, origin.y - frame.getHeight() / 2f);
+		frame.draw(batch);
 		update();
 	}
 

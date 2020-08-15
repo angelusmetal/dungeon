@@ -72,13 +72,9 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 
 	@Override
 	public void draw(SpriteBatch batch) {
-		Sprite frame = nameplate.getKeyFrame(Engine.time());
-		frame.setColor(player.getColor());
-		frame.setPosition(x + 23, y + 28);
-		frame.draw(batch);
-
-		frame = bars.getKeyFrame(Engine.time());
-		frame.setPosition(x + 47, y + 11);
+		// Display bars background
+		Sprite frame = bars.getKeyFrame(Engine.time());
+		frame.setPosition(x, y);
 		frame.draw(batch);
 
 		// Display health
@@ -86,7 +82,7 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		frame = new Sprite(health.getKeyFrame(Engine.time()));
 		frame.setRegionX((int) (frame.getRegionX() + frame.getRegionWidth() * (1f - healthFill)));
 		frame.setSize((int) (frame.getWidth() * healthFill), frame.getHeight());
-		frame.setPosition(x + 47, y + 22);
+		frame.setPosition(x + 43, y + 22);
 		frame.draw(batch);
 
 		// Display energy
@@ -94,12 +90,18 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		frame = new Sprite(energy.getKeyFrame(Engine.time()));
 		frame.setRegionX((int) (frame.getRegionX() + frame.getRegionWidth() * (1f - energyFill)));
 		frame.setSize((int) (frame.getWidth() * energyFill), frame.getHeight());
-		frame.setPosition(x + 47, y + 16);
+		frame.setPosition(x + 40, y + 15);
 		frame.draw(batch);
 
 		// Display experience
 		frame = experience.getKeyFrame(Engine.time());
-		frame.setPosition(x + 47, y + 11);
+		frame.setPosition(x, y);
+		frame.draw(batch);
+
+		// Display nameplate
+		frame = nameplate.getKeyFrame(Engine.time());
+		frame.setColor(player.getColor());
+		frame.setPosition(x, y);
 		frame.draw(batch);
 
 		// Display mug
@@ -109,9 +111,10 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 
 		// Display coins
 		frame = coins.getKeyFrame(Engine.time());
-		frame.setPosition(x + 50, y);
+		frame.setColor(Color.WHITE);
+		frame.setPosition(x + 42, y + 4);
 		frame.draw(batch);
-		font.draw(batch, Integer.toString(player.getGold()), x + 59, y + font.getLineHeight());
+		font.draw(batch, Integer.toString(player.getGold()), x + 51, y + 4 + font.getLineHeight());
 
 		// Display weapon
 		if (player.getWeapon().getAnimation() != null) {
@@ -126,7 +129,7 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		shaderOutline.end();
 		batch.setShader(shaderOutline);
 		batch.begin();
-		chubbyFont.draw(batch, player.getName() + " LVL 1", x + 52, y + 41);
+		chubbyFont.draw(batch, player.getName() + " LVL 1", x + 60, y + 45);
 		batch.end();
 		batch.setShader(null);
 		batch.begin();
@@ -138,6 +141,10 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 	}
 
 	public Vector2 getCoinCenter() {
-		return new Vector2(x + 50 + coins.getKeyFrame(0).getRegionWidth() / 2, y + coins.getKeyFrame(0).getRegionHeight() / 2);
+		return new Vector2(x + 42 + coins.getKeyFrame(0).getRegionWidth() / 2f, y + 4 + coins.getKeyFrame(0).getRegionHeight() / 2f);
+	}
+
+	public Vector2 getHealthCenter() {
+		return new Vector2(x + 43 + health.getKeyFrame(0).getRegionWidth() / 2f, y + 22 + health.getKeyFrame(0).getRegionHeight() / 2f);
 	}
 }

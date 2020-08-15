@@ -36,7 +36,7 @@ public class InitializationAdapter implements ApplicationListener {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
-		font = Resources.fonts.get(Resources.DEFAULT_FONT);
+		font = Resources.fonts.get("alegreya-sans-sc-black-20");
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class InitializationAdapter implements ApplicationListener {
 
 		batch.begin();
 		batch.setColor(Color.BLUE);
-		font.draw(batch, layout, (Gdx.graphics.getWidth() - layout.width) / 2f, height * 1.5f);
+		font.draw(batch, layout, (Gdx.graphics.getWidth() - layout.width) / 2f, height * 1.5f + font.getLineHeight() / 2f);
 		batch.end();
 
 		if (currentTask != null) {
