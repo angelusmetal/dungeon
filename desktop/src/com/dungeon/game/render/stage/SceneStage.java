@@ -247,10 +247,10 @@ public class SceneStage implements Renderer {
 				Sprite wall = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true);
 				// If it partially occludes a non-solid tile, it is rendered semi-transparent
 				if (!Game.getLevel().isSolid(x, y + 1)) {
-					batch.setColor(1, 1, 1, 0.8f);
+					wall.setColor(1, 1, 1, 0.8f);
 					wall.setPosition(x * tSize, y * tSize);
 					wall.draw(batch);
-					batch.setColor(1, 1, 1, 1);
+					wall.setColor(1, 1, 1, 1f);
 				} else {
 					wall.setPosition(x * tSize, y * tSize);
 					wall.draw(batch);
