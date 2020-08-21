@@ -24,6 +24,7 @@ import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -67,6 +68,7 @@ public class SceneStage implements Renderer {
 	private boolean drawEntities = true;
 	private boolean drawShadows = true;
 	private boolean drawLights = true;
+	private boolean occludeTiles = true;
 
 	// These are for rendering the tiles
 	private int tSize;
@@ -274,10 +276,38 @@ public class SceneStage implements Renderer {
 				.collect(Collectors.toList());
 		List<Float> geometry;
 		if (withShadows) {
-			 geometry = Engine.entities.inViewPort(viewPort, 100f)
+			geometry = new ArrayList<>();
+			if (occludeTiles) {
+				for (int x = minX; x < maxX; x++) {
+					for (int y = maxY; y > minY; y--) {
+						if (Game.getLevel().isSolid(x, y)) {
+							geometry.add((float) x * tSize);
+							geometry.add((float) y * tSize);
+							geometry.add((float) x * tSize);
+							geometry.add((float) y * tSize + tSize);
+
+							geometry.add((float) x * tSize);
+							geometry.add((float) y * tSize + tSize);
+							geometry.add((float) x * tSize + tSize);
+							geometry.add((float) y * tSize + tSize);
+
+							geometry.add((float) x * tSize + tSize);
+							geometry.add((float) y * tSize + tSize);
+							geometry.add((float) x * tSize + tSize);
+							geometry.add((float) y * tSize);
+
+							geometry.add((float) x * tSize + tSize);
+							geometry.add((float) y * tSize);
+							geometry.add((float) x * tSize);
+							geometry.add((float) y * tSize);
+						}
+					}
+				}
+			}
+			Engine.entities.inViewPort(viewPort, 100f)
 					.filter(e -> e.shadowType() == ShadowType.RECTANGLE)
 					.flatMap(this::mapGeometry)
-					.collect(Collectors.toList());
+					.forEach(geometry::add);
 		} else {
 			geometry = Collections.emptyList();
 		}

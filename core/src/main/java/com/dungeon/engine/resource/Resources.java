@@ -60,7 +60,9 @@ public class Resources {
 
 	public static void dispose() {
 		repositories.forEach(Disposable::dispose);
-		atlas.dispose();
+		if (atlas != null) {
+			atlas.dispose();
+		}
 	}
 
 	public static Sprite loadSprite(String name) {
