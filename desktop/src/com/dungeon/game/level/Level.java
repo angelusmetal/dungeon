@@ -87,7 +87,11 @@ public class Level implements LevelTiles {
 	}
 
 	private Tile getTile(int x, int y) {
-		return tiles[x * height + y];
+//		try {
+			return tiles[x * height + y];
+//		} catch (ArrayIndexOutOfBoundsException e) {
+//			throw new ArrayIndexOutOfBoundsException("Index array out of range: " + (x * height + y) + " (" + x + ", " + y + ") - level size: [" + width + ", " + height + "]");
+//		}
 	}
 
 	public void setTilePrototype(int x, int y, TilePrototype prototype) {

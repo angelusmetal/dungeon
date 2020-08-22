@@ -19,7 +19,7 @@ import static com.dungeon.game.Game.text;
 
 public class DungeonEntity extends Entity implements Drawable, Movable {
 
-	private static ShaderProgram shader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
+	public static ShaderProgram shader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
 
 	// Hackish way to do control the solid shader duration
 	protected static final float HIGHLIGHT_DURATION = 0.15f;

@@ -23,6 +23,7 @@ import com.dungeon.engine.render.light.LightRenderer;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
+import com.dungeon.game.entity.DungeonEntity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,6 +85,10 @@ public class SceneStage implements Renderer {
 	private int maxY;
 	private int wallY;
 
+	// These are the elements that will be rendered
+	private List<Entity> entitiesToRender;
+	private List<Light2> lightsToRender;
+
 	public static int lightCount;
 
 	private final LightRenderer lightRenderer;
@@ -124,45 +129,72 @@ public class SceneStage implements Renderer {
 		// Tiling variables (they keep track of tile rendering)
 		tSize = Game.getEnvironment().getTilesize();
 		minX = Math.max(0, viewPort.cameraX / tSize - renderMarginTiles);
-		maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + renderMarginTiles + 1;
+		maxX = Math.min(Game.getLevel().getWidth() - 1, ((viewPort.cameraX + viewPort.cameraWidth) / tSize) + renderMarginTiles + 1);
 		minY = Math.max(0, viewPort.cameraY / tSize - renderMarginTiles);
-		maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize) + renderMarginTiles;
+		maxY = Math.min(Game.getLevel().getHeight() - 1, ((viewPort.cameraY + viewPort.cameraHeight) / tSize) + renderMarginTiles);
 		wallY = maxY + 1;
 
 		current.projectToViewPort();
 		lights.projectToZero();
 		output.projectToZero();
 
+		// Entities to render, in order
+		entitiesToRender = Engine.entities.inViewPort(viewPort, renderMargin)
+//						.filter(viewPort::isInViewPort)
+				.sorted(comp)
+				.collect(Collectors.toList());
+		lightsToRender = Engine.entities.inViewPort(viewPort, renderMargin)
+				.filter(e -> e.getLight() != null)
+				.filter(viewPort::lightIsInViewPort)
+				.map(entity -> mapLight(entity, entity.getLight()))
+				.collect(Collectors.toList());
+		lightCount = lightsToRender.size();
+
+		if (Engine.isNormalMapEnabled()) {
+			renderNormalMapBuffer();
+		}
 		renderTiles();
 		renderEntities();
 		renderFlares();
 	}
 
+	private void renderNormalMapBuffer() {
+		// Render tiles
+		normalMapBuffer.projectToCamera();
+		normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
+
+		// Render entities
+//		if (Engine.isNormalMapEnabled()) {
+//			normalMapBuffer.projectToCamera();
+//			normalMapBuffer.render(batch -> {
+//				batch.setShader(DungeonEntity.shader);
+//
+//						.forEach(e -> {
+//							if (e.getZIndex() == 0) {
+//								drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.DIFFUSE);
+//							}
+//							e.draw(batch, viewPort);
+//						});
+//				drawWallTilesUntil(batch, viewPort.cameraY - tSize * renderMarginTiles, Material.Layer.DIFFUSE);
+//			});
+//		}
+	}
+
 	private void renderTiles() {
 		if (drawTiles) {
-			if (Engine.isNormalMapEnabled()) {
-				// Draw normal map
-				normalMapBuffer.projectToCamera();
-				normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
-			}
-
-			// Draw tiles
+			// Draw tiles to unlit buffer
 			unlit.projectToViewPort();
 			unlit.render(batch -> drawFloorTiles(batch, Material.Layer.DIFFUSE));
-			// Draw entities with zIndex < 0 (floor entities)
+			// Also, draw entities with zIndex < 0 (floor entities)
 			unlit.render(batch -> blendSprites.run(batch, () -> {
-				batch.setShader(entityShader);
-				Engine.entities.inViewPort(viewPort)
-						.filter(viewPort::isInViewPort)
-						.filter(e -> e.getZIndex() < 0)
-						.sorted(comp)
-						.forEach(e -> e.draw(batch, viewPort));
+					batch.setShader(entityShader);
+					entitiesToRender.stream()
+							.filter(e -> e.getZIndex() < 0)
+							.forEach(e -> e.draw(batch, viewPort));
 			}));
+
 		} else {
-			unlit.render(batch -> {
-				Gdx.gl.glClearColor(1, 1, 1, 1);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			});
+			unlit.render(this::clearBufferWhite);
 		}
 		if (drawLights) {
 			if (Engine.isNormalMapEnabled()) {
@@ -173,10 +205,7 @@ public class SceneStage implements Renderer {
 				renderLights(drawShadows);
 			}
 		} else {
-			lights.render(batch -> {
-				Gdx.gl.glClearColor(1, 1, 1, 1);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			});
+			lights.render(this::clearBufferWhite);
 		}
 		// Combine tiles with lighting
 		unlit.projectToZero();
@@ -186,15 +215,8 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderEntities() {
-		if (drawLights) {
-			renderLights(false);
-		} else {
-			lights.render(batch -> {
-				Gdx.gl.glClearColor(1, 1, 1, 1);
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			});
-		}
 		if (drawEntities) {
+			// Draw entities to unlit buffer
 			unlit.projectToViewPort();
 			unlit.render(batch -> blendSprites.run(batch, () -> {
 				// Clear buffer with black
@@ -202,10 +224,9 @@ public class SceneStage implements Renderer {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
-				Engine.entities.inViewPort(viewPort, renderMargin)
-//						.filter(viewPort::isInViewPort)
+				entitiesToRender.stream()
+						.filter(viewPort::isInViewPort)
 						.filter(e -> e.getZIndex() >= 0)
-						.sorted(comp)
 						.forEach(e -> {
 					if (e.getZIndex() == 0) {
 						drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.DIFFUSE);
@@ -214,6 +235,12 @@ public class SceneStage implements Renderer {
 				});
 				drawWallTilesUntil(batch, viewPort.cameraY - tSize * renderMarginTiles, Material.Layer.DIFFUSE);
 			}));
+
+			if (drawLights) {
+				renderLights(false);
+			} else {
+				lights.render(this::clearBufferWhite);
+			}
 			// Combine tiles with lighting
 			unlit.projectToZero();
 			unlit.render(batch -> blendLights.run(batch, () -> lights.draw(batch)));
@@ -226,7 +253,7 @@ public class SceneStage implements Renderer {
 		// Draw flares
 		output.projectToViewPort();
 		output.render(batch -> addLights.run(batch, () -> {
-			Engine.entities.inViewPort(viewPort, renderMargin)
+			entitiesToRender.stream()
 					.filter(viewPort::flareIsInViewPort)
 					.filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
@@ -299,12 +326,6 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderLights(boolean withShadows) {
-		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, renderMargin)
-				.filter(e -> e.getLight() != null)
-				.filter(viewPort::lightIsInViewPort)
-				.map(entity -> mapLight(entity, entity.getLight()))
-				.collect(Collectors.toList());
-		lightCount = lightsToRender.size();
 		List<Float> geometry;
 		if (withShadows) {
 			geometry = new ArrayList<>();
@@ -335,7 +356,7 @@ public class SceneStage implements Renderer {
 					}
 				}
 			}
-			Engine.entities.inViewPort(viewPort, renderMargin)
+			entitiesToRender.stream()
 					.filter(e -> e.shadowType() == ShadowType.RECTANGLE)
 					.flatMap(this::mapGeometry)
 					.forEach(geometry::add);
@@ -350,12 +371,17 @@ public class SceneStage implements Renderer {
 			lights.projectToViewPort();
 			lights.render(batch -> {
 				blendSprites.set(batch);
-				Engine.entities.inViewPort(viewPort, renderMargin)
+				entitiesToRender.stream()
 						.filter(e -> e.shadowType() == ShadowType.CIRCLE || e.shadowType() == ShadowType.RECTANGLE)
 						.forEach(entity -> circleShadow(entity, batch));
 				blendSprites.unset(batch);
 			});
 		}
+	}
+
+	private void clearBufferWhite(SpriteBatch ignore) {
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 	private Stream<Float> mapGeometry(Entity entity) {
