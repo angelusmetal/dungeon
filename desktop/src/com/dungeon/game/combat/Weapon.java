@@ -3,6 +3,7 @@ package com.dungeon.game.combat;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.render.Material;
 
 public abstract class Weapon {
 	private String name;
@@ -20,7 +21,7 @@ public abstract class Weapon {
 		return name;
 	}
 
-	public abstract Animation<Sprite> getAnimation();
+	public abstract Animation<Material> getAnimation();
 
 	public float attackCooldown() {
 		return 0.25f;

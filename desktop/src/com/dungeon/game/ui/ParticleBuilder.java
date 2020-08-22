@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.ui.particle.LinearParticle;
 import com.dungeon.engine.ui.particle.PathParticle;
 import com.dungeon.engine.util.Metronome;
@@ -20,7 +21,7 @@ public class ParticleBuilder {
 	private Entity emitter;
 	private PlayerEntity character;
 	private Vector2 destination;
-	private Animation<Sprite> animation;
+	private Animation<Material> animation;
 	private Color sparkColor = Color.WHITE;
 	private float duration = 1f;
 	private float sparkDuration = 0.5f;
@@ -38,7 +39,7 @@ public class ParticleBuilder {
 		this.destination = destination;
 	}
 
-	public ParticleBuilder animation(Animation<Sprite> animation) {
+	public ParticleBuilder animation(Animation<Material> animation) {
 		this.animation = animation;
 		return this;
 	}
@@ -73,7 +74,7 @@ public class ParticleBuilder {
 		return this;
 	}
 
-	public void add() {
+	public ParticleBuilder add() {
 		Vector2 origin = emitter.getOrigin().cpy().add(0, emitter.getZPos());
 		Bezier<Vector2> path = character.getPlayer().getRenderer().getHud().randQuadratic(origin, destination);
 
@@ -114,6 +115,7 @@ public class ParticleBuilder {
 			};
 		}
 		character.getPlayer().getRenderer().getHud().addParticle(particle);
+		return this;
 	}
 
 }

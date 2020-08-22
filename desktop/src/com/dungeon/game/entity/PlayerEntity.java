@@ -9,6 +9,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.physics.Body;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.Weapon;
@@ -132,9 +133,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 		}
 	}
 
-	abstract protected Animation<Sprite> getIdleAnimation(PovDirection direction);
-	abstract protected Animation<Sprite> getWalkAnimation(PovDirection direction);
-	abstract protected Animation<Sprite> getAttackAnimation(PovDirection direction);
+	abstract protected Animation<Material> getIdleAnimation(PovDirection direction);
+	abstract protected Animation<Material> getWalkAnimation(PovDirection direction);
+	abstract protected Animation<Material> getAttackAnimation(PovDirection direction);
 	abstract protected boolean isAttackAnimation();
 
 	public Player getPlayer() {

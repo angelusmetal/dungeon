@@ -9,6 +9,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
@@ -54,8 +55,8 @@ public class WeaponFactory {
 	}
 
 	public Weapon buildSword(float tier) {
-		Animation<Sprite> slashAnimation = Resources.animations.get("melee_slash");
-		Sprite referenceFrame = slashAnimation.getKeyFrame(0);
+		Animation<Material> slashAnimation = Resources.animations.get("melee_slash");
+		Sprite referenceFrame = slashAnimation.getKeyFrame(0).getDiffuse();
 		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
 		Vector2 hitBoundingBox = new Vector2(32, 32);
 		EntityPrototype hit = new EntityPrototype()

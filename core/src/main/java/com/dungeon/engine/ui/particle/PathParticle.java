@@ -5,11 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.render.Material;
 
 public class PathParticle extends AbstractParticle implements Particle {
 	private final Bezier<Vector2> path;
 
-	public PathParticle(Bezier<Vector2> path, Animation<Sprite> animation, float duration) {
+	public PathParticle(Bezier<Vector2> path, Animation<Material> animation, float duration) {
 		super(animation, duration);
 		this.path = path;
 	}

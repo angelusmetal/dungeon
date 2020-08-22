@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.loader.AnimationLoader;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Resources {
 	private static TextureAtlas atlas;
 
 	public static final ResourceRepository<Texture> textures = new ResourceRepository<>(Texture::new, Texture::dispose);
-	public static final ResourceRepository<Animation<Sprite>> animations = new ResourceRepository<>();
+	public static final ResourceRepository<Animation<Material>> animations = new ResourceRepository<>();
 	public static final ResourceRepository<EntityPrototype> prototypes = new ResourceRepository<>();
 	public static final ResourceRepository<BitmapFont> fonts = new ResourceRepository<>(Resources::computeFont, BitmapFont::dispose);
 	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);

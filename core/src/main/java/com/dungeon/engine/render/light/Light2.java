@@ -7,13 +7,15 @@ import java.util.Objects;
 
 public class Light2 {
 	private Vector2 origin;
+	private float z;
 	private float radius;
 	private float range;
 	private Color color;
 	private final boolean castsShadows;
 
-	public Light2(Vector2 origin, float radius, float range, Color color, boolean castsShadows) {
+	public Light2(Vector2 origin, float z, float radius, float range, Color color, boolean castsShadows) {
 		this.origin = origin.cpy();
+		this.z = z;
 		this.radius = radius;
 		this.range = range;
 		this.color = color;
@@ -22,6 +24,10 @@ public class Light2 {
 
 	public Vector2 getOrigin() {
 		return origin;
+	}
+
+	public float getZ() {
+		return z;
 	}
 
 	public float getRadius() {

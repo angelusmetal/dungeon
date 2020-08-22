@@ -7,6 +7,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityTypeFactory;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.character.slime.SlimeFactory;
@@ -18,8 +19,8 @@ public class IceSlimeFactory {
 	private static final String IDLE = "slime_ice_idle";
 	private static final String HIT = "slime_ice_hit";
 
-	final Animation<Sprite> idleAnimation;
-	final Animation<Sprite> hitAnimation;
+	final Animation<Material> idleAnimation;
+	final Animation<Material> hitAnimation;
 
 	final float maxTargetDistance = Util.length2(300f);
 	final float dashDistance = Util.length2(150f);
@@ -34,7 +35,7 @@ public class IceSlimeFactory {
 		idleAnimation = Resources.animations.get(IDLE);
 		hitAnimation = Resources.animations.get(HIT);
 
-		final Animation<Sprite> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
+		final Animation<Material> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
 		final EntityPrototype pool = DungeonResources.prototypes.get("ice_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {

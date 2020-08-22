@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
@@ -18,7 +19,7 @@ public class FireSlimeFactory {
 
 	private static final String IDLE = "slime_fire_idle";
 
-	final Animation<Sprite> idleAnimation;
+	final Animation<Material> idleAnimation;
 
 	final float maxTargetDistance;
 	final float attackFrequency;

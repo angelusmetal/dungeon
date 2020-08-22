@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.LightPrototype;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.render.ShadowType;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import static com.dungeon.engine.util.Util.clamp;
 
 public class EntityPrototype {
 	List<Vector2> occlusionSegments = Collections.emptyList();
-	Supplier<Animation<Sprite>> animation = () -> null;
+	Supplier<Animation<Material>> animation = () -> null;
 	boolean offsetAnimation;
 	float bounciness = 0;
 	Supplier<Color> color = Color.WHITE::cpy;
@@ -93,17 +94,17 @@ public class EntityPrototype {
 		this.occlusionSegments = other.occlusionSegments;
 	}
 
-	public EntityPrototype animation(Animation<Sprite> animation) {
+	public EntityPrototype animation(Animation<Material> animation) {
 		this.animation = () -> animation;
 		return this;
 	}
 
-	public EntityPrototype animation(Supplier<Animation<Sprite>> animation) {
+	public EntityPrototype animation(Supplier<Animation<Material>> animation) {
 		this.animation = animation;
 		return this;
 	}
 
-	public Supplier<Animation<Sprite>> getAnimation() {
+	public Supplier<Animation<Material>> getAnimation() {
 		return animation;
 	}
 

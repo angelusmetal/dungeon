@@ -8,6 +8,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.TraitSupplier;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
@@ -75,7 +76,7 @@ public class TraitLoader {
 
 	private static <T extends Entity> TraitSupplier<T> setAnimation(Config config) {
 		String name = ConfigUtil.requireString(config, "animation");
-		Animation<Sprite> animation = Resources.animations.get(name);
+		Animation<Material> animation = Resources.animations.get(name);
 		return e -> entity -> {
 			entity.setAnimation(animation, Engine.time());
 		};
@@ -193,6 +194,7 @@ public class TraitLoader {
 		Optional<Supplier<Integer>> impulseZ = ConfigUtil.getIntegerRange(config, "impulseZ");
 		Optional<Vector2> impulseAngle = ConfigUtil.getVector2(config, "impulseAngle");
 		boolean inheritColor = ConfigUtil.getBoolean(config, "inheritColor").orElse(false);
+		boolean inheritZ = ConfigUtil.getBoolean(config, "inheritZ").orElse(false);
 		String rotation = ConfigUtil.getString(config, "rotation").orElse("none");
 		// List of initialization steps (like offset & impulse)
 		List<Consumer<Entity>> traits = new ArrayList<>();
@@ -217,7 +219,8 @@ public class TraitLoader {
 				if (particle.getLight() != null) {
 					particle.getLight().color.set(generator.getColor());
 				}
-				// TODO This probably doesn't belong here
+			}
+			if (inheritZ) {
 				particle.setZPos(generator.getZPos());
 			}
 			// Apply angle

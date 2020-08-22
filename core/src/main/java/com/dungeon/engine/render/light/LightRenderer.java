@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import com.dungeon.engine.Engine;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -169,7 +170,12 @@ public class LightRenderer implements Disposable {
 		// Draw light
 		lightShader.begin();
 		lightShader.setUniformf("u_lightRange", light.getRange() * viewPort.getScale());
-		lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, 50f);
+		if (useNormalMapping) {
+			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, light.getZ());
+			lightShader.setUniformf("u_specular", Engine.getSpecular());
+		} else {
+			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y + light.getZ(), 0f);
+		}
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", Color.BLACK);

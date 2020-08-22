@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.BlendFunctionContext;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.render.ViewPortBuffer;
@@ -53,6 +53,9 @@ public class SceneStage implements Renderer {
 	private final ViewPortBuffer lights;
 	/** Holds the currently rendered light */
 	private final ViewPortBuffer current;
+	/** Holds the currently rendered normal maps */
+	private final ViewPortBuffer normalMapBuffer;
+
 	private final BlendFunctionContext addLights;
 	private final BlendFunctionContext blendLights;
 	private final BlendFunctionContext blendSprites;
@@ -70,6 +73,9 @@ public class SceneStage implements Renderer {
 	private boolean drawLights = true;
 	private boolean occludeTiles = true;
 
+	private float renderMargin = 100f;
+	private int renderMarginTiles = 3;
+
 	// These are for rendering the tiles
 	private int tSize;
 	private int minX;
@@ -80,7 +86,6 @@ public class SceneStage implements Renderer {
 
 	public static int lightCount;
 
-	private final FrameBuffer normalMapBuffer;
 	private final LightRenderer lightRenderer;
 
 	public SceneStage(ViewPort viewPort, ViewPortBuffer output) {
@@ -98,15 +103,20 @@ public class SceneStage implements Renderer {
 		this.current = new ViewPortBuffer(viewPort);
 		this.current.reset();
 		this.current.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		// Normal map buffer
+		this.normalMapBuffer = new ViewPortBuffer(viewPort);
+		this.normalMapBuffer.reset();
+		this.normalMapBuffer.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
 		this.addLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		this.shadow = new TextureRegion(Resources.textures.get("circle_diffuse.png"));
 
-		this.normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
+//		this.normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
 		this.lightRenderer = new LightRenderer();
 		lightRenderer.setAmbient(Engine.getBaseLight());
-		lightRenderer.create(viewPort, normalMapBuffer);
+		lightRenderer.create(viewPort, normalMapBuffer.getFrameBuffer());
 	}
 
 	@Override
@@ -115,7 +125,7 @@ public class SceneStage implements Renderer {
 		tSize = Game.getEnvironment().getTilesize();
 		minX = Math.max(0, viewPort.cameraX / tSize);
 		maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + 1;
-		minY = Math.max(0, viewPort.cameraY / tSize - 1);
+		minY = Math.max(0, viewPort.cameraY / tSize - renderMarginTiles);
 		maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize);
 		wallY = maxY + 1;
 
@@ -130,9 +140,13 @@ public class SceneStage implements Renderer {
 
 	private void renderTiles() {
 		if (drawTiles) {
+			// Draw normal map
+			normalMapBuffer.projectToCamera();
+			normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
+
 			// Draw tiles
 			unlit.projectToViewPort();
-			unlit.render(this::drawFloorTiles);
+			unlit.render(batch -> drawFloorTiles(batch, Material.Layer.DIFFUSE));
 			// Draw entities with zIndex < 0 (floor entities)
 			unlit.render(batch -> blendSprites.run(batch, () -> {
 				batch.setShader(entityShader);
@@ -149,7 +163,9 @@ public class SceneStage implements Renderer {
 			});
 		}
 		if (drawLights) {
+			lightRenderer.setUseNormalMapping(true);
 			renderLights(drawShadows);
+			lightRenderer.setUseNormalMapping(false);
 		} else {
 			lights.render(batch -> {
 				Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -180,17 +196,17 @@ public class SceneStage implements Renderer {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
-				Engine.entities.inViewPort(viewPort, 100f)
+				Engine.entities.inViewPort(viewPort, renderMargin)
 //						.filter(viewPort::isInViewPort)
 						.filter(e -> e.getZIndex() >= 0)
 						.sorted(comp)
 						.forEach(e -> {
 					if (e.getZIndex() == 0) {
-						drawWallTilesUntil(batch, e.getOrigin().y);
+						drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.DIFFUSE);
 					}
 					e.draw(batch, viewPort);
 				});
-				drawWallTilesUntil(batch, viewPort.cameraY - tSize);
+				drawWallTilesUntil(batch, viewPort.cameraY - tSize * renderMarginTiles, Material.Layer.DIFFUSE);
 			}));
 			// Combine tiles with lighting
 			unlit.projectToZero();
@@ -204,7 +220,9 @@ public class SceneStage implements Renderer {
 		// Draw flares
 		output.projectToViewPort();
 		output.render(batch -> addLights.run(batch, () -> {
-			Engine.entities.inViewPort(viewPort, 200f).filter(viewPort::flareIsInViewPort).filter(e -> e.getFlare() != null).forEach(flare -> {
+			Engine.entities.inViewPort(viewPort, renderMargin)
+					//.filter(viewPort::flareIsInViewPort)
+					.filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
 				Vector2 offset = flare.getFlare().offset;
@@ -225,11 +243,16 @@ public class SceneStage implements Renderer {
 		}));
 	}
 
-	private void drawFloorTiles(SpriteBatch batch) {
+	private void drawFloorTiles(SpriteBatch batch, Material.Layer layer) {
 		// Only render the visible portion of the map
 		for (int x = minX; x < maxX; x++) {
 			for (int y = maxY; y > minY; y--) {
-				Sprite floor = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true);
+				Sprite floor;
+				if (layer == Material.Layer.DIFFUSE) {
+					floor = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true).getDiffuse();
+				} else {
+					floor = Game.getLevel().getFloorAnimation(x, y).getKeyFrame(Engine.time(), true).getNormal();
+				}
 				floor.setPosition(x * tSize, y * tSize);
 				floor.draw(batch);
 				Game.getLevel().setDiscovered(x, y);
@@ -237,7 +260,7 @@ public class SceneStage implements Renderer {
 		}
 	}
 
-	private void drawWallTilesUntil(SpriteBatch batch, float pointY) {
+	private void drawWallTilesUntil(SpriteBatch batch, float pointY, Material.Layer layer) {
 		int eY = (int) (pointY / tSize);
 		if (wallY == eY) {
 			return;
@@ -246,7 +269,12 @@ public class SceneStage implements Renderer {
 		// If possible, continue with the following vertical stripes, from the top
 		for (int y = wallY - 1; y >= eY; y--) {
 			for (int x = minX; x < maxX; x++) {
-				Sprite wall = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true);
+				Sprite wall;
+				if (layer == Material.Layer.DIFFUSE) {
+					wall = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true).getDiffuse();
+				} else {
+					wall = Game.getLevel().getWallAnimation(x, y).getKeyFrame(Engine.time(), true).getNormal();
+				}
 				// If it partially occludes a non-solid tile, it is rendered semi-transparent
 				if (!Game.getLevel().isSolid(x, y + 1)) {
 					wall.setColor(1, 1, 1, 0.8f);
@@ -265,13 +293,13 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderLights(boolean withShadows) {
-		lightCount = (int) Engine.entities.inViewPort(viewPort, 200f)
+		lightCount = (int) Engine.entities.inViewPort(viewPort, renderMargin)
 				.filter(e -> e.getLight() != null)
-				.filter(viewPort::lightIsInViewPort)
+//				.filter(viewPort::lightIsInViewPort)
 				.count();
-		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, 200f)
+		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, renderMargin)
 				.filter(e -> e.getLight() != null)
-				.filter(viewPort::lightIsInViewPort)
+//				.filter(viewPort::lightIsInViewPort)
 				.map(entity -> mapLight(entity, entity.getLight()))
 				.collect(Collectors.toList());
 		List<Float> geometry;
@@ -304,7 +332,7 @@ public class SceneStage implements Renderer {
 					}
 				}
 			}
-			Engine.entities.inViewPort(viewPort, 100f)
+			Engine.entities.inViewPort(viewPort, renderMargin)
 					.filter(e -> e.shadowType() == ShadowType.RECTANGLE)
 					.flatMap(this::mapGeometry)
 					.forEach(geometry::add);
@@ -319,7 +347,7 @@ public class SceneStage implements Renderer {
 			lights.projectToViewPort();
 			lights.render(batch -> {
 				blendSprites.set(batch);
-				Engine.entities.inViewPort(viewPort, 100f)
+				Engine.entities.inViewPort(viewPort, renderMargin)
 						.filter(e -> e.shadowType() == ShadowType.CIRCLE || e.shadowType() == ShadowType.RECTANGLE)
 						.forEach(entity -> circleShadow(entity, batch));
 				blendSprites.unset(batch);
@@ -342,37 +370,22 @@ public class SceneStage implements Renderer {
 		float height = width / 3 * attenuation;
 
 		batch.draw(shadow, blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
-
-//		// Draw projected shadow
-//		// TODO double check whether we still need origin & zpos here
-//		Vector2 o = blocker.getOrigin().cpy().sub(light.getOrigin()).sub(0, light.getZPos()).sub(offset);
-//		float shadowLen = o.len();
-//		if (shadowLen < 2) {
-//			return;
-//		}
-//		shadowColor.a = SHADOW_INTENSITY * Util.clamp(1 - shadowLen / 100f) * blocker.getColor().a;
-//		batch.setColor(shadowColor);
-//		batch.draw(
-//				shadow,
-//				blocker.getOrigin().x,
-//				blocker.getOrigin().y /*- width / 2*/,
-//				0,
-//				width / 2,
-//				width,
-//				width,
-//				shadowLen / 10f,
-//				1 + shadowLen / 100f,
-//				o.angle(),
-//				true);
 	}
 
 	private Light2 mapLight(Entity emitter, Light light) {
 		Color color = light.color.cpy();
 		// TODO get rid of light.dim
-		color.a *= emitter.getColor().a * light.dim;
-		return new Light2(emitter.getOrigin().cpy().add(light.displacement).add(light.offset).add(0, emitter.getZPos()),
-				4f,
-				light.diameter / 2f,
+		Vector2 origin = emitter.getOrigin().cpy().add(light.offset.x + light.displacement.x, 0f);
+		float z = emitter.getZPos() + light.offset.y + light.displacement.y;
+		float range = light.diameter / 2f;
+		// This helps build a believable height effect
+		// (the light scatters more, so the radius grows but the intensity dims)
+		float attn = (float) Math.pow(0.5f, z / range);
+		color.a *= emitter.getColor().a * light.dim * attn;
+		return new Light2(origin,
+				z,
+				4f, // This is the physical radius of the light, not how far it reaches
+				range / attn,
 				color,
 				light.castsShadow);
 	}

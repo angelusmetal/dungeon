@@ -10,6 +10,7 @@ import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.physics.Body;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.render.Light;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
@@ -29,7 +30,7 @@ public class Entity implements Drawable, Movable {
 
 	private final int uniqueid = sequencer.getAndIncrement();
 
-	private Animation<Sprite> animation;
+	private Animation<Material> animation;
 	private float animationStart;
 	private boolean offsetAnimation;
 	/**
@@ -201,7 +202,7 @@ public class Entity implements Drawable, Movable {
 	}
 
 	@Override
-	public Sprite getFrame() {
+	public Material getFrame() {
 		return animation.getKeyFrame(Engine.time() - animationStart);
 	}
 
@@ -213,16 +214,16 @@ public class Entity implements Drawable, Movable {
 		return expirationTime;
 	}
 
-	public Animation<Sprite> getAnimation() {
+	public Animation<Material> getAnimation() {
 		return animation;
 	}
 
-	public void setAnimation(Animation<Sprite> currentAnimation, float animationStart) {
+	public void setAnimation(Animation<Material> currentAnimation, float animationStart) {
 		this.animation = currentAnimation;
 		this.animationStart = animationStart;
 	}
 
-	public void startAnimation(Animation<Sprite> animation) {
+	public void startAnimation(Animation<Material> animation) {
 		this.animation = animation;
 		this.animationStart = offsetAnimation ? Engine.time() - Rand.between(0f, animation.getAnimationDuration()) : Engine.time();
 	}
@@ -230,7 +231,7 @@ public class Entity implements Drawable, Movable {
 	/**
 	 * @return true if animation was changed; false otherwise (animation was already the desired one)
 	 */
-	public boolean updateAnimation(Animation<Sprite> animation) {
+	public boolean updateAnimation(Animation<Material> animation) {
 		if (animation != this.animation) {
 			this.animation = animation;
 			this.animationStart = Engine.time();
@@ -439,7 +440,17 @@ public class Entity implements Drawable, Movable {
 
 	@Override
 	public void draw(SpriteBatch batch, ViewPort viewPort) {
-		Sprite frame = getFrame();
+		Sprite frame = getFrame().getDiffuse();
+		frame.setPosition((int) (getOrigin().x - getDrawOffset().x), (int) (getOrigin().y - getDrawOffset().y + getZPos()));
+		frame.setOrigin(getDrawOffset().x, getDrawOffset().y);
+		frame.setScale(getDrawScale().x, getDrawScale().y);
+		frame.setRotation(getRotation());
+		frame.setColor(getColor());
+		frame.draw(batch);
+	}
+
+	public void drawNormalMap(SpriteBatch batch, ViewPort viewPort) {
+		Sprite frame = getFrame().getNormal();
 		frame.setPosition((int) (getOrigin().x - getDrawOffset().x), (int) (getOrigin().y - getDrawOffset().y + getZPos()));
 		frame.setOrigin(getDrawOffset().x, getDrawOffset().y);
 		frame.setScale(getDrawScale().x, getDrawScale().y);

@@ -7,6 +7,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.factory.EntityTypeFactory;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
@@ -24,8 +25,8 @@ public class AcidSlimeFactory {
 	private static final String IDLE = "slime_acid_idle";
 	private static final String ATTACK = "slime_acid_attack";
 
-	final Animation<Sprite> idleAnimation;
-	final Animation<Sprite> attackAnimation;
+	final Animation<Material> idleAnimation;
+	final Animation<Material> attackAnimation;
 
 	final float maxTargetDistance;
 	final float dashDistance;
@@ -49,7 +50,7 @@ public class AcidSlimeFactory {
 		idleAnimation = Resources.animations.get(IDLE);
 		attackAnimation = Resources.animations.get(ATTACK);
 
-		final Animation<Sprite> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
+		final Animation<Material> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
 		final EntityPrototype pool = DungeonResources.prototypes.get("creature_slime_acid_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {

@@ -91,7 +91,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		Segments.circle(geometry, new Vector2(1400f, 300f), 50f, 20);
 		Segments.circle(geometry, new Vector2(1300f, 800f), 50f, 3);
 //		// Default light
-		lights.add(new Light2(new Vector2(100, 100), 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f), true));
+		lights.add(new Light2(new Vector2(100, 100), 50f, 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f), true));
 //		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 //		lights.add(selectedLight);
 
@@ -150,12 +150,12 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.NUM_1) {
-			selectedLight = new Light2(viewPort.screenToWorld(cursor), 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), true);
+			selectedLight = new Light2(viewPort.screenToWorld(cursor), 50f, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), true);
 			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.NUM_2) {
 			lights.remove(selectedLight);
 		} else if (keycode == Input.Keys.NUM_3) {
-			selectedLight = new Light2(viewPort.screenToWorld(cursor), 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), false);
+			selectedLight = new Light2(viewPort.screenToWorld(cursor), 50f, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), false);
 			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.LEFT) {
 			viewPort.cameraX -= 10;

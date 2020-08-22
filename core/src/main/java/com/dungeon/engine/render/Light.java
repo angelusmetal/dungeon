@@ -21,9 +21,9 @@ public class Light {
 	public float dim = 1f;
 	/** Light angle */
 	public float angle = 0f;
-	/** Light offset */
+	/** Light offset; used to offset the light from the entity origin */
 	public Vector2 offset;
-	/** Light displacement */
+	/** Light displacement; used for randomly displacing lights a bit from their origin (e.g. torchlight effect) */
 	public Vector2 displacement = new Vector2();
 	public final boolean castsShadow;
 

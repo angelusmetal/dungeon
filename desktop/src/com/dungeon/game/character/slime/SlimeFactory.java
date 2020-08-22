@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
@@ -26,10 +27,10 @@ public class SlimeFactory {
 
 	public static final String POOL_DRY = "slime_pool_dry";
 
-	final Animation<Sprite> idleAnimation;
-	final Animation<Sprite> blinkAnimation;
-	final Animation<Sprite> spawnIdleAnimation;
-	final Animation<Sprite> spawnBlinkAnimation;
+	final Animation<Material> idleAnimation;
+	final Animation<Material> blinkAnimation;
+	final Animation<Material> spawnIdleAnimation;
+	final Animation<Material> spawnBlinkAnimation;
 
 	final float maxTargetDistance;
 	final float jumpDistance;

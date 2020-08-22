@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.ui.widget.AbstractWidget;
 import com.dungeon.engine.ui.widget.Widget;
@@ -17,13 +18,13 @@ import com.dungeon.game.player.Player;
 import com.dungeon.game.resource.DungeonResources;
 
 public class CharacterHudWidget extends AbstractWidget implements Widget {
-	private final Animation<Sprite> coins;
-	private final Animation<Sprite> face;
-	private final Animation<Sprite> bars;
-	private final Animation<Sprite> nameplate;
-	private final Animation<Sprite> health;
-	private final Animation<Sprite> energy;
-	private final Animation<Sprite> experience;
+	private final Animation<Material> coins;
+	private final Animation<Material> face;
+	private final Animation<Material> bars;
+	private final Animation<Material> nameplate;
+	private final Animation<Material> health;
+	private final Animation<Material> energy;
+	private final Animation<Material> experience;
 	private final BitmapFont font;
 	private final BitmapFont chubbyFont;
 	private final Player player;
@@ -51,12 +52,12 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		width = 144;
 		this.viewPort = viewPort;
 		outlineColor = new Color(0x504057ff);
-		healthWidth = health.getKeyFrame(0).getWidth();
-		energyWidth = energy.getKeyFrame(0).getWidth();
-		experienceWidth = experience.getKeyFrame(0).getWidth();
+		healthWidth = health.getKeyFrame(0).getDiffuse().getWidth();
+		energyWidth = energy.getKeyFrame(0).getDiffuse().getWidth();
+		experienceWidth = experience.getKeyFrame(0).getDiffuse().getWidth();
 	}
 
-	private Animation<Sprite> getFace(Player player) {
+	private Animation<Material> getFace(Player player) {
 		if (player.getCharacterId() == 0) {
 			return Resources.animations.get("hud_kara");
 		} else if (player.getCharacterId() == 1) {
@@ -73,13 +74,13 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 	@Override
 	public void draw(SpriteBatch batch) {
 		// Display bars background
-		Sprite frame = bars.getKeyFrame(Engine.time());
+		Sprite frame = bars.getKeyFrame(Engine.time()).getDiffuse();
 		frame.setPosition(x, y);
 		frame.draw(batch);
 
 		// Display health
 		float healthFill = player.getAvatar().getHealth() / player.getAvatar().getMaxHealth();
-		frame = new Sprite(health.getKeyFrame(Engine.time()));
+		frame = new Sprite(health.getKeyFrame(Engine.time()).getDiffuse());
 		frame.setRegionX((int) (frame.getRegionX() + frame.getRegionWidth() * (1f - healthFill)));
 		frame.setSize((int) (frame.getWidth() * healthFill), frame.getHeight());
 		frame.setPosition(x + 43, y + 22);
@@ -87,30 +88,30 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 
 		// Display energy
 		float energyFill = player.getAvatar().getEnergy() / player.getAvatar().getMaxEnergy();
-		frame = new Sprite(energy.getKeyFrame(Engine.time()));
+		frame = new Sprite(energy.getKeyFrame(Engine.time()).getDiffuse());
 		frame.setRegionX((int) (frame.getRegionX() + frame.getRegionWidth() * (1f - energyFill)));
 		frame.setSize((int) (frame.getWidth() * energyFill), frame.getHeight());
 		frame.setPosition(x + 40, y + 15);
 		frame.draw(batch);
 
 		// Display experience
-		frame = experience.getKeyFrame(Engine.time());
+		frame = experience.getKeyFrame(Engine.time()).getDiffuse();
 		frame.setPosition(x, y);
 		frame.draw(batch);
 
 		// Display nameplate
-		frame = nameplate.getKeyFrame(Engine.time());
+		frame = nameplate.getKeyFrame(Engine.time()).getDiffuse();
 		frame.setColor(player.getColor());
 		frame.setPosition(x, y);
 		frame.draw(batch);
 
 		// Display mug
-		frame = face.getKeyFrame(Engine.time());
+		frame = face.getKeyFrame(Engine.time()).getDiffuse();
 		frame.setPosition(x, y);
 		frame.draw(batch);
 
 		// Display coins
-		frame = coins.getKeyFrame(Engine.time());
+		frame = coins.getKeyFrame(Engine.time()).getDiffuse();
 		frame.setColor(Color.WHITE);
 		frame.setPosition(x + 42, y + 4);
 		frame.draw(batch);
@@ -118,7 +119,7 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 
 		// Display weapon
 		if (player.getWeapon().getAnimation() != null) {
-			TextureRegion weapon = player.getWeapon().getAnimation().getKeyFrame(Engine.time());
+			TextureRegion weapon = player.getWeapon().getAnimation().getKeyFrame(Engine.time()).getDiffuse();
 			batch.draw(weapon, x + 120, y + 8);
 		}
 
@@ -141,10 +142,10 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 	}
 
 	public Vector2 getCoinCenter() {
-		return new Vector2(x + 42 + coins.getKeyFrame(0).getRegionWidth() / 2f, y + 4 + coins.getKeyFrame(0).getRegionHeight() / 2f);
+		return new Vector2(x + 42 + coins.getKeyFrame(0).getDiffuse().getRegionWidth() / 2f, y + 4 + coins.getKeyFrame(0).getDiffuse().getRegionHeight() / 2f);
 	}
 
 	public Vector2 getHealthCenter() {
-		return new Vector2(x + 43 + health.getKeyFrame(0).getRegionWidth() / 2f, y + 22 + health.getKeyFrame(0).getRegionHeight() / 2f);
+		return new Vector2(x + 43 + health.getKeyFrame(0).getDiffuse().getRegionWidth() / 2f, y + 22 + health.getKeyFrame(0).getDiffuse().getRegionHeight() / 2f);
 	}
 }

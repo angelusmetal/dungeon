@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
@@ -146,9 +147,9 @@ public class Traits {
     }
 
     /** Sets animation based on a vector, using one sprite for up, down and sides (mirrored) */
-    static public <T extends Entity> TraitSupplier<T> animationByVector(Function<T, Vector2> vectorProvider, Animation<Sprite> side, Animation<Sprite> up, Animation<Sprite> down) {
+    static public <T extends Entity> TraitSupplier<T> animationByVector(Function<T, Vector2> vectorProvider, Animation<Material> side, Animation<Material> up, Animation<Material> down) {
         return e -> entity -> {
-            Animation<Sprite> newAnimation;
+            Animation<Material> newAnimation;
             Vector2 vector = vectorProvider.apply(entity);
             // Updates current animation based on the self impulse vector
             entity.getDrawScale().x = abs(entity.getDrawScale().x) * (vector.x < 0 ? -1 : 1);

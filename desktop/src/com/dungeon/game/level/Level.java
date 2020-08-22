@@ -3,6 +3,7 @@ package com.dungeon.game.level;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.dungeon.engine.physics.LevelTiles;
+import com.dungeon.engine.render.Material;
 import com.dungeon.game.Game;
 import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.resource.DungeonResources;
@@ -36,19 +37,19 @@ public class Level implements LevelTiles {
 		return height;
 	}
 
-	public void setFloorAnimation(int x, int y, Animation<Sprite> animation) {
+	public void setFloorAnimation(int x, int y, Animation<Material> animation) {
 		getTile(x, y).floorAnimation = animation;
 	}
 
-	public Animation<Sprite> getFloorAnimation(int x, int y) {
+	public Animation<Material> getFloorAnimation(int x, int y) {
 		return getTile(x, y).floorAnimation;
 	}
 
-	public void setWallAnimation(int x, int y, Animation<Sprite> animation) {
+	public void setWallAnimation(int x, int y, Animation<Material> animation) {
 		getTile(x, y).wallAnimation = animation;
 	}
 
-	public Animation<Sprite> getWallAnimation(int x, int y) {
+	public Animation<Material> getWallAnimation(int x, int y) {
 		return getTile(x, y).wallAnimation;
 	}
 

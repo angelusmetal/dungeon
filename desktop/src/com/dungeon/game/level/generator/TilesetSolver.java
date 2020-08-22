@@ -2,6 +2,7 @@ package com.dungeon.game.level.generator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.level.Tile;
 import com.dungeon.game.level.TileType;
@@ -12,7 +13,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class TilesetSolver {
-	private final Function<Tileset, Animation<Sprite>>[] animations;
+	private final Function<Tileset, Animation<Material>>[] animations;
 	public TilesetSolver() {
 		animations = new Function[256];
 		animations[0b00000000] = Tileset::none;
@@ -272,7 +273,7 @@ public class TilesetSolver {
 		animations[0b11111110] = Tileset::all;
 		animations[0b11111111] = Tileset::all;
 	}
-	public Animation<Sprite> getTile(TileType[][] tiles, Predicate<TileType> predicate, int x, int y, int width, int height, Tileset tileset) {
+	public Animation<Material> getTile(TileType[][] tiles, Predicate<TileType> predicate, int x, int y, int width, int height, Tileset tileset) {
 		if (tiles[x][y] == TileType.FLOOR) {
 			return Resources.animations.get("invisible");
 		}
@@ -287,7 +288,7 @@ public class TilesetSolver {
 		int index = freeUpLeft | freeUp | freeUpRight | freeLeft | freeRight | freeDownLeft | freeDown | freeDownRight;
 		return animations[index].apply(tileset);
 	}
-	public Animation<Sprite> getTile(Tile[][] tiles, BiFunction<Tile, Tile, Boolean> biFunction, int x, int y, int width, int height, Function<Tile,Tileset> tilesetFunction) {
+	public Animation<Material> getTile(Tile[][] tiles, BiFunction<Tile, Tile, Boolean> biFunction, int x, int y, int width, int height, Function<Tile,Tileset> tilesetFunction) {
 		Tile tile = tiles[x][y];
 		int freeUpLeft = y < height - 1 && x > 0 && biFunction.apply(tile, tiles[x-1][y+1]) ? 0b00000001 : 0;
 		int freeUp = y < height - 1 && biFunction.apply(tile, tiles[x][y+1]) ? 0b00000010 : 0;

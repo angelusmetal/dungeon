@@ -46,6 +46,7 @@ public class Engine {
 
 	// FIXME Does this belong here?
 	private static Color baseLight = Color.WHITE.cpy();
+	private static float specular = 1f;
 
 	/** Time since the game started */
 	public static float time() {
@@ -106,4 +107,11 @@ public class Engine {
 		return buffer.get(0);
 	}
 
+	public static float getSpecular() {
+		return specular;
+	}
+
+	public static void setSpecular(float specular) {
+		Engine.specular = specular;
+	}
 }

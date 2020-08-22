@@ -2,6 +2,7 @@ package com.dungeon.engine.resource.loader;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.LoadingException;
 import com.dungeon.engine.resource.ResourceDescriptor;
 import com.dungeon.engine.resource.ResourceIdentifier;
@@ -15,23 +16,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AnimationLoader implements ResourceLoader<Animation<Sprite>> {
+public class AnimationLoader implements ResourceLoader<Animation<Material>> {
 
 	private static final String TYPE = "animation";
 
-	private final ResourceRepository<Animation<Sprite>> repository;
+	private final ResourceRepository<Animation<Material>> repository;
 
-	public AnimationLoader(ResourceRepository<Animation<Sprite>> repository) {
+	public AnimationLoader(ResourceRepository<Animation<Material>> repository) {
 		this.repository = repository;
 	}
 
 	@Override
-	public ResourceRepository<Animation<Sprite>> getRepository() {
+	public ResourceRepository<Animation<Material>> getRepository() {
 		return repository;
 	}
 
 	@Override
-	public Animation<Sprite> read(String identifier, Config config) {
+	public Animation<Material> read(String identifier, Config config) {
 		return AnimationLoader.readFrom(config);
 	}
 
@@ -40,20 +41,30 @@ public class AnimationLoader implements ResourceLoader<Animation<Sprite>> {
 		return new ResourceDescriptor(new ResourceIdentifier(TYPE, key), config, Collections.emptyList());
 	}
 
-	public static Animation<Sprite> readFrom(Config config) {
+	public static Animation<Material> readFrom(Config config) {
 		String texture = ConfigUtil.requireString(config, "texture");
-		List<Sprite> loop = ConfigUtil.getIntList(config, "loop")
+		List<Material> loop = ConfigUtil.getIntList(config, "loop")
 				.orElse(Collections.emptyList())
-				.stream().map(index -> Resources.loadSprite(texture, index))
+				.stream().map(index -> {
+					Sprite diffuse = Resources.loadSprite(texture, index);
+					Sprite normal = Resources.loadSprite("normal_map/" + texture, index);
+					return new Material(diffuse, normal);
+				})
 				.collect(Collectors.toList());
-		List<Sprite> sequence = ConfigUtil.getIntList(config, "sequence")
+		List<Material> sequence = ConfigUtil.getIntList(config, "sequence")
 				.orElse(Collections.emptyList())
-				.stream().map(index -> Resources.loadSprite(texture, index))
+				.stream().map(index -> {
+					Sprite diffuse = Resources.loadSprite(texture, index);
+					Sprite normal = Resources.loadSprite("normal_map/" + texture, index);
+					return new Material(diffuse, normal);
+				})
 				.collect(Collectors.toList());
 		float frameDuration = ConfigUtil.getFloat(config, "frameDuration").orElse(1f);
 
 		if (loop.isEmpty() && sequence.isEmpty()) {
-			loop = Collections.singletonList(Resources.loadSprite(texture));
+			Sprite diffuse = Resources.loadSprite(texture);
+			Sprite normal = Resources.loadSprite("normal_map/" + texture);
+			loop = Collections.singletonList(new Material(diffuse, normal));
 		} else if (loop.size() == sequence.size()) {
 			throw new LoadingException("must have either 'loop' or 'sequence', but not both");
 		}
@@ -64,20 +75,20 @@ public class AnimationLoader implements ResourceLoader<Animation<Sprite>> {
 			return sequence(frameDuration, sequence);
 		}
 	}
-	public static Animation<Sprite> loop(float frameDuration, List<Sprite> frames) {
-		Animation<Sprite> animation = new Animation<>(frameDuration, asArray(frames));
+	public static Animation<Material> loop(float frameDuration, List<Material> frames) {
+		Animation<Material> animation = new Animation<>(frameDuration, asArray(frames));
 		animation.setPlayMode(Animation.PlayMode.LOOP);
 		return animation;
 	}
 
-	public static Animation<Sprite> sequence(float frameDuration, List<Sprite> frames) {
+	public static Animation<Material> sequence(float frameDuration, List<Material> frames) {
 		return new Animation<>(frameDuration, asArray(frames));
 	}
 
-	private static Sprite[] asArray(List<Sprite> frames) {
-		Sprite[] array = new Sprite[frames.size()];
+	private static Material[] asArray(List<Material> frames) {
+		Material[] array = new Material[frames.size()];
 		int i = 0;
-		for (Sprite frame : frames) {
+		for (Material frame : frames) {
 			array[i++] = frame;
 		}
 		return array;

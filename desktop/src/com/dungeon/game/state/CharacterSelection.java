@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.Game;
 import com.dungeon.game.character.player.PlayerCharacterFactory;
@@ -86,7 +87,7 @@ public class CharacterSelection {
 		return Optional.empty();
 	}
 
-	private Animation<Sprite> getAnimation(int characterId) {
+	private Animation<Material> getAnimation(int characterId) {
 		if (characterId == 0) {
 			return Resources.animations.get(PlayerCharacterFactory.KARA_WALK);
 		} else if (characterId == 1) {
@@ -105,7 +106,7 @@ public class CharacterSelection {
 		batch.draw(playerCharacterScreen, 0, 0, playerCharacterScreen.getWidth() * 4, playerCharacterScreen.getHeight() * 4);
 		int x = 42, y = 80;
 		for (Slot s : slots) {
-			Sprite keyFrame = getAnimation(s.characterId).getKeyFrame(Engine.time());
+			Sprite keyFrame = getAnimation(s.characterId).getKeyFrame(Engine.time()).getDiffuse();
 			keyFrame.setScale(4f);
 			keyFrame.setOrigin(keyFrame.getWidth() / 2f, keyFrame.getHeight() / 2f);
 			keyFrame.setPosition((x) * 4, (y) * 4);
