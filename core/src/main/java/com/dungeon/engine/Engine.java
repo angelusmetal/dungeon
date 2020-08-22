@@ -48,6 +48,7 @@ public class Engine {
 	private static Color baseLight = Color.WHITE.cpy();
 	private static float specular = 1f;
 	private static boolean normalMapEnabled = true;
+	private static boolean shadowCastEnforced = false;
 
 	/** Time since the game started */
 	public static float time() {
@@ -122,5 +123,13 @@ public class Engine {
 
 	public static void setNormalMapEnabled(boolean renderNormalMap) {
 		Engine.normalMapEnabled = renderNormalMap;
+	}
+
+	public static boolean isShadowCastEnforced() {
+		return shadowCastEnforced;
+	}
+
+	public static void setShadowCastEnforced(boolean enforceShadowCast) {
+		Engine.shadowCastEnforced = enforceShadowCast;
 	}
 }

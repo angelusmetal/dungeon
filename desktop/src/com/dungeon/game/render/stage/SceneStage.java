@@ -123,10 +123,10 @@ public class SceneStage implements Renderer {
 	public void render() {
 		// Tiling variables (they keep track of tile rendering)
 		tSize = Game.getEnvironment().getTilesize();
-		minX = Math.max(0, viewPort.cameraX / tSize);
-		maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + 1;
+		minX = Math.max(0, viewPort.cameraX / tSize - renderMarginTiles);
+		maxX = Math.min(Game.getLevel().getWidth() - 1, (viewPort.cameraX + viewPort.cameraWidth) / tSize) + renderMarginTiles + 1;
 		minY = Math.max(0, viewPort.cameraY / tSize - renderMarginTiles);
-		maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize);
+		maxY = Math.min(Game.getLevel().getHeight() - 1, (viewPort.cameraY + viewPort.cameraHeight) / tSize) + renderMarginTiles;
 		wallY = maxY + 1;
 
 		current.projectToViewPort();
@@ -227,7 +227,7 @@ public class SceneStage implements Renderer {
 		output.projectToViewPort();
 		output.render(batch -> addLights.run(batch, () -> {
 			Engine.entities.inViewPort(viewPort, renderMargin)
-					//.filter(viewPort::flareIsInViewPort)
+					.filter(viewPort::flareIsInViewPort)
 					.filter(e -> e.getFlare() != null).forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
@@ -299,15 +299,12 @@ public class SceneStage implements Renderer {
 	}
 
 	private void renderLights(boolean withShadows) {
-		lightCount = (int) Engine.entities.inViewPort(viewPort, renderMargin)
-				.filter(e -> e.getLight() != null)
-//				.filter(viewPort::lightIsInViewPort)
-				.count();
 		List<Light2> lightsToRender = Engine.entities.inViewPort(viewPort, renderMargin)
 				.filter(e -> e.getLight() != null)
-//				.filter(viewPort::lightIsInViewPort)
+				.filter(viewPort::lightIsInViewPort)
 				.map(entity -> mapLight(entity, entity.getLight()))
 				.collect(Collectors.toList());
+		lightCount = lightsToRender.size();
 		List<Float> geometry;
 		if (withShadows) {
 			geometry = new ArrayList<>();
@@ -393,7 +390,7 @@ public class SceneStage implements Renderer {
 				4f, // This is the physical radius of the light, not how far it reaches
 				range / attn,
 				color,
-				light.castsShadow);
+				light.castsShadow || Engine.isShadowCastEnforced());
 	}
 
 	public void toggleDrawTiles() {
