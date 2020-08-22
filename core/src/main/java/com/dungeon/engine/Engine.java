@@ -47,6 +47,7 @@ public class Engine {
 	// FIXME Does this belong here?
 	private static Color baseLight = Color.WHITE.cpy();
 	private static float specular = 1f;
+	private static boolean normalMapEnabled = true;
 
 	/** Time since the game started */
 	public static float time() {
@@ -113,5 +114,13 @@ public class Engine {
 
 	public static void setSpecular(float specular) {
 		Engine.specular = specular;
+	}
+
+	public static boolean isNormalMapEnabled() {
+		return normalMapEnabled;
+	}
+
+	public static void setNormalMapEnabled(boolean renderNormalMap) {
+		Engine.normalMapEnabled = renderNormalMap;
 	}
 }

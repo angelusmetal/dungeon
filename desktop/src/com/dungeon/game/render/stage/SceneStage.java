@@ -140,9 +140,11 @@ public class SceneStage implements Renderer {
 
 	private void renderTiles() {
 		if (drawTiles) {
-			// Draw normal map
-			normalMapBuffer.projectToCamera();
-			normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
+			if (Engine.isNormalMapEnabled()) {
+				// Draw normal map
+				normalMapBuffer.projectToCamera();
+				normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
+			}
 
 			// Draw tiles
 			unlit.projectToViewPort();
@@ -163,9 +165,11 @@ public class SceneStage implements Renderer {
 			});
 		}
 		if (drawLights) {
-			lightRenderer.setUseNormalMapping(true);
-			renderLights(drawShadows);
-			lightRenderer.setUseNormalMapping(false);
+			if (Engine.isNormalMapEnabled()) {
+				lightRenderer.setUseNormalMapping(true);
+				renderLights(drawShadows);
+				lightRenderer.setUseNormalMapping(false);
+			}
 		} else {
 			lights.render(batch -> {
 				Gdx.gl.glClearColor(1, 1, 1, 1);
