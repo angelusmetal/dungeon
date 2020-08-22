@@ -169,6 +169,8 @@ public class SceneStage implements Renderer {
 				lightRenderer.setUseNormalMapping(true);
 				renderLights(drawShadows);
 				lightRenderer.setUseNormalMapping(false);
+			} else {
+				renderLights(drawShadows);
 			}
 		} else {
 			lights.render(batch -> {
