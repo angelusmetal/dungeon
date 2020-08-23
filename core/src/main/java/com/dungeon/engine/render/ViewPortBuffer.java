@@ -16,7 +16,6 @@ public class ViewPortBuffer implements Disposable {
 	private TextureRegion textureRegion;
 	private ViewPort viewPort;
 	private SpriteBatch batch;
-	private int renderCalls;
 	private Texture.TextureFilter minFilter = Texture.TextureFilter.Nearest;
 	private Texture.TextureFilter magFilter = Texture.TextureFilter.Nearest;
 
@@ -75,7 +74,6 @@ public class ViewPortBuffer implements Disposable {
 		frameBuffer.begin();
 		batch.begin();
 		consumer.accept(batch);
-		renderCalls += batch.renderCalls;
 		batch.end();
 		frameBuffer.end();
 	}
@@ -89,14 +87,6 @@ public class ViewPortBuffer implements Disposable {
 		textureRegion.setRegionWidth(Math.min(viewPort.cameraWidth, viewPort.width));
 		textureRegion.setRegionHeight(Math.min(viewPort.cameraHeight, viewPort.height));
 		batch.draw(textureRegion, viewPort.posX, viewPort.posY, viewPort.width, viewPort.height);
-	}
-
-	public int getLastRenderCalls() {
-		return renderCalls;
-	}
-
-	public void resetLastRenderCalls() {
-		renderCalls = 0;
 	}
 
 	public Texture getTexture() {

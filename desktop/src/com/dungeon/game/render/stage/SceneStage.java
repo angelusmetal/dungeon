@@ -56,6 +56,11 @@ public class SceneStage implements Renderer {
 	private final ViewPortBuffer current;
 	/** Holds the currently rendered normal maps */
 	private final ViewPortBuffer normalMapBuffer;
+	// Color to "emulate" a solid, flat normal map texture
+	private final Color normalColor = Color.valueOf("8080ffff");
+	// Color to "pass-through" an actual normal map texture
+	private final Color textureColor = Color.valueOf("00000000");
+	private boolean usingNormalTexture = true;
 
 	private final BlendFunctionContext addLights;
 	private final BlendFunctionContext blendLights;
@@ -100,6 +105,7 @@ public class SceneStage implements Renderer {
 		// Base (unlit) buffer
 		this.unlit = new ViewPortBuffer(viewPort, Pixmap.Format.RGBA8888);
 		this.unlit.reset();
+		this.unlit.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		// Lightmap buffer
 		this.lights = new ViewPortBuffer(viewPort);
 		this.lights.reset();
@@ -132,7 +138,6 @@ public class SceneStage implements Renderer {
 		maxX = Math.min(Game.getLevel().getWidth() - 1, ((viewPort.cameraX + viewPort.cameraWidth) / tSize) + renderMarginTiles + 1);
 		minY = Math.max(0, viewPort.cameraY / tSize - renderMarginTiles);
 		maxY = Math.min(Game.getLevel().getHeight() - 1, ((viewPort.cameraY + viewPort.cameraHeight) / tSize) + renderMarginTiles);
-		wallY = maxY + 1;
 
 		current.projectToViewPort();
 		lights.projectToZero();
@@ -143,7 +148,7 @@ public class SceneStage implements Renderer {
 //						.filter(viewPort::isInViewPort)
 				.sorted(comp)
 				.collect(Collectors.toList());
-		lightsToRender = Engine.entities.inViewPort(viewPort, renderMargin)
+		lightsToRender = entitiesToRender.stream()
 				.filter(e -> e.getLight() != null)
 				.filter(viewPort::lightIsInViewPort)
 				.map(entity -> mapLight(entity, entity.getLight()))
@@ -161,23 +166,54 @@ public class SceneStage implements Renderer {
 	private void renderNormalMapBuffer() {
 		// Render tiles
 		normalMapBuffer.projectToCamera();
+//		normalMapBuffer.projectToViewPort();
 		normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
 
 		// Render entities
-//		if (Engine.isNormalMapEnabled()) {
-//			normalMapBuffer.projectToCamera();
-//			normalMapBuffer.render(batch -> {
-//				batch.setShader(DungeonEntity.shader);
-//
-//						.forEach(e -> {
-//							if (e.getZIndex() == 0) {
-//								drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.DIFFUSE);
-//							}
-//							e.draw(batch, viewPort);
-//						});
-//				drawWallTilesUntil(batch, viewPort.cameraY - tSize * renderMarginTiles, Material.Layer.DIFFUSE);
-//			});
-//		}
+//		normalMapBuffer.projectToCamera();
+
+		wallY = maxY + 1;
+		normalMapBuffer.render(batch -> {
+			batch.setShader(DungeonEntity.shader);
+			for (Entity e : entitiesToRender) {
+				if (e.getZIndex() == 0) {
+					ensureNormalBlend(batch, true);
+					drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.NORMAL);
+				}
+				// For entities that do not have a normal map, we'll simulate one by drawing the entity as a solid
+				// color on the normal map buffer. Switching the shader color to control pass through / solid color
+				// is quite expensive, so at least we'll keep track of when we need to do it
+				if (e.getFrame().hasNormal()) {
+					ensureNormalBlend(batch, true);
+					e.drawNormalMap(batch, viewPort);
+				} else {
+					ensureNormalBlend(batch, false);
+					e.draw(batch, viewPort);
+				}
+			}
+			ensureNormalBlend(batch, true);
+			drawWallTilesUntil(batch, viewPort.cameraY - tSize * renderMarginTiles, Material.Layer.NORMAL);
+			batch.setShader(null);
+		});
+
+//		// Output lit tiles
+//		output.render(normalMapBuffer::draw);
+//		output.projectToViewPort();
+//		output.render(batch -> addLights.run(batch, () ->
+//				batch.setColor(Color.WHITE)
+//		));
+
+	}
+
+	private void ensureNormalBlend(SpriteBatch batch, boolean useNormalTexture) {
+		if (useNormalTexture != usingNormalTexture) {
+			usingNormalTexture = !usingNormalTexture;
+			batch.end();
+			DungeonEntity.shader.begin();
+			DungeonEntity.shader.setUniformf("u_color", useNormalTexture ? textureColor : normalColor);
+			DungeonEntity.shader.end();
+			batch.begin();
+		}
 	}
 
 	private void renderTiles() {
@@ -200,8 +236,8 @@ public class SceneStage implements Renderer {
 			if (Engine.isNormalMapEnabled()) {
 				lightRenderer.setUseNormalMapping(true);
 				renderLights(drawShadows);
-				lightRenderer.setUseNormalMapping(false);
 			} else {
+				lightRenderer.setUseNormalMapping(false);
 				renderLights(drawShadows);
 			}
 		} else {
@@ -216,16 +252,17 @@ public class SceneStage implements Renderer {
 
 	private void renderEntities() {
 		if (drawEntities) {
+			wallY = maxY + 1;
 			// Draw entities to unlit buffer
 			unlit.projectToViewPort();
 			unlit.render(batch -> blendSprites.run(batch, () -> {
-				// Clear buffer with black
+				// Clear buffer with transparent
 				Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				batch.setShader(entityShader);
 				// Iterate entities in render order and draw them
 				entitiesToRender.stream()
-						.filter(viewPort::isInViewPort)
+//						.filter(viewPort::isInViewPort)
 						.filter(e -> e.getZIndex() >= 0)
 						.forEach(e -> {
 					if (e.getZIndex() == 0) {
@@ -237,6 +274,7 @@ public class SceneStage implements Renderer {
 			}));
 
 			if (drawLights) {
+				lightRenderer.setUseNormalMapping(true);
 				renderLights(false);
 			} else {
 				lights.render(this::clearBufferWhite);
