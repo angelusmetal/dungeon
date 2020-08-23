@@ -31,7 +31,7 @@ public class Traits {
         return e -> {
             // Randomize phase so each particle oscillates differently
             float phase = Rand.nextFloat(SPIN);
-            return entity -> entity.getMovement().x = MathUtils.sin((Engine.time() + phase) * SPIN * frequency) * amplitude;
+            return entity -> entity.getBody().move(new Vector2(MathUtils.sin((Engine.time() + phase) * SPIN * frequency) * amplitude * Engine.frameTime(), 0f));
         };
     }
 

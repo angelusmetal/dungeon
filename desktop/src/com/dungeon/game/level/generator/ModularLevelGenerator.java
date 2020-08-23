@@ -143,7 +143,11 @@ public class ModularLevelGenerator implements LevelGenerator {
 			Room room = rooms.get(r);
 			// Create a random amount of monsters in each room (less likely every level)
 			final int skip = Math.max(0, Rand.nextInt(room.spawnPoints.size()) - Game.getLevelCount());
-			room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
+
+			// Replace this with actual placeholders
+			if (!monsterTypes.isEmpty()) {
+				room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
+			}
 
 		}
 		// Add placeholders
@@ -184,7 +188,7 @@ public class ModularLevelGenerator implements LevelGenerator {
 				room.connectionPoints.stream()
 						// Shuffle connection points
 						.sorted((k1, k2) -> Rand.between(-1, 1))
-						// Skip those already visiteds
+						// Skip those already visited
 						.filter(point -> !point.visited).forEach(point -> {
 					// Attempt to generate a room in that direction (at a random separation)
 					int roomSeparation = 0;//Rand.between(minRoomSeparation, maxRoomSeparation);
@@ -198,9 +202,9 @@ public class ModularLevelGenerator implements LevelGenerator {
 						int xi = frame.originPoint.origin.x + frame.originPoint.direction.x * i;
 						int yi = frame.originPoint.origin.y + frame.originPoint.direction.y * i;
 						tiles[xi][yi].setPrototype(environmentLevel.getVoidTile());
-						if (i % 2 == 0) {
-							room.placeholders.add(new EntityPlaceholder("gold_light_small", new Vector2(xi + 0.5f, yi + 0.5f)));
-						}
+//						if (i % 2 == 0) {
+//							room.placeholders.add(new EntityPlaceholder("gold_light_small", new Vector2(xi + 0.5f, yi + 0.5f)));
+//						}
 					}
 					frame.originPoint.visited = true;
 				}

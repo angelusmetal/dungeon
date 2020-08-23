@@ -367,23 +367,23 @@ public class SceneStage implements Renderer {
 					for (int y = maxY; y > minY; y--) {
 						if (Game.getLevel().isSolid(x, y)) {
 							geometry.add((float) x * tSize);
-							geometry.add((float) y * tSize);
+							geometry.add((float) y * tSize + tSize);
 							geometry.add((float) x * tSize);
-							geometry.add((float) y * tSize + tSize);
-
-							geometry.add((float) x * tSize);
-							geometry.add((float) y * tSize + tSize);
-							geometry.add((float) x * tSize + tSize);
-							geometry.add((float) y * tSize + tSize);
-
-							geometry.add((float) x * tSize + tSize);
-							geometry.add((float) y * tSize + tSize);
-							geometry.add((float) x * tSize + tSize);
 							geometry.add((float) y * tSize);
 
 							geometry.add((float) x * tSize + tSize);
-							geometry.add((float) y * tSize);
+							geometry.add((float) y * tSize + tSize);
 							geometry.add((float) x * tSize);
+							geometry.add((float) y * tSize + tSize);
+
+							geometry.add((float) x * tSize + tSize);
+							geometry.add((float) y * tSize);
+							geometry.add((float) x * tSize + tSize);
+							geometry.add((float) y * tSize + tSize);
+
+							geometry.add((float) x * tSize);
+							geometry.add((float) y * tSize);
+							geometry.add((float) x * tSize + tSize);
 							geometry.add((float) y * tSize);
 						}
 					}
