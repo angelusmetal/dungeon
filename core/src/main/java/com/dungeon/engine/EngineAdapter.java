@@ -33,6 +33,7 @@ public class EngineAdapter extends ApplicationAdapter {
 			Engine.inputMultiplexer.addProcessor(Engine.inputStack);
 			Engine.inputMultiplexer.addProcessor(Engine.mainKeyboardProcessor);
 		});
+		initAdapter.addInitTask("Loading preferences...", Engine::loadPreferences);
 		initAdapter.addInitTask("Configuring console...", () -> {
 			// Bind engine expressions and variables
 			Engine.console.bindExpression("playMusic", ConsoleExpression.of((String path) -> Engine.audio.playMusic(Gdx.files.internal(path))));
@@ -69,7 +70,7 @@ public class EngineAdapter extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		Engine.appListenerStack.dispose();
-		Resources.dispose();
+		Engine.dispose();
 	}
 
 	public static class Builder {

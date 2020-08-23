@@ -233,13 +233,8 @@ public class SceneStage implements Renderer {
 			unlit.render(this::clearBufferWhite);
 		}
 		if (drawLights) {
-			if (Engine.isNormalMapEnabled()) {
-				lightRenderer.setUseNormalMapping(true);
-				renderLights(drawShadows);
-			} else {
-				lightRenderer.setUseNormalMapping(false);
-				renderLights(drawShadows);
-			}
+			lightRenderer.setUseNormalMapping(Engine.isNormalMapEnabled());
+			renderLights(drawShadows);
 		} else {
 			lights.render(this::clearBufferWhite);
 		}
@@ -274,7 +269,7 @@ public class SceneStage implements Renderer {
 			}));
 
 			if (drawLights) {
-				lightRenderer.setUseNormalMapping(true);
+				lightRenderer.setUseNormalMapping(Engine.isNormalMapEnabled());
 				renderLights(false);
 			} else {
 				lights.render(this::clearBufferWhite);

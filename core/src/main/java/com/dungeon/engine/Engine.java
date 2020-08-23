@@ -2,6 +2,7 @@ package com.dungeon.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -22,8 +23,11 @@ import java.nio.IntBuffer;
 
 public class Engine {
 
+	public static Preferences preferences;
+
 	public static void dispose() {
 		Resources.dispose();
+		preferences.flush();
 	}
 
 	private static float stateTime = 0;
@@ -49,6 +53,13 @@ public class Engine {
 	private static float specular = 1f;
 	private static boolean normalMapEnabled = true;
 	private static boolean shadowCastEnforced = false;
+
+	public static void loadPreferences() {
+		preferences = Gdx.app.getPreferences("Dungeon");
+		specular = preferences.getFloat("specular", 1f);
+		normalMapEnabled = preferences.getBoolean("normalMapEnabled", true);
+		shadowCastEnforced = preferences.getBoolean("shadowCastEnforced", false);
+	}
 
 	/** Time since the game started */
 	public static float time() {
@@ -115,21 +126,24 @@ public class Engine {
 
 	public static void setSpecular(float specular) {
 		Engine.specular = specular;
+		preferences.putFloat("specular", Engine.specular);
 	}
 
 	public static boolean isNormalMapEnabled() {
 		return normalMapEnabled;
 	}
 
-	public static void setNormalMapEnabled(boolean renderNormalMap) {
-		Engine.normalMapEnabled = renderNormalMap;
+	public static void setNormalMapEnabled(boolean normalMapEnabled) {
+		Engine.normalMapEnabled = normalMapEnabled;
+		preferences.putBoolean("normalMapEnabled", Engine.normalMapEnabled);
 	}
 
 	public static boolean isShadowCastEnforced() {
 		return shadowCastEnforced;
 	}
 
-	public static void setShadowCastEnforced(boolean enforceShadowCast) {
-		Engine.shadowCastEnforced = enforceShadowCast;
+	public static void setShadowCastEnforced(boolean shadowCastEnforced) {
+		Engine.shadowCastEnforced = shadowCastEnforced;
+		preferences.putBoolean("shadowCastEnforced", Engine.shadowCastEnforced);
 	}
 }
