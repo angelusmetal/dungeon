@@ -44,15 +44,17 @@ public class Resources {
 	}
 
 	public static void initAtlas() {
-		// Regenerate atlas if missing or outdated
-		TexturePacker.Settings settings = new TexturePacker.Settings();
-		settings.maxWidth = settings.maxHeight = Engine.getMaxTextureSize();
-		settings.ignoreBlankImages = false;
-		settings.stripWhitespaceX = settings.stripWhitespaceY = true;
-		settings.paddingX = settings.paddingY = 0;
-		if (TexturePacker.isModified("gfx", ".", "pack", settings)) {
-			Gdx.app.log("Resources", "Updating texture atlas...");
-			TexturePacker.process(settings, "gfx", ".", "pack");
+		if (Engine.isAtlasForced()) {
+			// Regenerate atlas if missing or outdated
+			TexturePacker.Settings settings = new TexturePacker.Settings();
+			settings.maxWidth = settings.maxHeight = Engine.getMaxTextureSize();
+			settings.ignoreBlankImages = false;
+			settings.stripWhitespaceX = settings.stripWhitespaceY = true;
+			settings.paddingX = settings.paddingY = 0;
+			if (TexturePacker.isModified("gfx", ".", "pack", settings)) {
+				Gdx.app.log("Resources", "Updating texture atlas...");
+				TexturePacker.process(settings, "gfx", ".", "pack");
+			}
 		}
 		// Load atlas
 		Gdx.app.log("Resources", "Loading texture atlas...");
@@ -72,7 +74,13 @@ public class Resources {
 		}
 		Sprite sprite = atlas.createSprite(name);
 		if (sprite == null) {
-			System.err.println("No image found in atlas for name '" + name + "'");
+			try {
+				Texture texture = textures.get(name);
+				sprite = new Sprite(texture);
+				Gdx.app.error("Resources", "No image found in atlas for name '" + name + "', loaded from disk");
+			} catch (GdxRuntimeException e) {
+				Gdx.app.error("Resources", "No image found in atlas nor in disk for name '" + name + "'");
+			}
 		}
 		return sprite;
 	}

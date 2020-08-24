@@ -78,6 +78,8 @@ public class SceneStage implements Renderer {
 	private boolean drawShadows = true;
 	private boolean drawLights = true;
 	private boolean occludeTiles = true;
+	// For debugging; to see the resulting normal map buffer
+	private boolean showNormalMapsOnly = false;
 
 	private float renderMargin = 100f;
 	private int renderMarginTiles = 3;
@@ -158,15 +160,21 @@ public class SceneStage implements Renderer {
 		if (Engine.isNormalMapEnabled()) {
 			renderNormalMapBuffer();
 		}
-		renderTiles();
-		renderEntities();
-		renderFlares();
+		if (!showNormalMapsOnly) {
+			renderTiles();
+			renderEntities();
+			renderFlares();
+		}
+
 	}
 
 	private void renderNormalMapBuffer() {
 		// Render tiles
-		normalMapBuffer.projectToCamera();
-//		normalMapBuffer.projectToViewPort();
+		if (showNormalMapsOnly) {
+			normalMapBuffer.projectToViewPort();
+		} else {
+			normalMapBuffer.projectToCamera();
+		}
 		normalMapBuffer.render(batch -> drawFloorTiles(batch, Material.Layer.NORMAL));
 
 		// Render entities
@@ -196,12 +204,14 @@ public class SceneStage implements Renderer {
 			batch.setShader(null);
 		});
 
-//		// Output lit tiles
-//		output.render(normalMapBuffer::draw);
-//		output.projectToViewPort();
-//		output.render(batch -> addLights.run(batch, () ->
-//				batch.setColor(Color.WHITE)
-//		));
+		// If on normal map debug mode, copy straight to the output buffer
+		if (showNormalMapsOnly) {
+			output.render(normalMapBuffer::draw);
+			output.projectToViewPort();
+			output.render(batch -> addLights.run(batch, () ->
+					batch.setColor(Color.WHITE)
+			));
+		}
 
 	}
 
@@ -466,6 +476,10 @@ public class SceneStage implements Renderer {
 
 	public void toggleDrawLights() {
 		drawLights = !drawLights;
+	}
+
+	public void toggleNormalMapOnly() {
+		showNormalMapsOnly = !showNormalMapsOnly;
 	}
 
 	@Override

@@ -100,6 +100,10 @@ public class ViewPortRenderer implements Disposable {
 		scene.toggleDrawLights();
 	}
 
+	public void toggleNormalMapOnly() {
+		scene.toggleNormalMapOnly();
+	}
+
 	public void toggleShadows() {
 		scene.toggleDrawShadows();
 	}

@@ -43,6 +43,7 @@ public class EngineAdapter extends ApplicationAdapter {
 			Engine.console.bindVar(ConsoleVar.mutableFloat("specular", Engine::getSpecular, Engine::setSpecular));
 			Engine.console.bindVar(ConsoleVar.mutableBoolean("normalMapEnabled", Engine::isNormalMapEnabled, Engine::setNormalMapEnabled));
 			Engine.console.bindVar(ConsoleVar.mutableBoolean("shadowCastEnforced", Engine::isShadowCastEnforced, Engine::setShadowCastEnforced));
+			Engine.console.bindVar(ConsoleVar.mutableBoolean("atlasForced", Engine::isAtlasForced, Engine::setAtlasForced));
 			Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
 			Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 		});

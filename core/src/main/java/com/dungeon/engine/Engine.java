@@ -50,15 +50,18 @@ public class Engine {
 
 	// FIXME Does this belong here?
 	private static Color baseLight = Color.WHITE.cpy();
-	private static float specular = 1f;
-	private static boolean normalMapEnabled = true;
-	private static boolean shadowCastEnforced = false;
+	private static float specular;
+	private static boolean normalMapEnabled;
+	private static boolean shadowCastEnforced;
+	/** Force atlas to be rebuilt (better performance, but slow rebuild upon update) */
+	private static boolean atlasForced;
 
 	public static void loadPreferences() {
 		preferences = Gdx.app.getPreferences("Dungeon");
 		specular = preferences.getFloat("specular", 1f);
 		normalMapEnabled = preferences.getBoolean("normalMapEnabled", true);
 		shadowCastEnforced = preferences.getBoolean("shadowCastEnforced", false);
+		atlasForced = preferences.getBoolean("atlasForced", true);
 	}
 
 	/** Time since the game started */
@@ -145,5 +148,14 @@ public class Engine {
 	public static void setShadowCastEnforced(boolean shadowCastEnforced) {
 		Engine.shadowCastEnforced = shadowCastEnforced;
 		preferences.putBoolean("shadowCastEnforced", Engine.shadowCastEnforced);
+	}
+
+	public static boolean isAtlasForced() {
+		return atlasForced;
+	}
+
+	public static void setAtlasForced(boolean atlasForced) {
+		Engine.atlasForced = atlasForced;
+		preferences.putBoolean("atlasForced", Engine.atlasForced);
 	}
 }
