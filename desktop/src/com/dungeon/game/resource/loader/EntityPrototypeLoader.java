@@ -77,9 +77,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		EntityPrototype prototype = new EntityPrototype();
 
 		try {
-			ConfigUtil.getString(descriptor, "animation").ifPresent(animation ->
-					prototype.animation(Resources.animations.get(animation))
-			);
+			prototype.animation(Resources.animations.get(
+					ConfigUtil.getString(descriptor, "animation")
+							.orElse("invisible")));
 		} catch (ConfigException.WrongType e) {
 			// If there are multiple animations, pick one at random
 			ConfigUtil.getStringList(descriptor, "animation").ifPresent(animations -> prototype.animation(() -> Resources.animations.get(Rand.pick(animations))));

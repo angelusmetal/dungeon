@@ -45,7 +45,7 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, ViewPort viewPort) {
+	public void draw(SpriteBatch batch) {
 		if (highlightUntil > Engine.time()) {
 			batch.end();
 			shader.begin();
@@ -55,12 +55,12 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 			ShaderProgram otherShader = batch.getShader();
 			batch.setShader(shader);
 			batch.begin();
-			super.draw(batch, viewPort);
+			super.draw(batch);
 			batch.end();
 			batch.setShader(otherShader);
 			batch.begin();
 		} else {
-			super.draw(batch, viewPort);
+			super.draw(batch);
 		}
 	}
 

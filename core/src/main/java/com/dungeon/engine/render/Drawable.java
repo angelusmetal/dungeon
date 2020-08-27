@@ -12,6 +12,6 @@ public interface Drawable {
 	Vector2 getDrawOffset();
 	float getZIndex();
 
-	void draw(SpriteBatch batch, ViewPort viewPort);
+	void draw(SpriteBatch batch);
 
 }

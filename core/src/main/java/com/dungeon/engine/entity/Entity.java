@@ -439,7 +439,7 @@ public class Entity implements Drawable, Movable {
 
 
 	@Override
-	public void draw(SpriteBatch batch, ViewPort viewPort) {
+	public void draw(SpriteBatch batch) {
 		Sprite frame = getFrame().getDiffuse();
 		frame.setPosition((int) (getOrigin().x - getDrawOffset().x), (int) (getOrigin().y - getDrawOffset().y + getZPos()));
 		frame.setOrigin(getDrawOffset().x, getDrawOffset().y);
@@ -449,7 +449,7 @@ public class Entity implements Drawable, Movable {
 		frame.draw(batch);
 	}
 
-	public void drawNormalMap(SpriteBatch batch, ViewPort viewPort) {
+	public void drawNormalMap(SpriteBatch batch) {
 		Sprite frame = getFrame().getNormal();
 		frame.setPosition((int) (getOrigin().x - getDrawOffset().x), (int) (getOrigin().y - getDrawOffset().y + getZPos()));
 		frame.setOrigin(getDrawOffset().x, getDrawOffset().y);

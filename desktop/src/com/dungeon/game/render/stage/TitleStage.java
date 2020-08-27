@@ -30,6 +30,7 @@ public class TitleStage implements Renderer {
 		this.viewportBuffer = viewportBuffer;
 		this.textBuffer = new ViewPortBuffer(viewPort, Pixmap.Format.RGBA8888);
 		textBuffer.reset();
+		textBuffer.projectToZeroFull();
 		titleFont = Resources.fonts.get("chantelli-antiqua-32");
 		subtitleFont = Resources.fonts.get(DungeonResources.DEFAULT_FONT);
 //		ornament = Resources.textures.get("title_ornament.png");
@@ -38,6 +39,7 @@ public class TitleStage implements Renderer {
 	@Override
 	public void render() {
 		if (expiration > Engine.time()) {
+			viewportBuffer.projectToZero();
 			viewportBuffer.render(batch -> {
 				color.a = Util.clamp((expiration - Engine.time()) / 2f);
 				batch.setColor(color);
@@ -58,7 +60,7 @@ public class TitleStage implements Renderer {
 			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
-			titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2, viewPort.cameraHeight / 2f + titleLayout.height);
+			titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2f, viewPort.cameraHeight / 2f + titleLayout.height);
 		});
 	}
 
@@ -69,8 +71,8 @@ public class TitleStage implements Renderer {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			GlyphLayout titleLayout = new GlyphLayout(titleFont, title);
 			GlyphLayout subtitleLayout = new GlyphLayout(subtitleFont, subtitle);
-			titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2, viewPort.cameraHeight / 2f + titleLayout.height);
-			subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2f - subtitleLayout.width / 2, viewPort.cameraHeight / 2f - subtitleLayout.height);
+			titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2f, viewPort.cameraHeight / 2f + titleLayout.height);
+			subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2f - subtitleLayout.width / 2f, viewPort.cameraHeight / 2f - subtitleLayout.height);
 //			batch.draw(ornament, viewPort.cameraWidth / 2 - ornament.getWidth() / 2, viewPort.cameraHeight / 2 - subtitleLayout.height * 2 - ornament.getHeight());
 		});
 	}

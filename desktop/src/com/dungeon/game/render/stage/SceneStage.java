@@ -65,7 +65,7 @@ public class SceneStage implements Renderer {
 	private final BlendFunctionContext addLights;
 	private final BlendFunctionContext blendLights;
 	private final BlendFunctionContext blendSprites;
-	private final TextureRegion shadow;
+	private final Sprite shadow;
 
 	private static final float SHADOW_INTENSITY = 0.6f;
 	private final Color shadowColor = new Color(0, 0, 0, SHADOW_INTENSITY);
@@ -124,7 +124,7 @@ public class SceneStage implements Renderer {
 		this.addLights = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE);
 		this.blendLights = new BlendFunctionContext(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		this.shadow = new TextureRegion(Resources.textures.get("circle_diffuse.png"));
+		this.shadow = Resources.loadSprite("circle_diffuse");
 
 //		this.normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
 		this.lightRenderer = new LightRenderer();
@@ -157,6 +157,7 @@ public class SceneStage implements Renderer {
 				.collect(Collectors.toList());
 		lightCount = lightsToRender.size();
 
+		lightRenderer.setUseNormalMapping(Engine.isNormalMapEnabled());
 		if (Engine.isNormalMapEnabled()) {
 			renderNormalMapBuffer();
 		}
@@ -165,7 +166,9 @@ public class SceneStage implements Renderer {
 			renderEntities();
 			renderFlares();
 		}
-
+//		output.projectToCamera();
+//		output.render(batch -> batch.setColor(Color.WHITE));
+//		output.render(lights::draw);
 	}
 
 	private void renderNormalMapBuffer() {
@@ -193,10 +196,10 @@ public class SceneStage implements Renderer {
 				// is quite expensive, so at least we'll keep track of when we need to do it
 				if (e.getFrame().hasNormal()) {
 					ensureNormalBlend(batch, true);
-					e.drawNormalMap(batch, viewPort);
+					e.drawNormalMap(batch);
 				} else {
 					ensureNormalBlend(batch, false);
-					e.draw(batch, viewPort);
+					e.draw(batch);
 				}
 			}
 			ensureNormalBlend(batch, true);
@@ -236,14 +239,13 @@ public class SceneStage implements Renderer {
 					batch.setShader(entityShader);
 					entitiesToRender.stream()
 							.filter(e -> e.getZIndex() < 0)
-							.forEach(e -> e.draw(batch, viewPort));
+							.forEach(e -> e.draw(batch));
 			}));
 
 		} else {
 			unlit.render(this::clearBufferWhite);
 		}
 		if (drawLights) {
-			lightRenderer.setUseNormalMapping(Engine.isNormalMapEnabled());
 			renderLights(drawShadows);
 		} else {
 			lights.render(this::clearBufferWhite);
@@ -273,13 +275,12 @@ public class SceneStage implements Renderer {
 					if (e.getZIndex() == 0) {
 						drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.DIFFUSE);
 					}
-					e.draw(batch, viewPort);
+					e.draw(batch);
 				});
 				drawWallTilesUntil(batch, viewPort.cameraY - tSize * renderMarginTiles, Material.Layer.DIFFUSE);
 			}));
 
 			if (drawLights) {
-				lightRenderer.setUseNormalMapping(Engine.isNormalMapEnabled());
 				renderLights(false);
 			} else {
 				lights.render(this::clearBufferWhite);
@@ -315,7 +316,6 @@ public class SceneStage implements Renderer {
 				sprite.setColor(lightColor);
 				sprite.draw(batch);
 			});
-			batch.setColor(Color.WHITE);
 		}));
 	}
 
@@ -436,12 +436,13 @@ public class SceneStage implements Renderer {
 	private void circleShadow(Entity blocker, SpriteBatch batch) {
 		// Draw shadow at the feet of the entity
 		shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
-		batch.setColor(shadowColor);
 		float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
 		float width = blocker.getBody().getBoundingBox().x * attenuation;
 		float height = width / 3 * attenuation;
 
-		batch.draw(shadow, blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
+		shadow.setColor(shadowColor);
+		shadow.setBounds(blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
+		shadow.draw(batch);
 	}
 
 	private Light2 mapLight(Entity emitter, Light light) {

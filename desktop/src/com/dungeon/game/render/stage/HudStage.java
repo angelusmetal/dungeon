@@ -72,7 +72,6 @@ public class HudStage implements Renderer {
 		layout.draw(batch);
 		particles.update(p -> p.drawAndUpdate(batch), Particle::isExpired, Particle::expire);
 		batch.end();
-		batch.setColor(Color.WHITE);
 	}
 
 	@Override
