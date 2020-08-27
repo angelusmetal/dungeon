@@ -36,9 +36,11 @@ public class NpcEntity extends CreatureEntity {
 		}
 	}
 	@Override protected void onSignal(Entity emitter) {
-		greetPhrase %= greetPhrases.size();
-		if (sayTo(emitter, greetPhrases.get(greetPhrase))) {
-			greetPhrase++;
+//		greetPhrase %= greetPhrases.size();
+		if (greetPhrase < greetPhrases.size()) {
+			if (sayTo(emitter, greetPhrases.get(greetPhrase))) {
+				greetPhrase++;
+			}
 		}
 	}
 

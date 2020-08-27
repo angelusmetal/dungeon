@@ -59,4 +59,17 @@ public class MerchantFactory {
 				Arrays.asList("Greetings adventurer", "This is the dungeon of Arkind", "A foul place filled with monsters", "Enter at your own risk"));
 	}
 
+	public Entity phillipe(Vector2 origin, EntityPrototype prototype) {
+		return new NpcEntity(origin, prototype,
+				Resources.animations.get("ghost_hover"),
+				Resources.animations.get("ghost_hover"),
+				Arrays.asList(
+						"I don't think she'll be back, will she?",
+						"What a fool I've been",
+						"It's been so long",
+						"I can't remember her face anymore",
+						"My name is Phillipe"
+				));
+	}
+
 }

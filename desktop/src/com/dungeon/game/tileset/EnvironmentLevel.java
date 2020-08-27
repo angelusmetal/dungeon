@@ -16,8 +16,10 @@ public class EnvironmentLevel {
 	private final List<String> monsters;
 	private final int tier;
 	private final String music;
+	private final String title;
+	private final String subtitle;
 
-	public EnvironmentLevel(int tilesize, TilePrototype fillTile, TilePrototype voidTile, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters, int tier, String music) {
+	public EnvironmentLevel(int tilesize, TilePrototype fillTile, TilePrototype voidTile, Supplier<Color> light, List<RoomPrototype> rooms, List<String> monsters, int tier, String music, String title, String subtitle) {
 		this.tilesize = tilesize;
 		this.fillTile = fillTile;
 		this.voidTile = voidTile;
@@ -26,6 +28,8 @@ public class EnvironmentLevel {
 		this.monsters = monsters;
 		this.tier = tier;
 		this.music = music;
+		this.title = title;
+		this.subtitle = subtitle;
 	}
 
 	public int getTilesize() {
@@ -58,5 +62,13 @@ public class EnvironmentLevel {
 
 	public String getMusic() {
 		return music;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getSubtitle() {
+		return subtitle;
 	}
 }

@@ -33,7 +33,7 @@ public class Room {
 			spawnPoints.add(new Vector2(spawn.x + left, spawn.y + bottom));
 		}
 		for (EntityPlaceholder placeholder : prototype.getPlaceholders()) {
-			placeholders.add(new EntityPlaceholder(placeholder.getType(), new Vector2(placeholder.getOrigin().x + left, placeholder.getOrigin().y + bottom), placeholder.getChance(), placeholder.getLightPrototype()));
+			placeholders.add(placeholder.relativeTo(left, bottom));
 		}
 		for (ModularLevelGenerator.ConnectionPoint connection : prototype.getConnections()) {
 			GridPoint2 newOrigin = connection.origin.cpy().add(left, bottom);

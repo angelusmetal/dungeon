@@ -97,13 +97,14 @@ public class RoomPrototypeLoader implements ResourceLoader<RoomPrototype> {
 		return config.getConfigList("placeholders").stream().map(t -> {
 			float x = ConfigUtil.requireFloat(t, "x");
 			float y = ConfigUtil.requireFloat(t, "y");
+			Float z = ConfigUtil.getFloat(t, "z").orElse(null);
 			float chance = ConfigUtil.getFloat(t, "chance").orElse(1f);
 			String type = ConfigUtil.requireString(t, "type");
 			LightPrototype light = null;
 			if (EntityType.LIGHT.equals(type)) {
 				light = EntityPrototypeLoader.getLight(t);
 			}
-			return new EntityPlaceholder(type, new Vector2(x, y), chance, light);
+			return new EntityPlaceholder(type, new Vector2(x, y), z, chance, light);
 		}).collect(Collectors.toList());
 	}
 

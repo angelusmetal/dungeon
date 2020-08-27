@@ -126,7 +126,6 @@ public class SceneStage implements Renderer {
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		this.shadow = Resources.loadSprite("circle_diffuse");
 
-//		this.normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
 		this.lightRenderer = new LightRenderer();
 		lightRenderer.setAmbient(Engine.getBaseLight());
 		lightRenderer.create(viewPort, normalMapBuffer.getFrameBuffer());
@@ -143,7 +142,6 @@ public class SceneStage implements Renderer {
 
 		current.projectToViewPort();
 		lights.projectToZero();
-		output.projectToZero();
 
 		// Entities to render, in order
 		entitiesToRender = Engine.entities.inViewPort(viewPort, renderMargin)
@@ -166,9 +164,6 @@ public class SceneStage implements Renderer {
 			renderEntities();
 			renderFlares();
 		}
-//		output.projectToCamera();
-//		output.render(batch -> batch.setColor(Color.WHITE));
-//		output.render(lights::draw);
 	}
 
 	private void renderNormalMapBuffer() {

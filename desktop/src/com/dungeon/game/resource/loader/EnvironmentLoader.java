@@ -64,7 +64,9 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 		List<String> monsters = ConfigUtil.requireStringList(config, "monsters");
 		int tier = ConfigUtil.requireInteger(config, "tier");
 		String music = ConfigUtil.requireString(config, "music");
-		return new EnvironmentLevel(tilesize, fillTile, voidTile, () -> lightColor, rooms, monsters, tier, music);
+		String title = ConfigUtil.getString(config, "title").orElse("");
+		String subtitle = ConfigUtil.getString(config, "subtitle").orElse("");
+		return new EnvironmentLevel(tilesize, fillTile, voidTile, () -> lightColor, rooms, monsters, tier, music, title, subtitle);
 	}
 
 }

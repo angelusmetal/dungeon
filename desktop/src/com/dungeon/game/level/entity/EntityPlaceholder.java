@@ -11,22 +11,24 @@ public class EntityPlaceholder {
 
 	private final String type;
 	private final Vector2 origin;
+	private final Float z;
 	private final float chance;
 	private final LightPrototype lightPrototype;
 
 	public EntityPlaceholder(String type, Vector2 origin) {
-		this(type, origin, 1f, null);
+		this(type, origin, null, 1f, null);
 	}
 
-	public EntityPlaceholder(String type, Vector2 origin, float chance) {
-		this(type, origin, chance, null);
-	}
-
-	public EntityPlaceholder(String type, Vector2 origin, float chance, LightPrototype lightPrototype) {
+	public EntityPlaceholder(String type, Vector2 origin, Float z, float chance, LightPrototype lightPrototype) {
 		this.type = type;
 		this.origin = origin;
+		this.z = z;
 		this.chance = Util.clamp(chance);
 		this.lightPrototype = lightPrototype;
+	}
+
+	public EntityPlaceholder relativeTo(float x, float y) {
+		return new EntityPlaceholder(type, origin.cpy().add(x, y), z, chance, lightPrototype);
 	}
 
 	public String getType() {
@@ -35,6 +37,10 @@ public class EntityPlaceholder {
 
 	public Vector2 getOrigin() {
 		return origin;
+	}
+
+	public Float getZ() {
+		return z;
 	}
 
 	public float getChance() {

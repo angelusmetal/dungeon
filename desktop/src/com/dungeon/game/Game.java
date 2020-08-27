@@ -75,7 +75,7 @@ public class Game {
 	public static OverlayText say(Entity emitter, String text) {
 		OverlayText overlayText = text(emitter.getOrigin(), text)
 				.spell(1, 0)
-				.fadeout(1, 4)
+				.fadeout(1, 3)
 				.bindTo(emitter, SAY_OFFSET, false);
 		Engine.overlayTexts.add(overlayText);
 		return overlayText;
@@ -207,17 +207,24 @@ public class Game {
 				if (EntityType.LIGHT.equals(placeholder.getType())) {
 					// Light placeholder (which inlines light definition)
 					Entity light = entityFactory.build(EntityType.LIGHT, Util.floor(placeholder.getOrigin().cpy().scl(environmentLevel.getTilesize())));
+					if (placeholder.getZ() != null) {
+						light.setZPos(placeholder.getZ());
+					}
 					light.setLight(new Light(placeholder.getLightPrototype()));
 					Engine.entities.add(light);
 				} else {
 					// Regular placeholder
-					Engine.entities.add(entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environmentLevel.getTilesize()))));
+					Entity built = entityFactory.build(placeholder.getType(), Util.floor(placeholder.getOrigin().cpy().scl(environmentLevel.getTilesize())));
+					if (placeholder.getZ() != null) {
+						built.setZPos(placeholder.getZ());
+					}
+					Engine.entities.add(built);
 				}
 			}
 		});
 
 		gameView.recreateViewPorts();
-		Players.all().forEach(player -> player.getRenderer().displayTitle("Chapter " + getLevelCount(), getWelcomeMessage()));
+		Players.all().forEach(player -> player.getRenderer().displayTitle(environmentLevel.getTitle(), environmentLevel.getSubtitle()));
 
 		Engine.entities.commit(false);
 		Gdx.app.log("Level", Engine.entities.analysis());
@@ -247,25 +254,6 @@ public class Game {
 //			GameState.console().watch("Render calls", () -> Integer.toString(viewPortRenderer.getRenderCalls()));
 //			GameState.console().watch("Frame time", () -> Float.toString(viewPortRenderer.getFrameTime()) + " ms");
 		});
-	}
-
-	private static String getWelcomeMessage() {
-		switch (levelCount) {
-			case 1:
-				return "Welcome to the dungeon";
-			case 2:
-				return "Well done";
-			case 3:
-				return "You're getting the vibe";
-			case 4:
-				return "Things will get harder now";
-			case 5:
-				return "Don't get too confident";
-			case 6:
-				return "This is as far as you get";
-			default:
-				return "Good luck. You'll need it";
-		}
 	}
 
 	private static final float DEFAULT_SCALE = 3;

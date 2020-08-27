@@ -49,7 +49,7 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	public void say(String text) {
 		if (Engine.time() > nextTalk) {
-			nextTalk = Engine.time() + 4.5f;
+			nextTalk = Engine.time() + 3f;
 			Game.say(this, text);
 		}
 	}
@@ -62,7 +62,7 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	public void say(List<String> text) {
 		if (Engine.time() > nextTalk) {
-			nextTalk = Engine.time() + 4;
+			nextTalk = Engine.time() + 3;
 			Game.say(this, Rand.pick(text));
 		}
 	}
@@ -74,7 +74,7 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 	}
 	protected void shout(String text) {
 		if (Engine.time() > nextTalk) {
-			nextTalk = Engine.time() + 4;
+			nextTalk = Engine.time() + 3;
 			Game.shout(this, text);
 		}
 	}
@@ -87,7 +87,7 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 
 	protected void shout(List<String> text) {
 		if (Engine.time() > nextTalk) {
-			nextTalk = Engine.time() + 4;
+			nextTalk = Engine.time() + 3;
 			Game.shout(this, Rand.pick(text));
 		}
 	}
