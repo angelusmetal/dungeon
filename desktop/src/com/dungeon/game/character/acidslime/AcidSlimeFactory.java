@@ -1,7 +1,6 @@
 package com.dungeon.game.character.acidslime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -12,7 +11,6 @@ import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
-import com.dungeon.game.character.slime.SlimeFactory;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.DungeonEntity;
@@ -22,6 +20,7 @@ import com.moandjiezana.toml.Toml;
 
 public class AcidSlimeFactory {
 
+	public static final String POOL_DRY = "slime_pool_dry";
 	private static final String IDLE = "slime_acid_idle";
 	private static final String ATTACK = "slime_acid_attack";
 
@@ -50,7 +49,7 @@ public class AcidSlimeFactory {
 		idleAnimation = Resources.animations.get(IDLE);
 		attackAnimation = Resources.animations.get(ATTACK);
 
-		final Animation<Material> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
+		final Animation<Material> poolDryAnimation = Resources.animations.get(POOL_DRY);
 		final EntityPrototype pool = DungeonResources.prototypes.get("creature_slime_acid_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {

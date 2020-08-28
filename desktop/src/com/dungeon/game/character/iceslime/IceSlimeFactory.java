@@ -1,7 +1,6 @@
 package com.dungeon.game.character.iceslime;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -10,7 +9,7 @@ import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
-import com.dungeon.game.character.slime.SlimeFactory;
+import com.dungeon.game.character.acidslime.AcidSlimeFactory;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.resource.DungeonResources;
 
@@ -35,7 +34,7 @@ public class IceSlimeFactory {
 		idleAnimation = Resources.animations.get(IDLE);
 		hitAnimation = Resources.animations.get(HIT);
 
-		final Animation<Material> poolDryAnimation = Resources.animations.get(SlimeFactory.POOL_DRY);
+		final Animation<Material> poolDryAnimation = Resources.animations.get(AcidSlimeFactory.POOL_DRY);
 		final EntityPrototype pool = DungeonResources.prototypes.get("ice_pool");
 
 		this.pool = origin -> new DungeonEntity(pool, origin) {
