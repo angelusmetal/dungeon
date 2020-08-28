@@ -41,6 +41,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
 		stepMetronome = getStepMetronome();
+		highlightDuration = 0.7f;
 	}
 
 	protected abstract Metronome getStepMetronome();

@@ -21,20 +21,34 @@ public class Ghost extends CreatureEntity {
 	private static final List<String> attackPhrases = Arrays.asList("Boo!", "I see dead people...", "Turn back!", "Yum!");
 	private static final List<String> hitPhrases = Arrays.asList("Ouch!", "Who you gonna call?", "That was mean!");
 
-	private final GhostFactory factory;
+	private static final float ACTIVATION_DISTANCE = Util.length2(40f);
+	private static final float MAX_TARGET_DISTANCE = Util.length2(300f);
+	private static final float VISIBLE_TIME = 2f;
+	private static final float VISIBLE_SPEED = 20f;
+	private static final float STEALTH_SPEED = 40f;
+	private static final float DAMAGE_PER_HIT = 8f;
+
 	private float visibleUntil = 0;
+	private boolean active = false;
 	private final Metronome targettingMetronome;
 
-	Ghost(Vector2 origin, EntityPrototype prototype, GhostFactory factory) {
+	Ghost(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
-		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		this.targettingMetronome = new Metronome(0.2f, () -> {
 			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < factory.maxTargetDistance) {
-				moveStrictlyTowards(closest.getEntity().getOrigin());
+			if (active) {
+				if (closest.getDst2() < MAX_TARGET_DISTANCE) {
+					moveStrictlyTowards(closest.getEntity().getOrigin());
+					shout(attackPhrases, 0.02f);
+				}
+			} else {
+				if (closest.getDst2() < ACTIVATION_DISTANCE) {
+					moveStrictlyTowards(closest.getEntity().getOrigin());
+					shout(attackPhrases, 0.02f);
+					active = true;
+				}
 			}
-			shout(attackPhrases, 0.02f);
 		});
 	}
 
@@ -43,15 +57,15 @@ public class Ghost extends CreatureEntity {
 		super.think();
 		// Re-target periodically
 		targettingMetronome.doAtInterval();
-		// Set transparency based on invulnerability
-		color.a = Util.clamp(visibleUntil - Engine.time(), 0.4f, 0.8f);
-		speed = Engine.time() > visibleUntil ? factory.stealthSpeed : factory.visibleSpeed;
+		// Set transparency based on active / recent damage taken
+		color.a = active ? Util.clamp(visibleUntil - Engine.time(), 0.4f, 0.8f) : 0f;
+		speed = Engine.time() > visibleUntil ? STEALTH_SPEED : VISIBLE_SPEED;
 	}
 
 	@Override
 	protected boolean onEntityCollision(DungeonEntity entity) {
 		if (entity instanceof PlayerEntity) {
-			Attack attack = new Attack(this, factory.damagePerSecond * Engine.frameTime(), DamageType.NORMAL, 0);
+			Attack attack = new Attack(this, DAMAGE_PER_HIT, DamageType.NORMAL, 0);
 			entity.hit(attack);
 			return true;
 		} else {
@@ -62,7 +76,7 @@ public class Ghost extends CreatureEntity {
 	@Override
 	public void hit(Attack attack) {
 		super.hit(attack);
-		visibleUntil = Engine.time() + factory.visibleTime;
+		visibleUntil = Engine.time() + VISIBLE_TIME;
 		shout(hitPhrases, 0.3f);
 	}
 

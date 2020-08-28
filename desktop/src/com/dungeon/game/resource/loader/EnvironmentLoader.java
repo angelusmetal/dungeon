@@ -52,7 +52,6 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "fillTile")));
 		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "voidTile")));
 		ConfigUtil.requireStringList(config, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
-		ConfigUtil.requireStringList(config, "monsters").forEach(monster -> dependencies.add(new ResourceIdentifier("prototype", monster)));
 	}
 
 	public EnvironmentLevel readLevel(Config config) {

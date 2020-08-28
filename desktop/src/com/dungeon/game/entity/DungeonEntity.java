@@ -21,9 +21,8 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	public static ShaderProgram shader = Resources.shaders.get("df_vertex.glsl|solid_color_fragment.glsl");
 
 	// Hackish way to do control the solid shader duration
-	protected static final float HIGHLIGHT_DURATION = 0.15f;
 	protected static final Color[] HIGHLIGHT_COLORS = new Color[] {new Color(0xb222228f), new Color(0xffffff8f), new Color(0xb222228f)};
-	protected static final float COLOR_DURATION = HIGHLIGHT_DURATION / HIGHLIGHT_COLORS.length;
+	protected float highlightDuration = 0.15f;
 	protected float highlightUntil = 0f;
 
 	/**
@@ -48,7 +47,8 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 		if (highlightUntil > Engine.time()) {
 			batch.end();
 			shader.begin();
-			Color highlight = HIGHLIGHT_COLORS[(int) ((Engine.time() - (highlightUntil - HIGHLIGHT_DURATION)) / COLOR_DURATION)];
+			float colorDuration = highlightDuration / HIGHLIGHT_COLORS.length;
+			Color highlight = HIGHLIGHT_COLORS[(int) ((Engine.time() - (highlightUntil - highlightDuration)) / colorDuration)];
 			shader.setUniformf("u_color", highlight);
 			shader.end();
 			ShaderProgram otherShader = batch.getShader();
@@ -66,9 +66,9 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	public void hit(Attack attack) {
 		onHit();
 		onHitTraits.forEach(m -> m.accept(this));
-		if (canBeHurt()) {
+		if (canBeHurt() && highlightUntil < Engine.time()) {
 			health -= attack.getDamage();
-			highlightUntil = Engine.time() + HIGHLIGHT_DURATION;
+			highlightUntil = Engine.time() + highlightDuration;
 			if (attack.getDamage() > 1) {
 				Engine.overlayTexts.add(text(getOrigin(), "" + (int) attack.getDamage(), new Color(1, 0.5f, 0.2f, 0.5f)).fadeout(1).move(0, 20));
 			}

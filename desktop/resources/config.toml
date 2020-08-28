@@ -22,19 +22,6 @@
 
 # Creatures
 [[creatures]]
-    id = "GHOST"
-    maxTargetDistance = 300 # Targeting distance
-    visibleTime = 2.0       # Visible time, in seconds
-    visibleSpeed = 20       # Speed while visible
-    stealthSpeed = 50       # Speed while stealth
-    damagePerSecond = 2     # Damage dealth per second upon contact
-[[creatures]]
-    id = "SLIME"
-    maxTargetDistance = 300 # Targeting distance
-    jumpDistance = 50       # Jump distance
-    damagePerSecond = 1     # Damage dealth per second upon contact
-    attackFrequency = 3.0   # Frequency of attacks, in seconds
-[[creatures]]
     id = "SLIME_ACID"
     maxTargetDistance = 300 # Targeting distance
     dashDistance = 150      # Dashing distance
