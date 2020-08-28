@@ -70,11 +70,13 @@ public class PovToggle implements AnalogListener {
 	 * @return converted POV
 	 */
 	public static PovDirection vec2ToPov8(Vector2 vector, float minThreshold) {
-		float x = Math.abs(vector.x) > minThreshold ? vector.x : 0;
-		float y = Math.abs(vector.y) > minThreshold ? vector.y : 0;
-		int povXIndex = x < 0 ? 0 : x == 0 ? 1 : 2;
-		int povYIndex = y < 0 ? 0 : y == 0 ? 1 : 2;
-		return POV_DIRECTIONS[povYIndex * 3 + povXIndex];
+		if (vector.len2() < minThreshold * minThreshold) {
+			return PovDirection.center;
+		} else {
+			int povXIndex = vector.x < 0 ? 0 : vector.x == 0 ? 1 : 2;
+			int povYIndex = vector.y < 0 ? 0 : vector.y == 0 ? 1 : 2;
+			return POV_DIRECTIONS[povYIndex * 3 + povXIndex];
+		}
 	}
 
 	/**
@@ -84,10 +86,12 @@ public class PovToggle implements AnalogListener {
 	 * @return converted POV
 	 */
 	public static PovDirection vec2ToPov4(Vector2 vector, float minThreshold) {
-		float x = Math.abs(vector.x) > minThreshold ? vector.x : 0;
-		float y = Math.abs(vector.y) > minThreshold ? vector.y : 0;
-		int povXIndex = x < 0 ? 0 : x == 0 ? 1 : 2;
-		int povYIndex = y < 0 ? 0 : y == 0 ? 1 : 2;
-		return POV_DIRECTIONS_4[povYIndex * 3 + povXIndex];
+		if (vector.len2() < minThreshold * minThreshold) {
+			return PovDirection.center;
+		} else {
+			int povXIndex = vector.x < 0 ? 0 : vector.x == 0 ? 1 : 2;
+			int povYIndex = vector.y < 0 ? 0 : vector.y == 0 ? 1 : 2;
+			return POV_DIRECTIONS_4[povYIndex * 3 + povXIndex];
+		}
 	}
 }

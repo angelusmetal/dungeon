@@ -10,7 +10,6 @@ import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;

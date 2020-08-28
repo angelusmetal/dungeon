@@ -86,7 +86,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 		if (getAim().len2() > 0) {
 			return vec2ToPov4(getAim(), 0.8f);
 		} else {
-			return vec2ToPov4(getMovement(), speed * 0.8f);
+			return vec2ToPov4(getSelfImpulse(), 0.8f);
 		}
 	}
 
