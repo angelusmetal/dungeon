@@ -36,7 +36,7 @@ public class Slime extends CreatureEntity {
 
 	private float nextThink;
 
-	Slime(Vector2 origin, EntityPrototype prototype) {
+	public Slime(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		startAnimation(blinkAnimation);

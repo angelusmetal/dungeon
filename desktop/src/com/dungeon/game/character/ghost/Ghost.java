@@ -32,7 +32,7 @@ public class Ghost extends CreatureEntity {
 	private boolean active = false;
 	private final Metronome targettingMetronome;
 
-	Ghost(Vector2 origin, EntityPrototype prototype) {
+	public Ghost(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		this.targettingMetronome = new Metronome(0.2f, () -> {

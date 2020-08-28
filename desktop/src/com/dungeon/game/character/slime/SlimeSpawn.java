@@ -22,7 +22,7 @@ public class SlimeSpawn extends CreatureEntity {
 
 	private static final float MAX_TARGET_DISTANCE = Util.length2(300);
 	private static final float JUMP_DISTANCE = Util.length2(50);
-	private static final float DAMAGE_PER_SECOND = 1;
+	private static final float DAMAGE_PER_SECOND = 3;
 	private static final float ATTACK_FREQUENCY = 3;
 
 	private final Animation<Material> spawnIdleAnimation = Resources.animations.get(SPAWN_IDLE);
@@ -30,7 +30,7 @@ public class SlimeSpawn extends CreatureEntity {
 
 	private float nextThink;
 
-	SlimeSpawn(Vector2 origin, EntityPrototype prototype) {
+	public SlimeSpawn(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
 		startAnimation(spawnBlinkAnimation);
 	}
@@ -69,8 +69,8 @@ public class SlimeSpawn extends CreatureEntity {
 
 	@Override
 	protected boolean onEntityCollision(DungeonEntity entity) {
-		if (entity instanceof PlayerEntity) {
-			Attack attack = new Attack(this, DAMAGE_PER_SECOND * Engine.frameTime(), DamageType.NORMAL, 0);
+		if (z > 0 && entity instanceof PlayerEntity) {
+			Attack attack = new Attack(this, DAMAGE_PER_SECOND, DamageType.NORMAL, 0);
 			entity.hit(attack);
 			return true;
 		} else {
