@@ -61,12 +61,11 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 		TilePrototype voidTile = DungeonResources.tiles.get(ConfigUtil.requireString(config, "voidTile"));
 		Color lightColor = ConfigUtil.requireColor(config, "light");
 		List<RoomPrototype> rooms = ConfigUtil.requireStringList(config, "rooms").stream().map(DungeonResources.rooms::get).collect(Collectors.toList());
-		List<String> monsters = ConfigUtil.requireStringList(config, "monsters");
 		int tier = ConfigUtil.requireInteger(config, "tier");
 		String music = ConfigUtil.requireString(config, "music");
 		String title = ConfigUtil.getString(config, "title").orElse("");
 		String subtitle = ConfigUtil.getString(config, "subtitle").orElse("");
-		return new EnvironmentLevel(tilesize, fillTile, voidTile, () -> lightColor, rooms, monsters, tier, music, title, subtitle);
+		return new EnvironmentLevel(tilesize, fillTile, voidTile, () -> lightColor, rooms, tier, music, title, subtitle);
 	}
 
 }

@@ -133,23 +133,9 @@ public class ModularLevelGenerator implements LevelGenerator {
 	}
 
 	private void generateEntities(List<EntityPlaceholder> placeholders) {
-		List<String> monsterTypes = environmentLevel.getMonsters();
-
 		// Create player spawn points in the starting room
 		rooms.get(0).spawnPoints.forEach(pos -> placeholders.add(new EntityPlaceholder(EntityType.PLAYER_SPAWN, pos)));
 
-		// Create monsters in each room, to begin with
-		for (int r = 1; r < rooms.size(); ++r) {
-			Room room = rooms.get(r);
-			// Create a random amount of monsters in each room (less likely every level)
-			final int skip = Math.max(0, Rand.nextInt(room.spawnPoints.size()) - Game.getLevelCount());
-
-			// Replace this with actual placeholders
-			if (!monsterTypes.isEmpty()) {
-				room.spawnPoints.stream().skip(skip).forEach(pos -> placeholders.add(new EntityPlaceholder(Rand.pick(monsterTypes), pos)));
-			}
-
-		}
 		// Add placeholders
 		for (Room room : rooms) {
 			placeholders.addAll(room.placeholders);
