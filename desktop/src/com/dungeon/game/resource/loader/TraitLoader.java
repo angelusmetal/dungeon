@@ -16,6 +16,7 @@ import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
+import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.resource.DungeonResources;
 import com.typesafe.config.Config;
@@ -129,10 +130,9 @@ public class TraitLoader {
 		String vector = ConfigUtil.requireString(config, "vector");
 		if (vector.equals("movement")) {
 			return Traits.xInvertByVector(Entity::getMovement);
-//		} else if (vector.equals("aimAndImpulse")) {
-//			return Traits.xInvertByVector(
-//					e -> e instanceof PlayerEntity ? ((PlayerEntity) e).getAim() : e.getMovement(),
-//					Entity::getMovement);
+		} else if (vector.equals("aim")) {
+			return Traits.xInvertByVector(
+					e -> e instanceof CreatureEntity ? ((CreatureEntity) e).getAim() : e.getMovement());
 		} else {
 			throw new LoadingException("Invalid vector type " + vector);
 		}

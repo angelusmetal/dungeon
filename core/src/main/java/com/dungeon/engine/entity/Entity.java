@@ -121,8 +121,8 @@ public class Entity implements Drawable, Movable {
 		} else {
 			this.body = Body.withOffset(origin, prototype.boundingBox, prototype.boundingBoxOffset);
 		}
-		this.drawOffset = prototype.drawOffset;
-		this.drawScale = prototype.drawScale;
+		this.drawOffset = prototype.drawOffset.cpy();
+		this.drawScale = prototype.drawScale.cpy();
 		this.startTime = Engine.time();
 		this.speed = prototype.speed.get();
 		this.zSpeed = prototype.zSpeed.get();
@@ -167,8 +167,8 @@ public class Entity implements Drawable, Movable {
 		this.offsetAnimation = other.offsetAnimation;
 		this.startAnimation(other.animation);
 		this.body = Body.copyOf(other.body);
-		this.drawOffset = other.drawOffset;
-		this.drawScale = other.drawScale;
+		this.drawOffset = other.drawOffset.cpy();
+		this.drawScale = other.drawScale.cpy();
 		this.startTime = Engine.time();
 		this.speed = other.getSpeed();
 		this.zSpeed = other.getZSpeed();
@@ -177,7 +177,7 @@ public class Entity implements Drawable, Movable {
 		this.airFriction = other.airFriction;
 		this.bounciness = other.bounciness;
 		this.hitPredicate = other.hitPredicate;
-		this.color = other.color;
+		this.color = other.color.cpy();
 		this.light = other.light != null ? other.light.cpy(): null;
 		this.flare = other.flare != null ? other.flare.cpy(): null;
 		this.zIndex = other.zIndex;
