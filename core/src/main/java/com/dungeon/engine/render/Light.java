@@ -31,7 +31,7 @@ public class Light {
 
 	public Light(LightPrototype prototype) {
 		this.sprite = prototype.sprite;
-		this.color = prototype.color;
+		this.color = prototype.color.cpy();
 		this.diameter = prototype.diameter;
 		this.offset = prototype.offset;
 		this.traits = prototype.traits.stream().map(Supplier::get).collect(Collectors.toList());

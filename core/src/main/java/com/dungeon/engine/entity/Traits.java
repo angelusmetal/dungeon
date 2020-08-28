@@ -168,7 +168,7 @@ public class Traits {
     static public <T extends Entity> TraitSupplier<T> xInvertByVector(Function<Entity, Vector2> vFunction) {
         return e -> entity -> {
             if (vFunction.apply(e).x != 0) {
-                entity.getDrawScale().x = abs(entity.getDrawScale().x) * (entity.getMovement().x < 0 ? -1 : 1);
+                entity.getDrawScale().x = abs(entity.getDrawScale().x) * (vFunction.apply(e).x < 0 ? -1 : 1);
             }
         };
     }

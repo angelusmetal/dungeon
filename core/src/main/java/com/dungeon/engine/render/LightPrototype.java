@@ -29,7 +29,7 @@ public class LightPrototype {
 
 	public LightPrototype(float diameter, Color color, Sprite sprite, Vector2 offset, boolean castsShadow) {
 		this.sprite = sprite;
-		this.color = color;
+		this.color = color.cpy();
 		this.diameter = diameter;
 		this.offset = offset;
 		this.castsShadow = castsShadow;
