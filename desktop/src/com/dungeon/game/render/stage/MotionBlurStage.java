@@ -3,6 +3,7 @@ package com.dungeon.game.render.stage;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.render.Renderer;
 import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
 
@@ -18,8 +19,8 @@ public class MotionBlurStage implements Renderer {
 		this.viewportBuffer = viewportBuffer;
 		this.blurBuffer = new ViewPortBuffer(viewPort);
 		this.blurBuffer.reset();
-		this.opacity = Game.getConfiguration().getDouble("rendering.blurOpacity", 0.2d).floatValue();
-		this.duration = Game.getConfiguration().getDouble("rendering.blurDuration", 4d).floatValue();
+		this.opacity = ConfigUtil.getFloat(Game.getConfiguration(), "rendering.blurOpacity").orElse(0.2f);
+		this.duration = ConfigUtil.getFloat(Game.getConfiguration(), "rendering.blurDuration").orElse(4f);
 	}
 
 	@Override

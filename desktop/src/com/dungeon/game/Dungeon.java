@@ -25,7 +25,6 @@ import com.dungeon.game.render.effect.FadeEffect;
 import com.dungeon.game.state.CharacterPlayerControlListener;
 import com.dungeon.game.state.CharacterSelection;
 import com.dungeon.game.state.SelectionPlayerControlListener;
-import com.moandjiezana.toml.Toml;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValue;
@@ -43,7 +42,7 @@ public class Dungeon extends ApplicationAdapter {
 	private StopWatch stopWatch = new StopWatch();
 	private KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
 
-	private final Toml configuration;
+	private final Config configuration;
 	private CharacterSelection characterSelection;
 
 	private boolean fading = false;
@@ -51,7 +50,7 @@ public class Dungeon extends ApplicationAdapter {
 	private long frame = 0;
 	private DevCommands devCommands;
 
-	public Dungeon(Toml configuration) {
+	public Dungeon(Config configuration) {
 		this.configuration = configuration;
 	}
 

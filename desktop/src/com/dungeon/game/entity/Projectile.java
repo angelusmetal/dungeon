@@ -9,7 +9,6 @@ import com.dungeon.game.combat.Attack;
 
 import java.util.function.Function;
 
-// TODO If this needs to exist, move this to game/toml files
 /**
  * Base class for all projectiles
  */

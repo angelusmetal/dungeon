@@ -76,6 +76,7 @@ public class Ghost extends CreatureEntity {
 	@Override
 	public void hit(Attack attack) {
 		super.hit(attack);
+		active = true;
 		visibleUntil = Engine.time() + VISIBLE_TIME;
 		shout(hitPhrases, 0.3f);
 	}

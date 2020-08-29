@@ -1,11 +1,17 @@
 package com.dungeon.game.character.iceslime;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.factory.EntityTypeFactory;
+import com.dungeon.engine.render.Material;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
+import com.dungeon.game.character.MonsterFactory;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.CreatureEntity;
@@ -19,7 +25,19 @@ public class IceSlime extends CreatureEntity {
 
 	private static final List<String> attackPhrases = Arrays.asList("Chill out", "Cool", "Caught a cold");
 
-	private final IceSlimeFactory factory;
+	private static final String IDLE = "slime_ice_idle";
+	private static final String HIT = "slime_ice_hit";
+
+	private static final float maxTargetDistance = Util.length2(300f);
+	private static final float dashDistance = Util.length2(150f);
+	private static final float poolSeparation = Util.length2(15f);
+	private static final float attackFrequency = 3f;
+	private static final float damagePerSecond = 10f;
+
+	private final Animation<Material> idleAnimation = Resources.animations.get(IDLE);
+	private final Animation<Material> hitAnimation = Resources.animations.get(HIT);
+
+	private final EntityTypeFactory poolFactory;
 	private final Vector2 lastPool = new Vector2(0,0);
 	private float nextThink;
 	private enum Status {
@@ -27,9 +45,9 @@ public class IceSlime extends CreatureEntity {
 	}
 	private Status status;
 
-	IceSlime(Vector2 origin, EntityPrototype prototype, IceSlimeFactory factory) {
+	public IceSlime(Vector2 origin, EntityPrototype prototype, EntityTypeFactory poolFactory) {
 		super(origin, prototype);
-		this.factory = factory;
+		this.poolFactory = poolFactory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 	}
 
@@ -37,10 +55,10 @@ public class IceSlime extends CreatureEntity {
 	public void think() {
 		if (Engine.time() > nextThink) {
 			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < factory.maxTargetDistance) {
-				nextThink = Engine.time() + factory.attackFrequency;
+			if (closest.getDst2() < maxTargetDistance) {
+				nextThink = Engine.time() + attackFrequency;
 				// Aim towards target
-				impulseTowards(closest.getEntity().getOrigin(), factory.dashDistance);
+				impulseTowards(closest.getEntity().getOrigin(), dashDistance);
 				aim(getMovement());
 //				updateAnimation(factory.attackAnimation);
 				this.status = Status.ATTACKING;
@@ -55,17 +73,17 @@ public class IceSlime extends CreatureEntity {
 				} else {
 					setSelfImpulse(Vector2.Zero);
 				}
-				updateAnimation(factory.idleAnimation);
+				updateAnimation(idleAnimation);
 				this.status = Status.IDLE;
 			}
 		} else {
 			if (status == Status.ATTACKING) {
-				if (getOrigin().dst2(lastPool) > factory.poolSeparation) {
+				if (getOrigin().dst2(lastPool) > poolSeparation) {
 					lastPool.set(getOrigin());
-					Engine.entities.add(factory.pool.build(getOrigin()));
+					Engine.entities.add(poolFactory.build(getOrigin()));
 				}
 				if (Engine.time() >= nextThink - 2) {
-					updateAnimation(factory.idleAnimation);
+					updateAnimation(idleAnimation);
 				}
 			}
 		}
@@ -73,13 +91,13 @@ public class IceSlime extends CreatureEntity {
 
 	@Override
 	protected void onHit() {
-		updateAnimation(factory.hitAnimation);
+		updateAnimation(hitAnimation);
 	}
 
 	@Override
 	protected boolean onEntityCollision(DungeonEntity entity) {
 		if (entity instanceof PlayerEntity) {
-			Attack attack = new Attack(this, factory.damagePerSecond * Engine.frameTime(), DamageType.NORMAL, 0);
+			Attack attack = new Attack(this, damagePerSecond, DamageType.NORMAL, 0);
 			entity.hit(attack);
 			return true;
 		} else {

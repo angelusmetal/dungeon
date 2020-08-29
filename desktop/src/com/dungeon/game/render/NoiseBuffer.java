@@ -7,9 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.dungeon.engine.resource.Resources;
+import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
-import com.moandjiezana.toml.Toml;
+import com.typesafe.config.Config;
 
 public class NoiseBuffer {
 	private final int width;
@@ -19,10 +20,10 @@ public class NoiseBuffer {
 	private final TextureRegion textureRegion;
 	private final SpriteBatch batch;
 
-	public NoiseBuffer(Toml configuration) {
-		this.width = configuration.getLong("rendering.noiseWidth", 128L).intValue();
-		this.height = configuration.getLong("rendering.noiseHeight", 128L).intValue();
-		this.grit = Util.clamp(configuration.getDouble("rendering.noiseGrit", 0.3d).floatValue());
+	public NoiseBuffer(Config configuration) {
+		this.width = ConfigUtil.getInteger(configuration, "rendering.noiseWidth").orElse(128);
+		this.height = ConfigUtil.getInteger(configuration, "rendering.noiseHeight").orElse(128);
+		this.grit = Util.clamp(ConfigUtil.getFloat(configuration, "rendering.noiseGrit").orElse(0.3f));
 		this.batch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, width, height, false);
 		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());

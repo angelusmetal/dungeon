@@ -18,7 +18,7 @@ public interface ResourceLoader<T> {
 	ResourceRepository<T> getRepository();
 
 	/**
-	 * Scan a toml blob describing a resource
+	 * Scan a config blob describing a resource
 	 *
 	 * @param key  Config key
 	 * @param descriptor Config blob

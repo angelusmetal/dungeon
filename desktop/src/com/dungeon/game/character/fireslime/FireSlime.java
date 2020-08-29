@@ -1,10 +1,14 @@
 package com.dungeon.game.character.fireslime;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.render.Material;
+import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
@@ -21,13 +25,21 @@ public class FireSlime extends CreatureEntity {
 
 	private static final List<String> attackPhrases = Arrays.asList("I'm on fire!", "Eat lead!", "That will teach you", "Smoky!");
 
-	private final FireSlimeFactory factory;
+	private static final String IDLE = "slime_fire_idle";
+
+	private static final float MAX_TARGET_DISTANCE = Util.length2(300f);
+	private static final float ATTACK_FREQUENCY = 1.5f;
+	private static final float ATTACK_SPEED = 50f;
+	private static final float IDLE_SPEED = 5f;
+	private static final float DAMAGE_PER_HIT = 1f;
+
+	private final Animation<Material> idleAnimation = Resources.animations.get(IDLE);
+
 	private final Weapon weapon;
 	private float nextThink;
 
-	FireSlime(Vector2 origin, EntityPrototype prototype, FireSlimeFactory factory) {
+	public FireSlime(Vector2 origin, EntityPrototype prototype) {
 		super(origin, prototype);
-		this.factory = factory;
 		this.health = this.maxHealth *= Game.getDifficultyTier();
 		weapon = new WeaponFactory().buildFireballStaff(Game.getDifficultyTier());
 	}
@@ -36,10 +48,10 @@ public class FireSlime extends CreatureEntity {
 	public void think() {
 		if (Engine.time() > nextThink) {
 			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
-			if (closest.getDst2() < factory.maxTargetDistance) {
-				nextThink = Engine.time() + factory.attackFrequency;
+			if (closest.getDst2() < MAX_TARGET_DISTANCE) {
+				nextThink = Engine.time() + ATTACK_FREQUENCY;
 				// Move towards target
-				speed = factory.attackSpeed;
+				speed = ATTACK_SPEED;
 				moveStrictlyTowards(closest.getEntity().getOrigin());
 				// Fire a projectile
 				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
@@ -47,15 +59,15 @@ public class FireSlime extends CreatureEntity {
 				shout(attackPhrases, 0.1f);
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
-				speed = factory.idleSpeed;
+				speed = IDLE_SPEED;
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
 					setSelfImpulse(newDirection);
-					updateAnimation(factory.idleAnimation);
+					updateAnimation(idleAnimation);
 				} else {
 					setSelfImpulse(Vector2.Zero);
-					updateAnimation(factory.idleAnimation);
+					updateAnimation(idleAnimation);
 				}
 			}
 		} else {
@@ -63,15 +75,15 @@ public class FireSlime extends CreatureEntity {
 		}
 	}
 
-	@Override
-	protected boolean onEntityCollision(DungeonEntity entity) {
-		if (entity instanceof PlayerEntity) {
-			Attack attack = new Attack(this, factory.damagePerSecond * Engine.frameTime(), DamageType.NORMAL, 0);
-			entity.hit(attack);
-			return true;
-		} else {
-			return false;
-		}
-	}
+//	@Override
+//	protected boolean onEntityCollision(DungeonEntity entity) {
+//		if (entity instanceof PlayerEntity) {
+//			Attack attack = new Attack(this, DAMAGE_PER_HIT, DamageType.NORMAL, 0);
+//			entity.hit(attack);
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 
 }

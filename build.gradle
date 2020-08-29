@@ -51,7 +51,6 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
     }
 }
 
@@ -66,7 +65,6 @@ project(":core") {
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
         compile "com.typesafe:config:$hoconVersion"
         testCompile "junit:junit:$junitVersion"
         testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'

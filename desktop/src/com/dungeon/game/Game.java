@@ -31,7 +31,6 @@ import com.dungeon.game.tileset.EnvironmentLevel;
 import com.dungeon.game.viewport.GameView;
 import com.dungeon.game.viewport.SharedScreenCreationStrategy;
 import com.dungeon.game.viewport.SplitScreenCreationStrategy;
-import com.moandjiezana.toml.Toml;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -55,7 +54,7 @@ public class Game {
 	}
 
 	private static EntityFactory entityFactory;
-	private static Toml configuration;
+	private static Config configuration;
 	private static List<String> lootSet;
 	private static boolean displayConsole = false;
 	public static GameView gameView = new GameView();
@@ -96,7 +95,7 @@ public class Game {
 	private static EnvironmentLevel environmentLevel;
 	private static State currentState = State.MENU;
 
-	public static void initialize(Toml configuration) {
+	public static void initialize(Config configuration) {
 		Config config = ConfigFactory.load("config.conf");
 		Game.configuration = configuration;
 		entityFactory = new EntityFactory();
@@ -300,7 +299,7 @@ public class Game {
 		currentState = newState;
 	}
 
-	public static Toml getConfiguration() {
+	public static Config getConfiguration() {
 		return configuration;
 	}
 
