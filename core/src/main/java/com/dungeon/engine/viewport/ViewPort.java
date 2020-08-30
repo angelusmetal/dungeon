@@ -82,12 +82,13 @@ public class ViewPort {
 	}
 
 	public boolean flareIsInViewPort(Entity e) {
+		float range = e.getFlare().diameter / 2f;
 		return
 				e.getFlare() != null &&
-						e.getOrigin().x - e.getFlare().diameter < cameraX + cameraWidth &&
-						e.getOrigin().x + e.getFlare().diameter > cameraX &&
-						e.getOrigin().y - e.getFlare().diameter < cameraY + cameraHeight &&
-						e.getOrigin().y + e.getFlare().diameter > cameraY;
+						e.getOrigin().x - range + e.getFlare().offset.x + e.getFlare().displacement.x < cameraX + cameraWidth &&
+						e.getOrigin().x + range + e.getFlare().offset.x + e.getFlare().displacement.x > cameraX &&
+						e.getOrigin().y - range + e.getFlare().offset.y + e.getFlare().displacement.y + e.getZPos() < cameraY + cameraHeight &&
+						e.getOrigin().y + range + e.getFlare().offset.y + e.getFlare().displacement.y + e.getZPos() > cameraY;
 	}
 
 	public Vector2 worldToScreen(Vector2 vector2) {

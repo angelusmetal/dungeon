@@ -293,8 +293,9 @@ public class SceneStage implements Renderer {
 		output.projectToViewPort();
 		output.render(batch -> addLights.run(batch, () -> {
 			entitiesToRender.stream()
+					.filter(e -> e.getFlare() != null)
 					.filter(viewPort::flareIsInViewPort)
-					.filter(e -> e.getFlare() != null).forEach(flare -> {
+					.forEach(flare -> {
 				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
 				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
 				Vector2 offset = flare.getFlare().offset;
