@@ -266,6 +266,7 @@ public class SceneStage implements Renderer {
 				entitiesToRender.stream()
 //						.filter(viewPort::isInViewPort)
 						.filter(e -> e.getZIndex() >= 0)
+						.filter(e -> !e.isSelfIlluminated())
 						.forEach(e -> {
 					if (e.getZIndex() == 0) {
 						drawWallTilesUntil(batch, e.getOrigin().y, Material.Layer.DIFFUSE);
@@ -291,28 +292,33 @@ public class SceneStage implements Renderer {
 	private void renderFlares() {
 		// Draw flares
 		output.projectToViewPort();
-		output.render(batch -> addLights.run(batch, () -> {
-			entitiesToRender.stream()
-					.filter(e -> e.getFlare() != null)
-					.filter(viewPort::flareIsInViewPort)
-					.forEach(flare -> {
-				lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
-				Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
-				Vector2 offset = flare.getFlare().offset;
-				// Draw light texture
-				Sprite sprite = flare.getFlare().sprite;
-				sprite.setOriginCenter();
-				sprite.setScale(flare.getFlare().dim);
-				sprite.setRotation(flare.getFlare().angle);
-				sprite.setBounds(
-						offset.x + flare.getOrigin().x + displacement.x - flare.getFlare().diameter / 2f,
-						offset.y + flare.getOrigin().y + displacement.y + flare.getZPos() - flare.getFlare().diameter / 2f,
-						flare.getFlare().diameter,
-						flare.getFlare().diameter);
-				sprite.setColor(lightColor);
-				sprite.draw(batch);
-			});
-		}));
+		output.render(batch -> addLights.run(batch, () -> entitiesToRender.stream()
+				.filter(e -> e.getFlare() != null)
+				.filter(viewPort::flareIsInViewPort)
+				.forEach(flare -> {
+			lightColor.set(flare.getFlare().color).premultiplyAlpha().mul(flare.getFlare().dim);
+			Vector2 displacement = flare.getLight() != null ? flare.getLight().displacement : Vector2.Zero;
+			Vector2 offset = flare.getFlare().offset;
+			// Draw light texture
+			Sprite sprite = flare.getFlare().sprite;
+			sprite.setOriginCenter();
+			sprite.setScale(flare.getFlare().dim);
+			sprite.setRotation(flare.getFlare().angle);
+			sprite.setBounds(
+					offset.x + flare.getOrigin().x + displacement.x - flare.getFlare().diameter / 2f,
+					offset.y + flare.getOrigin().y + displacement.y + flare.getZPos() - flare.getFlare().diameter / 2f,
+					flare.getFlare().diameter,
+					flare.getFlare().diameter);
+			sprite.setColor(lightColor);
+			sprite.draw(batch);
+		})));
+
+		// Draw self-illuminated entities
+		output.render(batch -> entitiesToRender.stream()
+				.filter(Entity::isSelfIlluminated)
+				.filter(e -> e.getZIndex() > 0)
+				.forEach(e -> e.draw(batch))
+		);
 	}
 
 	private void drawFloorTiles(SpriteBatch batch, Material.Layer layer) {

@@ -97,6 +97,8 @@ public class Entity implements Drawable, Movable {
 	protected final Color color;
 	/** zIndex for ordering sprites */
 	private float zIndex;
+	/** The entity will be rendered in full light (applies only to entities with zIndex > 0)*/
+	protected boolean selfIlluminated;
 
 	protected boolean canBlock;
 	protected boolean canBeBlockedByEntities;
@@ -135,6 +137,7 @@ public class Entity implements Drawable, Movable {
 		this.light = prototype.light != null ? new Light(prototype.light) : null; // TODO Check this null...
 		this.flare = prototype.flare != null ? new Light(prototype.flare) : null; // TODO Check this null...
 		this.zIndex = prototype.zIndex;
+		this.selfIlluminated = prototype.selfIlluminated;
 		this.z = prototype.z;
 		Float timeToLive = prototype.timeToLive.get();
 		this.expirationTime = timeToLive == null ? Float.MAX_VALUE : Engine.time() + timeToLive;
@@ -181,6 +184,7 @@ public class Entity implements Drawable, Movable {
 		this.light = other.light != null ? other.light.cpy(): null;
 		this.flare = other.flare != null ? other.flare.cpy(): null;
 		this.zIndex = other.zIndex;
+		this.selfIlluminated = other.selfIlluminated;
 		this.expirationTime = other.expirationTime;
 		this.traits = other.traits;
 		this.onHitTraits = new ArrayList<>();
@@ -528,6 +532,14 @@ public class Entity implements Drawable, Movable {
 
 	public float getZIndex() {
 		return zIndex;
+	}
+
+	public boolean isSelfIlluminated() {
+		return selfIlluminated;
+	}
+
+	public void setSelfIlluminated(boolean selfIlluminated) {
+		this.selfIlluminated = selfIlluminated;
 	}
 
 	public final void signal(Entity emitter) {

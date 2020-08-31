@@ -27,6 +27,7 @@ public class EntityPrototype {
 	Supplier<Float> airFriction = () -> 0f;
 	LightPrototype light = null;
 	LightPrototype flare = null;
+	boolean selfIlluminated;
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onHitTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onExpireTraits = new ArrayList<>();
@@ -253,6 +254,11 @@ public class EntityPrototype {
 
 	public EntityPrototype with(TraitSupplier<Entity> trait) {
 		this.traits.add(trait);
+		return this;
+	}
+
+	public EntityPrototype selfIlluminated(Boolean selfIlluminated) {
+		this.selfIlluminated = selfIlluminated;
 		return this;
 	}
 

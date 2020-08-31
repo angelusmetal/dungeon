@@ -100,6 +100,7 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		ConfigUtil.getInteger(descriptor, "health").ifPresent(prototype::health);
 		ConfigUtil.getFloat(descriptor, "knockback").ifPresent(prototype::knockback);
 		ConfigUtil.getFloat(descriptor, "speed").ifPresent(prototype::speed);
+		ConfigUtil.getBoolean(descriptor, "selfIlluminated").ifPresent(prototype::selfIlluminated);
 		getLight(descriptor, "light").ifPresent(prototype::light);
 		getLight(descriptor, "flare").ifPresent(prototype::flare);
 
