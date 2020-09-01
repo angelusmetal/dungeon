@@ -9,7 +9,7 @@ import com.dungeon.engine.render.Material;
 import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Metronome;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.TimeGradient;
+import com.dungeon.engine.util.automation.TimeGradient;
 import com.dungeon.engine.util.Util;
 
 import java.util.List;

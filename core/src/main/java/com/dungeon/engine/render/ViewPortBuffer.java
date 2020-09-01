@@ -78,6 +78,12 @@ public class ViewPortBuffer implements Disposable {
 		frameBuffer.end();
 	}
 
+	public void renderNoWrap(Consumer<SpriteBatch> consumer) {
+		frameBuffer.begin();
+		consumer.accept(batch);
+		frameBuffer.end();
+	}
+
 	public void draw(SpriteBatch batch) {
 		batch.draw(textureRegion, 0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
 	}

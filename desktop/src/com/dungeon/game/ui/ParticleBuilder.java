@@ -2,7 +2,6 @@ package com.dungeon.game.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -11,7 +10,7 @@ import com.dungeon.engine.render.Material;
 import com.dungeon.engine.ui.particle.LinearParticle;
 import com.dungeon.engine.ui.particle.PathParticle;
 import com.dungeon.engine.util.Metronome;
-import com.dungeon.engine.util.TimeGradient;
+import com.dungeon.engine.util.automation.TimeGradient;
 import com.dungeon.game.entity.PlayerEntity;
 
 import static com.dungeon.engine.util.Util.randVect;
