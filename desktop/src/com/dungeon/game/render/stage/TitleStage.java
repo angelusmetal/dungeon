@@ -34,7 +34,7 @@ public class TitleStage implements Renderer {
 	private AutomationInstance titleFade;
 	private AutomationInstance subtitleFade;
 	private final Vector2 texelSize;
-	private final int blurSamples = 6;
+	private final float blurSamples = 6;
 
 	public TitleStage(ViewPort viewPort, ViewPortBuffer viewportBuffer) {
 		this.viewPort = viewPort;
@@ -64,20 +64,7 @@ public class TitleStage implements Renderer {
 				titleFont.draw(batch, title,  viewPort.cameraWidth / 2f - titleLayout.width / 2f, viewPort.cameraHeight / 2f + titleLayout.height);
 			});
 			viewportBuffer.projectToZero();
-			viewportBuffer.renderNoWrap(batch -> {
-				shaderProgram.begin();
-				shaderProgram.setUniformf("u_texelSize", texelSize);
-				shaderProgram.setUniformi("u_samples", blurSamples);
-				shaderProgram.setUniformf("u_blur", 1f - fade);
-				shaderProgram.end();
-				batch.setShader(shaderProgram);
-				batch.begin();
-				color.a = fade;
-				batch.setColor(color);
-				textBuffer.draw(batch);
-				batch.setColor(Color.WHITE);
-				batch.end();
-			});
+			displayTextbuffer(fade);
 		}
 		// Render subtitle
 		if (!subtitleFade.isFinished()) {
@@ -89,21 +76,30 @@ public class TitleStage implements Renderer {
 				subtitleFont.draw(batch, subtitle,  viewPort.cameraWidth / 2f - subtitleLayout.width / 2f, viewPort.cameraHeight / 2f - subtitleLayout.height - 5 * (1f - fade));
 			});
 			viewportBuffer.projectToZero();
-			viewportBuffer.renderNoWrap(batch -> {
-				shaderProgram.begin();
-				shaderProgram.setUniformf("u_texelSize", texelSize);
-				shaderProgram.setUniformi("u_samples", blurSamples);
-				shaderProgram.setUniformf("u_blur", 1f - fade);
-				shaderProgram.end();
-				batch.setShader(shaderProgram);
-				batch.begin();
-				color.a = fade;
-				batch.setColor(color);
-				textBuffer.draw(batch);
-				batch.setColor(Color.WHITE);
-				batch.end();
-			});
+			displayTextbuffer(fade);
 		}
+	}
+
+	/**
+	 * Displays the previously rendered text buffer with a certain amount of blur and fade (both throttled with the
+	 * same value)
+	 * @param fade 1: fully opaque & focused, 0: fully transparent and blurred
+	 */
+	public void displayTextbuffer(float fade) {
+		viewportBuffer.renderNoWrap(batch -> {
+			shaderProgram.begin();
+			shaderProgram.setUniformf("u_texelSize", texelSize);
+			shaderProgram.setUniformf("u_samples", blurSamples);
+			shaderProgram.setUniformf("u_blur", 1f - fade);
+			shaderProgram.end();
+			batch.setShader(shaderProgram);
+			batch.begin();
+			color.a = fade;
+			batch.setColor(color);
+			textBuffer.draw(batch);
+			batch.setColor(Color.WHITE);
+			batch.end();
+		});
 	}
 
 	@Override
