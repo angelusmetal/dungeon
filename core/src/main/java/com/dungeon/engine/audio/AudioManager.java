@@ -28,21 +28,36 @@ public class AudioManager {
 
 	private LinkedList<MusicTrack> currentTracks = new LinkedList<>();
 
+	public void playMusic(LayeredMusic layeredMusic) {
+		if (layeredMusic.getIntro() != null) {
+			Music.OnCompletionListener completionListener = null;
+			if (layeredMusic.getLoop() != null) {
+				completionListener = endingTrack -> playMusic(Gdx.files.internal(layeredMusic.getLoop()), true, 0f, null);
+			}
+			playMusic(Gdx.files.internal(layeredMusic.getIntro()), false, 0f, completionListener);
+		} else {
+			playMusic(Gdx.files.internal(layeredMusic.getLoop()), true, 0f, null);
+		}
+	}
+
 	public void playMusic(FileHandle file) {
-		playMusic(file, true, 4f);
+		playMusic(file, true, 4f, null);
 	}
 
 	public void playMusic(FileHandle file, float fade) {
-		playMusic(file, true, fade);
+		playMusic(file, true, fade, null);
 	}
 
-	public void playMusic(FileHandle file, boolean loop, float fade) {
+	public void playMusic(FileHandle file, boolean loop, float fade, Music.OnCompletionListener completionListener) {
 		if (!enabled) {
 			return;
 		}
 		MusicTrack track = new MusicTrack();
 		try {
 			track.music = Gdx.audio.newMusic(file);
+			if (completionListener != null) {
+				track.music.setOnCompletionListener(completionListener);
+			}
 		} catch (GdxRuntimeException e) {
 			return;
 		}

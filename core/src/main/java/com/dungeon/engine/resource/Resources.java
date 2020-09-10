@@ -12,9 +12,11 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.audio.LayeredMusic;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.loader.AnimationLoader;
+import com.dungeon.engine.resource.loader.LayeredMusicLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class Resources {
 
 	public static final String DEFAULT_FONT = "alegreya-sans-sc-9";
+	public static final String GRAPHICS_PATH = "gfx";
 
 	private static final List<ResourceRepository<?>> repositories = new ArrayList<>();
 	private static TextureAtlas atlas;
@@ -32,11 +35,13 @@ public class Resources {
 	public static final ResourceRepository<BitmapFont> fonts = new ResourceRepository<>(Resources::computeFont, BitmapFont::dispose);
 	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);
 	public static final ResourceRepository<Sound> sounds = new ResourceRepository<>(Resources::computeSound, Sound::dispose);
+	public static final ResourceRepository<LayeredMusic> musics = new ResourceRepository<>();
 
 	public static final ResourceManagerLoader loader = new ResourceManagerLoader();
 
 	static {
 		loader.registerLoader("animation", new AnimationLoader(animations));
+		loader.registerLoader("music", new LayeredMusicLoader(musics));
 	}
 
 	public static void registerRepository(ResourceRepository<?> repository) {
@@ -51,9 +56,9 @@ public class Resources {
 			settings.ignoreBlankImages = false;
 			settings.stripWhitespaceX = settings.stripWhitespaceY = true;
 			settings.paddingX = settings.paddingY = 0;
-			if (TexturePacker.isModified("gfx", ".", "pack", settings)) {
+			if (TexturePacker.isModified(GRAPHICS_PATH, ".", "pack", settings)) {
 				Gdx.app.log("Resources", "Updating texture atlas...");
-				TexturePacker.process(settings, "gfx", ".", "pack");
+				TexturePacker.process(settings, GRAPHICS_PATH, ".", "pack");
 			}
 		}
 		// Load atlas
@@ -75,7 +80,8 @@ public class Resources {
 		Sprite sprite = atlas.createSprite(name);
 		if (sprite == null) {
 			try {
-				Texture texture = textures.get(name);
+				// TODO If the image is not PNG?
+				Texture texture = textures.get(GRAPHICS_PATH + "/" + name + ".png");
 				sprite = new Sprite(texture);
 				Gdx.app.error("Resources", "No image found in atlas for name '" + name + "', loaded from disk");
 			} catch (GdxRuntimeException e) {
@@ -91,7 +97,14 @@ public class Resources {
 		}
 		Sprite sprite = atlas.createSprite(name, index);
 		if (sprite == null) {
-			System.err.println("No image found in atlas for name '" + name + "' and index '" + index + "'");
+			try {
+				// TODO If the image is not PNG?
+				Texture texture = textures.get(GRAPHICS_PATH + "/" + name + "_" + index + ".png");
+				sprite = new Sprite(texture);
+				Gdx.app.error("Resources", "No image found in atlas for name '" + name + "' and index '" + index + "', loaded from disk");
+			} catch (GdxRuntimeException e) {
+				Gdx.app.error("Resources", "No image found in atlas nor in disk for name '" + name + "' and index '" + index + "'");
+			}
 		}
 		return sprite;
 	}

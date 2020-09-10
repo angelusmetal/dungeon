@@ -234,8 +234,7 @@ public class Game {
 		Players.all().stream().map(Player::getRenderer).forEach(renderer -> renderer.openTransition(LEVEL_TRANSITION_TIME, () -> {}));
 
 		// Start playing new music
-		Engine.audio.playMusic(Gdx.files.internal(environmentLevel.getMusic()), 0f);
-
+		Engine.audio.playMusic(Resources.musics.get(environmentLevel.getMusic()));
 		// Add watches
 		Players.all().forEach(player -> {
 			player.getConsole().watch("FPS", () -> Integer.toString(Gdx.graphics.getFramesPerSecond()));

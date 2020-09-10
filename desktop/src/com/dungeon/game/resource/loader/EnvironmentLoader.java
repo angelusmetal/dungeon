@@ -51,6 +51,7 @@ public class EnvironmentLoader implements ResourceLoader<Environment> {
 	public void scanLevel(List<ResourceIdentifier> dependencies, Config config) {
 		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "fillTile")));
 		dependencies.add(new ResourceIdentifier("tileset", ConfigUtil.requireString(config, "voidTile")));
+		dependencies.add(new ResourceIdentifier("music", ConfigUtil.requireString(config, "music")));
 		ConfigUtil.requireStringList(config, "rooms").forEach(room -> dependencies.add(new ResourceIdentifier("room", room)));
 	}
 
