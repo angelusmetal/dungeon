@@ -59,13 +59,13 @@ public class WeaponFactory {
 		Sprite referenceFrame = slashAnimation.getKeyFrame(0).getDiffuse();
 		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
 		Vector2 hitBoundingBox = new Vector2(32, 32);
-		EntityPrototype hit = new EntityPrototype()
-				.animation(Resources.animations.get("invisible"))
+		EntityPrototype attack = new EntityPrototype(DungeonResources.prototypes.get("weapon_melee_attack"))
 				.boundingBox(hitBoundingBox)
 				.drawOffset(hitDrawOffset)
 				.speed(1)
 				.timeToLive(slashAnimation.getAnimationDuration())
 				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS);
+		EntityPrototype hit = DungeonResources.prototypes.get("weapon_melee_hit");
 		EntityPrototype slash = new EntityPrototype()
 				.animation(slashAnimation)
 				.boundingBox(hitBoundingBox)
@@ -74,7 +74,7 @@ public class WeaponFactory {
 		float minDps = tier * 2f;
 		float maxDps = tier * 5f;
 		List<WeaponModule> modules = Arrays.asList(
-				new AttackModule(hit, DamageType.NORMAL, minDps, maxDps).spawnDistance(16),
+				new AttackModule(attack, hit, DamageType.NORMAL, minDps, maxDps).spawnDistance(16),
 				new AimedParticleModule(slash).spawnDistance(4),
 				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
 		);
