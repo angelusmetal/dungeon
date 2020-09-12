@@ -88,7 +88,7 @@ public class TraitLoader {
 		return e -> entity -> {
 			LootGenerator generator = DungeonResources.loots.get(lootName);
 			List<String> lootList = generator.generate();
-			Vector2 origin = entity.getOrigin().cpy().add(0, -5);
+			Vector2 origin = entity.getBody().getCenter();//entity.getOrigin().cpy().add(0, -5);
 			if (lootList.size() == 1) {
 				// Spawn a single piece of loot
 				Entity loot = Game.build(lootList.get(0), origin);
@@ -211,7 +211,7 @@ public class TraitLoader {
 			traits.add(particle -> particle.setRotation(particle.getMovement().angle()));
 		}
 		return generator -> {
-			Entity particle = Game.build(prototype, generator.getOrigin());
+			Entity particle = Game.build(prototype, generator.getBody().getCenter());
 			// Inherit generator properties
 			particle.getDrawScale().set(generator.getDrawScale());
 			if (inheritColor) {

@@ -215,7 +215,7 @@ public class Traits {
     }
 
     static public <T extends Entity> TraitSupplier<T> playSound(List<Sound> sounds, float volume, float pitchVariance, float zspeedAttn, float chance) {
-        if (pitchVariance == 0) {
+        if (zspeedAttn == 0) {
             return entityAtStart -> entityAtRuntime -> {
                 if (Rand.chance(chance)) {
                     Engine.audio.playSound(Rand.pick(sounds), entityAtRuntime.getOrigin(), volume, pitchVariance);

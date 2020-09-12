@@ -18,14 +18,15 @@ public class Projectile extends DungeonEntity implements Movable, Drawable {
 
 	/** Damage to inflict upon hitting a target */
 	protected Function<Entity, Attack> attackSupplier;
+	protected int hitCount = 1;
 
 	public Projectile(Vector2 origin, EntityPrototype prototype, Function<Entity, Attack> attackSupplier) {
 		super(prototype, origin);
 		this.attackSupplier = attackSupplier;
 	}
 
-	 @Override
-	 protected void onMovementUpdate() {
+	@Override
+	protected void onMovementUpdate() {
 		setRotation(getMovement().angle());
 	}
 
@@ -39,12 +40,18 @@ public class Projectile extends DungeonEntity implements Movable, Drawable {
 	@Override
 	protected boolean onEntityCollision(DungeonEntity entity) {
 		if (!expired && hitPredicate.test(entity) && entity.canBeHit()) {
-			expire();
+			if (--hitCount <= 0) {
+				expire();
+			}
 			entity.hit(attackSupplier.apply(this));
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	public void setHitCount(int hitCount) {
+		this.hitCount = hitCount;
 	}
 
 }

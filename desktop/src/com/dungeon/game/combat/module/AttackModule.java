@@ -5,6 +5,7 @@ import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.Util;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.DungeonEntity;
@@ -22,69 +23,101 @@ public class AttackModule implements WeaponModule {
 	final float minDamage;
 	final float maxDamage;
 	final Function<Entity, Attack> attackFunction;
-	final float knockback = 0;
-	float spawnDistance = 0;
+	final float spawnDistance;
+	int hitCount;
 
-	/**
-	 * Create a weapon module that spawns a projectile
-	 * @param prototype Entity prototype for this projectile
-	 * @param damageType Damage type for this projectile
-	 * @param minDamage Minimum damage upon hit
-	 * @param maxDamage Maximum damage upon hit
-	 */
-	public AttackModule(EntityPrototype prototype, DamageType damageType, float minDamage, float maxDamage) {
-		this.prototype = prototype;
-		this.prototypeHit = null;
-		this.damageType = damageType;
-		this.minDamage = minDamage;
-		this.maxDamage = maxDamage;
-		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(minDamage, maxDamage) + 0.5f), damageType, knockback);
-	}
-
-	/**
-	 * Create a weapon module that spawns a projectile
-	 * @param prototype Entity prototype for this projectile
-	 * @param damageType Damage type for this projectile
-	 * @param minDamage Minimum damage upon hit
-	 * @param maxDamage Maximum damage upon hit
-	 */
-	public AttackModule(EntityPrototype prototype, EntityPrototype prototypeHit, DamageType damageType, float minDamage, float maxDamage) {
-		this.prototype = prototype;
-		this.prototypeHit = prototypeHit;
-		this.damageType = damageType;
-		this.minDamage = minDamage;
-		this.maxDamage = maxDamage;
-		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(minDamage, maxDamage) + 0.5f), damageType, knockback);
-	}
-
-	/**
-	 * Set spawn distance, which indicates how far from origin (into aim direction) will the particle spawn.
-	 */
-	public AttackModule spawnDistance(float spawnDistance) {
-		this.spawnDistance = spawnDistance;
-		return this;
+	private AttackModule(Builder builder) {
+		prototype = builder.prototype;
+		prototypeHit = builder.prototypeHit;
+		damageType = builder.damageType;
+		minDamage = builder.minDamage;
+		maxDamage = builder.maxDamage;
+		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(builder.minDamage, builder.maxDamage) + 0.5f), builder.damageType, builder.knockback);
+		spawnDistance = builder.spawnDistance;
+		this.hitCount = builder.hitCount;
 	}
 
 	@Override
 	public void apply(Vector2 origin, Vector2 aim) {
 		Vector2 hitOrigin = origin.cpy().mulAdd(aim, spawnDistance);
 		Projectile projectile;
-		if (prototypeHit != null) {
-			projectile = new Projectile(hitOrigin, prototype, attackFunction) {
-				@Override
-				protected boolean onEntityCollision(DungeonEntity entity) {
-					boolean hit = super.onEntityCollision(entity);
-					if (hit) {
-						Engine.entities.add(new Entity(prototypeHit, entity.getOrigin()));
+		projectile = new Projectile(hitOrigin, prototype, attackFunction) {
+			@Override
+			protected boolean onEntityCollision(DungeonEntity entity) {
+				boolean hit = super.onEntityCollision(entity);
+				if (hit) {
+					// If there is a prototype for hits, spawn an entity
+					if (prototypeHit != null) {
+						Vector2 hitOrigin = new Vector2(
+								Util.clamp((entity.getOrigin().x + origin.x) / 2f, entity.getBody().getBottomLeft().x, entity.getBody().getTopRight().x),
+								Util.clamp((entity.getOrigin().y + origin.y) / 2f, entity.getBody().getBottomLeft().y, entity.getBody().getTopRight().y));
+						Engine.entities.add(new Entity(prototypeHit, hitOrigin));
 					}
-					return hit;
 				}
-			};
-		} else {
-			projectile = new Projectile(hitOrigin, prototype, attackFunction);
-		}
+				return hit;
+			}
+		};
 		projectile.impulse(aim.cpy().setLength(projectile.getSpeed()));
+		projectile.setHitCount(hitCount);
 		projectile.spawn();
 		Engine.entities.add(projectile);
+	}
+
+	public static final class Builder {
+		private EntityPrototype prototype;
+		private EntityPrototype prototypeHit;
+		private DamageType damageType;
+		private float minDamage;
+		private float maxDamage;
+		private float spawnDistance;
+		private float knockback = 0;
+		private int hitCount = 1;
+
+		public Builder() {
+		}
+
+		public Builder prototype(EntityPrototype prototype) {
+			this.prototype = prototype;
+			return this;
+		}
+
+		public Builder prototypeHit(EntityPrototype prototypeHit) {
+			this.prototypeHit = prototypeHit;
+			return this;
+		}
+
+		public Builder damageType(DamageType damageType) {
+			this.damageType = damageType;
+			return this;
+		}
+
+		public Builder minDamage(float minDamage) {
+			this.minDamage = minDamage;
+			return this;
+		}
+
+		public Builder maxDamage(float maxDamage) {
+			this.maxDamage = maxDamage;
+			return this;
+		}
+
+		public Builder spawnDistance(float spawnDistance) {
+			this.spawnDistance = spawnDistance;
+			return this;
+		}
+
+		public Builder knockback(int knockback) {
+			this.knockback = knockback;
+			return this;
+		}
+
+		public Builder hitCount(int hitCount) {
+			this.hitCount = hitCount;
+			return this;
+		}
+
+		public AttackModule build() {
+			return new AttackModule(this);
+		}
 	}
 }

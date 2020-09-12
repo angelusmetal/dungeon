@@ -62,8 +62,8 @@ public class WeaponFactory {
 		EntityPrototype attack = new EntityPrototype(DungeonResources.prototypes.get("weapon_melee_attack"))
 				.boundingBox(hitBoundingBox)
 				.drawOffset(hitDrawOffset)
-				.speed(1)
-				.timeToLive(slashAnimation.getAnimationDuration())
+				.speed(0)
+				.timeToLive(0.0001f)
 				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS);
 		EntityPrototype hit = DungeonResources.prototypes.get("weapon_melee_hit");
 		EntityPrototype slash = new EntityPrototype()
@@ -74,11 +74,11 @@ public class WeaponFactory {
 		float minDps = tier * 2f;
 		float maxDps = tier * 5f;
 		List<WeaponModule> modules = Arrays.asList(
-				new AttackModule(attack, hit, DamageType.NORMAL, minDps, maxDps).spawnDistance(16),
+				new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).spawnDistance(16).hitCount(100).build(),
 				new AimedParticleModule(slash).spawnDistance(4),
 				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
 		);
-		return new ModularWeapon("Sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.35f, 15, 75);
+		return new ModularWeapon("Sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.50f, 10, 75);
 	}
 
 	public Weapon buildCatStaff(float tier) {
@@ -87,7 +87,7 @@ public class WeaponFactory {
 		float minDps = tier * 2f;
 		float maxDps = tier * 3f;
 		List<WeaponModule> modules = Arrays.asList(
-				new AttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps),
+				new AttackModule.Builder().prototype(projectile).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
 		return new ModularWeapon("Cat staff", Resources.animations.get("weapon_fire_wand"), modules, 0.35f, 15, 80);
@@ -99,8 +99,8 @@ public class WeaponFactory {
 		float minDps = tier * 1f;
 		float maxDps = tier * 2f;
 		List<WeaponModule> modules = Arrays.asList(
-				new AttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps),
-				new AttackModule(projectileInv, DamageType.ELEMENTAL, minDps, maxDps),
+				new AttackModule.Builder().prototype(projectile).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
+				new AttackModule.Builder().prototype(projectileInv).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
 		return new ModularWeapon("Venom staff", Resources.animations.get("weapon_poison_wand"), modules, 0.25f, 20, 75);
@@ -123,7 +123,7 @@ public class WeaponFactory {
 		float minDps = tier * 2f;
 		float maxDps = tier * 5f;
 		List<WeaponModule> modules = Arrays.asList(
-				new AttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps),
+				new AttackModule.Builder().prototype(projectile).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/firebolt.ogg"))
 		);
 		return new ModularWeapon("Fireball", Resources.animations.get("weapon_fire_staff"), modules, 0.25f, 20, 75);

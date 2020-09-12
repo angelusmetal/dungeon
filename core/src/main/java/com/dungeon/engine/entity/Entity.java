@@ -160,6 +160,9 @@ public class Entity implements Drawable, Movable {
 		this.shadowType = prototype.shadowType;
 		this.isStatic = prototype.isStatic;
 		this.occlusionSegments = prototype.occlusionSegments;
+
+		// Run spawn traits
+		prototype.onSpawnTraits.stream().map(m -> m.get(this)).forEach(t -> t.accept(this));
 	}
 
 	/**
@@ -203,6 +206,7 @@ public class Entity implements Drawable, Movable {
 		this.isStatic = other.isStatic;
 		this.occlusionSegments = other.occlusionSegments;
 		this.z = other.z;
+		// NOTE Spawn traits are not executed when cloning an Entity
 	}
 
 	@Override
@@ -394,12 +398,10 @@ public class Entity implements Drawable, Movable {
 
 	public void spawn() {
 		// Detect collision against other entities upon spawning
-		Engine.entities.colliding(this).forEach(entity -> {
-			if (entity != this && collides(entity)) {
-				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
-				if (!onEntityCollision(entity)) {
-					entity.onEntityCollision(this);
-				}
+		Engine.entities.colliding(this).filter(e -> e != this && collides(e)).forEach(entity -> {
+			// If this did not handle a collision with the other entity, have the other entity attempt to handle it
+			if (!onEntityCollision(entity)) {
+				entity.onEntityCollision(this);
 			}
 		});
 	}

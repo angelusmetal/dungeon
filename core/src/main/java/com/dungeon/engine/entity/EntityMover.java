@@ -152,17 +152,15 @@ public class EntityMover {
 	private static boolean detectEntityCollision(Entity entity, Vector2 step) {
 		// Ugh...
 		final boolean[] pushedBack = new boolean[1];
-		Engine.entities.colliding(entity).forEach(other -> {
-			if (other != entity) {
-				// If this did not handle a collision with the other entity, have the other entity attempt to handle it
-				if (!entity.onEntityCollision(other)) {
-					other.onEntityCollision(entity);
-				}
-				// If collides with an entity that can block (and this can be blocked by entities) push back
-				if (entity.canBeBlockedByEntities() && !pushedBack[0] && other.canBlock()) {
-					entity.getBody().move(step.scl(-1));
-					pushedBack[0] = true;
-				}
+		Engine.entities.colliding(entity).filter(e -> e != entity).forEach(other -> {
+			// If this did not handle a collision with the other entity, have the other entity attempt to handle it
+			if (!entity.onEntityCollision(other)) {
+				other.onEntityCollision(entity);
+			}
+			// If collides with an entity that can block (and this can be blocked by entities) push back
+			if (entity.canBeBlockedByEntities() && !pushedBack[0] && other.canBlock()) {
+				entity.getBody().move(step.scl(-1));
+				pushedBack[0] = true;
 			}
 		});
 		return pushedBack[0];

@@ -29,6 +29,7 @@ public class EntityPrototype {
 	LightPrototype flare = null;
 	boolean selfIlluminated;
 	List<TraitSupplier<Entity>> traits = new ArrayList<>();
+	List<TraitSupplier<Entity>> onSpawnTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onHitTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onExpireTraits = new ArrayList<>();
 	List<TraitSupplier<Entity>> onGroundHitTraits = new ArrayList<>();
@@ -68,6 +69,7 @@ public class EntityPrototype {
 		this.light = other.light;
 		this.flare = other.flare;
 		this.traits = new ArrayList<>(other.traits);
+		this.onSpawnTraits = new ArrayList<>(other.onSpawnTraits);
 		this.onHitTraits = new ArrayList<>(other.onHitTraits);
 		this.onExpireTraits = new ArrayList<>(other.onExpireTraits);
 		this.onGroundHitTraits = new ArrayList<>(other.onGroundHitTraits);
@@ -331,6 +333,10 @@ public class EntityPrototype {
 		this.isStatic = isStatic;
 	}
 
+	public EntityPrototype onSpawn(TraitSupplier<Entity> trait) {
+		this.onSpawnTraits.add(trait);
+		return this;
+	}
 	public EntityPrototype onHit(TraitSupplier<Entity> trait) {
 		this.onHitTraits.add(trait);
 		return this;
