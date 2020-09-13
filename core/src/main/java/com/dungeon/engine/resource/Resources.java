@@ -55,7 +55,7 @@ public class Resources {
 			settings.maxWidth = settings.maxHeight = Engine.getMaxTextureSize();
 			settings.ignoreBlankImages = false;
 			settings.stripWhitespaceX = settings.stripWhitespaceY = true;
-			settings.paddingX = settings.paddingY = 0;
+			settings.paddingX = settings.paddingY = 1;
 			if (TexturePacker.isModified(GRAPHICS_PATH, ".", "pack", settings)) {
 				Gdx.app.log("Resources", "Updating texture atlas...");
 				TexturePacker.process(settings, GRAPHICS_PATH, ".", "pack");

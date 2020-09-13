@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.dungeon.engine.util.Util.clamp;
+
 public class SceneStage implements Renderer {
 
 	// Entities need to be rendered with premultiplied alpha onto the alpha-enabled buffer
@@ -311,6 +313,10 @@ public class SceneStage implements Renderer {
 					flare.getFlare().diameter);
 			sprite.setColor(lightColor);
 			sprite.draw(batch);
+			if (flare.getFlare().mirror) {
+				sprite.setRotation(-flare.getFlare().angle);
+				sprite.draw(batch);
+			}
 		})));
 
 		// Draw self-illuminated entities
@@ -438,12 +444,12 @@ public class SceneStage implements Renderer {
 	private void circleShadow(Entity blocker, SpriteBatch batch) {
 		// Draw shadow at the feet of the entity
 		shadowColor.a = SHADOW_INTENSITY * blocker.getColor().a;
-		float attenuation = 1 - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
+		float attenuation = 1f - Math.min(blocker.getZPos(), MAX_HEIGHT_ATTENUATION) / MAX_HEIGHT_ATTENUATION;
 		float width = blocker.getBody().getBoundingBox().x * attenuation;
-		float height = width / 3 * attenuation;
+		float height = width / 3f;
 
 		shadow.setColor(shadowColor);
-		shadow.setBounds(blocker.getBody().getBottomLeft().x, blocker.getBody().getBottomLeft().y + VERTICAL_OFFSET, width, height);
+		shadow.setBounds(blocker.getOrigin().x - width / 2f, blocker.getBody().getBottomLeft().y - height / 2f + blocker.getBody().getBoundingBox().y / 6f + VERTICAL_OFFSET, width, height);
 		shadow.draw(batch);
 	}
 

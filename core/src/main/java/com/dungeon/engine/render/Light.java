@@ -26,6 +26,8 @@ public class Light {
 	/** Light displacement; used for randomly displacing lights a bit from their origin (e.g. torchlight effect) */
 	public Vector2 displacement = new Vector2();
 	public final boolean castsShadow;
+	/** Whether texture should be rendered twice (mirrored, the second time). Only applies to flares */
+	public final boolean mirror;
 
 	private final List<Consumer<Light>> traits;
 
@@ -36,9 +38,10 @@ public class Light {
 		this.offset = prototype.offset;
 		this.traits = prototype.traits.stream().map(Supplier::get).collect(Collectors.toList());
 		this.castsShadow = prototype.castsShadow;
+		this.mirror = prototype.mirror;
 	}
 
-	private Light(float diameter, Color color, Sprite sprite, Vector2 offset, List<Consumer<Light>> traits, boolean castsShadow) {
+	private Light(float diameter, Color color, Sprite sprite, Vector2 offset, List<Consumer<Light>> traits, boolean castsShadow, boolean mirror) {
 		this.sprite = sprite;
 		this.color = color;
 		this.diameter = diameter;
@@ -46,10 +49,11 @@ public class Light {
 		this.offset = offset.cpy();
 		this.traits = traits;
 		this.castsShadow = castsShadow;
+		this.mirror = mirror;
 	}
 
 	public Light cpy() {
-		return new Light(diameter, color.cpy(), sprite, offset, traits, castsShadow);
+		return new Light(diameter, color.cpy(), sprite, offset, traits, castsShadow, mirror);
 	}
 
 	public void update() {

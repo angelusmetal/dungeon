@@ -26,13 +26,15 @@ public class LightPrototype {
 
 	protected final List<Supplier<Consumer<Light>>> traits = new ArrayList<>();
 	protected final boolean castsShadow;
+	protected final boolean mirror;
 
-	public LightPrototype(float diameter, Color color, Sprite sprite, Vector2 offset, boolean castsShadow) {
+	public LightPrototype(float diameter, Color color, Sprite sprite, Vector2 offset, boolean castsShadow, boolean mirror) {
 		this.sprite = sprite;
 		this.color = color.cpy();
 		this.diameter = diameter;
 		this.offset = offset;
 		this.castsShadow = castsShadow;
+		this.mirror = mirror;
 	}
 
 	public LightPrototype torchlight() {
@@ -54,7 +56,7 @@ public class LightPrototype {
 	}
 
 	public LightPrototype oscillate() {
-		oscillate(0.5f, 1.5f);
+		oscillate(0.25f, 1.5f);
 		return this;
 	}
 

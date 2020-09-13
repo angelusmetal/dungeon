@@ -189,8 +189,9 @@ public class EntityPrototypeLoader implements ResourceLoader<EntityPrototype> {
 		Color color = ConfigUtil.requireColor(config, "color");
 		Sprite texture = Resources.loadSprite(ConfigUtil.requireString(config, "texture"));
 		boolean castsShadow = ConfigUtil.getBoolean(config, "castsShadow").orElse(false);
+		boolean mirror = ConfigUtil.getBoolean(config, "mirror").orElse(false);
 		Vector2 offset = ConfigUtil.getVector2(config, "offset").orElse(Vector2.Zero);
-		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture, offset, castsShadow);
+		LightPrototype lightPrototype = new LightPrototype(diameter, color, texture, offset, castsShadow, mirror);
 		ConfigUtil.getStringList(config, "traits").ifPresent(list -> list.forEach(trait -> getLightTrait(lightPrototype, trait)));
 		return lightPrototype;
 	}

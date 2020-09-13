@@ -95,6 +95,7 @@ public class TraitLoader {
 				loot.setZPos(15);
 				// TODO Is this really ok?
 				loot.getTraits().add(Traits.fadeIn(1f, 1f).get(loot));
+				loot.impulse(Rand.between(-5, 5), Rand.between(-10, -5));
 				Engine.entities.add(loot);
 			} else {
 				// Spawn multiple pieces of loot
@@ -211,7 +212,7 @@ public class TraitLoader {
 			traits.add(particle -> particle.setRotation(particle.getMovement().angle()));
 		}
 		return generator -> {
-			Entity particle = Game.build(prototype, generator.getBody().getCenter());
+			Entity particle = Game.build(prototype, generator.getOrigin());
 			// Inherit generator properties
 			particle.getDrawScale().set(generator.getDrawScale());
 			if (inheritColor) {
