@@ -118,8 +118,8 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		font.draw(batch, Integer.toString(player.getGold()), x + 51, y + 4 + font.getLineHeight());
 
 		// Display weapon
-		if (player.getWeapon().getAnimation() != null) {
-			TextureRegion weapon = player.getWeapon().getAnimation().getKeyFrame(Engine.time()).getDiffuse();
+		if (player.getWeapon().getHudAnimation() != null) {
+			TextureRegion weapon = player.getWeapon().getHudAnimation().getKeyFrame(Engine.time()).getDiffuse();
 			batch.draw(weapon, x + 120, y + 8);
 		}
 

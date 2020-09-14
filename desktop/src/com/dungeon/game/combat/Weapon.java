@@ -1,5 +1,6 @@
 package com.dungeon.game.combat;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -21,7 +22,7 @@ public abstract class Weapon {
 		return name;
 	}
 
-	public abstract Animation<Material> getAnimation();
+	public abstract Animation<Material> getHudAnimation();
 
 	public float attackCooldown() {
 		return 0.25f;
@@ -32,4 +33,6 @@ public abstract class Weapon {
 	}
 
 	abstract public int getPrice();
+
+	abstract public Color getAnimationColor();
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -26,6 +27,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 	private int playerId;
 	private Metronome stepMetronome;
 	private float slowUntil = 0f;
+	private Animation<Material> weaponAnimation;
 
 	/** Current energy */
 	private float energy = 100;
@@ -40,6 +42,7 @@ public abstract class PlayerEntity extends CreatureEntity {
 
 	protected PlayerEntity(EntityPrototype prototype, Vector2 origin) {
 		super(origin, prototype);
+		weaponAnimation = getIdleWeaponAnimation(PovDirection.south);
 		stepMetronome = getStepMetronome();
 		highlightDuration = 0.7f;
 	}
@@ -60,6 +63,18 @@ public abstract class PlayerEntity extends CreatureEntity {
 	public static final Predicate<Entity> HIT_NON_PLAYERS = entity -> !(entity instanceof PlayerEntity);
 
 	@Override
+	public void draw(SpriteBatch batch) {
+		super.draw(batch);
+		Sprite frame = weaponAnimation.getKeyFrame(Engine.time() - animationStart).getDiffuse();
+		frame.setPosition((int) (getOrigin().x - getDrawOffset().x), (int) (getOrigin().y - getDrawOffset().y + getZPos()));
+		frame.setOrigin(getDrawOffset().x, getDrawOffset().y);
+		frame.setScale(getDrawScale().x, getDrawScale().y);
+		frame.setRotation(getRotation());
+		frame.setColor(getPlayer().getWeapon().getAnimationColor());
+		frame.draw(batch);
+	}
+
+		@Override
 	public void think() {
 		super.think();
 		if (!isAttackAnimation() || isAnimationFinished()) {
@@ -69,9 +84,12 @@ public abstract class PlayerEntity extends CreatureEntity {
 				animationDirection = newDirection;
 			}
 			if (getSelfImpulse().x == 0 && getSelfImpulse().y == 0) {
-				updateAnimation(getIdleAnimation(animationDirection));
+				if (updateAnimation(getIdleAnimation(animationDirection))) {
+					weaponAnimation = getIdleWeaponAnimation(animationDirection);
+				}
 			} else {
 				if (updateAnimation(getWalkAnimation(animationDirection))) {
+					weaponAnimation = getWalkWeaponAnimation(animationDirection);
 					stepMetronome.reset(STEP_INTERVAL / 2f);
 				}
 				stepMetronome.doAtInterval();
@@ -116,7 +134,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 					weapon.attack(getBody().getCenter(), getAim());
 //					PovDirection animationDirection = getAnimationDirection();
 					updateXScale(animationDirection);
-					updateAnimation(getAttackAnimation(animationDirection));
+					if (updateAnimation(getAttackAnimation(animationDirection))) {
+						weaponAnimation = getAttackWeaponAnimation(animationDirection);
+					}
 					slowUntil = Engine.time() + weapon.attackCooldown();
 					energy -= weapon.energyDrain();
 				});
@@ -138,6 +158,9 @@ public abstract class PlayerEntity extends CreatureEntity {
 	abstract protected Animation<Material> getWalkAnimation(PovDirection direction);
 	abstract protected Animation<Material> getAttackAnimation(PovDirection direction);
 	abstract protected boolean isAttackAnimation();
+	abstract protected Animation<Material> getIdleWeaponAnimation(PovDirection direction);
+	abstract protected Animation<Material> getWalkWeaponAnimation(PovDirection direction);
+	abstract protected Animation<Material> getAttackWeaponAnimation(PovDirection direction);
 
 	public Player getPlayer() {
 		return Players.get(playerId);

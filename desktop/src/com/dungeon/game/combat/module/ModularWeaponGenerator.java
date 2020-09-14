@@ -1,5 +1,6 @@
 package com.dungeon.game.combat.module;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.EntityPrototype;
@@ -319,7 +320,7 @@ public class ModularWeaponGenerator {
 			name.append("serpent");
 		}
 
-		return new ModularWeapon(name.toString(), Resources.animations.get(Rand.pick(skins)), modules, weapon.cooldown, weapon.energyDrain, (int) weapon.goldCost);
+		return new ModularWeapon(name.toString(), Resources.animations.get(Rand.pick(skins)), modules, weapon.cooldown, weapon.energyDrain, (int) weapon.goldCost, Color.WHITE);
 	}
 
 //	private Weapon generateMeleeWeapon(int score) {

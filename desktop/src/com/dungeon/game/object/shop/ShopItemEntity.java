@@ -27,8 +27,8 @@ public class ShopItemEntity extends DungeonEntity {
 			Weapon weapon = new WeaponFactory().buildRandom(Game.getDifficultyTier());
 			this.item = new WeaponFactory().buildWeaponEntity(getOrigin(), DungeonResources.prototypes.get("random_weapon"),() -> weapon);
 			// Update both the item and the placeholder animation from the weapon
-			this.item.setAnimation(weapon.getAnimation(), Engine.time());
-			setAnimation(weapon.getAnimation(), Engine.time());
+			this.item.setAnimation(weapon.getHudAnimation(), Engine.time());
+			setAnimation(weapon.getHudAnimation(), Engine.time());
 			this.price = weapon.getPrice();
 		} else {
 			this.item = Game.build(item.getItemType(), getOrigin());

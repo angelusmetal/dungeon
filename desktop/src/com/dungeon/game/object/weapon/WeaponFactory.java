@@ -3,7 +3,6 @@ package com.dungeon.game.object.weapon;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
@@ -55,30 +54,30 @@ public class WeaponFactory {
 	}
 
 	public Weapon buildSword(float tier) {
-		Animation<Material> slashAnimation = Resources.animations.get("melee_slash");
-		Sprite referenceFrame = slashAnimation.getKeyFrame(0).getDiffuse();
-		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
+//		Animation<Material> slashAnimation = Resources.animations.get("melee_slash");
+//		Sprite referenceFrame = slashAnimation.getKeyFrame(0).getDiffuse();
+//		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
 		Vector2 hitBoundingBox = new Vector2(32, 32);
 		EntityPrototype attack = new EntityPrototype(DungeonResources.prototypes.get("weapon_melee_attack"))
 				.boundingBox(hitBoundingBox)
-				.drawOffset(hitDrawOffset)
+//				.drawOffset(hitDrawOffset)
 				.speed(0)
 				.timeToLive(0.0001f)
 				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS);
 		EntityPrototype hit = DungeonResources.prototypes.get("weapon_melee_hit");
-		EntityPrototype slash = new EntityPrototype()
-				.animation(slashAnimation)
-				.boundingBox(hitBoundingBox)
-				.drawOffset(hitDrawOffset)
-				.timeToLive(slashAnimation.getAnimationDuration());
+//		EntityPrototype slash = new EntityPrototype()
+//				.animation(slashAnimation)
+//				.boundingBox(hitBoundingBox)
+//				.drawOffset(hitDrawOffset)
+//				.timeToLive(slashAnimation.getAnimationDuration());
 		float minDps = tier * 2f;
 		float maxDps = tier * 5f;
 		List<WeaponModule> modules = Arrays.asList(
 				new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).spawnDistance(16).hitCount(100).build(),
-				new AimedParticleModule(slash).spawnDistance(4),
+//				new AimedParticleModule(slash).spawnDistance(4),
 				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
 		);
-		return new ModularWeapon("Sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.50f, 10, 75);
+		return new ModularWeapon("Short sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.50f, 10, 75, Color.valueOf("B1C9C1"));
 	}
 
 	public Weapon buildCatStaff(float tier) {
@@ -90,7 +89,7 @@ public class WeaponFactory {
 				new AttackModule.Builder().prototype(projectile).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
-		return new ModularWeapon("Cat staff", Resources.animations.get("weapon_fire_wand"), modules, 0.35f, 15, 80);
+		return new ModularWeapon("Cat staff", Resources.animations.get("weapon_fire_wand"), modules, 0.35f, 15, 80, Color.WHITE);
 	}
 
 	public Weapon buildVenomStaff(float tier) {
@@ -103,7 +102,7 @@ public class WeaponFactory {
 				new AttackModule.Builder().prototype(projectileInv).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
-		return new ModularWeapon("Venom staff", Resources.animations.get("weapon_poison_wand"), modules, 0.25f, 20, 75);
+		return new ModularWeapon("Venom staff", Resources.animations.get("weapon_poison_wand"), modules, 0.25f, 20, 75, Color.WHITE);
 	}
 
 	public Weapon buildDevastatorStaff(float tier) {
@@ -115,7 +114,7 @@ public class WeaponFactory {
 				new ArcAttackModule(projectile, DamageType.ELEMENTAL, minDps, maxDps, (int) Game.getDifficultyTier() + 5, 10),
 				new SoundModule(Resources.sounds.get("audio/sound/magic_bolt.ogg"))
 		);
-		return new ModularWeapon("Devastator staff", Resources.animations.get("weapon_poison_scepter"), modules, 0.35f, 15, 10000);
+		return new ModularWeapon("Devastator staff", Resources.animations.get("weapon_poison_scepter"), modules, 0.35f, 15, 10000, Color.RED);
 	}
 
 	public Weapon buildFireballStaff(float tier) {
@@ -126,7 +125,7 @@ public class WeaponFactory {
 				new AttackModule.Builder().prototype(projectile).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/firebolt.ogg"))
 		);
-		return new ModularWeapon("Fireball", Resources.animations.get("weapon_fire_staff"), modules, 0.25f, 20, 75);
+		return new ModularWeapon("Fireball", Resources.animations.get("weapon_fire_staff"), modules, 0.25f, 20, 75, Color.WHITE);
 	}
 
 	public Weapon buildRandom(float tier) {
@@ -140,7 +139,7 @@ public class WeaponFactory {
 			protected boolean onEntityCollision(Entity other) {
 				if (!expired && other instanceof PlayerEntity) {
 					PlayerEntity character = (PlayerEntity) other;
-//					weapon.setAnimation(getAnimation());
+//					weapon.setAnimation(getHudAnimation());
 					character.getPlayer().setWeapon(weapon);
 					character.getPlayer().getConsole().log("Picked up " + weapon.getName() + "!", Color.GOLD);
 					expire();
@@ -149,7 +148,7 @@ public class WeaponFactory {
 				return false;
 			}
 		};
-		weaponEntity.setAnimation(weapon.getAnimation(), Engine.time());
+		weaponEntity.setAnimation(weapon.getHudAnimation(), Engine.time());
 		return weaponEntity;
 	}
 

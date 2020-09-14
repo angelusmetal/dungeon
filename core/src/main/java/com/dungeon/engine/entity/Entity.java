@@ -30,8 +30,8 @@ public class Entity implements Drawable, Movable {
 
 	private final int uniqueid = sequencer.getAndIncrement();
 
-	private Animation<Material> animation;
-	private float animationStart;
+	protected Animation<Material> animation;
+	protected float animationStart;
 	private boolean offsetAnimation;
 	/**
 	 * Self impulse the entity will constantly applied. Gets added to the current movement vector at a rate of 1x per

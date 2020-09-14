@@ -140,6 +140,16 @@ public class PlayerCharacterFactory {
 		final Animation<Material> walkUpAnimation = Resources.animations.get(walkUp);
 		final Animation<Material> attackUpAnimation = Resources.animations.get(attackUp);
 
+		final Animation<Material> idleRightWeaponAnimation = Resources.animations.get(idleRight + "_weapon");
+		final Animation<Material> walkRightWeaponAnimation = Resources.animations.get(walkRight + "_weapon");
+		final Animation<Material> attackRightWeaponAnimation = Resources.animations.get(attackRight + "_weapon");
+		final Animation<Material> idleDownWeaponAnimation = Resources.animations.get(idleDown + "_weapon");
+		final Animation<Material> walkDownWeaponAnimation = Resources.animations.get(walkDown + "_weapon");
+		final Animation<Material> attackDownWeaponAnimation = Resources.animations.get(attackDown + "_weapon");
+		final Animation<Material> idleUpWeaponAnimation = Resources.animations.get(idleUp + "_weapon");
+		final Animation<Material> walkUpWeaponAnimation = Resources.animations.get(walkUp + "_weapon");
+		final Animation<Material> attackUpWeaponAnimation = Resources.animations.get(attackUp + "_weapon");
+
 		return new PlayerEntity(prototype, origin) {
 			@Override protected Animation<Material> getAttackAnimation(PovDirection direction) {
 				if (direction == PovDirection.south) {
@@ -172,6 +182,33 @@ public class PlayerCharacterFactory {
 				return getAnimation() == attackDownAnimation ||
 						getAnimation() == attackUpAnimation ||
 						getAnimation() == attackRightAnimation;
+			}
+			@Override protected Animation<Material> getAttackWeaponAnimation(PovDirection direction) {
+				if (direction == PovDirection.south) {
+					return attackDownWeaponAnimation;
+				} else if (direction == PovDirection.north) {
+					return attackUpWeaponAnimation;
+				} else {
+					return attackRightWeaponAnimation;
+				}
+			}
+			@Override protected Animation<Material> getIdleWeaponAnimation(PovDirection direction) {
+				if (direction == PovDirection.south) {
+					return idleDownWeaponAnimation;
+				} else if (direction == PovDirection.north) {
+					return idleUpWeaponAnimation;
+				} else {
+					return idleRightWeaponAnimation;
+				}
+			}
+			@Override protected Animation<Material> getWalkWeaponAnimation(PovDirection direction) {
+				if (direction == PovDirection.south) {
+					return walkDownWeaponAnimation;
+				} else if (direction == PovDirection.north) {
+					return walkUpWeaponAnimation;
+				} else {
+					return walkRightWeaponAnimation;
+				}
 			}
 			@Override protected void onExpire() {
 				super.onExpire();

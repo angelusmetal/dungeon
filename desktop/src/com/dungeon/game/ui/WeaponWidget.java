@@ -16,8 +16,8 @@ public class WeaponWidget extends AbstractWidget implements Widget {
 	}
 
 	@Override public void draw(SpriteBatch batch) {
-		if (player.getWeapon().getAnimation() != null) {
-			TextureRegion weapon = player.getWeapon().getAnimation().getKeyFrame(Engine.time()).getDiffuse();
+		if (player.getWeapon().getHudAnimation() != null) {
+			TextureRegion weapon = player.getWeapon().getHudAnimation().getKeyFrame(Engine.time()).getDiffuse();
 			if (width != weapon.getRegionWidth() || height != weapon.getRegionHeight()) {
 				width = weapon.getRegionWidth();
 				height = weapon.getRegionHeight();
