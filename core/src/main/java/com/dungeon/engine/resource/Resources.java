@@ -31,7 +31,6 @@ public class Resources {
 
 	public static final ResourceRepository<Texture> textures = new ResourceRepository<>(Texture::new, Texture::dispose);
 	public static final ResourceRepository<Animation<Material>> animations = new ResourceRepository<>();
-	public static final ResourceRepository<EntityPrototype> prototypes = new ResourceRepository<>();
 	public static final ResourceRepository<BitmapFont> fonts = new ResourceRepository<>(Resources::computeFont, BitmapFont::dispose);
 	public static final ResourceRepository<ShaderProgram> shaders = new ResourceRepository<>(Resources::computeShader, ShaderProgram::dispose);
 	public static final ResourceRepository<Sound> sounds = new ResourceRepository<>(Resources::computeSound, Sound::dispose);

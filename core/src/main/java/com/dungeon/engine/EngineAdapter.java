@@ -12,12 +12,10 @@ import com.dungeon.engine.resource.Resources;
 public class EngineAdapter extends ApplicationAdapter {
 
 	private final ApplicationListener listener;
-	private final LwjglApplicationConfiguration config;
 	private final String assetsPath;
 
 	private EngineAdapter(Builder builder) {
 		this.listener = builder.listener;
-		this.config = builder.config;
 		this.assetsPath = builder.assetsPath;
 	}
 
