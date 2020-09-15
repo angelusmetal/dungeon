@@ -15,6 +15,7 @@ import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.Resources;
+import com.dungeon.engine.util.SettingsUtil;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
@@ -24,11 +25,6 @@ import java.nio.IntBuffer;
 public class Engine {
 
 	public static Preferences preferences;
-
-	public static void dispose() {
-		Resources.dispose();
-		preferences.flush();
-	}
 
 	private static float stateTime = 0;
 	private static float frameTime;
@@ -55,13 +51,22 @@ public class Engine {
 	private static boolean shadowCastEnforced;
 	/** Force atlas to be rebuilt (better performance, but slow rebuild upon update) */
 	private static boolean atlasForced;
+	public static Settings settings = new Settings();
 
 	public static void loadPreferences() {
 		preferences = Gdx.app.getPreferences("Dungeon");
+		SettingsUtil.readPreferences(preferences, settings);
+		SettingsUtil.bindAsVariables(settings);
 		specular = preferences.getFloat("specular", 1f);
 		normalMapEnabled = preferences.getBoolean("normalMapEnabled", true);
 		shadowCastEnforced = preferences.getBoolean("shadowCastEnforced", false);
 		atlasForced = preferences.getBoolean("atlasForced", true);
+	}
+
+	public static void dispose() {
+		Resources.dispose();
+		SettingsUtil.writePreferences(preferences, settings);
+		preferences.flush();
 	}
 
 	/** Time since the game started */
@@ -158,4 +163,58 @@ public class Engine {
 		Engine.atlasForced = atlasForced;
 		preferences.putBoolean("atlasForced", Engine.atlasForced);
 	}
+
+	public static class Settings {
+		/** Specular level for normal maps */
+		float specular = 1f;
+		/** Enable normal maps */
+		boolean normalMapEnabled = true;
+		/** Enforce shadow casting in every light (more performance intensive) */
+		boolean shadowCastEnforced = false;
+		/** Force atlas to be rebuilt (better performance, but slow rebuild upon update) */
+		boolean atlasForced = true;
+		/** Music volume */
+		float musicVolume = 0.5f;
+
+		public float getSpecular() {
+			return specular;
+		}
+
+		public void setSpecular(float specular) {
+			this.specular = specular;
+		}
+
+		public boolean isNormalMapEnabled() {
+			return normalMapEnabled;
+		}
+
+		public void setNormalMapEnabled(boolean normalMapEnabled) {
+			this.normalMapEnabled = normalMapEnabled;
+		}
+
+		public boolean isShadowCastEnforced() {
+			return shadowCastEnforced;
+		}
+
+		public void setShadowCastEnforced(boolean shadowCastEnforced) {
+			this.shadowCastEnforced = shadowCastEnforced;
+		}
+
+		public boolean isAtlasForced() {
+			return atlasForced;
+		}
+
+		public void setAtlasForced(boolean atlasForced) {
+			this.atlasForced = atlasForced;
+		}
+
+		public float getMusicVolume() {
+			return musicVolume;
+		}
+
+		public void setMusicVolume(float musicVolume) {
+			this.musicVolume = musicVolume;
+		}
+	}
+
 }

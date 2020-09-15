@@ -16,7 +16,6 @@ public class ViewPortRenderer implements Disposable {
 
 	private SpriteBatch batch;
 
-	private final ViewPort viewPort;
 	private final ViewPortBuffer viewportBuffer;
 
 	private final SceneStage scene;
@@ -36,7 +35,6 @@ public class ViewPortRenderer implements Disposable {
 
 	public ViewPortRenderer(ViewPort viewPort, List<Player> players) {
 		this.viewportBuffer = new ViewPortBuffer(viewPort);
-		this.viewPort = viewPort;
 		this.batch = new SpriteBatch();
 
 		scene = new SceneStage(viewPort, viewportBuffer);

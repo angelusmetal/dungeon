@@ -40,12 +40,7 @@ public class EngineAdapter extends ApplicationAdapter {
 			Engine.console.bindExpression("stopMusic", ConsoleExpression.of(Engine.audio::stopMusic));
 
 			Engine.console.bindVar(ConsoleVar.mutableColor("baseLight", Engine::getBaseLight, Engine::setBaseLight));
-			Engine.console.bindVar(ConsoleVar.mutableFloat("specular", Engine::getSpecular, Engine::setSpecular));
-			Engine.console.bindVar(ConsoleVar.mutableBoolean("normalMapEnabled", Engine::isNormalMapEnabled, Engine::setNormalMapEnabled));
-			Engine.console.bindVar(ConsoleVar.mutableBoolean("shadowCastEnforced", Engine::isShadowCastEnforced, Engine::setShadowCastEnforced));
-			Engine.console.bindVar(ConsoleVar.mutableBoolean("atlasForced", Engine::isAtlasForced, Engine::setAtlasForced));
 			Engine.console.bindVar(ConsoleVar.readOnlyFloat("time", Engine::time));
-			Engine.console.bindVar(ConsoleVar.mutableFloat("musicVolume", Engine.audio::getMusicVolume, Engine.audio::setMusicVolume));
 		});
 		initAdapter.addInitTask("Rebuilding atlas... (takes long only the first time)", Resources::initAtlas);
 		initAdapter.addInitTask("Loading resources...", () -> {

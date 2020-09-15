@@ -172,7 +172,7 @@ public class LightRenderer implements Disposable {
 		lightShader.setUniformf("u_lightRange", light.getRange() * viewPort.getScale());
 		if (useNormalMapping) {
 			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, light.getZ());
-			lightShader.setUniformf("u_specular", Engine.getSpecular());
+			lightShader.setUniformf("u_specular", Engine.settings.getSpecular());
 		} else {
 			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y + light.getZ(), 0f);
 		}

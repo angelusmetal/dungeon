@@ -35,7 +35,7 @@ public class ConsoleVar {
 	/// Factory methods...
 
 	public static ConsoleVar mutableBoolean(String name, Supplier<Boolean> getter, Consumer<Boolean> setter) {
-		return new ConsoleVar(name, () -> getter.get().toString(), (value) -> setter.accept(Boolean.parseBoolean(value)));
+		return new ConsoleVar(name, () -> getter.get().toString(), value -> setter.accept(Boolean.parseBoolean(value)));
 	}
 
 	public static ConsoleVar readOnlyBoolean(String name, Supplier<Boolean> getter) {
@@ -43,7 +43,7 @@ public class ConsoleVar {
 	}
 
 	public static ConsoleVar mutableInt(String name, Supplier<Integer> getter, Consumer<Integer> setter) {
-		return new ConsoleVar(name, () -> getter.get().toString(), (value) -> setter.accept(Integer.parseInt(value)));
+		return new ConsoleVar(name, () -> getter.get().toString(), value -> setter.accept(Integer.parseInt(value)));
 	}
 
 	public static ConsoleVar readOnlyInt(String name, Supplier<Integer> getter) {
@@ -51,7 +51,7 @@ public class ConsoleVar {
 	}
 
 	public static ConsoleVar mutableFloat(String name, Supplier<Float> getter, Consumer<Float> setter) {
-		return new ConsoleVar(name, () -> getter.get().toString(), (value) -> setter.accept(Float.parseFloat(value)));
+		return new ConsoleVar(name, () -> getter.get().toString(), value -> setter.accept(Float.parseFloat(value)));
 	}
 
 	public static ConsoleVar readOnlyFloat(String name, Supplier<Float> getter) {
@@ -59,7 +59,7 @@ public class ConsoleVar {
 	}
 
 	public static ConsoleVar mutableLong(String name, Supplier<Long> getter, Consumer<Long> setter) {
-		return new ConsoleVar(name, () -> getter.get().toString(), (value) -> setter.accept(Long.parseLong(value)));
+		return new ConsoleVar(name, () -> getter.get().toString(), value -> setter.accept(Long.parseLong(value)));
 	}
 
 	public static ConsoleVar readOnlyLong(String name, Supplier<Long> getter) {
@@ -67,11 +67,19 @@ public class ConsoleVar {
 	}
 
 	public static ConsoleVar mutableDouble(String name, Supplier<Double> getter, Consumer<Double> setter) {
-		return new ConsoleVar(name, () -> getter.get().toString(), (value) -> setter.accept(Double.parseDouble(value)));
+		return new ConsoleVar(name, () -> getter.get().toString(), value -> setter.accept(Double.parseDouble(value)));
 	}
 
 	public static ConsoleVar readOnlyDouble(String name, Supplier<Double> getter) {
 		return new ConsoleVar(name, () -> getter.get().toString(), readOnlyError(name));
+	}
+
+	public static ConsoleVar mutableString(String name, Supplier<String> getter, Consumer<String> setter) {
+		return new ConsoleVar(name, getter, setter);
+	}
+
+	public static ConsoleVar readOnlyString(String name, Supplier<String> getter) {
+		return new ConsoleVar(name, getter, readOnlyError(name));
 	}
 
 	public static ConsoleVar mutableColor(String name, Supplier<Color> getter, Consumer<Color> setter) {

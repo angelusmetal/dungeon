@@ -120,7 +120,7 @@ public class AudioManager {
 	public void update() {
 		for (Iterator<MusicTrack> iterator = currentTracks.iterator(); iterator.hasNext();) {
 			MusicTrack track = iterator.next();
-			track.music.setVolume(track.fade.get() * musicVolume);
+			track.music.setVolume(track.fade.get() * Engine.settings.getMusicVolume());
 			// Any track that has completely faded out will be stopped, disposed and removed
 			if (track.music.getVolume() == 0f && track.ending) {
 				track.music.stop();
@@ -128,13 +128,5 @@ public class AudioManager {
 				iterator.remove();
 			}
 		}
-	}
-
-	public float getMusicVolume() {
-		return musicVolume;
-	}
-
-	public void setMusicVolume(float musicVolume) {
-		this.musicVolume = musicVolume;
 	}
 }
