@@ -1,24 +1,20 @@
 package com.dungeon.game.object.weapon;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
-import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.combat.Weapon;
-import com.dungeon.game.combat.module.AimedParticleModule;
 import com.dungeon.game.combat.module.ArcAttackModule;
 import com.dungeon.game.combat.module.AttackModule;
 import com.dungeon.game.combat.module.ModularWeapon;
-import com.dungeon.game.combat.module.ModularWeaponGenerator;
+import com.dungeon.game.combat.module.generator.ModularWeaponGenerator;
 import com.dungeon.game.combat.module.SoundModule;
 import com.dungeon.game.combat.module.WeaponModule;
 import com.dungeon.game.entity.DungeonEntity;

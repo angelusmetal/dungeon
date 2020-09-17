@@ -1,5 +1,7 @@
 package com.dungeon.engine.util;
 
+import sun.misc.SharedSecrets;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -46,4 +48,10 @@ public class Rand {
     public static <T> T pick(Collection<T> collection) {
         return collection.stream().skip(random.nextInt(collection.size())).findFirst().get();
     }
+
+    public static <T extends Enum<T>> T pick(Class<T> enumClass) {
+        return Rand.pick(SharedSecrets.getJavaLangAccess()
+                .getEnumConstantsShared(enumClass));
+    }
+
 }

@@ -3,7 +3,7 @@ package com.dungeon.game.developer;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.console.ConsoleVar;
 import com.dungeon.game.Game;
-import com.dungeon.game.combat.module.ModularWeaponGenerator;
+import com.dungeon.game.combat.module.generator.ModularWeaponGenerator;
 import com.dungeon.game.object.weapon.WeaponFactory;
 import com.dungeon.game.player.Players;
 import com.dungeon.game.resource.DungeonResources;
