@@ -46,7 +46,7 @@ public class WeaponFactory {
 	}
 
 	public Entity random(Vector2 origin, EntityPrototype prototype) {
-		return buildWeaponEntity(origin, prototype, () -> buildRandom(Game.getDifficultyTier()));
+		return buildWeaponEntity(origin, prototype, () -> buildRandom(Game.getEnvironment().getTier()));
 	}
 
 	public Weapon buildSword(float tier) {
@@ -125,7 +125,7 @@ public class WeaponFactory {
 	}
 
 	public Weapon buildRandom(float tier) {
-		return generator.generate(Rand.between((int) (tier * 10), (int) (tier * 13f)));
+		return generator.generate((int)tier);
 	}
 
 	public Entity buildWeaponEntity(Vector2 origin, EntityPrototype prototype, Supplier<Weapon> weaponSupplier) {

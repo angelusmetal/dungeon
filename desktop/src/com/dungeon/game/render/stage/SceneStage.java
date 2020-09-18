@@ -449,14 +449,14 @@ public class SceneStage implements Renderer {
 		float height = width / 3f;
 
 		shadow.setColor(shadowColor);
-		shadow.setBounds(blocker.getOrigin().x - width / 2f, blocker.getBody().getBottomLeft().y - height / 2f + blocker.getBody().getBoundingBox().y / 6f + VERTICAL_OFFSET, width, height);
+		shadow.setBounds(blocker.getOrigin().x - width / 2f, blocker.getBody().getBottomLeft().y - height / 2f + blocker.getBody().getBoundingBox().y / 6f /*+ VERTICAL_OFFSET*/, width, height);
 		shadow.draw(batch);
 	}
 
 	private Light2 mapLight(Entity emitter, Light light) {
 		Color color = light.color.cpy();
 		// TODO get rid of light.dim
-		Vector2 origin = emitter.getOrigin().cpy().add(light.offset.x + light.displacement.x, 0f);
+		Vector2 origin = emitter.getBody().getCenter().cpy().add(light.offset.x + light.displacement.x, 0f);
 		float z = emitter.getZPos() + light.offset.y + light.displacement.y;
 		float range = light.diameter / 2f;
 		// This helps build a believable height effect

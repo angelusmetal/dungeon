@@ -32,100 +32,31 @@ public class SwordWeaponGenerator {
 		IRON, BRONZE, STEEL
 	}
 
-	private final List<MeleeWeaponTrait> meleeTraits = Arrays.asList(
-			// Slight base damage
-			new MeleeWeaponTrait(2, 1.2f, null, (weapon, melee) -> {
-				melee.baseDamage += 2;
-			}),
-			// Moderate base damage
-			new MeleeWeaponTrait(10, 1.2f, null, (weapon, melee) -> {
-				melee.baseDamage += 5;
-			}),
-			// Large base damage
-			new MeleeWeaponTrait(25, 1.2f, null, (weapon, melee) -> {
-				melee.baseDamage += 10;
-			}),
-			// Fire type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.BURN;
-				melee.statusChance = 0.2f;
-			}),
-			// Fire type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.BURN;
-				melee.statusChance = 0.2f;
-			}),
-			// Poison type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.POISON;
-				melee.statusChance = 0.2f;
-			}),
-			// Chill type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.CHILL;
-				melee.statusChance = 0.2f;
-			}),
-			// Freeze type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.FROZEN;
-				melee.statusChance = 0.2f;
-			}),
-			// Lightning type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.LIGHTNING;
-				melee.statusChance = 0.2f;
-			}),
-			// Life steal type
-			new MeleeWeaponTrait(15, 1.2f, "damageType", (weapon, melee) -> {
-				melee.damageType = DamageType.ELEMENTAL;
-				melee.statusEffect = StatusEffect.LIFE_STEAL;
-				melee.statusChance = 0.2f;
-			})
-	);
+	/** Elemental weapons will only happen above a certain score */
+	private final int ELEMENTAL_MIN_SCORE = 8;
+	/** Elemental weapons will only happen a fraction of times */
+	private final float ELEMENTAL_CHANCE = 0.2f;
+	/** Elemental damage has lower base damage (but applies an effect) */
+	private final float ELEMENTAL_DAMAGE_RATIO = 0.75f;
 
 	public Weapon generate(int score) {
 		WeaponSpecs weapon = new WeaponSpecs();
 		weapon.cooldown = 0.5f;
 		weapon.energyDrain = 10f;
 		MeleeSpecs melee = new MeleeSpecs();
-		int remaining = score;
-		Set<String> unique = new HashSet<>();
-		// Copy base traits
-		LinkedList<MeleeWeaponTrait> traits = new LinkedList<>(meleeTraits);
 
-		// Purchase as many traits as possible with the remaining score
-		while (remaining > 0 && !traits.isEmpty()) {
-			MeleeWeaponTrait trait = traits.remove(Rand.nextInt(traits.size()));
-			// Cannot afford
-			if (trait.cost > remaining) {
-				continue;
-			}
-			// Has a unique label that has already been picked up
-			if (trait.uniqueLabel != null && unique.contains(trait.uniqueLabel)) {
-				continue;
-			}
+		// Magic equation to get a nice damage ramp up
+		melee.baseDamage = score * score * 0.8f + 3;
 
-			trait.modifier.accept(weapon, melee);
-			remaining -= trait.cost;
-			weapon.goldCost *= trait.goldCost;
-
-			if (trait.uniqueLabel != null) {
-				// Track unique label
-				unique.add(trait.uniqueLabel);
-			} else {
-				// If it has no unique label, it can be reused, so add it back
-				traits.add(trait);
-			}
-		}
-
-		// Finally, build a weapon based off the traits
+		// Build a weapon based off the traits
 		List<WeaponModule> modules = new ArrayList<>();
+
+		if (score >= ELEMENTAL_MIN_SCORE && Rand.chance(ELEMENTAL_CHANCE)) {
+			// Make weapon elemental
+			melee.damageType = DamageType.ELEMENTAL;
+			melee.statusEffect = Rand.pick(StatusEffect.class);
+			melee.baseDamage *= ELEMENTAL_DAMAGE_RATIO;
+		}
 
 		// Add attack (slash) sound
 		modules.add(new SoundModule(Resources.sounds.get("audio/sound/slash.ogg")));
@@ -155,16 +86,23 @@ public class SwordWeaponGenerator {
 				name.append("Iron ");
 				skin.append("iron_");
 				color = Color.valueOf("B1C9C1");
+				melee.baseDamage *= 1.1f;
+				weapon.energyDrain *= 1.1f;
+				weapon.goldCost = 50f;
 				break;
 			case BRONZE:
 				name.append("Bronze ");
 				skin.append("bronze_");
 				color = Color.valueOf("CD8032");
+				weapon.goldCost = 60f;
 				break;
 			default://case STEEL:
 				name.append("Steel ");
 				skin.append("steel_");
 				color = Color.valueOf("6BAFBD");
+				melee.baseDamage *= 0.9f;
+				weapon.energyDrain *= 0.9f;
+				weapon.goldCost = 70f;
 				break;
 		}
 		// TODO Make weapon types based on something more interesting (like how scatter damage compares to base damage, or range/speed)
@@ -173,11 +111,12 @@ public class SwordWeaponGenerator {
 				skin.append("dagger");
 				name.append("Dagger");
 				melee.hitCount = 1;
-				melee.baseDamage = 0.8f;
+				melee.baseDamage *= 0.8f;
 				melee.spreadDamage = 0;
 				melee.range = 20;
 				weapon.cooldown *= 0.8f;
 				weapon.energyDrain *= 0.8f;
+				weapon.goldCost = 50f;
 				break;
 			case SHORT_SWORD:
 				skin.append("shortsword");
@@ -214,22 +153,24 @@ public class SwordWeaponGenerator {
 				name.append("Saw Blade");
 				melee.hitCount = 1000;
 				melee.spreadDamage = melee.baseDamage * 0.7f;
-				melee.baseDamage *= 0.6f;
+//				melee.baseDamage *= 0.6f;
 				melee.range = 40;
-				weapon.cooldown *= 1.4f;
+				weapon.cooldown *= 1.3f;
 				weapon.energyDrain *= 1.9f;
 				break;
 			case BROAD_SWORD:
 				skin.append("broadsword");
 				name.append("Broadsword");
 				melee.hitCount = 1000;
-				melee.spreadDamage = melee.baseDamage * 0.2f;
+				melee.spreadDamage = melee.baseDamage * 0.4f;
 				melee.baseDamage *= 0.9f;
 				melee.range = 36;
 				weapon.cooldown *= 1.3f;
 				weapon.energyDrain *= 1.5f;
 				break;
 		}
+
+		weapon.goldCost = (float) Math.pow(score, 1.5d) * 1.2f * weapon.goldCost;
 
 		// TODO Use weapon's actual range in the hit box
 		Vector2 hitBoundingBox = new Vector2(melee.range, melee.range);
