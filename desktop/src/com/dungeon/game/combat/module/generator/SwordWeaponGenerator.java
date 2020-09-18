@@ -2,9 +2,11 @@ package com.dungeon.game.combat.module.generator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.combat.StatusEffect;
 import com.dungeon.game.combat.Weapon;
@@ -12,15 +14,15 @@ import com.dungeon.game.combat.module.AttackModule;
 import com.dungeon.game.combat.module.ModularWeapon;
 import com.dungeon.game.combat.module.SoundModule;
 import com.dungeon.game.combat.module.WeaponModule;
+import com.dungeon.game.entity.DungeonEntity;
+import com.dungeon.game.entity.DungeonTraits;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.resource.DungeonResources;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class SwordWeaponGenerator {
 
@@ -63,8 +65,16 @@ public class SwordWeaponGenerator {
 
 		// Create projectile prototype
 		StringBuilder name = new StringBuilder();
+		Consumer<DungeonEntity> statusAction = e -> {};
 		if (melee.statusEffect == StatusEffect.BURN) {
 			name.append("Molten ");
+			Attack statusAttack = new Attack(null, 10, DamageType.ELEMENTAL, 0);
+			EntityPrototype flame = DungeonResources.prototypes.get("particle_flame");
+			Function<Entity, Entity> particleProvider = e -> new DungeonEntity(flame, e.getOrigin());
+			melee.statusChance = 0.2f;
+			statusAction = entity -> {
+				entity.addTrait(DungeonTraits.damageEffect(statusAttack, 1f, 5f, 0.2f, particleProvider).get(entity));
+			};
 		} else if (melee.statusEffect == StatusEffect.LIGHTNING) {
 			name.append("Charged ");
 		} else if (melee.statusEffect == StatusEffect.FROZEN) {
@@ -187,7 +197,18 @@ public class SwordWeaponGenerator {
 //				.boundingBox(hitBoundingBox)
 //				.drawOffset(hitDrawOffset)
 //				.timeToLive(slashAnimation.getAnimationDuration());
-		modules.add(new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(melee.damageType).minDamage(melee.baseDamage).maxDamage(melee.baseDamage + melee.spreadDamage).spawnDistance(melee.range / 2f).hitCount(melee.hitCount).build());
+		AttackModule.Builder builder = new AttackModule.Builder()
+				.prototype(attack)
+				.prototypeHit(hit)
+				.damageType(melee.damageType)
+				.minDamage(melee.baseDamage)
+				.maxDamage(melee.baseDamage + melee.spreadDamage)
+				.spawnDistance(melee.range / 2f)
+				.hitCount(melee.hitCount);
+		if (melee.statusEffect != null) {
+			builder.status(melee.statusChance, statusAction);
+		}
+		modules.add(builder.build());
 		return new ModularWeapon(name.toString(), Resources.animations.get(skin.toString()), modules, weapon.cooldown, weapon.energyDrain, (int) weapon.goldCost, color);
 	}
 }

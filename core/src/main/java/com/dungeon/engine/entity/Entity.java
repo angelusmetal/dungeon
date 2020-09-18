@@ -78,6 +78,7 @@ public class Entity implements Drawable, Movable {
 	private float rotation = 0;
 
 	/** Aspects */
+	protected List<Trait<Entity>> newTraits = new ArrayList<>(); // traits to be added upon next frame
 	protected List<Trait<Entity>> traits;
 	protected List<Trait<Entity>> onHitTraits;
 	protected List<Trait<Entity>> onExpireTraits;
@@ -189,7 +190,7 @@ public class Entity implements Drawable, Movable {
 		this.zIndex = other.zIndex;
 		this.selfIlluminated = other.selfIlluminated;
 		this.expirationTime = other.expirationTime;
-		this.traits = other.traits;
+		this.traits = new ArrayList<>(other.traits);
 		this.onHitTraits = new ArrayList<>();
 		this.onExpireTraits = new ArrayList<>();
 		this.onGroundHitTraits = new ArrayList<>();
@@ -364,6 +365,10 @@ public class Entity implements Drawable, Movable {
 		return traits;
 	}
 
+	public void addTrait(Trait<Entity> trait) {
+		newTraits.add(trait);
+	}
+
 	public List<Trait<Entity>> getOnHitTraits() {
 		return onHitTraits;
 	}
@@ -519,6 +524,10 @@ public class Entity implements Drawable, Movable {
 
 	public final void doThink() {
 		think();
+
+		traits.addAll(newTraits);
+		newTraits.clear();
+
 		// Apply traits
 		traits.forEach(m -> {
 			m.accept(this);

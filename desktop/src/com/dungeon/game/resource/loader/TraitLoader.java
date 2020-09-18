@@ -72,13 +72,13 @@ public class TraitLoader {
 	private static <T extends Entity> TraitSupplier<T> shake(Config config) {
 		float displacement = ConfigUtil.getFloat(config, "displacement").orElse(1f);
 		float duration = ConfigUtil.requireFloat(config, "duration");
-		return e -> entity -> e.getTraits().add(Traits.shake(displacement, duration).get(e));
+		return e -> entity -> e.addTrait(Traits.shake(displacement, duration).get(e));
 	}
 
 	private static <T extends Entity> TraitSupplier<T> shakeHorizontal(Config config) {
 		float displacement = ConfigUtil.getFloat(config, "displacement").orElse(1f);
 		float duration = ConfigUtil.requireFloat(config, "duration");
-		return e -> entity -> e.getTraits().add(Traits.shakeHorizontal(displacement, duration).get(e));
+		return e -> entity -> e.addTrait(Traits.shakeHorizontal(displacement, duration).get(e));
 	}
 
 	private static <T extends Entity> TraitSupplier<T> shout(Config config) {
@@ -110,7 +110,7 @@ public class TraitLoader {
 				Entity loot = Game.build(lootList.get(0), origin);
 				loot.setZPos(15);
 				// TODO Is this really ok?
-				loot.getTraits().add(Traits.fadeIn(1f, 1f).get(loot));
+				loot.addTrait(Traits.fadeIn(1f, 1f).get(loot));
 				loot.impulse(Rand.between(-5, 5), Rand.between(-10, -5));
 				Engine.entities.add(loot);
 			} else {

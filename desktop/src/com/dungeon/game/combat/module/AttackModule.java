@@ -11,6 +11,7 @@ import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.Projectile;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -24,6 +25,8 @@ public class AttackModule implements WeaponModule {
 	final float maxDamage;
 	final Function<Entity, Attack> attackFunction;
 	final float spawnDistance;
+	final float statusChance;
+	final Consumer<DungeonEntity> statusAction;
 	int hitCount;
 
 	private AttackModule(Builder builder) {
@@ -34,7 +37,9 @@ public class AttackModule implements WeaponModule {
 		maxDamage = builder.maxDamage;
 		attackFunction = emitter -> new Attack(emitter, (int) (Rand.between(builder.minDamage, builder.maxDamage) + 0.5f), builder.damageType, builder.knockback);
 		spawnDistance = builder.spawnDistance;
-		this.hitCount = builder.hitCount;
+		hitCount = builder.hitCount;
+		statusChance = builder.statusChance;
+		statusAction = builder.statusAction;
 	}
 
 	@Override
@@ -52,6 +57,9 @@ public class AttackModule implements WeaponModule {
 								Util.clamp((entity.getOrigin().x + origin.x) / 2f, entity.getBody().getBottomLeft().x, entity.getBody().getTopRight().x),
 								Util.clamp((entity.getOrigin().y + origin.y) / 2f, entity.getBody().getBottomLeft().y, entity.getBody().getTopRight().y));
 						Engine.entities.add(new Entity(prototypeHit, hitOrigin));
+					}
+					if (Rand.chance(statusChance)) {
+						statusAction.accept(entity);
 					}
 				}
 				return hit;
@@ -72,6 +80,8 @@ public class AttackModule implements WeaponModule {
 		private float spawnDistance;
 		private float knockback = 0;
 		private int hitCount = 1;
+		private float statusChance;
+		private Consumer<DungeonEntity> statusAction;
 
 		public Builder() {
 		}
@@ -113,6 +123,12 @@ public class AttackModule implements WeaponModule {
 
 		public Builder hitCount(int hitCount) {
 			this.hitCount = hitCount;
+			return this;
+		}
+
+		public Builder status(float chance, Consumer<DungeonEntity> action) {
+			this.statusChance = chance;
+			this.statusAction = action;
 			return this;
 		}
 
