@@ -520,7 +520,13 @@ public class Entity implements Drawable, Movable {
 	public final void doThink() {
 		think();
 		// Apply traits
-		traits.forEach(m -> m.accept(this));
+		traits.forEach(m -> {
+			m.accept(this);
+			if (m.isExpired()) {
+				m.onExpire();
+			}
+		});
+		traits.removeIf(Trait::isExpired);
 		// Update light
 		if (light != null) {
 			light.update();

@@ -34,35 +34,51 @@ public class TraitLoader {
 
 	public static <T extends Entity> TraitSupplier<T> load(Config config) {
 		String type = ConfigUtil.requireString(config, "do");
-		if (type.equals("expire")) {
+		if (type.equals("deathClone")){
+			return deathClone(config);
+		} else if (type.equals("disableSignals")) {
+			return e -> entity -> entity.setAcceptsSignals(false);
+		} else if (type.equals("expire")) {
 			return e -> Entity::expire;
-		} else if (type.equals("stop")) {
-			return e -> Entity::stop;
-		} else if (type.equals("rotate")) {
-			return rotate(config);
-		} else if (type.equals("rotateRandom")) {
-			return rotateRandom(config);
+		} else if (type.equals("fadeIn")) {
+			return fadeIn(config);
 		} else if (type.equals("generate")) {
 			return generate(config);
 		} else if (type.equals("generateLoot")) {
 			return generateLoot(config);
-		} else if (type.equals("xInvert")){
-			return xInvert(config);
-		} else if (type.equals("deathClone")){
-			return deathClone(config);
-		} else if (type.equals("fadeIn")) {
-			return fadeIn(config);
-		} else if (type.equals("sound")) {
-			return sound(config);
+		} else if (type.equals("rotate")) {
+			return rotate(config);
+		} else if (type.equals("rotateRandom")) {
+			return rotateRandom(config);
+		} else if (type.equals("shake")) {
+			return shake(config);
+		} else if (type.equals("shakeHorizontal")) {
+			return shakeHorizontal(config);
 		} else if (type.equals("setAnimation")) {
 			return setAnimation(config);
-		} else if (type.equals("disableSignals")) {
-			return e -> entity -> entity.setAcceptsSignals(false);
 		} else if (type.equals("shout")) {
 			return shout(config);
+		} else if (type.equals("sound")) {
+			return sound(config);
+		} else if (type.equals("stop")) {
+			return e -> Entity::stop;
+		} else if (type.equals("xInvert")){
+			return xInvert(config);
 		} else {
 			throw new LoadingException("Unknown type " + type);
 		}
+	}
+
+	private static <T extends Entity> TraitSupplier<T> shake(Config config) {
+		float displacement = ConfigUtil.getFloat(config, "displacement").orElse(1f);
+		float duration = ConfigUtil.requireFloat(config, "duration");
+		return e -> entity -> e.getTraits().add(Traits.shake(displacement, duration).get(e));
+	}
+
+	private static <T extends Entity> TraitSupplier<T> shakeHorizontal(Config config) {
+		float displacement = ConfigUtil.getFloat(config, "displacement").orElse(1f);
+		float duration = ConfigUtil.requireFloat(config, "duration");
+		return e -> entity -> e.getTraits().add(Traits.shakeHorizontal(displacement, duration).get(e));
 	}
 
 	private static <T extends Entity> TraitSupplier<T> shout(Config config) {
@@ -242,6 +258,5 @@ public class TraitLoader {
 		float zspeedAttn = ConfigUtil.getFloat(config, "zspeedAttn").orElse(0f);
 		return Traits.playSound(sounds, volume, pitchVariance, zspeedAttn, chance);
 	}
-
 
 }
