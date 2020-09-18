@@ -3,6 +3,7 @@ package com.dungeon.game.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -85,6 +86,9 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		frame.setSize((int) (frame.getWidth() * healthFill), frame.getHeight());
 		frame.setPosition(x + 43, y + 22);
 		frame.draw(batch);
+		String healthText = "" + (int) player.getAvatar().getHealth() + " / " + player.getAvatar().getMaxHealth();
+		GlyphLayout layout = new GlyphLayout(font, healthText);
+		font.draw(batch, layout, x + 83 - layout.width / 2, y + 22 + font.getLineHeight());
 
 		// Display energy
 		float energyFill = player.getAvatar().getEnergy() / player.getAvatar().getMaxEnergy();

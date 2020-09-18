@@ -1,6 +1,5 @@
 package com.dungeon.game.render.stage;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
