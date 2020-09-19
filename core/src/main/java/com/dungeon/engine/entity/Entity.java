@@ -30,6 +30,7 @@ public class Entity implements Drawable, Movable {
 
 	private final int uniqueid = sequencer.getAndIncrement();
 
+	protected EntityPrototype prototype;
 	protected Animation<Material> animation;
 	protected float animationStart;
 	private boolean offsetAnimation;
@@ -117,6 +118,7 @@ public class Entity implements Drawable, Movable {
 	 * @param origin Origin to build entity at
 	 */
 	public Entity(EntityPrototype prototype, Vector2 origin) {
+		this.prototype = prototype;
 		this.offsetAnimation = prototype.offsetAnimation;
 		this.startAnimation(prototype.animation.get());
 		if (prototype.boundingBoxOffset.len2() == 0) {
@@ -171,6 +173,7 @@ public class Entity implements Drawable, Movable {
 	 * @param other Original entity to copy from
 	 */
 	public Entity (Entity other) {
+		this.prototype = other.prototype;
 		this.offsetAnimation = other.offsetAnimation;
 		this.startAnimation(other.animation);
 		this.body = Body.copyOf(other.body);

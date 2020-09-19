@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
+import com.dungeon.engine.entity.Traits;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.combat.Attack;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.dungeon.engine.util.Util.clamp;
+
 public class SwordWeaponGenerator {
 
 	private enum SwordType {
@@ -34,6 +37,10 @@ public class SwordWeaponGenerator {
 		IRON, BRONZE, STEEL
 	}
 
+	private final Color VENOM_COLOR = Color.valueOf("51FF00");
+	private final Color CHILL_COLOR = Color.valueOf("00A2FF");
+	private final Color FREEZE_COLOR = Color.valueOf("0062FF");
+
 	/** Elemental weapons will only happen above a certain score */
 	private final int ELEMENTAL_MIN_SCORE = 8;
 	/** Elemental weapons will only happen a fraction of times */
@@ -41,149 +48,67 @@ public class SwordWeaponGenerator {
 	/** Elemental damage has lower base damage (but applies an effect) */
 	private final float ELEMENTAL_DAMAGE_RATIO = 0.75f;
 
-	public Weapon generate(int score) {
-		WeaponSpecs weapon = new WeaponSpecs();
-		weapon.cooldown = 0.5f;
-		weapon.energyDrain = 10f;
-		MeleeSpecs melee = new MeleeSpecs();
+	private static class SwordSpec {
+		float goldCost = 50f;
+		float cooldown = 0.5f;
+		float energyDrain = 10f;
+		float statusChance;
+		StatusEffect statusEffect;
+		float statusDamage;
+		float statusDuration;
+		/** Minimum damage */
+		float baseDamage = 1;
+		/** How much the damage can spread above base damage */
+		float spreadDamage = 0;
+		/** Damage type */
+		DamageType damageType;
+		/** How many things a single attack can hit */
+		int hitCount = 1;
+		/** how many units (pixel) does this weapon hit */
+		int range;
+		Consumer<DungeonEntity> statusAction = e -> {};
+		Color color;
+		SwordMaterial material;
+		SwordType type;
+	}
+
+	public Weapon generate(int level) {
+		SwordSpec weapon = new SwordSpec();
+
+		// Quality is a random number between 0 (worst) and 1 (optimal)
+		float quality = Rand.between(0f, 1f);
+		// But level will increase quality (the higher the level, the closer to 1, but with diminishing returns as level increases)
+		quality = clamp(quality + 1f - (float) (Math.pow(level, -0.5)));
 
 		// Magic equation to get a nice damage ramp up
-		melee.baseDamage = score * score * 0.8f + 3;
+		weapon.baseDamage = level * level * 0.8f + 3;
 
 		// Build a weapon based off the traits
 		List<WeaponModule> modules = new ArrayList<>();
-
-		if (score >= ELEMENTAL_MIN_SCORE && Rand.chance(ELEMENTAL_CHANCE)) {
-			// Make weapon elemental
-			melee.damageType = DamageType.ELEMENTAL;
-			melee.statusEffect = Rand.pick(StatusEffect.class);
-			melee.baseDamage *= ELEMENTAL_DAMAGE_RATIO;
-		}
+		StringBuilder name = new StringBuilder();
+		StringBuilder skin = new StringBuilder("weapon_");
 
 		// Add attack (slash) sound
 		modules.add(new SoundModule(Resources.sounds.get("audio/sound/slash.ogg")));
 
-		// Create projectile prototype
-		StringBuilder name = new StringBuilder();
-		Consumer<DungeonEntity> statusAction = e -> {};
-		if (melee.statusEffect == StatusEffect.BURN) {
-			name.append("Molten ");
-			Attack statusAttack = new Attack(null, 10, DamageType.ELEMENTAL, 0);
-			EntityPrototype flame = DungeonResources.prototypes.get("particle_flame");
-			Function<Entity, Entity> particleProvider = e -> new DungeonEntity(flame, e.getOrigin());
-			melee.statusChance = 0.2f;
-			statusAction = entity -> {
-				entity.addTrait(DungeonTraits.damageEffect(statusAttack, 1f, 5f, 0.2f, particleProvider).get(entity));
-			};
-		} else if (melee.statusEffect == StatusEffect.LIGHTNING) {
-			name.append("Charged ");
-		} else if (melee.statusEffect == StatusEffect.FROZEN) {
-			name.append("Glacial ");
-		} else if (melee.statusEffect == StatusEffect.CHILL) {
-			name.append("Chilling ");
-		} else if (melee.statusEffect == StatusEffect.POISON) {
-			name.append("Venomous ");
-		} else if (melee.statusEffect == StatusEffect.LIFE_STEAL) {
-			name.append("Vampiric ");
-//		} else {
-//			name.append("Earthen ");
+		boolean isElemental = level >= ELEMENTAL_MIN_SCORE && Rand.chance(ELEMENTAL_CHANCE);
+//		isElemental = true;
+		if (isElemental) {
+			setElemental(weapon, quality, name);
 		}
 
-		StringBuilder skin = new StringBuilder("weapon_");
-		Color color;
-		switch(Rand.pick(SwordMaterial.class)) {
-			case IRON:
-				name.append("Iron ");
-				skin.append("iron_");
-				color = Color.valueOf("B1C9C1");
-				melee.baseDamage *= 1.1f;
-				weapon.energyDrain *= 1.1f;
-				weapon.goldCost = 50f;
-				break;
-			case BRONZE:
-				name.append("Bronze ");
-				skin.append("bronze_");
-				color = Color.valueOf("CD8032");
-				weapon.goldCost = 60f;
-				break;
-			default://case STEEL:
-				name.append("Steel ");
-				skin.append("steel_");
-				color = Color.valueOf("6BAFBD");
-				melee.baseDamage *= 0.9f;
-				weapon.energyDrain *= 0.9f;
-				weapon.goldCost = 70f;
-				break;
-		}
-		// TODO Make weapon types based on something more interesting (like how scatter damage compares to base damage, or range/speed)
-		switch(Rand.pick(SwordType.class)) {
-			case DAGGER:
-				skin.append("dagger");
-				name.append("Dagger");
-				melee.hitCount = 1;
-				melee.baseDamage *= 0.8f;
-				melee.spreadDamage = 0;
-				melee.range = 20;
-				weapon.cooldown *= 0.8f;
-				weapon.energyDrain *= 0.8f;
-				weapon.goldCost = 50f;
-				break;
-			case SHORT_SWORD:
-				skin.append("shortsword");
-				name.append("Short Sword");
-				melee.hitCount = 1;
-				melee.spreadDamage = melee.baseDamage * 0.2f;
-				melee.baseDamage *= 0.9f;
-				melee.range = 25;
-				weapon.cooldown *= 1.1f;
-				weapon.energyDrain *= 1.1f;
-				break;
-			case RAPIER:
-				skin.append("rapier");
-				name.append("Rapier");
-				melee.hitCount = 1;
-				melee.spreadDamage = melee.baseDamage * 0.1f;
-//				melee.baseDamage *= 0.9f;
-				melee.range = 27;
-//				weapon.cooldown *= 1.0f;
-//				weapon.energyDrain *= 1.0f;
-				break;
-			case LONG_SWORD:
-				skin.append("longsword");
-				name.append("Long Sword");
-				melee.hitCount = 1000;
-				melee.spreadDamage = melee.baseDamage * 0.3f;
-				melee.baseDamage *= 0.8f;
-				melee.range = 32;
-				weapon.cooldown *= 1.2f;
-				weapon.energyDrain *= 1.2f;
-				break;
-			case SAW_BLADE:
-				skin.append("sawblade");
-				name.append("Saw Blade");
-				melee.hitCount = 1000;
-				melee.spreadDamage = melee.baseDamage * 0.7f;
-//				melee.baseDamage *= 0.6f;
-				melee.range = 40;
-				weapon.cooldown *= 1.3f;
-				weapon.energyDrain *= 1.9f;
-				break;
-			case BROAD_SWORD:
-				skin.append("broadsword");
-				name.append("Broadsword");
-				melee.hitCount = 1000;
-				melee.spreadDamage = melee.baseDamage * 0.4f;
-				melee.baseDamage *= 0.9f;
-				melee.range = 36;
-				weapon.cooldown *= 1.3f;
-				weapon.energyDrain *= 1.5f;
-				break;
-		}
+		// Pick a random material and update weapon
+		weapon.material = Rand.pick(SwordMaterial.class);
+		setMaterial(weapon, name, skin);
 
-		weapon.goldCost = (float) Math.pow(score, 1.5d) * 1.2f * weapon.goldCost;
+		// Pick a random type and update weapon
+		weapon.type = Rand.pick(SwordType.class);
+		setType(weapon, name, skin);
+
+		weapon.goldCost = (float) Math.pow(level, 1.5d) * 1.2f * weapon.goldCost;
 
 		// TODO Use weapon's actual range in the hit box
-		Vector2 hitBoundingBox = new Vector2(melee.range, melee.range);
+		Vector2 hitBoundingBox = new Vector2(weapon.range, weapon.range);
 		EntityPrototype attack = new EntityPrototype(DungeonResources.prototypes.get("weapon_melee_attack"))
 				.boundingBox(hitBoundingBox)
 				.speed(0)
@@ -200,15 +125,160 @@ public class SwordWeaponGenerator {
 		AttackModule.Builder builder = new AttackModule.Builder()
 				.prototype(attack)
 				.prototypeHit(hit)
-				.damageType(melee.damageType)
-				.minDamage(melee.baseDamage)
-				.maxDamage(melee.baseDamage + melee.spreadDamage)
-				.spawnDistance(melee.range / 2f)
-				.hitCount(melee.hitCount);
-		if (melee.statusEffect != null) {
-			builder.status(melee.statusChance, statusAction);
+				.damageType(weapon.damageType)
+				.minDamage(weapon.baseDamage)
+				.maxDamage(weapon.baseDamage + weapon.spreadDamage)
+				.spawnDistance(weapon.range / 2f)
+				.hitCount(weapon.hitCount);
+		if (weapon.statusEffect != null) {
+			builder.status(weapon.statusChance, weapon.statusAction);
 		}
 		modules.add(builder.build());
-		return new ModularWeapon(name.toString(), Resources.animations.get(skin.toString()), modules, weapon.cooldown, weapon.energyDrain, (int) weapon.goldCost, color);
+		return new ModularWeapon(name.toString(), Resources.animations.get(skin.toString()), modules, weapon.cooldown, weapon.energyDrain, (int) weapon.goldCost, weapon.color);
+	}
+
+	private void setType(SwordSpec weapon, StringBuilder name, StringBuilder skin) {
+		switch(weapon.type) {
+			case DAGGER:
+				skin.append("dagger");
+				name.append("Dagger");
+				weapon.hitCount = 1;
+				weapon.baseDamage *= 0.8f;
+				weapon.spreadDamage = 0;
+				weapon.range = 20;
+				weapon.cooldown *= 0.8f;
+				weapon.energyDrain *= 0.8f;
+				weapon.goldCost = 50f;
+				break;
+			case SHORT_SWORD:
+				skin.append("shortsword");
+				name.append("Short Sword");
+				weapon.hitCount = 1;
+				weapon.spreadDamage = weapon.baseDamage * 0.2f;
+				weapon.baseDamage *= 0.9f;
+				weapon.range = 25;
+				weapon.cooldown *= 1.1f;
+				weapon.energyDrain *= 1.1f;
+				break;
+			case RAPIER:
+				skin.append("rapier");
+				name.append("Rapier");
+				weapon.hitCount = 1;
+				weapon.spreadDamage = weapon.baseDamage * 0.1f;
+//				weapon.baseDamage *= 0.9f;
+				weapon.range = 27;
+//				weapon.cooldown *= 1.0f;
+//				weapon.energyDrain *= 1.0f;
+				break;
+			case LONG_SWORD:
+				skin.append("longsword");
+				name.append("Long Sword");
+				weapon.hitCount = 1000;
+				weapon.spreadDamage = weapon.baseDamage * 0.3f;
+				weapon.baseDamage *= 0.8f;
+				weapon.range = 32;
+				weapon.cooldown *= 1.2f;
+				weapon.energyDrain *= 1.2f;
+				break;
+			case SAW_BLADE:
+				skin.append("sawblade");
+				name.append("Saw Blade");
+				weapon.hitCount = 1000;
+				weapon.spreadDamage = weapon.baseDamage * 0.7f;
+//				weapon.baseDamage *= 0.6f;
+				weapon.range = 40;
+				weapon.cooldown *= 1.3f;
+				weapon.energyDrain *= 1.9f;
+				break;
+			case BROAD_SWORD:
+				skin.append("broadsword");
+				name.append("Broadsword");
+				weapon.hitCount = 1000;
+				weapon.spreadDamage = weapon.baseDamage * 0.4f;
+				weapon.baseDamage *= 0.9f;
+				weapon.range = 36;
+				weapon.cooldown *= 1.3f;
+				weapon.energyDrain *= 1.5f;
+				break;
+		}
+	}
+
+	private void setMaterial(SwordSpec weapon, StringBuilder name, StringBuilder skin) {
+		switch(weapon.material) {
+			case IRON:
+				name.append("Iron ");
+				skin.append("iron_");
+				weapon.color = Color.valueOf("B1C9C1");
+				weapon.baseDamage *= 1.1f;
+				weapon.energyDrain *= 1.1f;
+				weapon.goldCost = 50f;
+				break;
+			case BRONZE:
+				name.append("Bronze ");
+				skin.append("bronze_");
+				weapon.color = Color.valueOf("CD8032");
+				weapon.goldCost = 60f;
+				break;
+			default://case STEEL:
+				name.append("Steel ");
+				skin.append("steel_");
+				weapon.color = Color.valueOf("6BAFBD");
+				weapon.baseDamage *= 0.9f;
+				weapon.energyDrain *= 0.9f;
+				weapon.goldCost = 70f;
+				break;
+		}
+	}
+
+	private void setElemental(SwordSpec weapon, float quality, StringBuilder name) {
+		// Make weapon elemental
+		weapon.damageType = DamageType.ELEMENTAL;
+		weapon.statusEffect = Rand.pick(StatusEffect.class);
+		weapon.baseDamage *= ELEMENTAL_DAMAGE_RATIO;
+
+		// Status chance will start at 0.1 and will increase with quality until a max of around 0.4
+		weapon.statusChance = (float) (Math.pow(quality/2f, 2) + 0.1);
+		weapon.statusDamage = weapon.baseDamage * weapon.statusChance;
+		weapon.statusDuration = 30f * weapon.statusChance;
+
+//		weapon.statusEffect = StatusEffect.POISON;
+		if (weapon.statusEffect == StatusEffect.BURN) {
+			name.append("Molten ");
+			Attack statusAttack = new Attack(null, weapon.statusDamage, DamageType.ELEMENTAL, 0);
+			EntityPrototype flame = DungeonResources.prototypes.get("particle_burn");
+			Function<Entity, Entity> particleProvider = e -> {
+				DungeonEntity particle = new DungeonEntity(flame, e.getOrigin());
+				particle.getOrigin().add(Rand.between(e.getBody().getBoundingBox().x / -2f, e.getBody().getBoundingBox().x / 2f), 0f);
+				particle.setZPos(Rand.between(16, 32));
+				return particle;
+			};
+			weapon.statusAction = entity -> entity.addTrait(DungeonTraits.damageEffect(statusAttack, 1f, weapon.statusDuration, 0.2f, particleProvider).get(entity));
+		} else if (weapon.statusEffect == StatusEffect.LIGHTNING) {
+			name.append("Charged ");
+		} else if (weapon.statusEffect == StatusEffect.FROZEN) {
+			name.append("Glacial ");
+		} else if (weapon.statusEffect == StatusEffect.CHILL) {
+			name.append("Chilling ");
+			// TODO Slow enemy
+		} else if (weapon.statusEffect == StatusEffect.POISON) {
+			name.append("Venomous ");
+			// Does much less damage, but for quite longer
+			weapon.statusDamage /= 10f;
+			weapon.statusDuration *= 4f;
+			Attack statusAttack = new Attack(null, weapon.statusDamage, DamageType.ELEMENTAL, 0);
+			EntityPrototype poison = DungeonResources.prototypes.get("particle_poison");
+			Function<Entity, Entity> particleProvider = e -> {
+				DungeonEntity particle = new DungeonEntity(poison, e.getOrigin());
+				particle.getOrigin().add(Rand.between(e.getBody().getBoundingBox().x / -2f, e.getBody().getBoundingBox().x / 2f), 0f);
+				particle.setZPos(Rand.between(16, 32));
+				return particle;
+			};
+			weapon.statusAction = entity -> {
+				entity.addTrait(DungeonTraits.damageEffect(statusAttack, 1f, weapon.statusDuration, 0.2f, particleProvider).get(entity));
+				entity.addTrait(Traits.colorize(VENOM_COLOR, weapon.statusDuration).get(entity));
+			};
+		} else if (weapon.statusEffect == StatusEffect.LIFE_STEAL) {
+			name.append("Vampiric ");
+		}
 	}
 }

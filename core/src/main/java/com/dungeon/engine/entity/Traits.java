@@ -1,6 +1,7 @@
 package com.dungeon.engine.entity;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -270,7 +271,7 @@ public class Traits {
      */
     public static <T extends Entity> TraitSupplier<T> shake(float displacement, float duration) {
         return entityAtStart -> {
-            Vector2 drawOffset = entityAtStart.getDrawOffset().cpy();
+            Vector2 drawOffset = entityAtStart.prototype.drawOffset;
             Metronome metronome = new Metronome(0.02f, () -> entityAtStart.getDrawOffset().set(drawOffset).add(Rand.between(-displacement, displacement), Rand.between(-displacement, displacement)));
             return withExpiration(duration, entityAtRuntime -> metronome.doAtInterval(), () -> entityAtStart.getDrawOffset().set(drawOffset));
         };
@@ -281,10 +282,19 @@ public class Traits {
      */
     public static <T extends Entity> TraitSupplier<T> shakeHorizontal(float displacement, float duration) {
         return entityAtStart -> {
-            Vector2 drawOffset = entityAtStart.getDrawOffset().cpy();
+            Vector2 drawOffset = entityAtStart.prototype.drawOffset;
             Metronome metronome = new Metronome(0.02f, () -> entityAtStart.getDrawOffset().set(drawOffset).add(Rand.between(-displacement, displacement), 0));
             return withExpiration(duration, entityAtRuntime -> metronome.doAtInterval(), () -> entityAtStart.getDrawOffset().set(drawOffset));
         };
     }
 
+    /**
+     * Displaces draw offset by a couple of pixels to create a "rumble" effect, during the specified amount of time.
+     */
+    public static <T extends Entity> TraitSupplier<T> colorize(Color color, float duration) {
+        return entityAtStart -> {
+            Color original = entityAtStart.prototype.color.get();
+            return withExpiration(duration, entityAtRuntime -> entityAtRuntime.getColor().set(color), () -> entityAtStart.getColor().set(original));
+        };
+    }
 }

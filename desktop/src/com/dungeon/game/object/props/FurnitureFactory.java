@@ -7,11 +7,14 @@ import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.resource.Resources;
+import com.dungeon.engine.util.Rand;
+import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.ui.ParticleBuilder;
 
-import static com.dungeon.engine.util.Util.randVect;
+import java.util.Arrays;
+import java.util.List;
 
 public class FurnitureFactory {
 
@@ -55,6 +58,20 @@ public class FurnitureFactory {
 					return true;
 				}
 				return false;
+			}
+		};
+	}
+
+	private static final List<String> dummyPhrases = Arrays.asList("Ouch", "You should be proud of yourself");
+
+	public Entity dummy(Vector2 origin, EntityPrototype prototype) {
+		return new CreatureEntity(origin, prototype) {
+			@Override public void onHit() {
+				super.onHit();
+				health = maxHealth;
+				if (Rand.chance(0.1f)) {
+					shout(dummyPhrases);
+				}
 			}
 		};
 	}
