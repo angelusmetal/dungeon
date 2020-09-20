@@ -4,7 +4,7 @@ public enum StatusEffect {
 	BURN,
 	POISON,
 	CHILL,
-	FROZEN,
+	FREEZE,
 	LIGHTNING,
 	LIFE_STEAL
 }

@@ -50,7 +50,7 @@ public class Entity implements Drawable, Movable {
 	 * Max allowed self movement (per second). It cannot self accelerate over this, but other forces can make this
 	 * entity beyond this.
 	 */
-	protected float speed;
+	private float speed;
 	/**
 	 * Reduces ground speed
 	 */
@@ -288,6 +288,10 @@ public class Entity implements Drawable, Movable {
 
 	public float getSpeed() {
 		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
 	}
 
 	@Override

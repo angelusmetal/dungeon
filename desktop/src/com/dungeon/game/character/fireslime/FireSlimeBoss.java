@@ -55,7 +55,7 @@ public class FireSlimeBoss extends CreatureEntity {
 				Rand.pick(actions).run();
 			} else {
 				nextThink = Engine.time() + Rand.nextFloat(3f);
-				speed = IDLE_SPEED;
+				setSpeed(IDLE_SPEED);
 				// Aim random direction
 				if (Rand.chance(0.7f)) {
 					Vector2 newDirection = new Vector2(Rand.between(-10f, 10f), Rand.between(-10f, 10f));
@@ -67,27 +67,27 @@ public class FireSlimeBoss extends CreatureEntity {
 				}
 			}
 		} else {
-			speed *= 1 - 0.5 * Engine.frameTime();
+			setSpeed(getSpeed() * (1f - 0.5f * Engine.frameTime()));
 		}
 	}
 
 	private void moveCloser() {
 		nextThink = Engine.time() + ATTACK_FREQUENCY;
 		// Move towards target
-		speed = ATTACK_SPEED;
+		setSpeed(ATTACK_SPEED);
 		moveStrictlyTowards(closest.getEntity().getOrigin());
 	}
 
 	private void leap() {
 		nextThink = Engine.time() + ATTACK_FREQUENCY * 2;
 		// Move towards target
-		speed = ATTACK_SPEED * 5;
+		setSpeed(ATTACK_SPEED * 5);
 		moveStrictlyTowards(closest.getEntity().getOrigin());
 	}
 
 	private void fireProjectile() {
 		nextThink = Engine.time() + ATTACK_FREQUENCY;
-		speed = ATTACK_SPEED;
+		setSpeed(ATTACK_SPEED);
 		// Fire a projectile
 		Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
 		weapon.attack(getOrigin(), aim);
@@ -96,7 +96,7 @@ public class FireSlimeBoss extends CreatureEntity {
 
 	private void fireRingAttack() {
 		nextThink = Engine.time() + ATTACK_FREQUENCY;
-		speed = ATTACK_SPEED;
+		setSpeed(ATTACK_SPEED);
 		// Move towards target
 		int bullets = 20;
 		Vector2 aim = new Vector2(0, 1);

@@ -118,7 +118,7 @@ public class StaffWeaponGenerator {
 			// Freeze type
 			new ProjectileWeaponTrait(15, 1.2f, "damageType", (weapon, projectile) -> {
 				projectile.damageType = DamageType.ELEMENTAL;
-				projectile.statusEffect = StatusEffect.FROZEN;
+				projectile.statusEffect = StatusEffect.FREEZE;
 				projectile.statusChance = 0.2f;
 			}),
 			// Lightning type
@@ -191,7 +191,7 @@ public class StaffWeaponGenerator {
 		} else if (projectile.statusEffect == StatusEffect.LIGHTNING) {
 			projectilePrototype = DungeonResources.prototypes.get("projectile_lightning");
 			name.append("Charged ");
-		} else if (projectile.statusEffect == StatusEffect.FROZEN) {
+		} else if (projectile.statusEffect == StatusEffect.FREEZE) {
 			projectilePrototype = DungeonResources.prototypes.get("projectile_ice");
 			name.append("Glacial ");
 		} else if (projectile.statusEffect == StatusEffect.CHILL) {

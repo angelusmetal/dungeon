@@ -24,8 +24,8 @@ public class EntityMover {
 		// Update movement with self impulse
 		movement.add(entity.getEffectiveSelfImpulse().x * speed, entity.getEffectiveSelfImpulse().y * speed);
 
-		// Decrease speed if on floor due to friction
-		if (entity.getZPos() == 0) {
+		// Decrease speed due to friction
+		if (entity.getZPos() <= 0) {
 			movement.scl(1 - entity.getFriction());
 		} else {
 			movement.scl(1 - entity.getAirFriction());

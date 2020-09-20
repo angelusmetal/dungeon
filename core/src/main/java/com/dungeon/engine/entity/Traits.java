@@ -106,7 +106,7 @@ public class Traits {
 
     /** Accelerate/decelerate particle in its current direction */
     public static <T extends Entity> TraitSupplier<T> accel(float acceleration) {
-        return entityAtStart -> entityAtRuntime -> entityAtRuntime.speed += acceleration * Engine.frameTime();
+        return entityAtStart -> entityAtRuntime -> entityAtRuntime.setSpeed(entityAtRuntime.getSpeed() + acceleration * Engine.frameTime());
     }
 
     /** Accelerate/decelerate particle vertically */
@@ -119,7 +119,7 @@ public class Traits {
             // TODO Factor time in the calculation, so it can be done at fixed intervals, instead of at every frame (which also changes behavior based on framerate)
 //            float interval = 0.2f;
             float range2 = length2(range);
-            float seekClamp = Util.clamp(strength) * entityAtStart.speed;
+            float seekClamp = Util.clamp(strength) * entityAtStart.getSpeed();
 //            Timer targetingTimer = new Timer (interval);
             return entityAtRuntime -> {
                 // Re-target periodically
@@ -129,7 +129,7 @@ public class Traits {
                         Vector2 seek = closest.getEntity().getOrigin().cpy().sub(entityAtRuntime.getOrigin());
                         seek.setLength(seekClamp);
                         entityAtRuntime.impulse(seek);
-                        entityAtRuntime.getMovement().setLength(entityAtRuntime.speed);
+                        entityAtRuntime.getMovement().setLength(entityAtRuntime.getSpeed());
                     }
 //                });
             };

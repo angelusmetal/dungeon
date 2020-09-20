@@ -94,6 +94,8 @@ public class SwordWeaponGenerator {
 		boolean isElemental = level >= ELEMENTAL_MIN_SCORE && Rand.chance(ELEMENTAL_CHANCE);
 //		isElemental = true;
 		if (isElemental) {
+			weapon.statusEffect = Rand.pick(StatusEffect.class);
+//			weapon.statusEffect = StatusEffect.FREEZE;
 			setElemental(weapon, quality, name);
 		}
 
@@ -233,7 +235,6 @@ public class SwordWeaponGenerator {
 	private void setElemental(SwordSpec weapon, float quality, StringBuilder name) {
 		// Make weapon elemental
 		weapon.damageType = DamageType.ELEMENTAL;
-		weapon.statusEffect = Rand.pick(StatusEffect.class);
 		weapon.baseDamage *= ELEMENTAL_DAMAGE_RATIO;
 
 		// Status chance will start at 0.1 and will increase with quality until a max of around 0.4
@@ -241,7 +242,6 @@ public class SwordWeaponGenerator {
 		weapon.statusDamage = weapon.baseDamage * weapon.statusChance;
 		weapon.statusDuration = 30f * weapon.statusChance;
 
-//		weapon.statusEffect = StatusEffect.POISON;
 		if (weapon.statusEffect == StatusEffect.BURN) {
 			name.append("Molten ");
 			Attack statusAttack = new Attack(null, weapon.statusDamage, DamageType.ELEMENTAL, 0);
@@ -255,11 +255,33 @@ public class SwordWeaponGenerator {
 			weapon.statusAction = entity -> entity.addTrait(DungeonTraits.damageEffect(statusAttack, 1f, weapon.statusDuration, 0.2f, particleProvider).get(entity));
 		} else if (weapon.statusEffect == StatusEffect.LIGHTNING) {
 			name.append("Charged ");
-		} else if (weapon.statusEffect == StatusEffect.FROZEN) {
+		} else if (weapon.statusEffect == StatusEffect.FREEZE) {
 			name.append("Glacial ");
+			EntityPrototype chill = DungeonResources.prototypes.get("projectile_chill_trail");
+			Function<Entity, Entity> particleProvider = e -> {
+				DungeonEntity particle = new DungeonEntity(chill, e.getOrigin());
+				particle.getOrigin().add(Rand.between(e.getBody().getBoundingBox().x / -2f, e.getBody().getBoundingBox().x / 2f), 0f);
+				particle.setZPos(Rand.between(16, 32));
+				return particle;
+			};
+			weapon.statusAction = entity -> {
+				entity.addTrait(DungeonTraits.speedMultiplier(DungeonEntity.SpeedAffix.FREEZE, 0f, weapon.statusDuration, 0.2f, particleProvider).get(entity));
+				entity.addTrait(Traits.colorize(FREEZE_COLOR, weapon.statusDuration).get(entity));
+			};
 		} else if (weapon.statusEffect == StatusEffect.CHILL) {
 			name.append("Chilling ");
-			// TODO Slow enemy
+			weapon.statusDuration *= 2f;
+			EntityPrototype chill = DungeonResources.prototypes.get("projectile_chill_trail");
+			Function<Entity, Entity> particleProvider = e -> {
+				DungeonEntity particle = new DungeonEntity(chill, e.getOrigin());
+				particle.getOrigin().add(Rand.between(e.getBody().getBoundingBox().x / -2f, e.getBody().getBoundingBox().x / 2f), 0f);
+				particle.setZPos(Rand.between(16, 32));
+				return particle;
+			};
+			weapon.statusAction = entity -> {
+				entity.addTrait(DungeonTraits.speedMultiplier(DungeonEntity.SpeedAffix.CHILL, 0.6f, weapon.statusDuration, 0.2f, particleProvider).get(entity));
+				entity.addTrait(Traits.colorize(CHILL_COLOR, weapon.statusDuration).get(entity));
+			};
 		} else if (weapon.statusEffect == StatusEffect.POISON) {
 			name.append("Venomous ");
 			// Does much less damage, but for quite longer

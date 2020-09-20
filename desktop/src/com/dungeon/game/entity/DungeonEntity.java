@@ -4,15 +4,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.FloatArray;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.movement.Movable;
 import com.dungeon.engine.render.Drawable;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.player.Player;
 import com.dungeon.game.player.Players;
+
+import java.util.EnumMap;
 
 import static com.dungeon.game.Game.text;
 
@@ -25,6 +29,10 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	protected float highlightDuration = 0.15f;
 	protected float highlightUntil = 0f;
 
+	public enum SpeedAffix { CHILL, FREEZE, HASTE }
+	protected EnumMap<SpeedAffix, Float> speedMultipliers = new EnumMap<>(SpeedAffix.class);
+	protected float currentSpeed;
+
 	/**
 	 * Create an entity at origin, from the specified prototype
 	 * @param prototype Prototype to build entity from
@@ -32,6 +40,7 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	 */
 	public DungeonEntity(EntityPrototype prototype, Vector2 origin) {
 		super(prototype, origin);
+		updateCurrentSpeed();
 	}
 
 	/**
@@ -40,6 +49,7 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	 */
 	public DungeonEntity(Entity other) {
 		super(other);
+		updateCurrentSpeed();
 	}
 
 	@Override
@@ -61,6 +71,11 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 		} else {
 			super.draw(batch);
 		}
+	}
+
+	@Override
+	public Material getFrame() {
+		return animation.getKeyFrame((Engine.time() - animationStart) * (currentSpeed / super.getSpeed()));
 	}
 
 	public void hit(Attack attack) {
@@ -104,4 +119,40 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 		return false;
 	}
 
+	@Override
+	public float getSpeed() {
+		return currentSpeed;
+	}
+
+	@Override
+	public void setSpeed(float speed) {
+		super.setSpeed(speed);
+		updateCurrentSpeed();
+	}
+
+	/**
+	 * Add a speed multiplier for the specified affix ONLY if the affix is not already present.
+	 * In other words, speed multipliers for the same affixes do not stack.
+	 */
+	public void addSpeedMultiplier(SpeedAffix affix, float multiplier) {
+		if (!speedMultipliers.containsKey(affix)) {
+			speedMultipliers.put(affix, multiplier);
+		}
+		updateCurrentSpeed();
+	}
+
+	/**
+	 * Remove the speed multiplier associated with a specific affix (if present)
+	 */
+	public void removeSpeedMultiplier(SpeedAffix affix) {
+		speedMultipliers.remove(affix);
+		updateCurrentSpeed();
+	}
+
+	private void updateCurrentSpeed() {
+		currentSpeed = super.getSpeed();
+		for (float multiplier : speedMultipliers.values()) {
+			currentSpeed *= multiplier;
+		}
+	}
 }

@@ -59,7 +59,7 @@ public class Ghost extends CreatureEntity {
 		targettingMetronome.doAtInterval();
 		// Set transparency based on active / recent damage taken
 		color.a = active ? Util.clamp(visibleUntil - Engine.time(), 0.4f, 0.8f) : 0f;
-		speed = Engine.time() > visibleUntil ? STEALTH_SPEED : VISIBLE_SPEED;
+		setSpeed(Engine.time() > visibleUntil ? STEALTH_SPEED : VISIBLE_SPEED);
 	}
 
 	@Override
