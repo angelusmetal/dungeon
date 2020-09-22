@@ -1,4 +1,4 @@
-package com.dungeon.game.character.ghost;
+package com.dungeon.game.character.monster;
 
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;

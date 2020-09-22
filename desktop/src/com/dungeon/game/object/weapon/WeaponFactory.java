@@ -1,16 +1,20 @@
 package com.dungeon.game.object.weapon;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.entity.Traits;
+import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.game.Game;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.combat.Weapon;
+import com.dungeon.game.combat.module.AimedParticleModule;
 import com.dungeon.game.combat.module.ArcAttackModule;
 import com.dungeon.game.combat.module.AttackModule;
 import com.dungeon.game.combat.module.ModularWeapon;
@@ -50,9 +54,6 @@ public class WeaponFactory {
 	}
 
 	public Weapon buildSword(float tier) {
-//		Animation<Material> slashAnimation = Resources.animations.get("melee_slash");
-//		Sprite referenceFrame = slashAnimation.getKeyFrame(0).getDiffuse();
-//		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
 		Vector2 hitBoundingBox = new Vector2(32, 32);
 		EntityPrototype attack = new EntityPrototype(DungeonResources.prototypes.get("weapon_melee_attack"))
 				.boundingBox(hitBoundingBox)
@@ -61,16 +62,10 @@ public class WeaponFactory {
 				.timeToLive(0.0001f)
 				.hitPredicate(PlayerEntity.HIT_NON_PLAYERS);
 		EntityPrototype hit = DungeonResources.prototypes.get("weapon_melee_hit");
-//		EntityPrototype slash = new EntityPrototype()
-//				.animation(slashAnimation)
-//				.boundingBox(hitBoundingBox)
-//				.drawOffset(hitDrawOffset)
-//				.timeToLive(slashAnimation.getAnimationDuration());
 		float minDps = tier * 2f;
 		float maxDps = tier * 5f;
 		List<WeaponModule> modules = Arrays.asList(
 				new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).spawnDistance(16).hitCount(100).build(),
-//				new AimedParticleModule(slash).spawnDistance(4),
 				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
 		);
 		return new ModularWeapon("Short sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.50f, 10, 75, Color.valueOf("B1C9C1"));
@@ -147,5 +142,33 @@ public class WeaponFactory {
 		weaponEntity.setAnimation(weapon.getHudAnimation(), Engine.time());
 		return weaponEntity;
 	}
+
+	public Weapon buildMinionMace(float tier) {
+//		Animation<Material> slashAnimation = Resources.animations.get("melee_slash");
+//		Sprite referenceFrame = slashAnimation.getKeyFrame(0).getDiffuse();
+//		Vector2 hitDrawOffset = new Vector2(referenceFrame.getWidth() / 2f, referenceFrame.getHeight() / 2f);
+		Vector2 hitBoundingBox = new Vector2(32, 32);
+		EntityPrototype attack = new EntityPrototype(DungeonResources.prototypes.get("weapon_melee_attack"))
+				.boundingBox(hitBoundingBox)
+//				.drawOffset(hitDrawOffset)
+				.speed(0)
+				.timeToLive(0.0001f)
+				.hitPredicate(PlayerEntity.HIT_PLAYERS);
+		EntityPrototype hit = DungeonResources.prototypes.get("weapon_melee_hit");
+//		EntityPrototype slash = new EntityPrototype()
+//				.animation(slashAnimation)
+//				.boundingBox(hitBoundingBox)
+//				.drawOffset(hitDrawOffset)
+//				.timeToLive(slashAnimation.getAnimationDuration());
+		float minDps = tier * 8f;
+		float maxDps = tier * 10f;
+		List<WeaponModule> modules = Arrays.asList(
+				new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).spawnDistance(16).hitCount(100).build(),
+//				new AimedParticleModule(slash).spawnDistance(4),
+				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
+		);
+		return new ModularWeapon("Dark mace", Resources.animations.get("weapon_iron_shortsword"), modules, 0.50f, 10, 75, Color.valueOf("B1C9C1"));
+	}
+
 
 }

@@ -1,4 +1,4 @@
-package com.dungeon.game.character.iceslime;
+package com.dungeon.game.character.monster;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;

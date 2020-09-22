@@ -29,6 +29,10 @@ public abstract class CreatureEntity extends DungeonEntity implements Movable, D
 		aim.set(vector);
 	}
 
+	public void aimTo(Vector2 origin) {
+		aim.set(origin.x - getOrigin().x, origin.y - getOrigin().y).setLength2(1f);
+	}
+
 	public Vector2 getAim() {
 		return aim;
 	}

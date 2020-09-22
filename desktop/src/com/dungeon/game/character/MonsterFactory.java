@@ -9,13 +9,14 @@ import com.dungeon.engine.entity.factory.EntityTypeFactory;
 import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.Game;
-import com.dungeon.game.character.acidslime.AcidSlime;
-import com.dungeon.game.character.fireslime.FireSlime;
-import com.dungeon.game.character.fireslime.FireSlimeBoss;
-import com.dungeon.game.character.ghost.Ghost;
-import com.dungeon.game.character.iceslime.IceSlime;
-import com.dungeon.game.character.slime.Slime;
-import com.dungeon.game.character.slime.SlimeSpawn;
+import com.dungeon.game.character.monster.AcidSlime;
+import com.dungeon.game.character.monster.DarkMinion;
+import com.dungeon.game.character.monster.FireSlime;
+import com.dungeon.game.character.monster.FireSlimeBoss;
+import com.dungeon.game.character.monster.Ghost;
+import com.dungeon.game.character.monster.IceSlime;
+import com.dungeon.game.character.monster.Slime;
+import com.dungeon.game.character.monster.SlimeSpawn;
 import com.dungeon.game.combat.Attack;
 import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.combat.Weapon;
@@ -35,9 +36,12 @@ public class MonsterFactory {
 	private final EntityTypeFactory acidPoolFactory;
 	private final EntityTypeFactory icePoolFactory;
 	private final Weapon fireball;
+	private final Weapon minionWeapon;
 
 	public MonsterFactory() {
-		fireball = new WeaponFactory().buildFireballStaff(Game.getDifficultyTier());
+		WeaponFactory weaponFactory = new WeaponFactory();
+		fireball = weaponFactory.buildFireballStaff(Game.getDifficultyTier());
+		minionWeapon = weaponFactory.buildMinionMace(Game.getDifficultyTier());
 
 		// Factory for acid pools
 		final EntityPrototype acidPoolPrototype = DungeonResources.prototypes.get("creature_slime_acid_pool");
@@ -73,6 +77,10 @@ public class MonsterFactory {
 
 	public Entity acidSlime(Vector2 origin, EntityPrototype prototype) {
 		return new AcidSlime(origin, prototype, acidPoolFactory);
+	}
+
+	public Entity darkMinion(Vector2 origin, EntityPrototype prototype) {
+		return new DarkMinion(origin, prototype, minionWeapon);
 	}
 
 	public Entity fireSlimeBoss(Vector2 origin, EntityPrototype prototype) {
