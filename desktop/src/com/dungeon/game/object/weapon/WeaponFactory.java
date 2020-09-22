@@ -65,7 +65,7 @@ public class WeaponFactory {
 		float minDps = tier * 2f;
 		float maxDps = tier * 5f;
 		List<WeaponModule> modules = Arrays.asList(
-				new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).spawnDistance(16).hitCount(100).build(),
+				new AttackModule.Builder().prototype(attack).prototypeHit(hit).damageType(DamageType.ELEMENTAL).minDamage(minDps).maxDamage(maxDps).spawnDistance(16).hitCount(100).knockback(0.8f).build(),
 				new SoundModule(Resources.sounds.get("audio/sound/slash.ogg"))
 		);
 		return new ModularWeapon("Short sword", Resources.animations.get("weapon_iron_shortsword"), modules, 0.50f, 10, 75, Color.valueOf("B1C9C1"));

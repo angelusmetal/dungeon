@@ -116,7 +116,7 @@ public class AttackModule implements WeaponModule {
 			return this;
 		}
 
-		public Builder knockback(int knockback) {
+		public Builder knockback(float knockback) {
 			this.knockback = knockback;
 			return this;
 		}

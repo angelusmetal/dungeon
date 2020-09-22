@@ -131,7 +131,7 @@ public class Entity implements Drawable, Movable {
 		this.startTime = Engine.time();
 		this.speed = prototype.speed.get();
 		this.zSpeed = prototype.zSpeed.get();
-		this.knockback = prototype.friction.get();
+		this.knockback = prototype.knockback.get();
 		this.friction = prototype.friction.get();
 		this.airFriction = prototype.airFriction.get();
 		this.bounciness = prototype.bounciness;
@@ -423,12 +423,21 @@ public class Entity implements Drawable, Movable {
 	 * ignore whatever push was already in place).
 	 * @param destination Destination position.
 	 */
-	public void moveStrictlyTowards(Vector2 destination) {
+	public void selfImpulseStrictlyTowards(Vector2 destination) {
 		getMovement().set(Vector2.Zero);
 		setSelfImpulse(destination.x - getOrigin().x, destination.y - getOrigin().y);
 		getSelfImpulse().setLength2(1);
 	}
 
+	/**
+	 * Move towards destination using self impulse (to get correct speed clamping), and clearing current movement (to
+	 * ignore whatever push was already in place).
+	 * @param destination Destination position.
+	 */
+	public void selfImpulseTowards(Vector2 destination) {
+		setSelfImpulse(destination.x - getOrigin().x + getMovement().x, destination.y - getOrigin().y + getMovement().y);
+		getSelfImpulse().setLength2(1);
+	}
 	/**
 	 * Impulse towards destination, with the specified vector length
 	 * @param destination Destination position.

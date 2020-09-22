@@ -39,12 +39,12 @@ public class Ghost extends CreatureEntity {
 			ClosestEntity closest = Engine.entities.ofType(PlayerEntity.class).collect(() -> ClosestEntity.to(this), ClosestEntity::accept, ClosestEntity::combine);
 			if (active) {
 				if (closest.getDst2() < MAX_TARGET_DISTANCE) {
-					moveStrictlyTowards(closest.getEntity().getOrigin());
+					selfImpulseStrictlyTowards(closest.getEntity().getOrigin());
 					shout(attackPhrases, 0.02f);
 				}
 			} else {
 				if (closest.getDst2() < ACTIVATION_DISTANCE) {
-					moveStrictlyTowards(closest.getEntity().getOrigin());
+					selfImpulseStrictlyTowards(closest.getEntity().getOrigin());
 					shout(attackPhrases, 0.02f);
 					active = true;
 				}

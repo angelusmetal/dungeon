@@ -10,11 +10,8 @@ import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
-import com.dungeon.game.combat.Attack;
-import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.entity.CreatureEntity;
-import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.object.weapon.WeaponFactory;
 
@@ -52,7 +49,7 @@ public class FireSlime extends CreatureEntity {
 				nextThink = Engine.time() + ATTACK_FREQUENCY;
 				// Move towards target
 				setSpeed(ATTACK_SPEED);
-				moveStrictlyTowards(closest.getEntity().getOrigin());
+				selfImpulseStrictlyTowards(closest.getEntity().getOrigin());
 				// Fire a projectile
 				Vector2 aim = closest.getEntity().getOrigin().cpy().sub(getOrigin()).setLength(1);
 				weapon.attack(getOrigin(), aim);

@@ -10,11 +10,8 @@ import com.dungeon.engine.util.ClosestEntity;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.util.Util;
 import com.dungeon.game.Game;
-import com.dungeon.game.combat.Attack;
-import com.dungeon.game.combat.DamageType;
 import com.dungeon.game.combat.Weapon;
 import com.dungeon.game.entity.CreatureEntity;
-import com.dungeon.game.entity.DungeonEntity;
 import com.dungeon.game.entity.PlayerEntity;
 import com.dungeon.game.object.weapon.WeaponFactory;
 
@@ -75,14 +72,14 @@ public class FireSlimeBoss extends CreatureEntity {
 		nextThink = Engine.time() + ATTACK_FREQUENCY;
 		// Move towards target
 		setSpeed(ATTACK_SPEED);
-		moveStrictlyTowards(closest.getEntity().getOrigin());
+		selfImpulseStrictlyTowards(closest.getEntity().getOrigin());
 	}
 
 	private void leap() {
 		nextThink = Engine.time() + ATTACK_FREQUENCY * 2;
 		// Move towards target
 		setSpeed(ATTACK_SPEED * 5);
-		moveStrictlyTowards(closest.getEntity().getOrigin());
+		selfImpulseStrictlyTowards(closest.getEntity().getOrigin());
 	}
 
 	private void fireProjectile() {

@@ -13,7 +13,6 @@ import com.dungeon.game.entity.CreatureEntity;
 import com.dungeon.game.entity.PlayerEntity;
 
 import java.util.LinkedList;
-import java.util.function.Consumer;
 
 public class DarkMinion extends CreatureEntity {
 
@@ -77,7 +76,7 @@ public class DarkMinion extends CreatureEntity {
 			}));
 		} else if (closest.getDst2() < MAX_TARGET_DISTANCE) {
 			nextThink = Engine.time() + TARGET_FREQUENCY;
-			moveStrictlyTowards(closest.getEntity().getOrigin());
+			selfImpulseTowards(closest.getEntity().getOrigin());
 			aimTo(closest.getEntity().getOrigin());
 			updateAnimation(walkAnimation);
 		} else {
