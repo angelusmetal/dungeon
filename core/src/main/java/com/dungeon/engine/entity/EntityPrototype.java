@@ -218,7 +218,7 @@ public class EntityPrototype {
 	}
 
 	public EntityPrototype friction(float friction) {
-		final float f = clamp(friction);
+		final float f = friction;
 		this.friction = () -> f;
 		return this;
 	}

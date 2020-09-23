@@ -22,19 +22,29 @@ public class EntityMover {
 		float speed = entity.getSpeed();
 
 		// Update movement with self impulse
+		float maxSpeed = Math.max(movement.len(), speed);
 		movement.add(entity.getEffectiveSelfImpulse().x * speed, entity.getEffectiveSelfImpulse().y * speed);
 
 		// Decrease speed due to friction
+		float frameFriction;
 		if (entity.getZPos() <= 0) {
-			movement.scl(1 - entity.getFriction());
+			frameFriction = entity.getFriction() * Engine.frameTime();
 		} else {
-			movement.scl(1 - entity.getAirFriction());
+			frameFriction = entity.getAirFriction() * Engine.frameTime();
 		}
+		if (frameFriction > 1f) {
+			frameFriction = 1f;
+		}
+		movement.x -= movement.x * frameFriction;
+		movement.y -= movement.y * frameFriction;
+		maxSpeed -= maxSpeed * frameFriction;
 
-		if (movement.len2() > 0) {
+		if (movement.len2() < 0.01) {
+			movement.set(0f, 0f);
+		} else {
 			// Even though an impulse can make the movement exceed the speed, selfImpulse should not help exceed it
 			// (otherwise, it would accelerate indefinitely), but it can still help decrease it
-			movement.clamp(0f, speed);
+			movement.clamp(0f, maxSpeed);
 
 			frameMovement.set(movement).scl(Engine.frameTime());
 
