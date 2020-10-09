@@ -21,7 +21,7 @@ public class DarkMinion extends CreatureEntity {
 	private static final float TARGET_FREQUENCY = 0.2f;
 	private static final float ATTACK_FREQUENCY = 1f;
 	private static final float ATTACK_LENGTH = 0.36f;
-	private static final float ATTACK_TELL = 1f;
+	private static final float ATTACK_TELL = 0.5f;
 
 	private final Animation<Material> idleAnimation = Resources.animations.get("dark_minion_idle");
 	private final Animation<Material> walkAnimation = Resources.animations.get("dark_minion_walk");
