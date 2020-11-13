@@ -119,7 +119,7 @@ public class TraitLoader {
 					Entity loot = Game.build(piece, origin);
 					loot.setZPos(15);
 					// Scatter them around! (this only works if speed is at least 50)
-					loot.impulse(Rand.between(-20, 20), Rand.between(-5, -1));
+					loot.impulse(Rand.between(-20, 20), Rand.between(-10, -1));
 					loot.setZSpeed(Rand.between(50, 150));
 					Engine.entities.add(loot);
 				});
