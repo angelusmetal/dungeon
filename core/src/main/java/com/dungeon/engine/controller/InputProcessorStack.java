@@ -51,7 +51,7 @@ public class InputProcessorStack implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		return !stack.isEmpty() && stack.peek().scrolled(amount);
+	public boolean scrolled(float amountX, float amountY) {
+		return !stack.isEmpty() && stack.peek().scrolled(amountX, amountY);
 	}
 }

@@ -11,10 +11,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.light.Light2;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Util;
-import com.dungeon.engine.viewport.ViewPort;
 
 public class BlurShaderTest extends ApplicationAdapter implements InputProcessor {
 
@@ -169,7 +167,7 @@ public class BlurShaderTest extends ApplicationAdapter implements InputProcessor
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 //		if (selectedLight != null) {
 //			if (amount > 0) {
 //				selectedLight.setRange(selectedLight.getRange() * 1.1f);

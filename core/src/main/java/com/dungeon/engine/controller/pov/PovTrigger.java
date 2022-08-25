@@ -1,7 +1,5 @@
 package com.dungeon.engine.controller.pov;
 
-import com.badlogic.gdx.controllers.PovDirection;
-
 import java.util.ArrayList;
 import java.util.List;
 

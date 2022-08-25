@@ -13,7 +13,6 @@ import com.dungeon.engine.render.Light;
 import com.dungeon.engine.render.Material;
 import com.dungeon.engine.render.ShadowType;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.ArrayList;
 import java.util.List;

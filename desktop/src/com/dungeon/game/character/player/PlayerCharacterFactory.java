@@ -1,11 +1,10 @@
 package com.dungeon.game.character.player;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
+import com.dungeon.engine.controller.pov.PovDirection;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.render.Material;

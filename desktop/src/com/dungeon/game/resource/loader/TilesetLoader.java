@@ -3,14 +3,9 @@ package com.dungeon.game.resource.loader;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.dungeon.engine.render.Material;
-import com.dungeon.engine.resource.ResourceDescriptor;
-import com.dungeon.engine.resource.ResourceIdentifier;
-import com.dungeon.engine.resource.ResourceLoader;
-import com.dungeon.engine.resource.ResourceRepository;
-import com.dungeon.engine.resource.Resources;
+import com.dungeon.engine.resource.*;
 import com.dungeon.engine.util.ConfigUtil;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.level.generator.TilesetSolver;
 import com.dungeon.game.tileset.Tileset;
 import com.typesafe.config.Config;
 

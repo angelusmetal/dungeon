@@ -153,8 +153,8 @@ public class NormalMappingTest extends ApplicationAdapter implements InputProces
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		if (amount > 0) {
+	public boolean scrolled(float amountX, float amountY) {
+		if (amountY > 0) {
 			lightRange *= 1.1;
 		} else {
 			lightRange /= 1.1;

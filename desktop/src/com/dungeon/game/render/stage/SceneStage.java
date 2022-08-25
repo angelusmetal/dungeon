@@ -7,17 +7,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
-import com.dungeon.engine.render.BlendFunctionContext;
-import com.dungeon.engine.render.Light;
-import com.dungeon.engine.render.Material;
-import com.dungeon.engine.render.Renderer;
-import com.dungeon.engine.render.ShadowType;
-import com.dungeon.engine.render.ViewPortBuffer;
+import com.dungeon.engine.render.*;
 import com.dungeon.engine.render.light.Light2;
 import com.dungeon.engine.render.light.LightRenderer;
 import com.dungeon.engine.resource.Resources;
@@ -31,8 +25,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.dungeon.engine.util.Util.clamp;
 
 public class SceneStage implements Renderer {
 

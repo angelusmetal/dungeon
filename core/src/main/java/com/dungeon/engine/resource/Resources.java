@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.audio.LayeredMusic;
-import com.dungeon.engine.entity.EntityPrototype;
 import com.dungeon.engine.render.Material;
 import com.dungeon.engine.resource.loader.AnimationLoader;
 import com.dungeon.engine.resource.loader.LayeredMusicLoader;

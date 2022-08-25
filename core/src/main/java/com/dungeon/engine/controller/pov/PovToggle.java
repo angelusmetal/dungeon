@@ -1,6 +1,5 @@
 package com.dungeon.engine.controller.pov;
 
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.controller.analog.AnalogControl;
 import com.dungeon.engine.controller.analog.AnalogListener;

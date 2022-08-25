@@ -3,7 +3,6 @@ package com.dungeon.game.level.generator;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.game.Game;
 import com.dungeon.game.level.Level;
 import com.dungeon.game.level.Room;
 import com.dungeon.game.level.RoomPrototype;
@@ -12,13 +11,7 @@ import com.dungeon.game.level.entity.EntityPlaceholder;
 import com.dungeon.game.level.entity.EntityType;
 import com.dungeon.game.tileset.EnvironmentLevel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * A level generator that generates levels by connecting a set of pre-built modules (rooms).

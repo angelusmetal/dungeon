@@ -2,9 +2,7 @@ package com.dungeon.engine.controller.analog;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * A analog control backed by a controller stick. It composes 2 separate axis into a Vector2 direction and
@@ -97,23 +95,4 @@ public class StickAnalogControl extends AnalogControl implements ControllerListe
 		return true;
 	}
 
-	@Override
-	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		return false;
-	}
-
-	@Override
-	public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
-		return false;
-	}
-
-	@Override
-	public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
-		return false;
-	}
-
-	@Override
-	public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
-		return false;
-	}
 }

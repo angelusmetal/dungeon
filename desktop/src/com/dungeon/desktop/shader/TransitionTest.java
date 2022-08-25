@@ -176,7 +176,7 @@ public class TransitionTest extends ApplicationAdapter implements InputProcessor
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 //		if (selectedLight != null) {
 //			if (amount > 0) {
 //				selectedLight.range *= 1.1;
