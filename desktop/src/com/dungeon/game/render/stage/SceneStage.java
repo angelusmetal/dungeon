@@ -211,9 +211,8 @@ public class SceneStage implements Renderer {
 		if (useNormalTexture != usingNormalTexture) {
 			usingNormalTexture = !usingNormalTexture;
 			batch.end();
-			DungeonEntity.shader.begin();
+			DungeonEntity.shader.bind();
 			DungeonEntity.shader.setUniformf("u_color", useNormalTexture ? textureColor : normalColor);
-			DungeonEntity.shader.end();
 			batch.begin();
 		}
 	}

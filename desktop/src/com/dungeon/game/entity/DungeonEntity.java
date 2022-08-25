@@ -55,11 +55,10 @@ public class DungeonEntity extends Entity implements Drawable, Movable {
 	public void draw(SpriteBatch batch) {
 		if (highlightUntil > Engine.time()) {
 			batch.end();
-			shader.begin();
+			shader.bind();
 			float colorDuration = highlightDuration / HIGHLIGHT_COLORS.length;
 			Color highlight = HIGHLIGHT_COLORS[(int) ((Engine.time() - (highlightUntil - highlightDuration)) / colorDuration)];
 			shader.setUniformf("u_color", highlight);
-			shader.end();
 			ShaderProgram otherShader = batch.getShader();
 			batch.setShader(shader);
 			batch.begin();

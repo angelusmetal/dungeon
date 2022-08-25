@@ -37,14 +37,13 @@ public class TransitionStage implements Renderer {
 		viewportBuffer.projectToZero();
 		viewportBuffer.render(batch -> {
 			batch.end();
-			shader.begin();
+			shader.bind();
 			shader.setUniformf("u_bufferSize", new Vector2(viewPort.cameraWidth, viewPort.cameraHeight));
 			float phase = smoothstep(start, start + duration, Engine.time());//(float) Math.sin(Engine.time());
 			if (!open) {
 				phase = 1f - phase;
 			}
 			shader.setUniformf("u_phase", phase);
-			shader.end();
 			batch.setShader(shader);
 			batch.begin();
 			batch.setColor(Color.BLACK);

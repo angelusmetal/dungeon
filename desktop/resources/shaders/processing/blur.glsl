@@ -4,11 +4,11 @@ precision mediump int;
 #endif
 
 uniform sampler2D u_texture;
-/** texel size */
+// texel size
 uniform vec2 u_texelSize;
-/** amount of samples (the more, the smoother) */
+// amount of samples (the more, the smoother)
 uniform float u_samples;
-/** blur: spread of samples, in texels (0: no blur) */
+// blur: spread of samples, in texels (0: no blur)
 uniform float u_blur;
 
 varying vec4 v_color;

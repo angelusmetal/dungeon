@@ -123,10 +123,9 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		}
 
 		batch.end();
-		shaderOutline.begin();
+		shaderOutline.bind();
 		shaderOutline.setUniformf("u_color", outlineColor);
 		shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / viewPort.width, 1f / viewPort.height));
-		shaderOutline.end();
 		batch.setShader(shaderOutline);
 		batch.begin();
 		chubbyFont.draw(batch, player.getName() + " LVL 1", x + 60, y + 45);

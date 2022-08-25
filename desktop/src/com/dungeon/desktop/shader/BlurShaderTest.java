@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -46,16 +47,17 @@ public class BlurShaderTest extends ApplicationAdapter implements InputProcessor
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		sprite.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		Vector2 texelSize = new Vector2(1f / sprite.getTexture().getWidth(), 1f / sprite.getTexture().getHeight());
-		shaderProgram.begin();
+		//Vector2 texelSize = new Vector2(1f / Gdx.graphics.getWidth(), 1f / Gdx.graphics.getHeight());
+		shaderProgram.bind();
 		shaderProgram.setUniformf("u_texelSize", texelSize);
 		shaderProgram.setUniformi("u_samples", samples);
 		shaderProgram.setUniformf("u_blur", blur);
-		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
 		sprite.setPosition(200, 200);
-		sprite.setScale(4f);
+		sprite.setScale(1f);
 		sprite.draw(batch);
 		batch.end();
 		time += Gdx.graphics.getDeltaTime();
@@ -88,10 +90,10 @@ public class BlurShaderTest extends ApplicationAdapter implements InputProcessor
 			samples = (int) Util.clamp(samples + 1, 1, 10);
 			System.out.println("samples: " + samples);
 		} else if (keycode == Input.Keys.UP) {
-			blur = Util.clamp(blur + 0.01f, 0, 10);
+			blur = Util.clamp(blur + 0.1f, 0, 10);
 			System.out.println("blur: " + blur);
 		} else if (keycode == Input.Keys.DOWN) {
-			blur = Util.clamp(blur - 0.01f, 0, 10);
+			blur = Util.clamp(blur - 0.1f, 0, 10);
 			System.out.println("blur: " + blur);
 		}
 //		} else if (keycode == Input.Keys.PLUS) {
@@ -168,6 +170,13 @@ public class BlurShaderTest extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public boolean scrolled(float amountX, float amountY) {
+		if (amountY > 0) {
+			blur = Util.clamp(blur + 0.1f, 0, 10);
+			System.out.println("blur: " + blur);
+		} else {
+			blur = Util.clamp(blur - 0.1f, 0, 10);
+			System.out.println("blur: " + blur);
+		}
 //		if (selectedLight != null) {
 //			if (amount > 0) {
 //				selectedLight.setRange(selectedLight.getRange() * 1.1f);

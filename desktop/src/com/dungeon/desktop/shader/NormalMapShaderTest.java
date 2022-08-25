@@ -126,9 +126,8 @@ public class NormalMapShaderTest extends ApplicationAdapter implements InputProc
 //		renderer.drawToScreen();
 
 		Vector2 texelSize = new Vector2(1f / sprite.getTexture().getWidth(), 1f / sprite.getTexture().getHeight());
-		shaderProgram.begin();
+		shaderProgram.bind();
 		shaderProgram.setUniformf("u_texelSize", texelSize);
-		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
 		sprite.setPosition(200, 200);
