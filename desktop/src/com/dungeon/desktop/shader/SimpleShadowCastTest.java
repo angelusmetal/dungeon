@@ -73,7 +73,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private LinkedList<Light2> lights = new LinkedList<>();
 	private List<Float> geometry = new ArrayList<>();
 	private final LightRenderer renderer = new LightRenderer();
-	private boolean useNormalMapping = false;
+	private boolean useNormalMapping = true;
 	private ViewPort viewPort;
 
 
@@ -238,9 +238,9 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 		if (selectedLight != null) {
-			if (amount > 0) {
+			if (amountY > 0) {
 				selectedLight.setRange(selectedLight.getRange() * 1.1f);
 			} else {
 				selectedLight.setRange(selectedLight.getRange() / 1.1f);

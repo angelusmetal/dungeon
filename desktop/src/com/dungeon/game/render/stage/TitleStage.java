@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -42,6 +43,7 @@ public class TitleStage implements Renderer {
 		this.textBuffer = new ViewPortBuffer(viewPort, Pixmap.Format.RGBA8888);
 		shaderProgram = Resources.shaders.get("df_vertex.glsl|processing/blur.glsl");
 		textBuffer.reset();
+		textBuffer.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		textBuffer.projectToZeroFull();
 		titleFont = Resources.fonts.get("chantelli-antiqua-32");
 		subtitleFont = Resources.fonts.get(DungeonResources.DEFAULT_FONT);
@@ -87,11 +89,10 @@ public class TitleStage implements Renderer {
 	 */
 	public void displayTextbuffer(float fade) {
 		viewportBuffer.renderNoWrap(batch -> {
-			shaderProgram.begin();
+			shaderProgram.bind();
 			shaderProgram.setUniformf("u_texelSize", texelSize);
 			shaderProgram.setUniformf("u_samples", blurSamples);
 			shaderProgram.setUniformf("u_blur", 1f - fade);
-			shaderProgram.end();
 			batch.setShader(shaderProgram);
 			batch.begin();
 			color.a = fade;

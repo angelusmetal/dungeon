@@ -77,11 +77,10 @@ public class TransitionTest extends ApplicationAdapter implements InputProcessor
 		Gdx.gl.glClearColor(0.5f, 0.3f, 0.1f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		ShaderProgram shaderProgram = shaderPrograms.get(selectedShader);
-		shaderProgram.begin();
+		shaderProgram.bind();
 		shaderProgram.setUniformf("u_bufferSize", new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		float phase = (float) Math.sin(time);//(Math.sin(time) + 1f) / 2f;
 		shaderProgram.setUniformf("u_phase", phase);
-		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
 		batch.setColor(new Color(0f, 0f, 0f, 1f));
@@ -176,7 +175,7 @@ public class TransitionTest extends ApplicationAdapter implements InputProcessor
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 //		if (selectedLight != null) {
 //			if (amount > 0) {
 //				selectedLight.range *= 1.1;

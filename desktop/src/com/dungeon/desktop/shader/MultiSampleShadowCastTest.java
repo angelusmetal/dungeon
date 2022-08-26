@@ -79,7 +79,7 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 
 	@Override
 	public void render() {
-		shaderProgram.begin();
+		shaderProgram.bind();
 		shaderProgram.setUniformf("u_bufferSize", bufferSize);
 		shaderProgram.setUniformf("u_lightHardness", 1f);
 		shaderProgram.setUniformf("u_lightColor", lightColor);
@@ -89,10 +89,9 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 		shaderProgram.setUniform4fv("u_segments[0]", geometry, 0, geometry.length);
 		shaderProgram.setUniformi("u_segmentCount", geometry.length / 4);
 		shaderProgram.setUniformf("u_sampleCount", sampleCount);
-		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
-		batch.setColor(Color.argb8888(0.1f, 0.3f, 0.5f, 1f));
+		batch.setColor(0.1f, 0.3f, 0.5f, 1f);
 		batch.draw(pixel, 0, 0, bufferSize.x, bufferSize.y);
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -167,8 +166,8 @@ public class MultiSampleShadowCastTest extends ApplicationAdapter implements Inp
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		if (amount > 0) {
+	public boolean scrolled(float amountX, float amountY) {
+		if (amountY > 0) {
 			lightRange *= 1.1;
 		} else {
 			lightRange /= 1.1;

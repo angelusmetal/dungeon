@@ -50,7 +50,7 @@ public class EntityManagerPerfTest {
 
 	private Entity getRandomEntity() {
 		EntityPrototype prototype = new EntityPrototype();
-		prototype.animation(animation);
+//		prototype.animation(animation);
 		prototype.boundingBox(new Vector2(Rand.between(4, 20), Rand.between(4, 20)));
 		prototype.isStatic(true);
 		return new Entity(prototype, new Vector2(Rand.between(0, 100_000), Rand.between(0, 100_000))) {

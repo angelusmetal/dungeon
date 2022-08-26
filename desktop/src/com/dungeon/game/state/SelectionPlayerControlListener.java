@@ -1,7 +1,7 @@
 package com.dungeon.game.state;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.controllers.PovDirection;
+import com.dungeon.engine.controller.pov.PovDirection;
 import com.dungeon.game.controller.AbstractControlBundleListener;
 import com.dungeon.game.controller.ControlBundle;
 import com.dungeon.game.controller.ControlBundleListener;

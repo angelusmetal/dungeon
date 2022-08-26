@@ -1,12 +1,7 @@
 package com.dungeon.game.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
@@ -128,10 +123,9 @@ public class CharacterHudWidget extends AbstractWidget implements Widget {
 		}
 
 		batch.end();
-		shaderOutline.begin();
+		shaderOutline.bind();
 		shaderOutline.setUniformf("u_color", outlineColor);
 		shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / viewPort.width, 1f / viewPort.height));
-		shaderOutline.end();
 		batch.setShader(shaderOutline);
 		batch.begin();
 		chubbyFont.draw(batch, player.getName() + " LVL 1", x + 60, y + 45);

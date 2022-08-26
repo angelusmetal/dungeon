@@ -15,8 +15,8 @@ import com.dungeon.engine.entity.repository.Repository;
 import com.dungeon.engine.physics.LevelTiles;
 import com.dungeon.engine.render.effect.RenderEffect;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.engine.util.SettingsUtil;
 import com.dungeon.engine.util.Rand;
+import com.dungeon.engine.util.SettingsUtil;
 import com.dungeon.engine.util.Util;
 import com.dungeon.engine.viewport.ViewPort;
 

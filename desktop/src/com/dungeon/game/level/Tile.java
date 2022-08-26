@@ -1,7 +1,6 @@
 package com.dungeon.game.level;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.dungeon.engine.render.Material;
 
 public class Tile {

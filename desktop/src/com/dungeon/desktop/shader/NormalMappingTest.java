@@ -68,13 +68,12 @@ public class NormalMappingTest extends ApplicationAdapter implements InputProces
 
 	@Override
 	public void render() {
-		shaderProgram.begin();
+		shaderProgram.bind();
 		shaderProgram.setUniformf("u_lightRange", lightRange * (1 + 0.1f * MathUtils.sin(time * 30)));
 		shaderProgram.setUniformf("u_lightOrigin", lightOrigin);
 		shaderProgram.setUniformf("u_lightColor", color);
 		shaderProgram.setUniformf("u_lightHardness", 1.0f);
 		shaderProgram.setUniformf("u_ambientColor", ambient);
-		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
 		batch.draw(normalMap, 0, 0, bufferSize.x, bufferSize.y);
@@ -153,8 +152,8 @@ public class NormalMappingTest extends ApplicationAdapter implements InputProces
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		if (amount > 0) {
+	public boolean scrolled(float amountX, float amountY) {
+		if (amountY > 0) {
 			lightRange *= 1.1;
 		} else {
 			lightRange /= 1.1;

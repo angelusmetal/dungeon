@@ -58,10 +58,9 @@ public class OverlayTextStage implements Renderer {
 				if (text.hasOutline()) {
 					// If outline is enabled, draw the text first using the outline shader
 					batch.end();
-					shaderOutline.begin();
+					shaderOutline.bind();
 					shaderOutline.setUniformf("u_color", new Color(0f, 0f, 0f, text.getColor().a));
 					shaderOutline.setUniformf("u_viewportInverse", new Vector2(1f / viewPort.width, 1f / viewPort.height));
-					shaderOutline.end();
 					batch.setShader(shaderOutline);
 					batch.begin();
 					labelBuffer.draw(batch);

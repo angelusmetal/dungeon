@@ -5,13 +5,7 @@ import com.dungeon.engine.resource.ResourceRepository;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.game.level.RoomPrototype;
 import com.dungeon.game.level.TilePrototype;
-import com.dungeon.game.resource.loader.EntityPrototypeLoader;
-import com.dungeon.game.resource.loader.EnvironmentLoader;
-import com.dungeon.game.resource.loader.LootGenerator;
-import com.dungeon.game.resource.loader.LootGeneratorLoader;
-import com.dungeon.game.resource.loader.RoomPrototypeLoader;
-import com.dungeon.game.resource.loader.TilePrototypeLoader;
-import com.dungeon.game.resource.loader.TilesetLoader;
+import com.dungeon.game.resource.loader.*;
 import com.dungeon.game.tileset.Environment;
 import com.dungeon.game.tileset.Tileset;
 

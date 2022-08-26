@@ -2,28 +2,16 @@ package com.dungeon.desktop.shader;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.render.light.Light2;
-import com.dungeon.engine.render.light.LightRenderer;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class NormalMapShaderTest extends ApplicationAdapter implements InputProcessor {
 
@@ -138,9 +126,8 @@ public class NormalMapShaderTest extends ApplicationAdapter implements InputProc
 //		renderer.drawToScreen();
 
 		Vector2 texelSize = new Vector2(1f / sprite.getTexture().getWidth(), 1f / sprite.getTexture().getHeight());
-		shaderProgram.begin();
+		shaderProgram.bind();
 		shaderProgram.setUniformf("u_texelSize", texelSize);
-		shaderProgram.end();
 		batch.setShader(shaderProgram);
 		batch.begin();
 		sprite.setPosition(200, 200);
@@ -258,7 +245,7 @@ public class NormalMapShaderTest extends ApplicationAdapter implements InputProc
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(float amountX, float amountY) {
 //		if (selectedLight != null) {
 //			if (amount > 0) {
 //				selectedLight.setRange(selectedLight.getRange() * 1.1f);

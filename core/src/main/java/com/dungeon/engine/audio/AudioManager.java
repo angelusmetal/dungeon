@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.util.Rand;
-import com.dungeon.engine.util.automation.TimeGradient;
 import com.dungeon.engine.util.Util;
+import com.dungeon.engine.util.automation.TimeGradient;
 import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.Iterator;

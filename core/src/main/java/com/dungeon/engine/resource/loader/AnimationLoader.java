@@ -3,12 +3,7 @@ package com.dungeon.engine.resource.loader;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.dungeon.engine.render.Material;
-import com.dungeon.engine.resource.LoadingException;
-import com.dungeon.engine.resource.ResourceDescriptor;
-import com.dungeon.engine.resource.ResourceIdentifier;
-import com.dungeon.engine.resource.ResourceLoader;
-import com.dungeon.engine.resource.ResourceRepository;
-import com.dungeon.engine.resource.Resources;
+import com.dungeon.engine.resource.*;
 import com.dungeon.engine.util.ConfigUtil;
 import com.typesafe.config.Config;
 

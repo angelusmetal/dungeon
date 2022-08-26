@@ -1,7 +1,7 @@
 package com.dungeon.game.controller;
 
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
+import com.dungeon.engine.controller.pov.PovDirection;
 import com.dungeon.game.Game;
 import com.dungeon.game.entity.PlayerEntity;
 

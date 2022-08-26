@@ -168,7 +168,7 @@ public class LightRenderer implements Disposable {
 	private void drawSimpleLight(Light2 light) {
 		Vector2 origin = light.getOrigin().cpy().sub(viewPort.cameraX, viewPort.cameraY).scl(viewPort.getScale());
 		// Draw light
-		lightShader.begin();
+		lightShader.bind();
 		lightShader.setUniformf("u_lightRange", light.getRange() * viewPort.getScale());
 		if (useNormalMapping) {
 			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, light.getZ());
@@ -179,7 +179,6 @@ public class LightRenderer implements Disposable {
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", Color.BLACK);
-		lightShader.end();
 		batch.setShader(lightShader);
 		batch.begin();
 		batch.draw(lightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
