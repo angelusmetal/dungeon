@@ -73,7 +73,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private LinkedList<Light2> lights = new LinkedList<>();
 	private List<Float> geometry = new ArrayList<>();
 	private final LightRenderer renderer = new LightRenderer();
-	private boolean useNormalMapping = false;
+	private boolean useNormalMapping = true;
 	private ViewPort viewPort;
 
 
