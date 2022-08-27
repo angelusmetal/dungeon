@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.List;
 
@@ -62,11 +62,11 @@ public class LightRenderer2 implements Disposable {
 	private TextureRegion lightTexture;
 
 	private OrthographicCamera camera;
-	private OrthographicCamera hudCamera;
+	private Matrix4 ortho = new Matrix4();
 
-	public void create (OrthographicCamera camera, OrthographicCamera hudCamera, FrameBuffer normalMap) {
+	public void create (OrthographicCamera camera, FrameBuffer normalMap) {
 		this.camera = camera;
-		this.hudCamera = hudCamera;
+		ortho.setToOrtho2D(0, 0, camera.viewportWidth, camera.viewportHeight);
 		// Single-pixel texture for drawing triangles
 		Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		p.drawPixel(0, 0, Color.rgba8888(1f, 1f, 1f,1f));
@@ -85,10 +85,12 @@ public class LightRenderer2 implements Disposable {
 		// Shadow shader
 		shadowShader = Resources.shaders.get("df_vertex.glsl|light/penumbra.glsl");
 
-		// Light buffer, texture and shader (for rendering penumbra)
+		// Buffer containing all lights
 		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) camera.viewportWidth, (int) camera.viewportHeight, false);
 		allLightsTexture = new TextureRegion(allLightsBuffer.getColorBufferTexture());
 		allLightsTexture.flip(false, true);
+
+		// Buffer containing the current light (this is only necessary when rendering stencil shadows)
 		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) camera.viewportWidth, (int) camera.viewportHeight, false);
 		currentLightTexture = new TextureRegion(currentLightBuffer.getColorBufferTexture());
 		currentLightTexture.flip(false, true);
@@ -128,17 +130,21 @@ public class LightRenderer2 implements Disposable {
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
-		// Draw all lights that do not cast shadows directly on the all-lights buffer (cheaper)
 		allLightsBuffer.begin();
 		Gdx.gl.glClearColor(ambient.r, ambient.g, ambient.b, ambient.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
+
+		// Draw all lights that do not cast shadows directly on the all-lights buffer (cheaper)
+		lightShader.bind();
+		batch.setShader(lightShader);
+		batch.setProjectionMatrix(ortho);
 		lights.stream()
 				.filter(light -> !light.castsShadows())
 				.forEach(this::drawSimpleLight);
 		allLightsBuffer.end();
 
-		// Draw all lights that cast shadows in a separate buffer (more expensive)
+		// Draw all lights that cast shadows in an intermediate buffer (more expensive)
 		lights.stream()
 				.filter(Light3::castsShadows)
 				.forEach(light -> drawLight(light, occludingSegments));
@@ -162,9 +168,8 @@ public class LightRenderer2 implements Disposable {
 //	}
 
 	private void drawSimpleLight(Light3 light) {
-		Vector3 origin = light.getOrigin();
+		Vector3 origin = camera.project(light.getOrigin().cpy());
 		// Draw light
-		lightShader.bind();
 		lightShader.setUniformf("u_lightRange", light.getRange() / camera.zoom);
 		if (useNormalMapping) {
 			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, origin.z);
@@ -175,8 +180,6 @@ public class LightRenderer2 implements Disposable {
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", Color.BLACK);
-		batch.setShader(lightShader);
-		batch.setProjectionMatrix(hudCamera.combined);
 		batch.begin();
 		batch.draw(lightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
 		batch.end();
