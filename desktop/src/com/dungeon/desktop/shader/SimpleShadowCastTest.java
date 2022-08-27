@@ -80,10 +80,11 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public void create () {
 		viewPort = new ViewPort(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 1);
-		normalMap = new Texture("core/assets/normal_map.png");
+		normalMap = new Texture("normal_map.png");
 		// Normal map buffer
 		normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		renderer.create(viewPort, normalMapBuffer);
+		renderer.setUseNormalMapping(useNormalMapping);
 
 		Gdx.input.setInputProcessor(this);
 		Segments.rectangle(geometry, 800f, 1000f, 350f, 550f);

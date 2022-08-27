@@ -2,6 +2,7 @@ package com.dungeon.engine.resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -112,6 +113,11 @@ public class Resources {
 	}
 
 	private static ShaderProgram computeShader(String name) {
+		FileHandle[] files = Gdx.files.local("").list();
+		for(FileHandle file: files) {
+			// do something interesting here
+		}
+
 		String[] scripts = name.split("\\|");
 		ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal("shaders/" + scripts[0]).readString(), Gdx.files.internal("shaders/" + scripts[1]).readString());
 		if (!shaderProgram.isCompiled()) {
