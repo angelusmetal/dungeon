@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.resource.Resources;
 
@@ -110,7 +111,7 @@ public class LightRenderer2 implements Disposable {
 		allLightsBuffer.dispose();
 	}
 
-	public void render(List<Light3> lights, List<Float> occludingSegments) {
+	public void render(List<RenderLight> lights, List<Float> occludingSegments) {
 
 		// Clear main buffer
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
@@ -146,8 +147,8 @@ public class LightRenderer2 implements Disposable {
 
 		// Draw all lights that cast shadows in an intermediate buffer (more expensive)
 		lights.stream()
-				.filter(Light3::castsShadows)
-				.forEach(light -> drawLight(light, occludingSegments));
+				.filter(RenderLight::castsShadows)
+				.forEach(light -> drawComplexLight(light, occludingSegments));
 
 		if (renderGeometry) {
 			drawGeometry(lights, occludingSegments);
@@ -158,16 +159,8 @@ public class LightRenderer2 implements Disposable {
 	public void drawToScreen(SpriteBatch spriteBatch) {
 		spriteBatch.draw(allLightsTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
 	}
-//
-//	public void drawToCamera() {
-//		// Draw the resulting light buffer onto the screen
-//		batch.begin();
-//		batch.setShader(null);
-//		batch.draw(allLightsTexture, 0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
-//		batch.end();
-//	}
 
-	private void drawSimpleLight(Light3 light) {
+	private void drawSimpleLight(RenderLight light) {
 		Vector3 origin = camera.project(light.getOrigin().cpy());
 		// Draw light
 		lightShader.setUniformf("u_lightRange", light.getRange() / camera.zoom);
@@ -185,14 +178,18 @@ public class LightRenderer2 implements Disposable {
 		batch.end();
 	}
 
-	private void drawLight(Light3 light, List<Float> segments) {
+	private void drawComplexLight(RenderLight light, List<Float> segments) {
 		currentLightBuffer.begin();
 
 		// Clear light buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0f, 0f, 0f, 0f);
+//		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+//		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		lightShader.bind();
+		batch.setShader(lightShader);
+		batch.setProjectionMatrix(ortho);
 		drawSimpleLight(light);
 
 		// Draw shadows
@@ -233,12 +230,12 @@ public class LightRenderer2 implements Disposable {
 			}
 		}
 		batch.end();
-		batch.setProjectionMatrix(camera.combined);
 		currentLightBuffer.end();
 
 		// Blend the light buffer onto the all-lights buffer
 		allLightsBuffer.begin();
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
+		batch.setProjectionMatrix(ortho);
 		batch.begin();
 		batch.setShader(null);
 		// Set fixed projection here
@@ -247,14 +244,14 @@ public class LightRenderer2 implements Disposable {
 		allLightsBuffer.end();
 	}
 
-	private void drawGeometry(List<Light3> lights, List<Float> segments) {
+	private void drawGeometry(List<RenderLight> lights, List<Float> segments) {
 		// Draw geometry
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(segmentColor);
 		for (int i = 0; i < segments.size() - 3; i += 4) {
 			shapeRenderer.line(segments.get(i), segments.get(i+1), segments.get(i+2), segments.get(i+3));
 		}
-		for (Light3 light : lights) {
+		for (RenderLight light : lights) {
 			shapeRenderer.circle(light.getOrigin().x, light.getOrigin().y, light.getRadius());
 		}
 		shapeRenderer.end();

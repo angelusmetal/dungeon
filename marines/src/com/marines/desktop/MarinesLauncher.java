@@ -14,15 +14,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.dungeon.engine.render.light.Light3;
 import com.dungeon.engine.render.light.LightRenderer2;
+import com.dungeon.engine.render.light.RenderLight;
 import com.dungeon.engine.resource.Resources;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.abs;
@@ -42,8 +42,10 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
     private Texture floor;
     private Texture normalMap;
     private FrameBuffer normalMapBuffer;
-    private List<Light3> lights;
+    private List<RenderLight> lights;
     private Matrix4 ortho = new Matrix4();
+    private Vector3 mouseCursor = new Vector3();
+    private List<Float> geometry = new ArrayList<>();
 
     public MarinesLauncher() {
     }
@@ -75,8 +77,13 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         Controllers.addListener(this);
         Gdx.input.setInputProcessor(this);
         lights = new ArrayList<>();
-        lights.add(new Light3(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 6f), 400, 600, Color.ORANGE, false));
-        lights.add(new Light3(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 6f), 400, 600, Color.BLUE, false));
+        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 6f), 400, 10, Color.ORANGE, true));
+        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 6f), 400, 10, Color.BLUE, true));
+
+        rectangle(geometry, 800f, 1000f, 650f, 850f);
+        circle(geometry, new Vector2(200f, 700f), 100f, 20);
+        circle(geometry, new Vector2(1400f, 300f), 50f, 20);
+        circle(geometry, new Vector2(1300f, 800f), 50f, 3);
     }
 
     @Override
@@ -90,6 +97,10 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         camera.zoom *= 1 + zoom * 0.01;
         camera.translate(translateX, -translateY, 0);
         camera.update();
+        // Update light
+        lights.get(1).getOrigin().set(mouseCursor);
+        camera.unproject(lights.get(1).getOrigin());
+
         float left = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         float right = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
         float down = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
@@ -113,7 +124,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         spriteBatch.end();
         normalMapBuffer.end();
 
-        lightRenderer.render(lights, Collections.emptyList());
+        lightRenderer.render(lights, geometry);
 
         spriteBatch.begin();
         spriteBatch.setProjectionMatrix(ortho);
@@ -171,8 +182,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        lights.get(1).getOrigin().set(screenX, screenY, 6f);
-        camera.unproject(lights.get(1).getOrigin());
+        mouseCursor.set(screenX, screenY, 0f);
         return true;
     }
 
@@ -211,6 +221,41 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
             return value;
         } else {
             return 0f;
+        }
+    }
+
+    public static void rectangle(List<Float> geometry, float left, float right, float bottom, float top) {
+        geometry.add(left);
+        geometry.add(bottom);
+        geometry.add(right);
+        geometry.add(bottom);
+
+        geometry.add(right);
+        geometry.add(bottom);
+        geometry.add(right);
+        geometry.add(top);
+
+        geometry.add(right);
+        geometry.add(top);
+        geometry.add(left);
+        geometry.add(top);
+
+        geometry.add(left);
+        geometry.add(top);
+        geometry.add(left);
+        geometry.add(bottom);
+    }
+
+    public static void circle(List<Float> geometry, Vector2 origin, float radius, int segments) {
+        Vector2 step = new Vector2(0, radius);
+        Vector2 vertex = origin.cpy().add(step);
+        for (int i = 0; i < segments; ++i) {
+            geometry.add(vertex.x);
+            geometry.add(vertex.y);
+            step.rotate(360f / segments);
+            vertex.set(origin).add(step);
+            geometry.add(vertex.x);
+            geometry.add(vertex.y);
         }
     }
 }

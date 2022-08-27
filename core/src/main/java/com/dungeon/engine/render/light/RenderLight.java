@@ -1,22 +1,29 @@
 package com.dungeon.engine.render.light;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.Objects;
 
-public class Light3 {
+public class RenderLight {
 	private Vector3 origin;
-	private float radius;
 	private float range;
+	private float radius;
 	private Color color;
 	private final boolean castsShadows;
 
-	public Light3(Vector3 origin, float radius, float range, Color color, boolean castsShadows) {
+	/**
+	 * Create a light for rendering
+	 * @param origin Origin of the light
+	 * @param range How many units it reaches
+	 * @param radius Radius of the light emitting body
+	 * @param color Color of light
+	 * @param castsShadows Whether this light casts stencil shadows (more expensive, as it uses an intermediate buffer)
+	 */
+	public RenderLight(Vector3 origin, float range, float radius, Color color, boolean castsShadows) {
 		this.origin = origin.cpy();
-		this.radius = radius;
 		this.range = range;
+		this.radius = radius;
 		this.color = color;
 		this.castsShadows = castsShadows;
 	}
@@ -25,20 +32,20 @@ public class Light3 {
 		return origin;
 	}
 
-	public float getRadius() {
-		return radius;
-	}
-
-	public void setRadius(float radius) {
-		this.radius = radius;
-	}
-
 	public float getRange() {
 		return range;
 	}
 
 	public void setRange(float range) {
 		this.range = range;
+	}
+
+	public float getRadius() {
+		return radius;
+	}
+
+	public void setRadius(float radius) {
+		this.radius = radius;
 	}
 
 	public Color getColor() {
@@ -53,24 +60,21 @@ public class Light3 {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Light3 light = (Light3) o;
-		return Float.compare(light.radius, radius) == 0 &&
-				Float.compare(light.range, range) == 0 &&
-				Objects.equals(origin, light.origin) &&
-				Objects.equals(color, light.color);
+		RenderLight that = (RenderLight) o;
+		return Float.compare(that.radius, radius) == 0 && Float.compare(that.range, range) == 0 && castsShadows == that.castsShadows && origin.equals(that.origin) && Objects.equals(color, that.color);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(origin, radius, range, color);
+		return Objects.hash(origin, radius, range, color, castsShadows);
 	}
 
 	@Override
 	public String toString() {
 		return "Light{" +
 				"origin=" + origin +
-				", radius=" + radius +
 				", range=" + range +
+				", radius=" + radius +
 				", color=" + color +
 				'}';
 	}
