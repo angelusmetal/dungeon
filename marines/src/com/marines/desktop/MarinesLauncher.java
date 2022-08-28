@@ -85,13 +85,13 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         Controllers.addListener(this);
         Gdx.input.setInputProcessor(this);
         lights = new ArrayList<>();
-        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 400, 10, Color.ORANGE, true));
-        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 200, 10, new Color(.2f, .2f, .4f, 1f), true));
+        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 800, 10, Color.ORANGE, true));
+        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 600, 10, new Color(.2f, .2f, .4f, 1f), true));
         // Lights with shadow
         for (int i = 0; i < 10; ++i) {
             int x = random(-10, 10);
             int y = random(-10, 10);
-            int range = random(200, 600);
+            int range = random(600, 1000);
             Color color = new Color(random(0f, 1f), random(0f, 1f), random(0f, 1f), random(0f, 1f));
             lights.add(new RenderLight(new Vector3(x * 100 + 50, y * 100 + 50, 100f), range, 10, color, true));
         }
@@ -301,7 +301,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         for (int i = 0; i < segments; ++i) {
             geometry.add(vertex.x);
             geometry.add(vertex.y);
-            step.rotate(360f / segments);
+            step.rotateDeg(360f / segments);
             vertex.set(origin).add(step);
             geometry.add(vertex.x);
             geometry.add(vertex.y);

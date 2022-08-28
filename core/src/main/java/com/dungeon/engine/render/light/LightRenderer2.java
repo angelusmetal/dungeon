@@ -1,6 +1,5 @@
 package com.dungeon.engine.render.light;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -189,6 +188,7 @@ public class LightRenderer2 implements Disposable {
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", Color.BLACK);
+		lightShader.setUniformf("u_decay", light.getDecay());
 		batch.begin();
 		batch.draw(lightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
 		batch.end();

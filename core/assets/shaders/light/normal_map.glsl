@@ -12,6 +12,7 @@ uniform vec4 u_lightColor;
 uniform float u_lightHardness;
 uniform vec4 u_ambientColor;
 uniform float u_specular;
+uniform float u_decay;
 
 varying vec4 v_color;
 varying vec2 v_texCoord;
@@ -29,7 +30,7 @@ void main() {
 
 	float dist = length(gl_FragCoord.xy - u_lightOrigin.xy);
 	//luminosity = clamp((1.0 - dist / u_lightRange) * u_lightHardness, 0.0, 1.0);
-	float luminosity = pow(u_lightHardness, dist / u_lightRange * 4.0);
+	float luminosity = pow(u_lightHardness, u_decay * dist / u_lightRange);
 
 	//RGB of our normal map
 	vec3 NormalMap = texture2D(u_texture, v_texCoord.xy).rgb;
