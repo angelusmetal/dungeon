@@ -8,10 +8,10 @@ import java.util.Objects;
 import static java.lang.Math.pow;
 
 public class RenderLight {
-	private Vector3 origin;
+	private final Vector3 origin;
 	private float range;
 	private float radius;
-	private Color color;
+	private final Color color;
 	private final boolean castsShadows;
 	private float hardness;
 	private float decay;

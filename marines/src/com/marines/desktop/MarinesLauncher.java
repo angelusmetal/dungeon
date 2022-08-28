@@ -48,7 +48,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
     private Texture floor;
     private Texture normalMap;
     private FrameBuffer normalMapBuffer;
-    private List<RenderLight> lights = new ArrayList<>();
+    private List<Light> lights = new ArrayList<>();
     private List<RenderLight> lightsToRender = new ArrayList<>();
     private final Matrix4 ortho = new Matrix4();
     private final Vector3 mouseCursor = new Vector3();
@@ -58,6 +58,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
     private boolean addSpecular = true;
     private float left, right, down, up;
     private float leftLight, rightLight, downLight, upLight;
+    private float time, lastUpdate;
 
     private static class Obstacle {
         Vector2 origin;
@@ -67,6 +68,24 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
             this.origin = origin;
             this.radius = radius;
             circle(geometry, origin, radius, 10);
+        }
+    }
+    private static class Light {
+        final Vector3 origin;
+        float radius;
+        Color color;
+        final RenderLight renderLight;
+        public Light(RenderLight light) {
+            this.renderLight = light;
+            this.radius = light.getRadius();
+            this.origin = light.getOrigin().cpy();
+            this.color = light.getColor().cpy();
+        }
+        public void update() {
+            float dim = random(0.98f, 1.02f);
+            renderLight.setRadius(dim * radius);
+            renderLight.getColor().set(color);
+            renderLight.getColor().mul(dim);
         }
     }
 
@@ -101,15 +120,15 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         lightRenderer.setUseNormalMapping(true);
         Controllers.addListener(this);
         Gdx.input.setInputProcessor(this);
-        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 800, 10, Color.ORANGE, true));
-        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 600, 10, new Color(.1f, .1f, .2f, 1f), true));
+        lights.add(new Light(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 800, 10, Color.ORANGE, true)));
+        lights.add(new Light(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 600, 10, new Color(.1f, .1f, .2f, 1f), true)));
         // Lights with shadow
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 20; ++i) {
             float x = random(-10f, 10f);
             float y = random(-10f, 10f);
             int range = random(600, 1000);
             Color color = new Color(random(0f, 1f), random(0f, 1f), random(0f, 1f), random(0f, 1f));
-            lights.add(new RenderLight(new Vector3(x * 100 + 50, y * 100 + 50, 100f), range, 10, color, true));
+            lights.add(new Light(new RenderLight(new Vector3(x * 100 + 50, y * 100 + 50, 100f), range, 10, color, true)));
         }
 
         for (int i = -10; i < 10; ++i) {
@@ -130,18 +149,24 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
 
     @Override
     public void render() {
+        time += Gdx.graphics.getDeltaTime();
+        if (time - lastUpdate > 0.1f) {
+            lights.forEach(Light::update);
+            lastUpdate = time;
+        }
+
         Controller current = Controllers.getCurrent();
         float translateX = controllerNorm(current.getAxis(current.getMapping().axisLeftX)) * camera.zoom * CAMERA_SPEED;
         float translateY = controllerNorm(current.getAxis(current.getMapping().axisLeftY)) * camera.zoom * CAMERA_SPEED;
         float zoom = controllerNorm(current.getAxis(current.getMapping().axisRightY));
         float lightHeight = controllerNorm(current.getAxis(current.getMapping().axisRightX));
-        lights.get(0).getOrigin().z += lightHeight;
+        lights.get(0).renderLight.getOrigin().z += lightHeight;
         camera.zoom *= 1 + zoom * 0.01;
         camera.translate(translateX, -translateY, 0);
         camera.update();
         // Update light
-        lights.get(1).getOrigin().set(mouseCursor);
-        camera.unproject(lights.get(1).getOrigin());
+        lights.get(1).renderLight.getOrigin().set(mouseCursor);
+        camera.unproject(lights.get(1).renderLight.getOrigin());
 
         leftLight = left = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
         rightLight = right = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
@@ -177,13 +202,13 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         normalMapBuffer.end();
 
         lightsToRender.clear();
-        for (RenderLight light : lights) {
-            if (lightInViewport(light)) {
-                lightsToRender.add(light);
-                leftLight = min(light.getOrigin().x, leftLight);
-                rightLight = max(light.getOrigin().x, rightLight);
-                downLight = min(light.getOrigin().y, downLight);
-                upLight = max(light.getOrigin().y, upLight);
+        for (Light light : lights) {
+            if (lightInViewport(light.renderLight)) {
+                lightsToRender.add(light.renderLight);
+                leftLight = min(light.renderLight.getOrigin().x, leftLight);
+                rightLight = max(light.renderLight.getOrigin().x, rightLight);
+                downLight = min(light.renderLight.getOrigin().y, downLight);
+                upLight = max(light.renderLight.getOrigin().y, upLight);
             }
         }
 
