@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.resource.Resources;
@@ -63,7 +64,7 @@ public class LightRenderer2 implements Disposable {
 	private TextureRegion lightTexture;
 
 	private OrthographicCamera camera;
-	private Matrix4 ortho = new Matrix4();
+	private final Matrix4 ortho = new Matrix4();
 
 	public void create (OrthographicCamera camera, FrameBuffer normalMap) {
 		this.camera = camera;
@@ -111,11 +112,8 @@ public class LightRenderer2 implements Disposable {
 		allLightsBuffer.dispose();
 	}
 
-	public void render(List<RenderLight> lights, List<Float> occludingSegments) {
+	public void render(List<RenderLight> lights, FloatArray occludingSegments) {
 
-		// Clear main buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int oldSrcFunc = batch.getBlendSrcFunc();
 		int oldDstFunc = batch.getBlendDstFunc();
 
@@ -132,8 +130,7 @@ public class LightRenderer2 implements Disposable {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
 		allLightsBuffer.begin();
-		Gdx.gl.glClearColor(ambient.r, ambient.g, ambient.b, ambient.a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(ambient.r, ambient.g, ambient.b, ambient.a);
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 
 		// Draw all lights that do not cast shadows directly on the all-lights buffer (cheaper)
@@ -178,13 +175,11 @@ public class LightRenderer2 implements Disposable {
 		batch.end();
 	}
 
-	private void drawComplexLight(RenderLight light, List<Float> segments) {
+	private void drawComplexLight(RenderLight light, FloatArray segments) {
 		currentLightBuffer.begin();
 
 		// Clear light buffer
 		ScreenUtils.clear(0f, 0f, 0f, 0f);
-//		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-//		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		lightShader.bind();
@@ -204,7 +199,7 @@ public class LightRenderer2 implements Disposable {
 		Vector2 p2 = new Vector2();
 		Vector2 u1 = new Vector2();
 		Vector2 u2 = new Vector2();
-		for (int i = 0; i < segments.size() - 3; i += 4) {
+		for (int i = 0; i < segments.size - 3; i += 4) {
 			Vector2 origin2 = new Vector2(light.getOrigin().x, light.getOrigin().y);
 			s1.set(segments.get(i), segments.get(i+1));
 			s2.set(segments.get(i+2), segments.get(i+3));
@@ -244,11 +239,11 @@ public class LightRenderer2 implements Disposable {
 		allLightsBuffer.end();
 	}
 
-	private void drawGeometry(List<RenderLight> lights, List<Float> segments) {
+	private void drawGeometry(List<RenderLight> lights, FloatArray segments) {
 		// Draw geometry
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(segmentColor);
-		for (int i = 0; i < segments.size() - 3; i += 4) {
+		for (int i = 0; i < segments.size - 3; i += 4) {
 			shapeRenderer.line(segments.get(i), segments.get(i+1), segments.get(i+2), segments.get(i+3));
 		}
 		for (RenderLight light : lights) {
@@ -259,8 +254,8 @@ public class LightRenderer2 implements Disposable {
 
 	/**
 	 * Find orientation of ordered triplet (p, q, r)
-	 * See: https://www.geeksforgeeks.org/orientation-3-ordered-points/
-	 * @return 0 if colinear, > 0 if clockwise, < 0 if counter clockwise
+	 * See: <a href="https://www.geeksforgeeks.org/orientation-3-ordered-points/">...</a>
+	 * @return 0 if colinear, > 0 if clockwise, < 0 if counterclockwise
 	 */
 	float orientation(Vector2 p, Vector2 q, Vector2 r) {
 		return  (q.y - p.y) * (r.x - q.x) -
