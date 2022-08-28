@@ -157,6 +157,25 @@ public class LightRenderer2 implements Disposable {
 		spriteBatch.draw(allLightsTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
 	}
 
+	public void resize(int width, int height, FrameBuffer normalMapBuffer) {
+		allLightsBuffer.dispose();
+		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+		allLightsTexture = new TextureRegion(allLightsBuffer.getColorBufferTexture());
+		allLightsTexture.flip(false, true);
+
+		// Buffer containing the current light (this is only necessary when rendering stencil shadows)
+		currentLightBuffer.dispose();
+		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+		currentLightTexture = new TextureRegion(currentLightBuffer.getColorBufferTexture());
+		currentLightTexture.flip(false, true);
+
+		this.normalMapBuffer = normalMapBuffer;
+		normalMapTexture = new TextureRegion(normalMapBuffer.getColorBufferTexture());
+		normalMapTexture.flip(false, true);
+
+		ortho.setToOrtho2D(0, 0, width, height);
+	}
+
 	private void drawSimpleLight(RenderLight light) {
 		Vector3 origin = camera.project(light.getOrigin().cpy());
 		// Draw light

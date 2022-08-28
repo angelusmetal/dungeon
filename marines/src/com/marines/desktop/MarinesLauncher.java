@@ -18,9 +18,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dungeon.engine.render.light.LightRenderer2;
 import com.dungeon.engine.render.light.RenderLight;
 import com.dungeon.engine.resource.Resources;
@@ -28,6 +28,7 @@ import com.dungeon.engine.resource.Resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.badlogic.gdx.math.MathUtils.random;
 import static java.lang.Math.abs;
 
 public class MarinesLauncher extends ApplicationAdapter implements InputProcessor, ControllerListener {
@@ -35,7 +36,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
     public static final float CAMERA_SPEED = 5f;
     public static final float CONTROLLER_DEADZONE = 0.2f;
 
-    private Viewport viewport;
+    private ExtendViewport viewport;
     private ShapeRenderer shapeRenderer;
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
@@ -59,7 +60,6 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1800;
         config.height = 900;
-        config.resizable = false;
         new LwjglApplication(new MarinesLauncher(), config);
     }
 
@@ -69,9 +69,12 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false);
+        camera.position.set(Vector3.Zero);
+        camera.zoom = 0.15f;
         ortho.setToOrtho2D(0, 0, camera.viewportWidth, camera.viewportHeight);
         viewport = new ExtendViewport(1800, 900, camera);
         viewport.update(1800, 900);
+        viewport.setScaling(Scaling.contain);
         font = new BitmapFont();
         floor = new Texture("gfx/cobblestone_floor_a.png");
         normalMap = new Texture("gfx/normal_map/cobblestone_floor_a.png");
@@ -84,16 +87,33 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         lights = new ArrayList<>();
         lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 400, 10, Color.ORANGE, true));
         lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 200, 10, new Color(.2f, .2f, .4f, 1f), true));
+        // Lights with shadow
+        for (int i = 0; i < 10; ++i) {
+            int x = random(-10, 10);
+            int y = random(-10, 10);
+            int range = random(200, 600);
+            Color color = new Color(random(0f, 1f), random(0f, 1f), random(0f, 1f), random(0f, 1f));
+            lights.add(new RenderLight(new Vector3(x * 100 + 50, y * 100 + 50, 100f), range, 10, color, true));
+        }
 
         rectangle(geometry, 800f, 1000f, 650f, 850f);
         circle(geometry, new Vector2(200f, 700f), 100f, 20);
         circle(geometry, new Vector2(1400f, 300f), 50f, 20);
         circle(geometry, new Vector2(1300f, 800f), 50f, 3);
-        for (int i = -50; i < 50; ++i) {
-            for (int j = -50; j < 50; ++j) {
+        for (int i = -10; i < 10; ++i) {
+            for (int j = -10; j < 10; ++j) {
                 circle(geometry, new Vector2(i * 100, j * 100f), 10f, 6);
             }
         }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        ortho.setToOrtho2D(0, 0, camera.viewportWidth, camera.viewportHeight);
+        normalMapBuffer.dispose();
+        normalMapBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+        lightRenderer.resize(width, height, normalMapBuffer);
     }
 
     @Override
@@ -157,24 +177,20 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
             lightRenderer.drawToScreen(spriteBatch);
         }
         spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        font.draw(spriteBatch, "Position: " + camera.position + ", width: " + camera.viewportWidth + ", height: " + camera.viewportHeight + ", zoom: " + camera.zoom, 0, 890);
-        font.draw(spriteBatch, "Left: " + left + ", right: " + right + ", down: " + down + ", up: " + up, 0, 870);
-        font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, 850);
+        font.draw(spriteBatch, "Position: " + camera.position + ", width: " + camera.viewportWidth + ", height: " + camera.viewportHeight + ", zoom: " + camera.zoom, 0, viewport.getScreenHeight() - 10);
+        font.draw(spriteBatch, "Left: " + left + ", right: " + right + ", down: " + down + ", up: " + up, 0,  viewport.getScreenHeight() - 30);
+        font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0,  viewport.getScreenHeight() - 50);
+        font.draw(spriteBatch, "Viewport width: " + viewport.getCamera().viewportWidth + ", height: " + viewport.getCamera().viewportHeight + ", Screen width: " + Gdx.graphics.getWidth() + ", height: " + Gdx.graphics.getHeight(), 0,  viewport.getScreenHeight() - 70);
         spriteBatch.end();
     }
 
-
-   	@Override
-	public void resize(int width, int height) {
-        viewport.update(width, height);
-        // TODO recreate normalMapBuffer with the new size
-	}
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
         spriteBatch.dispose();
         normalMapBuffer.dispose();
+        lightRenderer.dispose();
         Resources.dispose();
     }
 
