@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.badlogic.gdx.math.MathUtils.random;
+import static java.lang.Float.max;
+import static java.lang.Float.min;
 import static java.lang.Math.abs;
 
 public class MarinesLauncher extends ApplicationAdapter implements InputProcessor, ControllerListener {
@@ -46,12 +48,27 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
     private Texture floor;
     private Texture normalMap;
     private FrameBuffer normalMapBuffer;
-    private List<RenderLight> lights;
+    private List<RenderLight> lights = new ArrayList<>();
+    private List<RenderLight> lightsToRender = new ArrayList<>();
     private final Matrix4 ortho = new Matrix4();
     private final Vector3 mouseCursor = new Vector3();
+    private final ArrayList<Obstacle> obstacles = new ArrayList<>();
     private final FloatArray geometry = new FloatArray();
     private boolean blendLight = true;
     private boolean addSpecular = true;
+    private float left, right, down, up;
+    private float leftLight, rightLight, downLight, upLight;
+
+    private static class Obstacle {
+        Vector2 origin;
+        float radius;
+        FloatArray geometry = new FloatArray();
+        public Obstacle(Vector2 origin, float radius) {
+            this.origin = origin;
+            this.radius = radius;
+            circle(geometry, origin, radius, 10);
+        }
+    }
 
     public MarinesLauncher() {
     }
@@ -84,25 +101,20 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         lightRenderer.setUseNormalMapping(true);
         Controllers.addListener(this);
         Gdx.input.setInputProcessor(this);
-        lights = new ArrayList<>();
         lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 800, 10, Color.ORANGE, true));
-        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 600, 10, new Color(.2f, .2f, .4f, 1f), true));
+        lights.add(new RenderLight(new Vector3(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 100f), 600, 10, new Color(.1f, .1f, .2f, 1f), true));
         // Lights with shadow
         for (int i = 0; i < 10; ++i) {
-            int x = random(-10, 10);
-            int y = random(-10, 10);
+            float x = random(-10f, 10f);
+            float y = random(-10f, 10f);
             int range = random(600, 1000);
             Color color = new Color(random(0f, 1f), random(0f, 1f), random(0f, 1f), random(0f, 1f));
             lights.add(new RenderLight(new Vector3(x * 100 + 50, y * 100 + 50, 100f), range, 10, color, true));
         }
 
-        rectangle(geometry, 800f, 1000f, 650f, 850f);
-        circle(geometry, new Vector2(200f, 700f), 100f, 20);
-        circle(geometry, new Vector2(1400f, 300f), 50f, 20);
-        circle(geometry, new Vector2(1300f, 800f), 50f, 3);
         for (int i = -10; i < 10; ++i) {
             for (int j = -10; j < 10; ++j) {
-                circle(geometry, new Vector2(i * 100, j * 100f), 10f, 6);
+                obstacles.add(new Obstacle(new Vector2(i * 100, j * 100), 10f));
             }
         }
     }
@@ -131,10 +143,10 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         lights.get(1).getOrigin().set(mouseCursor);
         camera.unproject(lights.get(1).getOrigin());
 
-        float left = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
-        float right = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
-        float down = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
-        float up = camera.position.y + camera.viewportHeight / 2 * camera.zoom;
+        leftLight = left = camera.position.x - camera.viewportWidth / 2 * camera.zoom;
+        rightLight = right = camera.position.x + camera.viewportWidth / 2 * camera.zoom;
+        downLight = down = camera.position.y - camera.viewportHeight / 2 * camera.zoom;
+        upLight = up = camera.position.y + camera.viewportHeight / 2 * camera.zoom;
 
         int leftTile = (int) left / normalMap.getWidth() - 1;
         int rightTile = (int) right / normalMap.getWidth() + 1;
@@ -164,7 +176,25 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         spriteBatch.end();
         normalMapBuffer.end();
 
-        lightRenderer.render(lights, geometry);
+        lightsToRender.clear();
+        for (RenderLight light : lights) {
+            if (lightInViewport(light)) {
+                lightsToRender.add(light);
+                leftLight = min(light.getOrigin().x, leftLight);
+                rightLight = max(light.getOrigin().x, rightLight);
+                downLight = min(light.getOrigin().y, downLight);
+                upLight = max(light.getOrigin().y, upLight);
+            }
+        }
+
+        geometry.clear();
+        for (Obstacle obstacle : obstacles) {
+            if (obstacleInViewport(obstacle)) {
+                geometry.addAll(obstacle.geometry);
+            }
+        }
+
+        lightRenderer.render(lightsToRender, geometry);
 
         spriteBatch.begin();
         spriteBatch.setProjectionMatrix(ortho);
@@ -180,7 +210,7 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         font.draw(spriteBatch, "Position: " + camera.position + ", width: " + camera.viewportWidth + ", height: " + camera.viewportHeight + ", zoom: " + camera.zoom, 0, viewport.getScreenHeight() - 10);
         font.draw(spriteBatch, "Left: " + left + ", right: " + right + ", down: " + down + ", up: " + up, 0,  viewport.getScreenHeight() - 30);
         font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0,  viewport.getScreenHeight() - 50);
-        font.draw(spriteBatch, "Viewport width: " + viewport.getCamera().viewportWidth + ", height: " + viewport.getCamera().viewportHeight + ", Screen width: " + Gdx.graphics.getWidth() + ", height: " + Gdx.graphics.getHeight(), 0,  viewport.getScreenHeight() - 70);
+        font.draw(spriteBatch, "Lights: " + lightsToRender.size() + ", Geometry: " + geometry.size, 0,  viewport.getScreenHeight() - 70);
         spriteBatch.end();
     }
 
@@ -306,5 +336,19 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
             geometry.add(vertex.x);
             geometry.add(vertex.y);
         }
+    }
+
+    private boolean lightInViewport(RenderLight light) {
+        return light.getOrigin().x >= left - light.getRange()
+                && light.getOrigin().x <= right + light.getRange()
+                && light.getOrigin().y >= down - light.getRange()
+                && light.getOrigin().y <= up + light.getRange();
+    }
+
+    private boolean obstacleInViewport(Obstacle obstacle) {
+        return obstacle.origin.x >= leftLight - obstacle.radius
+                && obstacle.origin.x <= rightLight + obstacle.radius
+                && obstacle.origin.y >= downLight - obstacle.radius
+                && obstacle.origin.y <= upLight + obstacle.radius;
     }
 }
