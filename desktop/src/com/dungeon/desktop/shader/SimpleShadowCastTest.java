@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.light.Light2;
-import com.dungeon.engine.render.light.LightRenderer;
+import com.dungeon.engine.render.light.OldRenderLight;
+import com.dungeon.engine.render.light.LegacyLightRenderer;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.util.Rand;
 import com.dungeon.engine.viewport.ViewPort;
@@ -68,11 +68,11 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	private boolean dragging = false;
 	// Currently drawing geometry
 	private boolean drawing = false;
-	private Light2 selectedLight;
+	private OldRenderLight selectedLight;
 
-	private LinkedList<Light2> lights = new LinkedList<>();
+	private LinkedList<OldRenderLight> lights = new LinkedList<>();
 	private List<Float> geometry = new ArrayList<>();
-	private final LightRenderer renderer = new LightRenderer();
+	private final LegacyLightRenderer renderer = new LegacyLightRenderer();
 	private boolean useNormalMapping = true;
 	private ViewPort viewPort;
 
@@ -92,7 +92,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		Segments.circle(geometry, new Vector2(1400f, 300f), 50f, 20);
 		Segments.circle(geometry, new Vector2(1300f, 800f), 50f, 3);
 //		// Default light
-		lights.add(new Light2(new Vector2(100, 100), 50f, 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f), true));
+		lights.add(new OldRenderLight(new Vector2(100, 100), 50f, 10, 1200, new Color(1.0f, 0.5f, 0.0f, 1.0f), true));
 //		selectedLight = new Light(new Vector2(100, 100), 10f, 1200f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f));
 //		lights.add(selectedLight);
 
@@ -151,12 +151,12 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Input.Keys.NUM_1) {
-			selectedLight = new Light2(viewPort.screenToWorld(cursor), 50f, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), true);
+			selectedLight = new OldRenderLight(viewPort.screenToWorld(cursor), 50f, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), true);
 			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.NUM_2) {
 			lights.remove(selectedLight);
 		} else if (keycode == Input.Keys.NUM_3) {
-			selectedLight = new Light2(viewPort.screenToWorld(cursor), 50f, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), false);
+			selectedLight = new OldRenderLight(viewPort.screenToWorld(cursor), 50f, 10f, 1000f, new Color(Rand.between(0f, 1f), Rand.between(0f, 1f), Rand.between(0f, 1f), 1f), false);
 			lights.add(selectedLight);
 		} else if (keycode == Input.Keys.LEFT) {
 			viewPort.cameraX -= 10;
@@ -194,7 +194,7 @@ public class SimpleShadowCastTest extends ApplicationAdapter implements InputPro
 		if (button == 0) {
 			// Select first light for which cursor is within radius
 			selectedLight = null;
-			for(Light2 light : lights) {
+			for(OldRenderLight light : lights) {
 				System.err.println("Cursor: " + cursor + ", light.origin: " + light.getOrigin() + ", light.radius: " + light.getRadius() + ", distance: " + cursor.dst(light.getOrigin()));
 				if (viewPort.screenToWorld(cursor).dst(light.getOrigin()) < light.getRadius()) {
 					selectedLight = light;

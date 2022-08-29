@@ -1,20 +1,19 @@
 package com.dungeon.engine.render.light;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.resource.Resources;
-import com.dungeon.engine.viewport.ViewPort;
 
 import java.util.List;
 
@@ -43,13 +42,13 @@ public class LightRenderer implements Disposable {
 	private Texture flatMapTexture;
 
 	// Used for drawing shadow triangles
-	private float[] shadowVertexes = new float[20];
+	private final float[] shadowVertexes = new float[20];
 
 	private final float umbraColor = new Color(0, 0, 0, 1).toFloatBits();
 	private final float penumbraColor = new Color(0, 0, 0, 0).toFloatBits();
 
 	// Not a copy but a reference to the actual color; so if it is changed it gets reflected during rendering
-	private Color ambient = Color.BLACK;
+	private Color ambient = Color.BLACK.cpy();
 	private final Color segmentColor = Color.RED;
 
 	// Render geometry
@@ -63,10 +62,12 @@ public class LightRenderer implements Disposable {
 	// Current light texture region being used
 	private TextureRegion lightTexture;
 
-	private ViewPort viewPort;
+	private OrthographicCamera camera;
+	private final Matrix4 ortho = new Matrix4();
 
-	public void create (ViewPort viewPort, FrameBuffer normalMap) {
-		this.viewPort = viewPort;
+	public void create (OrthographicCamera camera, FrameBuffer normalMap) {
+		this.camera = camera;
+		ortho.setToOrtho2D(0, 0, camera.viewportWidth, camera.viewportHeight);
 		// Single-pixel texture for drawing triangles
 		Pixmap p = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 		p.drawPixel(0, 0, Color.rgba8888(1f, 1f, 1f,1f));
@@ -85,11 +86,13 @@ public class LightRenderer implements Disposable {
 		// Shadow shader
 		shadowShader = Resources.shaders.get("df_vertex.glsl|light/penumbra.glsl");
 
-		// Light buffer, texture and shader (for rendering penumbra)
-		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
+		// Buffer containing all lights
+		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) camera.viewportWidth, (int) camera.viewportHeight, false);
 		allLightsTexture = new TextureRegion(allLightsBuffer.getColorBufferTexture());
 		allLightsTexture.flip(false, true);
-		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, viewPort.width, viewPort.height, false);
+
+		// Buffer containing the current light (this is only necessary when rendering stencil shadows)
+		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int) camera.viewportWidth, (int) camera.viewportHeight, false);
 		currentLightTexture = new TextureRegion(currentLightBuffer.getColorBufferTexture());
 		currentLightTexture.flip(false, true);
 
@@ -108,11 +111,8 @@ public class LightRenderer implements Disposable {
 		allLightsBuffer.dispose();
 	}
 
-	public void render(List<Light2> lights, List<Float> occludingSegments) {
+	public void render(List<RenderLight> lights, FloatArray occludingSegments) {
 
-		// Clear main buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int oldSrcFunc = batch.getBlendSrcFunc();
 		int oldDstFunc = batch.getBlendDstFunc();
 
@@ -125,78 +125,88 @@ public class LightRenderer implements Disposable {
 			lightTexture = simpleLightTexture;
 		}
 
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
-		shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
+		batch.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(camera.combined);
+
+		allLightsBuffer.begin();
+		ScreenUtils.clear(ambient.r, ambient.g, ambient.b, ambient.a);
+		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
 
 		// Draw all lights that do not cast shadows directly on the all-lights buffer (cheaper)
-		allLightsBuffer.begin();
-		Gdx.gl.glClearColor(ambient.r, ambient.g, ambient.b, ambient.a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
+		lightShader.bind();
+		batch.setShader(lightShader);
+		batch.setProjectionMatrix(ortho); // Need to set to ortho since the normal map shader is projecting the light
 		lights.stream()
 				.filter(light -> !light.castsShadows())
 				.forEach(this::drawSimpleLight);
 		allLightsBuffer.end();
 
-		// Draw all lights that cast shadows in a separate buffer (more expensive)
+		// Draw all lights that cast shadows in an intermediate buffer (more expensive)
 		lights.stream()
-				.filter(Light2::castsShadows)
-				.forEach(light -> drawLight(light, occludingSegments));
+				.filter(RenderLight::castsShadows)
+				.forEach(light -> drawComplexLight(light, occludingSegments));
 
 		if (renderGeometry) {
 			drawGeometry(lights, occludingSegments);
 		}
-		batch.setBlendFunction(oldSrcFunc, oldDstFunc);
 	}
 
-	public void drawToScreen() {
-		// Draw the resulting light buffer onto the screen
-		batch.begin();
-		batch.setShader(null);
-		batch.draw(allLightsTexture, 0, 0, viewPort.width, viewPort.height);
-		batch.end();
+	public void drawToScreen(SpriteBatch spriteBatch) {
+		spriteBatch.draw(allLightsTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
 	}
 
-	public void drawToCamera() {
-		// Draw the resulting light buffer onto the screen
-		batch.begin();
-		batch.setShader(null);
-		batch.draw(allLightsTexture, 0, 0, viewPort.cameraWidth, viewPort.cameraHeight);
-		batch.end();
+	public void resize(int width, int height, FrameBuffer normalMapBuffer) {
+		allLightsBuffer.dispose();
+		allLightsBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+		allLightsTexture = new TextureRegion(allLightsBuffer.getColorBufferTexture());
+		allLightsTexture.flip(false, true);
+
+		// Buffer containing the current light (this is only necessary when rendering stencil shadows)
+		currentLightBuffer.dispose();
+		currentLightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
+		currentLightTexture = new TextureRegion(currentLightBuffer.getColorBufferTexture());
+		currentLightTexture.flip(false, true);
+
+		this.normalMapBuffer = normalMapBuffer;
+		normalMapTexture = new TextureRegion(normalMapBuffer.getColorBufferTexture());
+		normalMapTexture.flip(false, true);
+
+		ortho.setToOrtho2D(0, 0, width, height);
 	}
 
-	private void drawSimpleLight(Light2 light) {
-		Vector2 origin = light.getOrigin().cpy().sub(viewPort.cameraX, viewPort.cameraY).scl(viewPort.getScale());
+	private void drawSimpleLight(RenderLight light) {
+		Vector3 origin = camera.project(light.getOrigin().cpy());
 		// Draw light
-		lightShader.bind();
-		lightShader.setUniformf("u_lightRange", light.getRange() * viewPort.getScale());
+		lightShader.setUniformf("u_lightRange", light.getRange() / camera.zoom);
 		if (useNormalMapping) {
-			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, light.getZ());
+			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y, origin.z);
 			lightShader.setUniformf("u_specular", Engine.settings.getSpecular());
 		} else {
-			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y + light.getZ(), 0f);
+			lightShader.setUniformf("u_lightOrigin", origin.x, origin.y + origin.z, 0f);
 		}
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", Color.BLACK);
-		batch.setShader(lightShader);
+		lightShader.setUniformf("u_decay", light.getDecay());
 		batch.begin();
 		batch.draw(lightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
 		batch.end();
 	}
 
-	private void drawLight(Light2 light, List<Float> segments) {
+	private void drawComplexLight(RenderLight light, FloatArray segments) {
 		currentLightBuffer.begin();
 
 		// Clear light buffer
-		Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0f, 0f, 0f, 0f);
 
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		lightShader.bind();
+		batch.setShader(lightShader);
+		batch.setProjectionMatrix(ortho);
 		drawSimpleLight(light);
 
 		// Draw shadows
-		batch.getProjectionMatrix().setToOrtho2D(viewPort.cameraX, viewPort.cameraY, viewPort.cameraWidth, viewPort.cameraHeight);
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.setShader(shadowShader);
 		// Draw each shadow
@@ -207,18 +217,19 @@ public class LightRenderer implements Disposable {
 		Vector2 p2 = new Vector2();
 		Vector2 u1 = new Vector2();
 		Vector2 u2 = new Vector2();
-		for (int i = 0; i < segments.size() - 3; i += 4) {
+		for (int i = 0; i < segments.size - 3; i += 4) {
+			Vector2 origin2 = new Vector2(light.getOrigin().x, light.getOrigin().y);
 			s1.set(segments.get(i), segments.get(i+1));
 			s2.set(segments.get(i+2), segments.get(i+3));
 
-			u1.set(s1).sub(light.getOrigin()).scl(1000f).add(light.getOrigin());
-			u2.set(s2).sub(light.getOrigin()).scl(1000f).add(light.getOrigin());
+			u1.set(s1).sub(origin2).scl(1000f).add(origin2);
+			u2.set(s2).sub(origin2).scl(1000f).add(origin2);
 			// Shadows are only drawn one way - this reduces a lot of artifacts
-			if (orientation(s1, s2, light.getOrigin()) > 0) {
-				normal.set(s1).sub(light.getOrigin()).nor().rotate90(1).scl(light.getRadius());
-				p1.set(s1).sub(light.getOrigin()).add(normal).scl(1000f).add(light.getOrigin());
-				normal.set(s2).sub(light.getOrigin()).nor().rotate90(1).scl(light.getRadius());
-				p2.set(s2).sub(light.getOrigin()).sub(normal).scl(1000f).add(light.getOrigin());
+			if (orientation(s1, s2, origin2) > 0) {
+				normal.set(s1).sub(origin2).nor().rotate90(1).scl(light.getRadius());
+				p1.set(s1).sub(origin2).add(normal).scl(1000f).add(origin2);
+				normal.set(s2).sub(origin2).nor().rotate90(1).scl(light.getRadius());
+				p2.set(s2).sub(origin2).sub(normal).scl(1000f).add(origin2);
 				shadowTriangle(p1.x, p1.y, s1.x, s1.y, u1.x, u1.y, penumbraColor, shadowVertexes);
 				batch.draw(flatMapTexture, shadowVertexes, 0, shadowVertexes.length);
 
@@ -232,27 +243,28 @@ public class LightRenderer implements Disposable {
 			}
 		}
 		batch.end();
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, viewPort.width, viewPort.height);
 		currentLightBuffer.end();
 
 		// Blend the light buffer onto the all-lights buffer
 		allLightsBuffer.begin();
 		batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE);
+		batch.setProjectionMatrix(ortho);
 		batch.begin();
 		batch.setShader(null);
-		batch.draw(currentLightTexture, 0, 0, viewPort.width, viewPort.height);
+		// Set fixed projection here
+		batch.draw(currentLightTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		batch.end();
 		allLightsBuffer.end();
 	}
 
-	private void drawGeometry(List<Light2> lights, List<Float> segments) {
+	private void drawGeometry(List<RenderLight> lights, FloatArray segments) {
 		// Draw geometry
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(segmentColor);
-		for (int i = 0; i < segments.size() - 3; i += 4) {
+		for (int i = 0; i < segments.size - 3; i += 4) {
 			shapeRenderer.line(segments.get(i), segments.get(i+1), segments.get(i+2), segments.get(i+3));
 		}
-		for (Light2 light : lights) {
+		for (RenderLight light : lights) {
 			shapeRenderer.circle(light.getOrigin().x, light.getOrigin().y, light.getRadius());
 		}
 		shapeRenderer.end();
@@ -260,8 +272,8 @@ public class LightRenderer implements Disposable {
 
 	/**
 	 * Find orientation of ordered triplet (p, q, r)
-	 * See: https://www.geeksforgeeks.org/orientation-3-ordered-points/
-	 * @return 0 if colinear, > 0 if clockwise, < 0 if counter clockwise
+	 * See: <a href="https://www.geeksforgeeks.org/orientation-3-ordered-points/">...</a>
+	 * @return 0 if colinear, > 0 if clockwise, < 0 if counterclockwise
 	 */
 	float orientation(Vector2 p, Vector2 q, Vector2 r) {
 		return  (q.y - p.y) * (r.x - q.x) -
@@ -294,7 +306,7 @@ public class LightRenderer implements Disposable {
 		vertexes[19] = 1f;
 	}
 
-	public boolean isRenderGeometry() {
+	public boolean getRenderGeometry() {
 		return renderGeometry;
 	}
 

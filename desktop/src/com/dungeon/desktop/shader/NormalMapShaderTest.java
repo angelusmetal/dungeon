@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.light.Light2;
+import com.dungeon.engine.render.light.OldRenderLight;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 
@@ -59,7 +59,7 @@ public class NormalMapShaderTest extends ApplicationAdapter implements InputProc
 	private boolean dragging = false;
 	// Currently drawing geometry
 	private boolean drawing = false;
-	private Light2 selectedLight;
+	private OldRenderLight selectedLight;
 
 //	private LinkedList<Light2> lights = new LinkedList<>();
 //	private List<Float> geometry = new ArrayList<>();

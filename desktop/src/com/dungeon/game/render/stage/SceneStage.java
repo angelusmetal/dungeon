@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.dungeon.engine.Engine;
 import com.dungeon.engine.entity.Entity;
 import com.dungeon.engine.render.*;
-import com.dungeon.engine.render.light.Light2;
-import com.dungeon.engine.render.light.LightRenderer;
+import com.dungeon.engine.render.light.OldRenderLight;
+import com.dungeon.engine.render.light.LegacyLightRenderer;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 import com.dungeon.game.Game;
@@ -88,11 +88,11 @@ public class SceneStage implements Renderer {
 
 	// These are the elements that will be rendered
 	private List<Entity> entitiesToRender;
-	private List<Light2> lightsToRender;
+	private List<OldRenderLight> lightsToRender;
 
 	public static int lightCount;
 
-	private final LightRenderer lightRenderer;
+	private final LegacyLightRenderer lightRenderer;
 
 	public SceneStage(ViewPort viewPort, ViewPortBuffer output) {
 		this.viewPort = viewPort;
@@ -120,7 +120,7 @@ public class SceneStage implements Renderer {
 		this.blendSprites = new BlendFunctionContext(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		this.shadow = Resources.loadSprite("circle_diffuse");
 
-		this.lightRenderer = new LightRenderer();
+		this.lightRenderer = new LegacyLightRenderer();
 		lightRenderer.setAmbient(Engine.getBaseLight());
 		lightRenderer.create(viewPort, normalMapBuffer.getFrameBuffer());
 	}
@@ -444,7 +444,7 @@ public class SceneStage implements Renderer {
 		shadow.draw(batch);
 	}
 
-	private Light2 mapLight(Entity emitter, Light light) {
+	private OldRenderLight mapLight(Entity emitter, Light light) {
 		Color color = light.color.cpy();
 		// TODO get rid of light.dim
 		Vector2 origin = emitter.getBody().getCenter().cpy().add(light.offset.x + light.displacement.x, 0f);
@@ -454,7 +454,7 @@ public class SceneStage implements Renderer {
 		// (the light scatters more, so the radius grows but the intensity dims)
 		float attn = (float) Math.pow(0.5f, z / range);
 		color.a *= emitter.getColor().a * light.dim * attn;
-		return new Light2(origin,
+		return new OldRenderLight(origin,
 				z,
 				4f, // This is the physical radius of the light, not how far it reaches
 				range / attn,

@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Objects;
 
-public class Light2 {
+public class OldRenderLight {
 	private Vector2 origin;
 	private float z;
 	private float radius;
@@ -13,7 +13,7 @@ public class Light2 {
 	private Color color;
 	private final boolean castsShadows;
 
-	public Light2(Vector2 origin, float z, float radius, float range, Color color, boolean castsShadows) {
+	public OldRenderLight(Vector2 origin, float z, float radius, float range, Color color, boolean castsShadows) {
 		this.origin = origin.cpy();
 		this.z = z;
 		this.radius = radius;
@@ -58,7 +58,7 @@ public class Light2 {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Light2 light = (Light2) o;
+		OldRenderLight light = (OldRenderLight) o;
 		return Float.compare(light.radius, radius) == 0 &&
 				Float.compare(light.range, range) == 0 &&
 				Objects.equals(origin, light.origin) &&

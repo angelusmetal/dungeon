@@ -34,7 +34,7 @@ import static java.lang.Float.max;
 import static java.lang.Float.min;
 import static java.lang.Math.abs;
 
-public class MarinesLauncher extends ApplicationAdapter implements InputProcessor, ControllerListener {
+public class DynamicLightDemo extends ApplicationAdapter implements InputProcessor, ControllerListener {
 
     public static final float CAMERA_SPEED = 5f;
     public static final float CONTROLLER_DEADZONE = 0.2f;
@@ -44,7 +44,6 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
     private SpriteBatch spriteBatch;
     private OrthographicCamera camera;
     private LightRenderer lightRenderer;
-
     private BitmapFont font;
     private Texture floor;
     private Texture normalMap;
@@ -103,14 +102,14 @@ public class MarinesLauncher extends ApplicationAdapter implements InputProcesso
         }
     }
 
-    public MarinesLauncher() {
+    public DynamicLightDemo() {
     }
 
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1800;
         config.height = 900;
-        new LwjglApplication(new MarinesLauncher(), config);
+        new LwjglApplication(new DynamicLightDemo(), config);
     }
 
     @Override
