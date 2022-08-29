@@ -179,6 +179,7 @@ public class LegacyLightRenderer implements Disposable {
 		lightShader.setUniformf("u_lightColor", light.getColor());
 		lightShader.setUniformf("u_lightHardness", 0.5f);
 		lightShader.setUniformf("u_ambientColor", Color.BLACK);
+		lightShader.setUniformf("u_decay", 4f);
 		batch.setShader(lightShader);
 		batch.begin();
 		batch.draw(lightTexture, 0, 0, currentLightBuffer.getWidth(), currentLightBuffer.getHeight());
