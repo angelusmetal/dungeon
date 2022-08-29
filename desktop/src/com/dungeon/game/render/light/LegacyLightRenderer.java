@@ -1,4 +1,4 @@
-package com.dungeon.engine.render.light;
+package com.dungeon.game.render.light;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

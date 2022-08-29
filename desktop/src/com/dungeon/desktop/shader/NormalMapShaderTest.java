@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
-import com.dungeon.engine.render.light.OldRenderLight;
+import com.dungeon.game.render.light.OldRenderLight;
 import com.dungeon.engine.resource.Resources;
 import com.dungeon.engine.viewport.ViewPort;
 
